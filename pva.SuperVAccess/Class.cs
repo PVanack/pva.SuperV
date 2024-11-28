@@ -1,8 +1,8 @@
-﻿using pva.SuperVAccess.Exceptions;
+﻿using pva.SuperV.Model.Exceptions;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace pva.SuperVAccess
+namespace pva.SuperV.Model
 {
     public class Class(String className, TypeBuilder typeBuilder)
     {

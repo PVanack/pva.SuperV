@@ -1,4 +1,4 @@
-﻿namespace pva.SuperVAccess.Exceptions
+﻿namespace pva.SuperV.Model.Exceptions
 {
     public class FieldAlreadyExistException : Exception
     {

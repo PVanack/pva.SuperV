@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\pva.SuperVAccess\pva.SuperVAccess.csproj" />
+    <ProjectReference Include="..\pva.SuperVAccess\pva.SuperV.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>

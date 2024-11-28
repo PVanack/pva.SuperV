@@ -1,4 +1,4 @@
-﻿namespace pva.SuperVAccess
+﻿namespace pva.SuperV.Model
 {
     public class Field<T>(String name, T? value)
     {

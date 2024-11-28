@@ -1,8 +1,8 @@
 using FluentAssertions;
-using pva.SuperVAccess;
-using pva.SuperVAccess.Exceptions;
+using pva.SuperV.Model;
+using pva.SuperV.Model.Exceptions;
 
-namespace pva.SuperVAccessTests
+namespace pva.SuperV.ModelTests
 {
     public class ProjectTests
     {

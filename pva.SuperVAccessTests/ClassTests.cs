@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
-using pva.SuperVAccess;
+using pva.SuperV.Model;
 
-namespace pva.SuperVAccessTests
+namespace pva.SuperV.ModelTests
 {
     public class ClassTests
     {

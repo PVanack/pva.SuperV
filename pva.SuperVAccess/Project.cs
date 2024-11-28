@@ -1,8 +1,8 @@
 ﻿using System.Reflection.Emit;
 using System.Reflection;
-using pva.SuperVAccess.Exceptions;
+using pva.SuperV.Model.Exceptions;
 
-namespace pva.SuperVAccess
+namespace pva.SuperV.Model
 {
     /// <summary>
     /// SuperV Project class. It contains all the information required (classes, objects, processing0.
