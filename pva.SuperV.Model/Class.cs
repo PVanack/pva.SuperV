@@ -1,6 +1,6 @@
 ﻿using pva.SuperV.Model.Exceptions;
-using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 
 namespace pva.SuperV.Model
 {
@@ -23,6 +23,19 @@ namespace pva.SuperV.Model
             //CreateFieldInClass(field);
             Fields.Add(field.Name, field);
             return field;
+        }
+
+        public string GetCode()
+        {
+            StringBuilder codeBuilder = new();
+            codeBuilder.AppendLine($"public class {Name} {{");
+            codeBuilder.AppendLine("public System.String Name { get; set; }");
+            foreach (var item in Fields)
+            {
+                codeBuilder.AppendLine(item.Value.GetCode());
+            }
+            codeBuilder.AppendLine("}");
+            return codeBuilder.ToString();
         }
 
         //private void CreateFieldInClass<T>(Field<T> field)

@@ -107,5 +107,29 @@ namespace pva.SuperV.ModelTests
             // THEN
             Assert.IsType<UnknownClassException>(exception);
         }
+
+        [Fact]
+        public void GivenProjectWithClassAndField_WhenGettingCode_ThenGeneratedCodeIsAsExpected()
+        {
+            // GIVEN
+            Project project = Project.CreateProject(PROJECT_NAME);
+            Class clazz = project.AddClass(CLASS_NAME);
+            clazz.AddField(new Field<int>("IntField", 10));
+
+            // WHEN
+            String projectCode = project.GetCode();
+
+            // THEN
+            String expectedCode = $@"namespace {PROJECT_NAME} {{
+public class {CLASS_NAME} {{
+public System.String Name {{ get; set; }}
+public System.Int32 IntField {{ get; set; }} = 10;
+
+}}
+
+}}
+";
+            projectCode.Should().BeEquivalentTo(expectedCode);
+        }
     }
 }

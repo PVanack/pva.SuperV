@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\pva.SuperV.Model\pva.SuperV.Model.csproj" />
+    <ProjectReference Include="..\pva.SuperV.Builder\pva.SuperV.Builder.csproj" />
   </ItemGroup>
 
   <ItemGroup>

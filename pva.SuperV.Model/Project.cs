@@ -1,6 +1,7 @@
 ﻿using System.Reflection.Emit;
 using System.Reflection;
 using pva.SuperV.Model.Exceptions;
+using System.Text;
 
 namespace pva.SuperV.Model
 {
@@ -71,6 +72,18 @@ namespace pva.SuperV.Model
             }
 
             throw new UnknownClassException(className);
+        }
+
+        public string GetCode()
+        {
+            StringBuilder codeBuilder = new();
+            codeBuilder.AppendLine($"namespace {Name} {{");
+            foreach (var item in Classes)
+            {
+                codeBuilder.AppendLine(item.Value.GetCode());
+            }
+            codeBuilder.AppendLine("}");
+            return codeBuilder.ToString();
         }
     }
 }
