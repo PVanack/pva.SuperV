@@ -10,10 +10,10 @@ namespace pva.SuperV.Builder
     {
         public static Project Build(Project project)
         {
-            string firstAssemblyFileName = GetProjectAssemblyFile(project);
+            string projectAssemblyFileName = project.GetAssemblyFileName();
             String projectCode = project.GetCode();
             var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(projectCode), project.Name);
-            var compilationResult = compilation.Emit(firstAssemblyFileName);
+            var compilationResult = compilation.Emit(projectAssemblyFileName);
             if (!compilationResult.Success)
             {
                 StringBuilder diagnostics = new();
@@ -24,21 +24,6 @@ namespace pva.SuperV.Builder
                 throw new ProjectBuildException(project, diagnostics.ToString());
             }
             return project;
-        }
-
-        private static string GetProjectAssemblyFile(Project project)
-        {
-            return Path.Combine(Path.GetTempPath(), $"{project.Name}.dll");
-        }
-
-        public static dynamic? CreateClassInstance(Project project, string className, string instanceName)
-        {
-            Class clazz = project.GetClass(className);
-            string classFullName = $"{project.Name}.{clazz.Name}";
-            dynamic? instance = Activator.CreateInstanceFrom(GetProjectAssemblyFile(project), classFullName)
-                ?.Unwrap();
-            instance.Name = instanceName;
-            return instance;
         }
 
         private static CSharpCompilation CreateCompilation(SyntaxTree tree, string name) =>

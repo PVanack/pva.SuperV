@@ -1,6 +1,6 @@
 ﻿namespace pva.SuperV.Model.Exceptions
 {
-    public class UnknownClassException: Exception
+    public class UnknownClassException : Exception
     {
         public UnknownClassException(string? className) : base($"Class {className} doesn't exist")
         {

@@ -1,7 +1,5 @@
-using FluentAssertions;
 using pva.SuperV.Builder;
 using pva.SuperV.Model;
-using System.ComponentModel;
 
 namespace pva.SuperV.BuilderTests
 {
@@ -12,7 +10,7 @@ namespace pva.SuperV.BuilderTests
         private const string INSTANCE_NAME = "Instance";
 
         [Fact]
-        public void GivenProjectWithClassAndField_WhenGettingCode_ThenGeneratedCodeIsAsExpected()
+        public void GivenProjectWithClassAndField_WhenBuildingAndCreatingClassInstance_ThenInstanceIsCreated()
         {
             // GIVEN
             Project project = Project.CreateProject(PROJECT_NAME);
@@ -20,12 +18,13 @@ namespace pva.SuperV.BuilderTests
             clazz.AddField(new Field<int>("IntField", 10));
 
             // WHEN
-            ProjectBuilder.Build(project);
-            var instance = ProjectBuilder.CreateClassInstance(project, CLASS_NAME, INSTANCE_NAME);
+            project = ProjectBuilder.Build(project);
+            var instance = project.CreateClassInstance(CLASS_NAME, INSTANCE_NAME);
 
             // THEN
-            Assert.True(instance != null);
-            Assert.True(instance.IntField == 10);
+            Assert.NotNull(instance);
+            Assert.Equal(INSTANCE_NAME, instance.Name);
+            Assert.Equal(10, instance.IntField);
         }
     }
 }

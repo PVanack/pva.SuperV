@@ -9,7 +9,7 @@ namespace pva.SuperV.Model
 
         public String GetCode()
         {
-            StringBuilder codeBuilder = new ();
+            StringBuilder codeBuilder = new();
             codeBuilder.AppendLine($"public {typeof(T)} {Name} {{ get; set; }} = {Value};");
             return codeBuilder.ToString();
         }

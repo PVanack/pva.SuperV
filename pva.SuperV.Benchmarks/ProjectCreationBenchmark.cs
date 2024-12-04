@@ -1,6 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
-using BenchmarkDotNet.Running;
 using pva.SuperV.Builder;
 using pva.SuperV.Model;
 
@@ -34,7 +33,7 @@ namespace pva.SuperV.Benchmarks
     [SimpleJob(RunStrategy.Throughput)]
     public class InstanceCreation
     {
-        private Project project = SetupForCreateInstances();
+        private readonly Project project = SetupForCreateInstances();
 
         public static Project SetupForCreateInstances()
         {
@@ -52,7 +51,7 @@ namespace pva.SuperV.Benchmarks
         {
             for (int index = 0; index < InstanceesCount; index++)
             {
-                ProjectBuilder.CreateClassInstance(project, BenchmarkHelpers.CLASS_NAME, String.Format($"{BenchmarkHelpers.INSTANCE_NAME}-{index}"));
+                project.CreateClassInstance(BenchmarkHelpers.CLASS_NAME, String.Format($"{BenchmarkHelpers.INSTANCE_NAME}-{index}"));
             }
         }
     }

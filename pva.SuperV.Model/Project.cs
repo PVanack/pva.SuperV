@@ -1,18 +1,15 @@
-﻿using System.Reflection.Emit;
+﻿using pva.SuperV.Model.Exceptions;
 using System.Reflection;
-using pva.SuperV.Model.Exceptions;
 using System.Text;
 
 namespace pva.SuperV.Model
 {
     /// <summary>
-    /// SuperV Project class. It contains all the information required (classes, objects, processing0.
+    /// SuperV Project class. It contains all the information required (classes, objects, processing).
     /// </summary>
     public class Project
     {
         public static Project? CurrentProject { get; private set; }
-        public AssemblyBuilder? AssemblyBuilder { get; private set; }
-        public ModuleBuilder? ModuleBuilder { get; private set; }
         public Dictionary<String, Class> Classes { get; init; } = [];
 
         /// <summary>
@@ -35,9 +32,6 @@ namespace pva.SuperV.Model
             {
                 Name = projectName
             };
-            project.AssemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
-            // Create a dynamic module in Dynamic Assembly.
-            project.ModuleBuilder = project.AssemblyBuilder.DefineDynamicModule(projectName);
             Project.CurrentProject = project;
             return project;
         }
@@ -49,8 +43,7 @@ namespace pva.SuperV.Model
                 throw new ClassAlreadyExistException(className);
             }
 
-            TypeBuilder? typeBuilder = ModuleBuilder?.DefineType(className, TypeAttributes.Public);
-            Class clazz = new(className, typeBuilder!);
+            Class clazz = new(className);
             Classes.Add(className, clazz);
             return clazz;
         }
@@ -62,6 +55,12 @@ namespace pva.SuperV.Model
                 return GetClass(className);
             }
             catch { return null; }
+        }
+
+        public String GetAssemblyFileName()
+        {
+            // TODO Add version in assembly name
+            return Path.Combine(Path.GetTempPath(), $"{Name}.dll");
         }
 
         public Class GetClass(String className)
@@ -84,6 +83,16 @@ namespace pva.SuperV.Model
             }
             codeBuilder.AppendLine("}");
             return codeBuilder.ToString();
+        }
+
+        public dynamic? CreateClassInstance(string className, string instanceName)
+        {
+            Class clazz = GetClass(className);
+            string classFullName = $"{Name}.{clazz.Name}";
+            dynamic? instance = Activator.CreateInstanceFrom(GetAssemblyFileName(), classFullName)
+                ?.Unwrap();
+            instance.Name = instanceName;
+            return instance;
         }
     }
 }

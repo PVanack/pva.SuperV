@@ -19,8 +19,6 @@ namespace pva.SuperV.ModelTests
             project.Should().NotBeNull();
             Project.CurrentProject.Should().NotBeNull();
             project.Name.Should().Be(PROJECT_NAME);
-            project.AssemblyBuilder.Should().NotBeNull();
-            project.ModuleBuilder.Should().NotBeNull();
             project.Classes.Should().BeEmpty();
         }
 
