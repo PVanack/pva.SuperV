@@ -27,11 +27,6 @@ namespace pva.SuperV.Model
             {
                 Name = projectName
             };
-            // Create an assembly.
-            AssemblyName assemblyName = new()
-            {
-                Name = projectName
-            };
             Project.CurrentProject = project;
             return project;
         }
