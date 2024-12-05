@@ -12,7 +12,7 @@ namespace pva.SuperV.ModelTests
         public void GivenEmptyProject_WhenCreatingClass_ThenClassIsCreatedWithNoField()
         {
             // GIVEN
-            Project project = Project.CreateProject(PROJECT_NAME);
+            WipProject project = Project.CreateProject(PROJECT_NAME);
 
             // WHEN
             Class clazz = project.AddClass(CLASS_NAME);
@@ -20,8 +20,8 @@ namespace pva.SuperV.ModelTests
             // THEN
             clazz.Should().NotBeNull();
             clazz.Name.Should().Be(CLASS_NAME);
-            clazz.Fields.Should().NotBeNull();
-            clazz.Fields.Should().BeEmpty();
+            clazz.FieldDefinitions.Should().NotBeNull();
+            clazz.FieldDefinitions.Should().BeEmpty();
         }
     }
 }

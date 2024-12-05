@@ -17,13 +17,13 @@ namespace pva.SuperV.Benchmarks
         [Benchmark]
         public void CreateProjectWithClasses()
         {
-            Project theProject = Project.CreateProject(BenchmarkHelpers.PROJECT_NAME);
+            WipProject theProject = Project.CreateProject(BenchmarkHelpers.PROJECT_NAME);
             for (int classIndex = 0; classIndex < ClassesCount; classIndex++)
             {
                 Class clazz = theProject.AddClass(String.Format($"{BenchmarkHelpers.CLASS_NAME}_{classIndex}"));
                 for (int fieldIndex = 0; fieldIndex < FieldsCount; fieldIndex++)
                 {
-                    clazz.AddField(new Field<int>(String.Format($"{BenchmarkHelpers.FIELD_NAME}_{fieldIndex}"), fieldIndex));
+                    clazz.AddField(new FieldDefinition<int>(String.Format($"{BenchmarkHelpers.FIELD_NAME}_{fieldIndex}"), fieldIndex));
                 }
             }
             ProjectBuilder.Build(theProject);
@@ -33,25 +33,25 @@ namespace pva.SuperV.Benchmarks
     [SimpleJob(RunStrategy.Throughput)]
     public class InstanceCreation
     {
-        private readonly Project project = SetupForCreateInstances();
+        private readonly RunnableProject runnableProject = SetupForCreateInstances();
 
-        public static Project SetupForCreateInstances()
+        public static RunnableProject SetupForCreateInstances()
         {
-            Project theProject = Project.CreateProject(BenchmarkHelpers.PROJECT_NAME);
-            Class clazz = theProject.AddClass(BenchmarkHelpers.CLASS_NAME);
-            clazz.AddField(new Field<int>(BenchmarkHelpers.FIELD_NAME, 10));
-            return ProjectBuilder.Build(theProject);
+            WipProject wipProject = Project.CreateProject(BenchmarkHelpers.PROJECT_NAME);
+            Class clazz = wipProject.AddClass(BenchmarkHelpers.CLASS_NAME);
+            clazz.AddField(new FieldDefinition<int>(BenchmarkHelpers.FIELD_NAME, 10));
+            return ProjectBuilder.Build(wipProject);
         }
 
         [Params(100, 200)]
-        public int InstanceesCount { get; set; }
+        public int InstancesCount { get; set; }
 
         [Benchmark]
         public void CreateInstances()
         {
-            for (int index = 0; index < InstanceesCount; index++)
+            for (int index = 0; index < InstancesCount; index++)
             {
-                project.CreateClassInstance(BenchmarkHelpers.CLASS_NAME, String.Format($"{BenchmarkHelpers.INSTANCE_NAME}-{index}"));
+                runnableProject.CreateClassInstance(BenchmarkHelpers.CLASS_NAME, String.Format($"{BenchmarkHelpers.INSTANCE_NAME}-{index}"));
             }
         }
     }

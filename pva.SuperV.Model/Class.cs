@@ -9,16 +9,16 @@ namespace pva.SuperV.Model
         /// <summary>Gets or sets the name of the class.</summary>
         public String Name { get; set; } = className;
         /// <summary>Gets the fields defining the class.</summary>
-        public Dictionary<String, dynamic> Fields { get; init; } = new Dictionary<String, dynamic>(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<String, IFieldDefinition> FieldDefinitions { get; set; } = new Dictionary<String, IFieldDefinition>(StringComparer.OrdinalIgnoreCase);
 
-        public Field<T> AddField<T>(Field<T> field)
+        public FieldDefinition<T> AddField<T>(FieldDefinition<T> field)
         {
-            if (Fields.ContainsKey(field.Name))
+            if (FieldDefinitions.ContainsKey(field.Name))
             {
                 throw new FieldAlreadyExistException(field.Name);
             }
 
-            Fields.Add(field.Name, field);
+            FieldDefinitions.Add(field.Name, field);
             return field;
         }
 
@@ -27,12 +27,25 @@ namespace pva.SuperV.Model
             StringBuilder codeBuilder = new();
             codeBuilder.AppendLine($"public class {Name} {{");
             codeBuilder.AppendLine("public System.String Name { get; set; }");
-            foreach (var item in Fields)
+            foreach (var item in FieldDefinitions)
             {
                 codeBuilder.AppendLine(item.Value.GetCode());
             }
             codeBuilder.AppendLine("}");
             return codeBuilder.ToString();
+        }
+
+        internal Class Clone()
+        {
+            var clazz = new Class(this.Name)
+            {
+                FieldDefinitions = new(this.FieldDefinitions.Count)
+            };
+            foreach (var item in FieldDefinitions)
+            {
+                clazz.FieldDefinitions.Add(item.Key, item.Value.Clone());
+            }
+            return clazz;
         }
     }
 }

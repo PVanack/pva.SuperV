@@ -7,13 +7,13 @@ namespace pva.SuperV.Benchmarks
     [SimpleJob(launchCount: 1, warmupCount: 1, iterationCount: 1)]
     public class InstanceCreationBenchmark
     {
-        private readonly Project project = SetupForCreateInstances();
+        private readonly RunnableProject project = SetupForCreateInstances();
 
-        public static Project SetupForCreateInstances()
+        public static RunnableProject SetupForCreateInstances()
         {
-            Project theProject = Project.CreateProject(BenchmarkHelpers.PROJECT_NAME);
+            WipProject theProject = Project.CreateProject(BenchmarkHelpers.PROJECT_NAME);
             Class clazz = theProject.AddClass(BenchmarkHelpers.CLASS_NAME);
-            clazz.AddField(new Field<int>(BenchmarkHelpers.FIELD_NAME, 10));
+            clazz.AddField(new FieldDefinition<int>(BenchmarkHelpers.FIELD_NAME, 10));
             return ProjectBuilder.Build(theProject);
         }
 

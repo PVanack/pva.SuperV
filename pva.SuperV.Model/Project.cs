@@ -9,7 +9,7 @@ namespace pva.SuperV.Model
     /// </summary>
     public class Project
     {
-        public static Project? CurrentProject { get; private set; }
+        public static Project? CurrentProject { get; set; }
         public Dictionary<String, Class> Classes { get; init; } = [];
 
         /// <summary>
@@ -18,29 +18,21 @@ namespace pva.SuperV.Model
         /// <value>
         /// The project name.
         /// </value>
-        public String Name { get; private set; } = null!;
+        public String Name { get; set; } = null!;
 
-        public static Project CreateProject(String projectName)
+        public static WipProject CreateProject(String projectName)
         {
             //TODO Validate project name with regex
-            var project = new Project
+            var project = new WipProject
             {
                 Name = projectName
             };
-            Project.CurrentProject = project;
             return project;
         }
 
-        public Class AddClass(String className)
+        public static WipProject CreateProject(RunnableProject runnableProject)
         {
-            if (Classes.ContainsKey(className))
-            {
-                throw new ClassAlreadyExistException(className);
-            }
-
-            Class clazz = new(className);
-            Classes.Add(className, clazz);
-            return clazz;
+            return new WipProject(runnableProject);
         }
 
         public Class? FindClass(String className)
@@ -66,28 +58,6 @@ namespace pva.SuperV.Model
             }
 
             throw new UnknownClassException(className);
-        }
-
-        public string GetCode()
-        {
-            StringBuilder codeBuilder = new();
-            codeBuilder.AppendLine($"namespace {Name} {{");
-            foreach (var item in Classes)
-            {
-                codeBuilder.AppendLine(item.Value.GetCode());
-            }
-            codeBuilder.AppendLine("}");
-            return codeBuilder.ToString();
-        }
-
-        public dynamic? CreateClassInstance(string className, string instanceName)
-        {
-            Class clazz = GetClass(className);
-            string classFullName = $"{Name}.{clazz.Name}";
-            dynamic? instance = Activator.CreateInstanceFrom(GetAssemblyFileName(), classFullName)
-                ?.Unwrap();
-            instance.Name = instanceName;
-            return instance;
         }
     }
 }

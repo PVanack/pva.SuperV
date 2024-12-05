@@ -8,7 +8,7 @@ namespace pva.SuperV.Builder
 {
     public static class ProjectBuilder
     {
-        public static Project Build(Project project)
+        public static RunnableProject Build(WipProject project)
         {
             string projectAssemblyFileName = project.GetAssemblyFileName();
             String projectCode = project.GetCode();
@@ -23,13 +23,14 @@ namespace pva.SuperV.Builder
                 }
                 throw new ProjectBuildException(project, diagnostics.ToString());
             }
-            return project;
+            return project.CloneAsRunnable();
         }
 
         private static CSharpCompilation CreateCompilation(SyntaxTree tree, string name) =>
             CSharpCompilation
-                .Create(name, options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-                .AddReferences(MetadataReference.CreateFromFile(typeof(string).Assembly.Location))
-                .AddSyntaxTrees(tree);
+            .Create(name, options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+            .AddReferences(MetadataReference.CreateFromFile(typeof(string).Assembly.Location))
+            .AddReferences(MetadataReference.CreateFromFile(typeof(Project).Assembly.Location))
+            .AddSyntaxTrees(tree);
     }
 }

@@ -13,18 +13,18 @@ namespace pva.SuperV.BuilderTests
         public void GivenProjectWithClassAndField_WhenBuildingAndCreatingClassInstance_ThenInstanceIsCreated()
         {
             // GIVEN
-            Project project = Project.CreateProject(PROJECT_NAME);
-            Class clazz = project.AddClass(CLASS_NAME);
-            clazz.AddField(new Field<int>("IntField", 10));
+            WipProject wipProject = Project.CreateProject(PROJECT_NAME);
+            Class clazz = wipProject.AddClass(CLASS_NAME);
+            clazz.AddField(new FieldDefinition<int>("IntField", 10));
 
             // WHEN
-            project = ProjectBuilder.Build(project);
+            RunnableProject project = ProjectBuilder.Build(wipProject);
             var instance = project.CreateClassInstance(CLASS_NAME, INSTANCE_NAME);
 
             // THEN
             Assert.NotNull(instance);
             Assert.Equal(INSTANCE_NAME, instance.Name);
-            Assert.Equal(10, instance.IntField);
+            Assert.Equal(10, instance.IntField.Value);
         }
     }
 }
