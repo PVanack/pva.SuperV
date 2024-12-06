@@ -1,13 +1,37 @@
 ﻿using pva.SuperV.Model.Exceptions;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Model
 {
-    public class Class(String className)
+    public partial class Class(String className)
     {
-        //TODO Validate class name with regex
+        private const string ClassNamePattern = "^([A-Z]|[a-z]|[0-9])*$";
+
+        [GeneratedRegex(ClassNamePattern)]
+        private static partial Regex ClassNameRegex();
+
+        private string _name = className;
+
         /// <summary>Gets or sets the name of the class.</summary>
-        public String Name { get; set; } = className;
+        public String Name
+        {
+            get { return _name; }
+            set
+            {
+                ValidateName(value);
+                _name = value;
+            }
+        }
+
+        private static void ValidateName(string value)
+        {
+            if (!ClassNameRegex().IsMatch(value))
+            {
+                throw new InvalidClassNameException(value, ClassNamePattern);
+            }
+        }
+
         /// <summary>Gets the fields defining the class.</summary>
         public Dictionary<String, IFieldDefinition> FieldDefinitions { get; set; } = new Dictionary<String, IFieldDefinition>(StringComparer.OrdinalIgnoreCase);
 
@@ -22,11 +46,15 @@ namespace pva.SuperV.Model
             return field;
         }
 
+        public void RemoveField(string fieldName)
+        {
+            FieldDefinitions.Remove(fieldName);
+        }
+
         public string GetCode()
         {
             StringBuilder codeBuilder = new();
-            codeBuilder.AppendLine($"public class {Name} {{");
-            codeBuilder.AppendLine("public System.String Name { get; set; }");
+            codeBuilder.AppendLine($"public class {Name} : Instance {{");
             foreach (var item in FieldDefinitions)
             {
                 codeBuilder.AppendLine(item.Value.GetCode());

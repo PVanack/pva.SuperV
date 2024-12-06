@@ -10,6 +10,13 @@ namespace pva.SuperV.ModelTests
         private const string CLASS_NAME = "TestClass";
 
         [Fact]
+        public void GivenInvalidProjectName_WhenCreatingProject_ThenInvalidProjectNameExcpetionIsThrown()
+        {
+            // WHEN/THEN
+            Assert.Throws<InvalidProjectNameException>(() => Project.CreateProject("AS.@"));
+        }
+
+        [Fact]
         public void GivenNoCurrentProject_WhenCreatingProject_ThenEmptyProjectIsCreated()
         {
             // WHEN
@@ -119,8 +126,7 @@ namespace pva.SuperV.ModelTests
             // THEN
             String expectedCode = $@"using pva.SuperV.Model;
 namespace {PROJECT_NAME} {{
-public class {CLASS_NAME} {{
-public System.String Name {{ get; set; }}
+public class {CLASS_NAME} : Instance {{
 public Field<System.Int32> IntField {{ get; set; }} = new(10);
 
 }}

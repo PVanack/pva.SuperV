@@ -26,11 +26,30 @@ namespace pva.SuperV.Builder
             return project.CloneAsRunnable();
         }
 
-        private static CSharpCompilation CreateCompilation(SyntaxTree tree, string name) =>
-            CSharpCompilation
+        private static CSharpCompilation CreateCompilation(SyntaxTree tree, string name)
+        {
+            var assemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
+            List<MetadataReference> refs =
+            [
+                /* 
+                * Adding some necessary .NET assemblies
+                * These assemblies couldn't be loaded correctly via the same construction as above,
+                * in specific the System.Runtime.
+                */
+                MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "mscorlib.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Core.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Runtime.dll")),
+                // Basic types assembly
+                MetadataReference.CreateFromFile(typeof(string).Assembly.Location),
+                // SuperV Project assembly
+                MetadataReference.CreateFromFile(typeof(Project).Assembly.Location),
+            ];
+
+            return CSharpCompilation
             .Create(name, options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-            .AddReferences(MetadataReference.CreateFromFile(typeof(string).Assembly.Location))
-            .AddReferences(MetadataReference.CreateFromFile(typeof(Project).Assembly.Location))
+            .AddReferences(refs)
             .AddSyntaxTrees(tree);
+        }
     }
 }

@@ -2,13 +2,9 @@
 
 namespace pva.SuperV.Model
 {
-    public class Field<T>(T? value): IField
+    public class Field<T>(T value): IField<T>
     {
-        public T? Value { get; set; } = value ?? default;
-
-        IField Clone()
-        {
-            return new Field<T>(this.Value);
-        }
+        public Type Type => typeof(T);
+        public T Value { get; set; } = value;
     }
 }

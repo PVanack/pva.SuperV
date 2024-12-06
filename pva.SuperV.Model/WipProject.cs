@@ -20,6 +20,7 @@ namespace pva.SuperV.Model
         }
 
         public Class AddClass(String className)
+
         {
             if (Classes.ContainsKey(className))
             {
@@ -29,6 +30,12 @@ namespace pva.SuperV.Model
             Class clazz = new(className);
             Classes.Add(className, clazz);
             return clazz;
+        }
+
+        public void RemoveClass(String className)
+
+        {
+            Classes.Remove(className);
         }
 
         public string GetCode()

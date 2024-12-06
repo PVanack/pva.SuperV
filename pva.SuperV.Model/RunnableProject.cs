@@ -13,7 +13,7 @@
             Class clazz = GetClass(className);
             string classFullName = $"{Name}.{clazz.Name}";
             dynamic? instance = Activator.CreateInstanceFrom(GetAssemblyFileName(), classFullName)
-                ?.Unwrap();
+                ?.Unwrap() ;
             instance.Name = instanceName;
             return instance;
         }
