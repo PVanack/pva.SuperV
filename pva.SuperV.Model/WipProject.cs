@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Model.Exceptions;
+﻿using pva.Helpers;
+using pva.SuperV.Model.Exceptions;
 using System.Text;
 
 namespace pva.SuperV.Model
@@ -13,10 +14,8 @@ namespace pva.SuperV.Model
         {
             this.Name = runnableProject.Name;
             this.Classes = new(runnableProject.Classes.Count);
-            foreach (var item in runnableProject.Classes)
-            {
-                this.Classes.Add(item.Key, item.Value.Clone());
-            }
+            runnableProject.Classes.ForEach((k, v) =>
+                this.Classes.Add(k, v.Clone()));
         }
 
         public Class AddClass(String className)
@@ -43,10 +42,8 @@ namespace pva.SuperV.Model
             StringBuilder codeBuilder = new();
             codeBuilder.AppendLine($"using {this.GetType().Namespace};");
             codeBuilder.AppendLine($"namespace {Name} {{");
-            foreach (var item in Classes)
-            {
-                codeBuilder.AppendLine(item.Value.GetCode());
-            }
+            Classes.ForEach((k, v) =>
+                codeBuilder.AppendLine(v.GetCode()));
             codeBuilder.AppendLine("}");
             return codeBuilder.ToString();
         }

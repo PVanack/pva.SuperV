@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Model.Exceptions;
+﻿using pva.Helpers;
+using pva.SuperV.Model.Exceptions;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -55,10 +56,8 @@ namespace pva.SuperV.Model
         {
             StringBuilder codeBuilder = new();
             codeBuilder.AppendLine($"public class {Name} : Instance {{");
-            foreach (var item in FieldDefinitions)
-            {
-                codeBuilder.AppendLine(item.Value.GetCode());
-            }
+            FieldDefinitions.ForEach((k, v) =>
+                codeBuilder.AppendLine(v.GetCode());
             codeBuilder.AppendLine("}");
             return codeBuilder.ToString();
         }
@@ -69,10 +68,8 @@ namespace pva.SuperV.Model
             {
                 FieldDefinitions = new(this.FieldDefinitions.Count)
             };
-            foreach (var item in FieldDefinitions)
-            {
-                clazz.FieldDefinitions.Add(item.Key, item.Value.Clone());
-            }
+            FieldDefinitions.ForEach((k, v) =>
+                clazz.FieldDefinitions.Add(k, v.Clone()));
             return clazz;
         }
     }

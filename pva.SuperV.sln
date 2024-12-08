@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.BuilderTests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.Benchmarks", "pva.SuperV.Benchmarks\pva.SuperV.Benchmarks.csproj", "{4A87CADF-4055-47AC-B704-AA169A1A57F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.Helpers", "pva.Helpers\pva.Helpers.csproj", "{00370AA6-4092-479F-90B4-201FA641B350}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{4A87CADF-4055-47AC-B704-AA169A1A57F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4A87CADF-4055-47AC-B704-AA169A1A57F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A87CADF-4055-47AC-B704-AA169A1A57F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00370AA6-4092-479F-90B4-201FA641B350}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00370AA6-4092-479F-90B4-201FA641B350}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00370AA6-4092-479F-90B4-201FA641B350}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00370AA6-4092-479F-90B4-201FA641B350}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

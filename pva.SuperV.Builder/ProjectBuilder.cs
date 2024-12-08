@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using pva.Helpers;
 using pva.SuperV.Builder.Exceptions;
 using pva.SuperV.Model;
 using System.Text;
@@ -17,10 +18,8 @@ namespace pva.SuperV.Builder
             if (!compilationResult.Success)
             {
                 StringBuilder diagnostics = new();
-                foreach (var item in compilationResult.Diagnostics)
-                {
-                    diagnostics.AppendLine(item.ToString());
-                }
+                compilationResult.Diagnostics.ForEach(diagnostic =>
+                    diagnostics.AppendLine(diagnostic.ToString()));
                 throw new ProjectBuildException(project, diagnostics.ToString());
             }
             return project.CloneAsRunnable();
