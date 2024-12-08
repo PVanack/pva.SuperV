@@ -17,13 +17,13 @@ namespace pva.SuperV.Benchmarks
         [Benchmark]
         public void CreateProjectWithClasses()
         {
-            WipProject theProject = Project.CreateProject(BenchmarkHelpers.PROJECT_NAME);
+            WipProject theProject = Project.CreateProject(BenchmarkHelpers.ProjectName);
             for (int classIndex = 0; classIndex < ClassesCount; classIndex++)
             {
-                Class clazz = theProject.AddClass(String.Format($"{BenchmarkHelpers.CLASS_NAME}_{classIndex}"));
+                Class clazz = theProject.AddClass(String.Format($"{BenchmarkHelpers.ClassName}_{classIndex}"));
                 for (int fieldIndex = 0; fieldIndex < FieldsCount; fieldIndex++)
                 {
-                    clazz.AddField(new FieldDefinition<int>(String.Format($"{BenchmarkHelpers.FIELD_NAME}_{fieldIndex}"), fieldIndex));
+                    clazz.AddField(new FieldDefinition<int>(String.Format($"{BenchmarkHelpers.FieldName}_{fieldIndex}"), fieldIndex));
                 }
             }
             ProjectBuilder.Build(theProject);
@@ -37,9 +37,9 @@ namespace pva.SuperV.Benchmarks
 
         public static RunnableProject SetupForCreateInstances()
         {
-            WipProject wipProject = Project.CreateProject(BenchmarkHelpers.PROJECT_NAME);
-            Class clazz = wipProject.AddClass(BenchmarkHelpers.CLASS_NAME);
-            clazz.AddField(new FieldDefinition<int>(BenchmarkHelpers.FIELD_NAME, 10));
+            WipProject wipProject = Project.CreateProject(BenchmarkHelpers.ProjectName);
+            Class clazz = wipProject.AddClass(BenchmarkHelpers.ClassName);
+            clazz.AddField(new FieldDefinition<int>(BenchmarkHelpers.FieldName, 10));
             return ProjectBuilder.Build(wipProject);
         }
 
@@ -51,7 +51,7 @@ namespace pva.SuperV.Benchmarks
         {
             for (int index = 0; index < InstancesCount; index++)
             {
-                runnableProject.CreateClassInstance(BenchmarkHelpers.CLASS_NAME, String.Format($"{BenchmarkHelpers.INSTANCE_NAME}-{index}"));
+                runnableProject.CreateClassInstance(BenchmarkHelpers.ClassName, String.Format($"{BenchmarkHelpers.InstanceName}-{index}"));
             }
         }
     }

@@ -6,8 +6,8 @@ namespace pva.SuperV.ModelTests
 {
     public class ClassTests
     {
-        private const string PROJECT_NAME = "TestProject";
-        private const string CLASS_NAME = "TestClass";
+        private const string ProjectName = "TestProject";
+        private const string ClassName = "TestClass";
 
         [Fact]
         public void GivenInvalidClassName_WhenCreatingClass_ThenInvalidClassNameExcpetionIsThrown()
@@ -21,14 +21,14 @@ namespace pva.SuperV.ModelTests
         public void GivenEmptyProject_WhenCreatingClass_ThenClassIsCreatedWithNoField()
         {
             // GIVEN
-            WipProject project = Project.CreateProject(PROJECT_NAME);
+            WipProject project = Project.CreateProject(ProjectName);
 
             // WHEN
-            Class clazz = project.AddClass(CLASS_NAME);
+            Class clazz = project.AddClass(ClassName);
 
             // THEN
             clazz.Should().NotBeNull();
-            clazz.Name.Should().Be(CLASS_NAME);
+            clazz.Name.Should().Be(ClassName);
             clazz.FieldDefinitions.Should().NotBeNull();
             clazz.FieldDefinitions.Should().BeEmpty();
         }

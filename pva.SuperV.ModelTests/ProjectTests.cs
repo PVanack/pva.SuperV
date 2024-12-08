@@ -6,8 +6,8 @@ namespace pva.SuperV.ModelTests
 {
     public class ProjectTests
     {
-        private const string PROJECT_NAME = "TestProject";
-        private const string CLASS_NAME = "TestClass";
+        private const string ProjectName = "TestProject";
+        private const string ClassName = "TestClass";
 
         [Fact]
         public void GivenInvalidProjectName_WhenCreatingProject_ThenInvalidProjectNameExcpetionIsThrown()
@@ -20,11 +20,11 @@ namespace pva.SuperV.ModelTests
         public void GivenNoCurrentProject_WhenCreatingProject_ThenEmptyProjectIsCreated()
         {
             // WHEN
-            WipProject project = Project.CreateProject(PROJECT_NAME);
+            WipProject project = Project.CreateProject(ProjectName);
 
             // THEN
             project.Should().NotBeNull();
-            project.Name.Should().Be(PROJECT_NAME);
+            project.Name.Should().Be(ProjectName);
             project.Classes.Should().BeEmpty();
         }
 
@@ -32,27 +32,27 @@ namespace pva.SuperV.ModelTests
         public void GivenNewProject_WhenAddingClassToProject_ThenClassIsAdded()
         {
             // GIVEN
-            WipProject project = Project.CreateProject(PROJECT_NAME);
+            WipProject project = Project.CreateProject(ProjectName);
 
             // WHEN
-            project.AddClass(CLASS_NAME);
+            project.AddClass(ClassName);
 
             // THEN
-            project.Classes.Should().Satisfy(entry => entry.Key.Equals(CLASS_NAME));
-            project.Classes[CLASS_NAME].Should().NotBeNull();
+            project.Classes.Should().Satisfy(entry => entry.Key.Equals(ClassName));
+            project.Classes[ClassName].Should().NotBeNull();
         }
 
         [Fact]
         public void GivenNewProject_WhenAddingTwiceClassToProject_ThenClassAlreadyExistExceptionIsThrown()
         {
             // GIVEN
-            WipProject project = Project.CreateProject(PROJECT_NAME);
+            WipProject project = Project.CreateProject(ProjectName);
 
             // WHEN
-            project.AddClass(CLASS_NAME);
-            project.Classes.Should().Satisfy(entry => entry.Key.Equals(CLASS_NAME));
-            project.Classes[CLASS_NAME].Should().NotBeNull();
-            var exception = Assert.Throws<ClassAlreadyExistException>(() => project.AddClass(CLASS_NAME));
+            project.AddClass(ClassName);
+            project.Classes.Should().Satisfy(entry => entry.Key.Equals(ClassName));
+            project.Classes[ClassName].Should().NotBeNull();
+            var exception = Assert.Throws<ClassAlreadyExistException>(() => project.AddClass(ClassName));
 
             // THEN
             Assert.IsType<ClassAlreadyExistException>(exception);
@@ -62,11 +62,11 @@ namespace pva.SuperV.ModelTests
         public void GivenNewProjectWithClass_WhenFindingClassInProject_ThenClassIsReturned()
         {
             // GIVEN
-            WipProject project = Project.CreateProject(PROJECT_NAME);
-            project.AddClass(CLASS_NAME);
+            WipProject project = Project.CreateProject(ProjectName);
+            project.AddClass(ClassName);
 
             // WHEN
-            Class? clazz = project.FindClass(CLASS_NAME);
+            Class? clazz = project.FindClass(ClassName);
 
             // THEN
             clazz.Should().NotBeNull();
@@ -76,11 +76,11 @@ namespace pva.SuperV.ModelTests
         public void GivenNewProjectWithClass_WhenGettingClassInProject_ThenClassIsReturned()
         {
             // GIVEN
-            WipProject project = Project.CreateProject(PROJECT_NAME);
-            project.AddClass(CLASS_NAME);
+            WipProject project = Project.CreateProject(ProjectName);
+            project.AddClass(ClassName);
 
             // WHEN
-            Class clazz = project.GetClass(CLASS_NAME);
+            Class clazz = project.GetClass(ClassName);
 
             // THEN
             clazz.Should().NotBeNull();
@@ -90,10 +90,10 @@ namespace pva.SuperV.ModelTests
         public void GivenNewProject_WhenFindingClassInProject_ThenNullableIsReturned()
         {
             // GIVEN
-            WipProject project = Project.CreateProject(PROJECT_NAME);
+            WipProject project = Project.CreateProject(ProjectName);
 
             // WHEN
-            Class? clazz = project.FindClass(CLASS_NAME);
+            Class? clazz = project.FindClass(ClassName);
 
             // THEN
             clazz.Should().BeNull();
@@ -103,10 +103,10 @@ namespace pva.SuperV.ModelTests
         public void GivenNewProject_WhenGettingClassInProject_ThenUnknownClassExceptionIsThrown()
         {
             // GIVEN
-            WipProject project = Project.CreateProject(PROJECT_NAME);
+            WipProject project = Project.CreateProject(ProjectName);
 
             // WHEN
-            var exception = Assert.Throws<UnknownClassException>(() => project.GetClass(CLASS_NAME));
+            var exception = Assert.Throws<UnknownClassException>(() => project.GetClass(ClassName));
 
             // THEN
             Assert.IsType<UnknownClassException>(exception);
@@ -116,8 +116,8 @@ namespace pva.SuperV.ModelTests
         public void GivenProjectWithClassAndField_WhenGettingCode_ThenGeneratedCodeIsAsExpected()
         {
             // GIVEN
-            WipProject project = Project.CreateProject(PROJECT_NAME);
-            Class clazz = project.AddClass(CLASS_NAME);
+            WipProject project = Project.CreateProject(ProjectName);
+            Class clazz = project.AddClass(ClassName);
             clazz.AddField(new FieldDefinition<int>("IntField", 10));
 
             // WHEN
@@ -125,8 +125,8 @@ namespace pva.SuperV.ModelTests
 
             // THEN
             String expectedCode = $@"using pva.SuperV.Model;
-namespace {PROJECT_NAME} {{
-public class {CLASS_NAME} : Instance {{
+namespace {ProjectName} {{
+public class {ClassName} : Instance {{
 public Field<System.Int32> IntField {{ get; set; }} = new(10);
 
 }}

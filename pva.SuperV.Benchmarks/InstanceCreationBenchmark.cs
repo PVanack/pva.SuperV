@@ -11,9 +11,9 @@ namespace pva.SuperV.Benchmarks
 
         public static RunnableProject SetupForCreateInstances()
         {
-            WipProject theProject = Project.CreateProject(BenchmarkHelpers.PROJECT_NAME);
-            Class clazz = theProject.AddClass(BenchmarkHelpers.CLASS_NAME);
-            clazz.AddField(new FieldDefinition<int>(BenchmarkHelpers.FIELD_NAME, 10));
+            WipProject theProject = Project.CreateProject(BenchmarkHelpers.ProjectName);
+            Class clazz = theProject.AddClass(BenchmarkHelpers.ClassName);
+            clazz.AddField(new FieldDefinition<int>(BenchmarkHelpers.FieldName, 10));
             return ProjectBuilder.Build(theProject);
         }
 
@@ -25,7 +25,7 @@ namespace pva.SuperV.Benchmarks
         {
             for (int index = 0; index < InstanceesCount; index++)
             {
-                project.CreateClassInstance(BenchmarkHelpers.CLASS_NAME, String.Format($"{BenchmarkHelpers.INSTANCE_NAME}-{index}"));
+                project.CreateClassInstance(BenchmarkHelpers.ClassName, String.Format($"{BenchmarkHelpers.InstanceName}-{index}"));
             }
         }
     }
