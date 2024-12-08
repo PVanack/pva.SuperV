@@ -16,7 +16,6 @@ namespace pva.SuperV.ModelTests
             Assert.Throws<InvalidClassNameException>(() => new Class("AZ.0"));
         }
 
-
         [Fact]
         public void GivenEmptyProject_WhenCreatingClass_ThenClassIsCreatedWithNoField()
         {

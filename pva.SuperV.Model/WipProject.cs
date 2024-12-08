@@ -43,7 +43,7 @@ namespace pva.SuperV.Model
             codeBuilder.AppendLine($"using {this.GetType().Namespace};");
             codeBuilder.AppendLine($"namespace {Name} {{");
             Classes
-                .ForEach((k, v) => codeBuilder.AppendLine(v.GetCode()));
+                .ForEach((_, v) => codeBuilder.AppendLine(v.GetCode()));
             codeBuilder.AppendLine("}");
             return codeBuilder.ToString();
         }

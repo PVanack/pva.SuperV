@@ -5,15 +5,19 @@ using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Model
 {
-    public partial class Class(String className)
+    public partial class Class
     {
         private const string ClassNamePattern = "^([A-Z]|[a-z]|[0-9])*$";
 
         [GeneratedRegex(ClassNamePattern)]
         private static partial Regex ClassNameRegex();
 
-        private string _name = className;
+        private string _name;
 
+        public Class(String className)
+        {
+            this.Name = className;
+        }
         /// <summary>Gets or sets the name of the class.</summary>
         public String Name
         {
@@ -57,7 +61,7 @@ namespace pva.SuperV.Model
             StringBuilder codeBuilder = new();
             codeBuilder.AppendLine($"public class {Name} : Instance {{");
             FieldDefinitions
-                .ForEach((k, v) => codeBuilder.AppendLine(v.GetCode());
+                .ForEach((_, v) => codeBuilder.AppendLine(v.GetCode()));
             codeBuilder.AppendLine("}");
             return codeBuilder.ToString();
         }

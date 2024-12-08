@@ -8,12 +8,10 @@ namespace pva.Helpers
             this ImmutableArray<T> immutableArray,
             Action<T> action)
         {
-
             foreach (T item in immutableArray)
             {
                 action(item);
             }
         }
-
     }
 }
