@@ -29,6 +29,9 @@ namespace pva.SuperV.Model
             }
         }
 
+        /// <summary>Gets the fields defining the class.</summary>
+        public Dictionary<String, IFieldDefinition> FieldDefinitions { get; set; } = new Dictionary<String, IFieldDefinition>(StringComparer.OrdinalIgnoreCase);
+
         private static void ValidateName(string value)
         {
             if (!ClassNameRegex().IsMatch(value))
@@ -37,23 +40,20 @@ namespace pva.SuperV.Model
             }
         }
 
-        /// <summary>Gets the fields defining the class.</summary>
-        public Dictionary<String, IFieldDefinition> FieldDefinitions { get; set; } = new Dictionary<String, IFieldDefinition>(StringComparer.OrdinalIgnoreCase);
-
         public FieldDefinition<T> AddField<T>(FieldDefinition<T> field)
         {
-            if (FieldDefinitions.ContainsKey(field.Name))
+            if (FieldDefinitions.ContainsKey(field.Name.ToUpperInvariant()))
             {
                 throw new FieldAlreadyExistException(field.Name);
             }
 
-            FieldDefinitions.Add(field.Name, field);
+            FieldDefinitions.Add(field.Name.ToUpperInvariant(), field);
             return field;
         }
 
         public void RemoveField(string fieldName)
         {
-            FieldDefinitions.Remove(fieldName);
+            FieldDefinitions.Remove(fieldName.ToUpperInvariant());
         }
 
         public string GetCode()
@@ -73,7 +73,7 @@ namespace pva.SuperV.Model
                 FieldDefinitions = new(this.FieldDefinitions.Count)
             };
             FieldDefinitions
-                .ForEach((k, v) => clazz.FieldDefinitions.Add(k, v.Clone()));
+                .ForEach((k, v) => clazz.FieldDefinitions.Add(k.ToUpperInvariant(), v.Clone()));
             return clazz;
         }
     }

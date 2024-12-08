@@ -15,26 +15,26 @@ namespace pva.SuperV.Model
             this.Name = runnableProject.Name;
             this.Classes = new(runnableProject.Classes.Count);
             runnableProject.Classes
-                .ForEach((k, v) => this.Classes.Add(k, v.Clone()));
+                .ForEach((k, v) => this.Classes.Add(k.ToUpperInvariant(), v.Clone()));
         }
 
         public Class AddClass(String className)
 
         {
-            if (Classes.ContainsKey(className))
+            if (Classes.ContainsKey(className.ToUpperInvariant()))
             {
                 throw new ClassAlreadyExistException(className);
             }
 
             Class clazz = new(className);
-            Classes.Add(className, clazz);
+            Classes.Add(className.ToUpperInvariant(), clazz);
             return clazz;
         }
 
         public void RemoveClass(String className)
 
         {
-            Classes.Remove(className);
+            Classes.Remove(className.ToUpperInvariant());
         }
 
         public string GetCode()

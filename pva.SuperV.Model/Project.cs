@@ -19,6 +19,7 @@ namespace pva.SuperV.Model
         public Dictionary<String, Class> Classes { get; init; } = [];
 
         private string _name;
+
         /// <summary>
         /// Gets or sets the name of the project.
         /// </summary>
@@ -74,7 +75,7 @@ namespace pva.SuperV.Model
 
         public Class GetClass(String className)
         {
-            if (Classes.TryGetValue(className, out Class? value))
+            if (Classes.TryGetValue(className.ToUpperInvariant(), out Class? value))
             {
                 return value;
             }

@@ -38,8 +38,8 @@ namespace pva.SuperV.ModelTests
             project.AddClass(ClassName);
 
             // THEN
-            project.Classes.Should().Satisfy(entry => entry.Key.Equals(ClassName));
-            project.Classes[ClassName].Should().NotBeNull();
+            project.Classes.Should().Satisfy(entry => entry.Key.Equals(ClassName.ToUpperInvariant()));
+            project.Classes[ClassName.ToUpperInvariant()].Should().NotBeNull();
         }
 
         [Fact]
@@ -50,8 +50,8 @@ namespace pva.SuperV.ModelTests
 
             // WHEN
             project.AddClass(ClassName);
-            project.Classes.Should().Satisfy(entry => entry.Key.Equals(ClassName));
-            project.Classes[ClassName].Should().NotBeNull();
+            project.Classes.Should().Satisfy(entry => entry.Key.Equals(ClassName.ToUpperInvariant()));
+            project.Classes[ClassName.ToUpperInvariant()].Should().NotBeNull();
             var exception = Assert.Throws<ClassAlreadyExistException>(() => project.AddClass(ClassName));
 
             // THEN
