@@ -14,8 +14,8 @@ namespace pva.SuperV.Model
         {
             this.Name = runnableProject.Name;
             this.Classes = new(runnableProject.Classes.Count);
-            runnableProject.Classes.ForEach((k, v) =>
-                this.Classes.Add(k, v.Clone()));
+            runnableProject.Classes
+                .ForEach((k, v) => this.Classes.Add(k, v.Clone()));
         }
 
         public Class AddClass(String className)
@@ -42,8 +42,8 @@ namespace pva.SuperV.Model
             StringBuilder codeBuilder = new();
             codeBuilder.AppendLine($"using {this.GetType().Namespace};");
             codeBuilder.AppendLine($"namespace {Name} {{");
-            Classes.ForEach((k, v) =>
-                codeBuilder.AppendLine(v.GetCode()));
+            Classes
+                .ForEach((k, v) => codeBuilder.AppendLine(v.GetCode()));
             codeBuilder.AppendLine("}");
             return codeBuilder.ToString();
         }

@@ -18,8 +18,8 @@ namespace pva.SuperV.Builder
             if (!compilationResult.Success)
             {
                 StringBuilder diagnostics = new();
-                compilationResult.Diagnostics.ForEach(diagnostic =>
-                    diagnostics.AppendLine(diagnostic.ToString()));
+                compilationResult.Diagnostics
+                    .ForEach(diagnostic => diagnostics.AppendLine(diagnostic.ToString()));
                 throw new ProjectBuildException(project, diagnostics.ToString());
             }
             return project.CloneAsRunnable();

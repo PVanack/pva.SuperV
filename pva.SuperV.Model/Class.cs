@@ -56,8 +56,8 @@ namespace pva.SuperV.Model
         {
             StringBuilder codeBuilder = new();
             codeBuilder.AppendLine($"public class {Name} : Instance {{");
-            FieldDefinitions.ForEach((k, v) =>
-                codeBuilder.AppendLine(v.GetCode());
+            FieldDefinitions
+                .ForEach((k, v) => codeBuilder.AppendLine(v.GetCode());
             codeBuilder.AppendLine("}");
             return codeBuilder.ToString();
         }
@@ -68,8 +68,8 @@ namespace pva.SuperV.Model
             {
                 FieldDefinitions = new(this.FieldDefinitions.Count)
             };
-            FieldDefinitions.ForEach((k, v) =>
-                clazz.FieldDefinitions.Add(k, v.Clone()));
+            FieldDefinitions
+                .ForEach((k, v) => clazz.FieldDefinitions.Add(k, v.Clone()));
             return clazz;
         }
     }
