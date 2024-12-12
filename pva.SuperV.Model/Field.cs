@@ -3,7 +3,7 @@
     public class Field<T>(T value) : IField
     {
         public Type Type => typeof(T);
-        public T Value { get; set; } = value;
+        public virtual T Value { get; set; } = value;
 
         public void Dispose()
         {

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Model
 {
-    public partial class Class : IDisposable
+    public partial class Class
     {
         private const string ClassNamePattern = "^([A-Z]|[a-z]|[0-9])*$";
 
@@ -74,7 +74,7 @@ namespace pva.SuperV.Model
                 .ForEach((k, v) =>
                 {
                     codeBuilder.AppendLine(v.GetCode());
-                    ctorBuilder.AppendLine(String.Format("Fields.Add(\"{0}\", {0});", k)); 
+                    ctorBuilder.AppendLine(String.Format("Fields.Add(\"{0}\", {0});", k));
                 });
             ctorBuilder.AppendLine("}");
             codeBuilder.AppendLine(ctorBuilder.ToString());
@@ -91,10 +91,6 @@ namespace pva.SuperV.Model
             FieldDefinitions
                 .ForEach((k, v) => clazz.FieldDefinitions.Add(k, v.Clone()));
             return clazz;
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

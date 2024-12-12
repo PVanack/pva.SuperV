@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Emit;
 using pva.Helpers;
 using pva.SuperV.Builder.Exceptions;
 using System.Text;
@@ -34,7 +33,7 @@ namespace pva.SuperV.Model
                         .ForEach(diagnostic => diagnostics.AppendLine(diagnostic.ToString()));
                     throw new ProjectBuildException(project, diagnostics.ToString());
                 }
-                System.IO.File.WriteAllBytes(projectAssemblyFileName, dllStream.ToArray());
+                File.WriteAllBytes(projectAssemblyFileName, dllStream.ToArray());
             }
             return project.CloneAsRunnable();
         }

@@ -1,8 +1,6 @@
 using FluentAssertions;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Exceptions;
-using System.Runtime.Loader;
-using System.Security.Principal;
 
 namespace pva.SuperV.ModelTests
 {
@@ -78,7 +76,7 @@ namespace pva.SuperV.ModelTests
             // THEN
             wipProject.Name.Should().Be(runnableProject.Name);
             wipProject.Description.Should().Be(runnableProject.Description);
-            wipProject.Version.Should().Be(runnableProject.Version+1);
+            wipProject.Version.Should().Be(runnableProject.Version + 1);
 
             instance.Dispose();
             runnableProject.Dispose();
