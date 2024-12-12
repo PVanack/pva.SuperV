@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Runtime.Loader;
 
 namespace pva.SuperV.Model
@@ -9,6 +10,7 @@ namespace pva.SuperV.Model
         {
         }
 
+        [ExcludeFromCodeCoverage]
         protected override Assembly? Load(AssemblyName assemblyName)
         {
             return null;

@@ -6,7 +6,7 @@ namespace pva.SuperV.Model
 {
     public class WipProject : Project
     {
-        private Dictionary<String, dynamic> ToLoadInstances { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<String, dynamic> ToLoadInstances { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
         public WipProject(string projectName)
         {
@@ -46,7 +46,7 @@ namespace pva.SuperV.Model
                 ToLoadInstances.Values
                     .Where(instance => instance.Class.Name.Equals(clazz.Name))
                     .ToList()
-                    .ForEach(instanceName => ToLoadInstances.Remove(instanceName));
+                    .ForEach(instance => ToLoadInstances.Remove(instance.Name));
             }
         }
 
@@ -54,6 +54,7 @@ namespace pva.SuperV.Model
         {
             StringBuilder codeBuilder = new();
             codeBuilder.AppendLine($"using {this.GetType().Namespace};");
+            codeBuilder.AppendLine($"using System.Collections.Generic;");
             codeBuilder.AppendLine("using System.Reflection;");
             codeBuilder.AppendLine("[assembly: AssemblyProduct(\"pva.SuperV\")]");
             codeBuilder.AppendLine($"[assembly: AssemblyTitle(\"{Description}\")]");

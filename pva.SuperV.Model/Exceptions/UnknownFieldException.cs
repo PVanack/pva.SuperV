@@ -9,7 +9,7 @@ namespace pva.SuperV.Model.Exceptions
         {
         }
 
-        public UnknownFieldException(string? message) : base(message)
+        public UnknownFieldException(string? fieldName) : base($"Field {fieldName} doesn't exist")
         {
         }
 

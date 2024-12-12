@@ -68,9 +68,16 @@ namespace pva.SuperV.Model
         public string GetCode()
         {
             StringBuilder codeBuilder = new();
+            StringBuilder ctorBuilder = new($"public {Name}() {{");
             codeBuilder.AppendLine($"public class {Name} : Instance {{");
             FieldDefinitions
-                .ForEach((_, v) => codeBuilder.AppendLine(v.GetCode()));
+                .ForEach((k, v) =>
+                {
+                    codeBuilder.AppendLine(v.GetCode());
+                    ctorBuilder.AppendLine(String.Format("Fields.Add(\"{0}\", {0});", k)); 
+                });
+            ctorBuilder.AppendLine("}");
+            codeBuilder.AppendLine(ctorBuilder.ToString());
             codeBuilder.AppendLine("}");
             return codeBuilder.ToString();
         }

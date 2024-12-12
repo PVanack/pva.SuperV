@@ -5,10 +5,11 @@ namespace pva.SuperV.Model.Exceptions
     [Serializable]
     public class InvalidFieldNameException : Exception
     {
-        public InvalidFieldNameException(string fieldName, string fieldNamePattern) : this($"Invalid field name {fieldName}. Should comply to {fieldNamePattern}")
+        public InvalidFieldNameException(string fieldName, string fieldNamePattern) : base($"Invalid field name {fieldName}. Should comply to {fieldNamePattern}")
         {
         }
 
+        [ExcludeFromCodeCoverage]
         public InvalidFieldNameException(string? message) : base(message)
         {
         }

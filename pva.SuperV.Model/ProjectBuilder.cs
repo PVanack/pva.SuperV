@@ -53,6 +53,7 @@ namespace pva.SuperV.Model
                 MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.dll")),
                 MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Core.dll")),
                 MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Runtime.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Collections.dll")),
                 // Basic types assembly
                 MetadataReference.CreateFromFile(typeof(string).Assembly.Location),
                 // SuperV Project assembly

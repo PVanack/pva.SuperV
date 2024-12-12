@@ -4,9 +4,10 @@ using System.Diagnostics.CodeAnalysis;
 namespace pva.SuperV.Builder.Exceptions
 {
     [Serializable]
+    [ExcludeFromCodeCoverage(Justification = "Impossible to create a Roslyn compilation error by unit test.")]
     public class ProjectBuildException : Exception
     {
-        public ProjectBuildException(Project project, String diagnostics) : this($"Error building project {project.Name} : {diagnostics}")
+        public ProjectBuildException(Project project, String diagnostics) : base($"Error building project {project.Name} : {diagnostics}")
         {
         }
 
@@ -14,12 +15,10 @@ namespace pva.SuperV.Builder.Exceptions
         {
         }
 
-        [ExcludeFromCodeCoverage]
         public ProjectBuildException() : base()
         {
         }
 
-        [ExcludeFromCodeCoverage]
         public ProjectBuildException(string? message, Exception? innerException) : base(message, innerException)
         {
         }

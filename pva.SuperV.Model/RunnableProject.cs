@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Model.Exceptions;
+﻿using pva.Helpers;
+using pva.SuperV.Model.Exceptions;
 
 namespace pva.SuperV.Model
 {
@@ -36,7 +37,7 @@ namespace pva.SuperV.Model
             Instances.Remove(instanceName);
         }
 
-        public IInstance GetInstance(string instanceName)
+        public Instance GetInstance(string instanceName)
         {
             if (Instances.TryGetValue(instanceName, out var instance))
             {
@@ -48,6 +49,8 @@ namespace pva.SuperV.Model
         public void Unload()
         {
             Classes.Clear();
+            Instances.Values.ForEach(instance =>
+                instance.Dispose());
             Instances.Clear();
             _projectAssemblyLoader.Unload();
             GC.Collect();

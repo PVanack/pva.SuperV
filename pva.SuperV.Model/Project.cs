@@ -94,14 +94,15 @@ namespace pva.SuperV.Model
         protected static int GetProjectHighestVersion(string projectName)
         {
             return Directory.Exists(ProjectsPath)
-                ? Convert.ToInt32(Directory.EnumerateFiles(ProjectsPath, $"{projectName}-V*.dll")
-                    .Select(fileName => fileName
+                ? Directory.EnumerateFiles(ProjectsPath, $"{projectName}-V*.dll")
+                    .Select(fileName =>
+                    Convert.ToInt32(fileName
                         .Replace(ProjectsPath, "")
                         .Replace(Path.DirectorySeparatorChar.ToString(), "")
                         .Replace($"{projectName}-V", "")
-                        .Replace(".dll", ""))
+                        .Replace(".dll", "")))
                     .Order()
-                    .LastOrDefault())
+                    .LastOrDefault()
                 : 0;
         }
 
