@@ -139,7 +139,13 @@ namespace pva.SuperV.ModelTests
 
             // THEN
             String expectedCode = $@"using pva.SuperV.Model;
-namespace {ProjectName} {{
+using System.Reflection;
+[assembly: AssemblyProduct(""pva.SuperV"")]
+[assembly: AssemblyTitle(""{project.Description}"")]
+[assembly: AssemblyVersion(""{project.Version}"")]
+[assembly: AssemblyFileVersion(""{project.Version}"")]
+[assembly: AssemblyInformationalVersion(""{project.Version}"")]
+namespace {ProjectName}.V{project.Version} {{
 public class {ClassName} : Instance {{
 public Field<System.Int32> IntField {{ get; set; }} = new(10);
 

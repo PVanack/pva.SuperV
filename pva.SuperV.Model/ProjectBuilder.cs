@@ -1,9 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Emit;
 using pva.Helpers;
 using pva.SuperV.Builder.Exceptions;
-using pva.SuperV.Model;
-using System.Reflection;
 using System.Text;
 
 namespace pva.SuperV.Model
@@ -14,14 +13,28 @@ namespace pva.SuperV.Model
         {
             string projectAssemblyFileName = project.GetAssemblyFileName();
             String projectCode = project.GetCode();
-            var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(projectCode), project.Name);
-            var compilationResult = compilation.Emit(projectAssemblyFileName);
-            if (!compilationResult.Success)
+            var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(projectCode), $"{project.Name}-V{project.Version}");
+            using (MemoryStream dllStream = new MemoryStream())
+            using (MemoryStream pdbStream = new MemoryStream())
+            using (Stream win32resStream = compilation.CreateDefaultWin32Resources(
+                versionResource: true, // Important!
+                noManifest: false,
+                manifestContents: null,
+                iconInIcoFormat: null))
             {
-                StringBuilder diagnostics = new();
-                compilationResult.Diagnostics
-                    .ForEach(diagnostic => diagnostics.AppendLine(diagnostic.ToString()));
-                throw new ProjectBuildException(project, diagnostics.ToString());
+                var compilationResult = compilation.Emit(
+                    peStream: dllStream,
+                    pdbStream: pdbStream,
+                    win32Resources: win32resStream);
+
+                if (!compilationResult.Success)
+                {
+                    StringBuilder diagnostics = new();
+                    compilationResult.Diagnostics
+                        .ForEach(diagnostic => diagnostics.AppendLine(diagnostic.ToString()));
+                    throw new ProjectBuildException(project, diagnostics.ToString());
+                }
+                System.IO.File.WriteAllBytes(projectAssemblyFileName, dllStream.ToArray());
             }
             return project.CloneAsRunnable();
         }

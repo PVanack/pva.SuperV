@@ -23,11 +23,11 @@ namespace pva.SuperV.Model
             }
         }
 
-        private static void ValidateName(string value)
+        private static void ValidateName(string name)
         {
-            if (!FieldNameRegex().IsMatch(value))
+            if (!FieldNameRegex().IsMatch(name))
             {
-                throw new InvalidFieldNameException(value, FieldNamePattern);
+                throw new InvalidFieldNameException(name, FieldNamePattern);
             }
         }
 

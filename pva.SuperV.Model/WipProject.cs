@@ -11,11 +11,14 @@ namespace pva.SuperV.Model
         public WipProject(string projectName)
         {
             Name = projectName;
+            this.Version = GetNextVersion();
         }
 
         public WipProject(RunnableProject runnableProject)
         {
             this.Name = runnableProject.Name;
+            this.Description = runnableProject.Description;
+            this.Version = GetNextVersion();
             this.Classes = new(runnableProject.Classes.Count);
             runnableProject.Classes
                 .ForEach((k, v) => this.Classes.Add(k, v.Clone()));
@@ -51,7 +54,13 @@ namespace pva.SuperV.Model
         {
             StringBuilder codeBuilder = new();
             codeBuilder.AppendLine($"using {this.GetType().Namespace};");
-            codeBuilder.AppendLine($"namespace {Name} {{");
+            codeBuilder.AppendLine("using System.Reflection;");
+            codeBuilder.AppendLine("[assembly: AssemblyProduct(\"pva.SuperV\")]");
+            codeBuilder.AppendLine($"[assembly: AssemblyTitle(\"{Description}\")]");
+            codeBuilder.AppendLine($"[assembly: AssemblyVersion(\"{Version}\")]");
+            codeBuilder.AppendLine($"[assembly: AssemblyFileVersion(\"{Version}\")]");
+            codeBuilder.AppendLine($"[assembly: AssemblyInformationalVersion(\"{Version}\")]");
+            codeBuilder.AppendLine($"namespace {Name}.V{Version} {{");
             Classes
                 .ForEach((_, v) => codeBuilder.AppendLine(v.GetCode()));
             codeBuilder.AppendLine("}");

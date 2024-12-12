@@ -29,7 +29,6 @@ namespace pva.SuperV.ModelTests
 
             instance.Dispose();
             project.Unload();
-            DeleteProjectAssembly(project);
         }
 
         [Fact]
@@ -51,24 +50,6 @@ namespace pva.SuperV.ModelTests
 
             instance.Dispose();
             project.Unload();
-            DeleteProjectAssembly(project);
-        }
-
-        private static void DeleteProjectAssembly(RunnableProject project)
-        {
-            bool fileDeleted = false;
-            for (int i = 0; !fileDeleted && i < 5; i++)
-            {
-                try
-                {
-                    File.Delete(project.GetAssemblyFileName());
-                    fileDeleted = true;
-                }
-                catch (Exception ex)
-                {
-                    Thread.Sleep(100);
-                }
-            }
         }
     }
 }

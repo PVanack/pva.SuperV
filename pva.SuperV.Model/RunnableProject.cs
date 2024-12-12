@@ -1,5 +1,4 @@
-﻿using pva.Helpers;
-using pva.SuperV.Model.Exceptions;
+﻿using pva.SuperV.Model.Exceptions;
 
 namespace pva.SuperV.Model
 {
@@ -11,6 +10,7 @@ namespace pva.SuperV.Model
         public RunnableProject(WipProject wipProject)
         {
             this.Name = wipProject.Name;
+            this.Version = wipProject.Version;
             this.Classes = wipProject.Classes;
             this._projectAssemblyLoader = new();
             this._projectAssemblyLoader.LoadFromAssemblyPath(GetAssemblyFileName());
@@ -19,7 +19,7 @@ namespace pva.SuperV.Model
         public dynamic? CreateInstance(string className, string instanceName)
         {
             Class clazz = GetClass(className);
-            string classFullName = $"{Name}.{clazz.Name}";
+            string classFullName = $"{Name}.V{Version}.{clazz.Name}";
             dynamic? dynamicInstance = Activator.CreateInstanceFrom(GetAssemblyFileName(), classFullName)
                 ?.Unwrap();
             if (dynamicInstance != null)

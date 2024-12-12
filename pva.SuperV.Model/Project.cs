@@ -1,6 +1,4 @@
 ﻿using pva.SuperV.Model.Exceptions;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Model
@@ -11,10 +9,15 @@ namespace pva.SuperV.Model
     public partial class Project
     {
         private const string ProjectNamePattern = "^([A-Z]|[a-z]|[0-9])*$";
+        private const string ProjectFileNamePattern = @"^(?<folder>.*[\\\/])?(?<filename>\.*.*?)(?<extension>\.[^.]+?|)$";
+
+        [GeneratedRegex(ProjectFileNamePattern)]
+        private static partial Regex ProjectFileNameRegex();
 
         [GeneratedRegex(ProjectNamePattern)]
         private static partial Regex ProjectNameRegex();
 
+        public static string ProjectsPath { get; } = Path.Combine(Path.GetTempPath(), "pva.SuperV");
         public static Project? CurrentProject { get; set; }
         public Dictionary<String, Class> Classes { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
@@ -36,13 +39,9 @@ namespace pva.SuperV.Model
             }
         }
 
-        private static void ValidateName(string value)
-        {
-            if (!ProjectNameRegex().IsMatch(value))
-            {
-                throw new InvalidProjectNameException(value, ProjectNamePattern);
-            }
-        }
+        public string Description { get; set; }
+
+        public int Version { get; set; }
 
         public static WipProject CreateProject(String projectName)
         {
@@ -53,6 +52,14 @@ namespace pva.SuperV.Model
         public static WipProject CreateProject(RunnableProject runnableProject)
         {
             return new WipProject(runnableProject);
+        }
+
+        private static void ValidateName(string name)
+        {
+            if (!ProjectNameRegex().IsMatch(name))
+            {
+                throw new InvalidProjectNameException(name, ProjectNamePattern);
+            }
         }
 
         public Class? FindClass(String className)
@@ -66,8 +73,12 @@ namespace pva.SuperV.Model
 
         public String GetAssemblyFileName()
         {
+            if (!Directory.Exists(ProjectsPath))
+            {
+                Directory.CreateDirectory(ProjectsPath);
+            }
             // TODO Add version in assembly name
-            return Path.Combine(Path.GetTempPath(), $"{Name}.dll");
+            return Path.Combine(ProjectsPath, $"{Name}-V{Version}.dll");
         }
 
         public Class GetClass(String className)
@@ -78,6 +89,25 @@ namespace pva.SuperV.Model
             }
 
             throw new UnknownClassException(className);
+        }
+
+        protected static int GetProjectHighestVersion(string projectName)
+        {
+            return Directory.Exists(ProjectsPath)
+                ? Convert.ToInt32(Directory.EnumerateFiles(ProjectsPath, $"{projectName}-V*.dll")
+                    .Select(fileName => fileName
+                        .Replace(ProjectsPath, "")
+                        .Replace(Path.DirectorySeparatorChar.ToString(), "")
+                        .Replace($"{projectName}-V", "")
+                        .Replace(".dll", ""))
+                    .Order()
+                    .LastOrDefault())
+                : 0;
+        }
+
+        protected int GetNextVersion()
+        {
+            return GetProjectHighestVersion(Name) + 1;
         }
     }
 }

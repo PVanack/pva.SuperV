@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace pva.SuperV.Model
+﻿namespace pva.SuperV.Model
 {
     public interface IInstance : IDisposable
     {

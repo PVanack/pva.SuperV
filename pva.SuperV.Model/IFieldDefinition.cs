@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace pva.SuperV.Model
+﻿namespace pva.SuperV.Model
 {
     public interface IFieldDefinition
     {

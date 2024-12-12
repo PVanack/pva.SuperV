@@ -32,11 +32,11 @@ namespace pva.SuperV.Model
         /// <summary>Gets the fields defining the class.</summary>
         public Dictionary<String, IFieldDefinition> FieldDefinitions { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
-        private static void ValidateName(string value)
+        private static void ValidateName(string name)
         {
-            if (!ClassNameRegex().IsMatch(value))
+            if (!ClassNameRegex().IsMatch(name))
             {
-                throw new InvalidClassNameException(value, ClassNamePattern);
+                throw new InvalidClassNameException(name, ClassNamePattern);
             }
         }
 
