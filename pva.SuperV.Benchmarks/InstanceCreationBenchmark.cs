@@ -1,5 +1,4 @@
 ﻿using BenchmarkDotNet.Attributes;
-using pva.SuperV.Builder;
 using pva.SuperV.Model;
 
 namespace pva.SuperV.Benchmarks
@@ -25,7 +24,7 @@ namespace pva.SuperV.Benchmarks
         {
             for (int index = 0; index < InstanceesCount; index++)
             {
-                project.CreateClassInstance(BenchmarkHelpers.ClassName, String.Format($"{BenchmarkHelpers.InstanceName}-{index}"));
+                project.CreateInstance(BenchmarkHelpers.ClassName, String.Format($"{BenchmarkHelpers.InstanceName}-{index}"));
             }
         }
     }

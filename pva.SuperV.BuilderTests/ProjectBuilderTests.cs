@@ -19,7 +19,7 @@ namespace pva.SuperV.BuilderTests
 
             // WHEN
             RunnableProject project = ProjectBuilder.Build(wipProject);
-            var instance = project.CreateClassInstance(ClassName, InstanceName);
+            var instance = project.CreateInstance(ClassName, InstanceName);
 
             // THEN
             Assert.NotNull(instance);

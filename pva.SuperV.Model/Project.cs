@@ -16,7 +16,7 @@ namespace pva.SuperV.Model
         private static partial Regex ProjectNameRegex();
 
         public static Project? CurrentProject { get; set; }
-        public Dictionary<String, Class> Classes { get; init; } = [];
+        public Dictionary<String, Class> Classes { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
         private string _name;
 
@@ -46,10 +46,7 @@ namespace pva.SuperV.Model
 
         public static WipProject CreateProject(String projectName)
         {
-            var project = new WipProject
-            {
-                Name = projectName
-            };
+            WipProject project = new(projectName);
             return project;
         }
 
@@ -75,7 +72,7 @@ namespace pva.SuperV.Model
 
         public Class GetClass(String className)
         {
-            if (Classes.TryGetValue(className.ToUpperInvariant(), out Class? value))
+            if (Classes.TryGetValue(className, out Class? value))
             {
                 return value;
             }

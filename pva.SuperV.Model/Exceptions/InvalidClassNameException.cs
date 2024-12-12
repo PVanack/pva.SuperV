@@ -1,9 +1,11 @@
-﻿namespace pva.SuperV.Model.Exceptions
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace pva.SuperV.Model.Exceptions
 {
     [Serializable]
     public class InvalidClassNameException : Exception
     {
-        public InvalidClassNameException()
+        public InvalidClassNameException(string className, string classNamePattern) : this($"Invalid class name {className}. Should comply to {classNamePattern}")
         {
         }
 
@@ -11,10 +13,12 @@
         {
         }
 
-        public InvalidClassNameException(string className, string classNamePattern) : base($"Invalid class name {className}. Should comply to {classNamePattern}")
+        [ExcludeFromCodeCoverage]
+        public InvalidClassNameException()
         {
         }
 
+        [ExcludeFromCodeCoverage]
         public InvalidClassNameException(string? message, Exception? innerException) : base(message, innerException)
         {
         }

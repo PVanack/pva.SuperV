@@ -7,10 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pva.SuperV.Model", "pva.Sup
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.ModelTests", "pva.SuperV.ModelTests\pva.SuperV.ModelTests.csproj", "{B1A7BC08-E7D6-44F2-A52E-5D728F064E7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.Builder", "pva.SuperV.Builder\pva.SuperV.Builder.csproj", "{1E4868E6-3A08-47E8-9366-E3D0B8045F57}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.BuilderTests", "pva.SuperV.BuilderTests\pva.SuperV.BuilderTests.csproj", "{04EDBF5E-AD24-4A7D-A113-2EB69D8C3551}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.Benchmarks", "pva.SuperV.Benchmarks\pva.SuperV.Benchmarks.csproj", "{4A87CADF-4055-47AC-B704-AA169A1A57F4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.Helpers", "pva.Helpers\pva.Helpers.csproj", "{00370AA6-4092-479F-90B4-201FA641B350}"
@@ -29,14 +25,6 @@ Global
 		{B1A7BC08-E7D6-44F2-A52E-5D728F064E7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1A7BC08-E7D6-44F2-A52E-5D728F064E7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1A7BC08-E7D6-44F2-A52E-5D728F064E7F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1E4868E6-3A08-47E8-9366-E3D0B8045F57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1E4868E6-3A08-47E8-9366-E3D0B8045F57}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1E4868E6-3A08-47E8-9366-E3D0B8045F57}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1E4868E6-3A08-47E8-9366-E3D0B8045F57}.Release|Any CPU.Build.0 = Release|Any CPU
-		{04EDBF5E-AD24-4A7D-A113-2EB69D8C3551}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{04EDBF5E-AD24-4A7D-A113-2EB69D8C3551}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{04EDBF5E-AD24-4A7D-A113-2EB69D8C3551}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{04EDBF5E-AD24-4A7D-A113-2EB69D8C3551}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4A87CADF-4055-47AC-B704-AA169A1A57F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4A87CADF-4055-47AC-B704-AA169A1A57F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A87CADF-4055-47AC-B704-AA169A1A57F4}.Release|Any CPU.Build.0 = Release|Any CPU

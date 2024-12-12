@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Model
 {
-    public partial class Class
+    public partial class Class : IDisposable
     {
         private const string ClassNamePattern = "^([A-Z]|[a-z]|[0-9])*$";
 
@@ -30,7 +30,7 @@ namespace pva.SuperV.Model
         }
 
         /// <summary>Gets the fields defining the class.</summary>
-        public Dictionary<String, IFieldDefinition> FieldDefinitions { get; set; } = new Dictionary<String, IFieldDefinition>(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<String, IFieldDefinition> FieldDefinitions { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
         private static void ValidateName(string value)
         {
@@ -42,18 +42,27 @@ namespace pva.SuperV.Model
 
         public FieldDefinition<T> AddField<T>(FieldDefinition<T> field)
         {
-            if (FieldDefinitions.ContainsKey(field.Name.ToUpperInvariant()))
+            if (FieldDefinitions.ContainsKey(field.Name))
             {
                 throw new FieldAlreadyExistException(field.Name);
             }
 
-            FieldDefinitions.Add(field.Name.ToUpperInvariant(), field);
+            FieldDefinitions.Add(field.Name, field);
             return field;
+        }
+
+        public FieldDefinition<T> GetField<T>(string fieldName)
+        {
+            if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition fieldDefinition))
+            {
+                return fieldDefinition as FieldDefinition<T>;
+            }
+            throw new UnknownFieldException(fieldName);
         }
 
         public void RemoveField(string fieldName)
         {
-            FieldDefinitions.Remove(fieldName.ToUpperInvariant());
+            FieldDefinitions.Remove(fieldName);
         }
 
         public string GetCode()
@@ -73,8 +82,12 @@ namespace pva.SuperV.Model
                 FieldDefinitions = new(this.FieldDefinitions.Count)
             };
             FieldDefinitions
-                .ForEach((k, v) => clazz.FieldDefinitions.Add(k.ToUpperInvariant(), v.Clone()));
+                .ForEach((k, v) => clazz.FieldDefinitions.Add(k, v.Clone()));
             return clazz;
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

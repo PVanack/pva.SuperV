@@ -4,14 +4,14 @@ using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Model
 {
-    public partial class FieldDefinition<T>(String name, T? defaultValue) : IFieldDefinition
+    public partial class FieldDefinition<T> : IFieldDefinition
     {
         private const string FieldNamePattern = "^([A-Z]|[a-z]|[0-9])*$";
 
         [GeneratedRegex(FieldNamePattern)]
         private static partial Regex FieldNameRegex();
 
-        private string _name = name;
+        private string _name;
 
         public String Name
         {
@@ -31,7 +31,13 @@ namespace pva.SuperV.Model
             }
         }
 
-        public T? DefaultValue { get; set; } = defaultValue ?? default;
+        public T? DefaultValue { get; set; }
+
+        public FieldDefinition(String name, T? defaultValue)
+        {
+            this.Name = name;
+            this.DefaultValue = defaultValue ?? default;
+        }
 
         public String GetCode()
         {

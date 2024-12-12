@@ -13,6 +13,15 @@ namespace pva.SuperV.Model
 
         public Class Class { get; set; }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+        }
         //public IField<T> GetField<T>(string name)
         //{
         //    if (!Class.FieldDefinitions.ContainsKey(name))

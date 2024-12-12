@@ -6,8 +6,11 @@ namespace pva.SuperV.Model
 {
     public class WipProject : Project
     {
-        public WipProject()
+        private Dictionary<String, dynamic> ToLoadInstances { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+
+        public WipProject(string projectName)
         {
+            Name = projectName;
         }
 
         public WipProject(RunnableProject runnableProject)
@@ -15,26 +18,33 @@ namespace pva.SuperV.Model
             this.Name = runnableProject.Name;
             this.Classes = new(runnableProject.Classes.Count);
             runnableProject.Classes
-                .ForEach((k, v) => this.Classes.Add(k.ToUpperInvariant(), v.Clone()));
+                .ForEach((k, v) => this.Classes.Add(k, v.Clone()));
+            this.ToLoadInstances = new Dictionary<String, dynamic>(runnableProject.Instances, StringComparer.OrdinalIgnoreCase);
         }
 
         public Class AddClass(String className)
 
         {
-            if (Classes.ContainsKey(className.ToUpperInvariant()))
+            if (Classes.ContainsKey(className))
             {
                 throw new ClassAlreadyExistException(className);
             }
 
             Class clazz = new(className);
-            Classes.Add(className.ToUpperInvariant(), clazz);
+            Classes.Add(className, clazz);
             return clazz;
         }
 
         public void RemoveClass(String className)
-
         {
-            Classes.Remove(className.ToUpperInvariant());
+            if (Classes.TryGetValue(className, out var clazz))
+            {
+                Classes.Remove(className);
+                ToLoadInstances.Values
+                    .Where(instance => instance.Class.Name.Equals(clazz.Name))
+                    .ToList()
+                    .ForEach(instanceName => ToLoadInstances.Remove(instanceName));
+            }
         }
 
         public string GetCode()

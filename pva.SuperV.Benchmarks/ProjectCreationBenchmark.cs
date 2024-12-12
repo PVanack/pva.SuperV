@@ -51,7 +51,7 @@ namespace pva.SuperV.Benchmarks
         {
             for (int index = 0; index < InstancesCount; index++)
             {
-                runnableProject.CreateClassInstance(BenchmarkHelpers.ClassName, String.Format($"{BenchmarkHelpers.InstanceName}-{index}"));
+                runnableProject.CreateInstance(BenchmarkHelpers.ClassName, String.Format($"{BenchmarkHelpers.InstanceName}-{index}"));
             }
         }
     }

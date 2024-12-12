@@ -10,7 +10,7 @@ namespace pva.SuperV.ModelTests
         private const string ClassName = "TestClass";
 
         [Fact]
-        public void GivenInvalidProjectName_WhenCreatingProject_ThenInvalidProjectNameExcpetionIsThrown()
+        public void GivenInvalidProjectName_WhenCreatingProject_ThenInvalidProjectNameExceptionIsThrown()
         {
             // WHEN/THEN
             Assert.Throws<InvalidProjectNameException>(() => Project.CreateProject("AS.@"));
@@ -38,8 +38,8 @@ namespace pva.SuperV.ModelTests
             project.AddClass(ClassName);
 
             // THEN
-            project.Classes.Should().Satisfy(entry => entry.Key.Equals(ClassName.ToUpperInvariant()));
-            project.Classes[ClassName.ToUpperInvariant()].Should().NotBeNull();
+            project.Classes.Should().Satisfy(entry => entry.Key.Equals(ClassName));
+            project.Classes[ClassName].Should().NotBeNull();
         }
 
         [Fact]
@@ -50,8 +50,8 @@ namespace pva.SuperV.ModelTests
 
             // WHEN
             project.AddClass(ClassName);
-            project.Classes.Should().Satisfy(entry => entry.Key.Equals(ClassName.ToUpperInvariant()));
-            project.Classes[ClassName.ToUpperInvariant()].Should().NotBeNull();
+            project.Classes.Should().Satisfy(entry => entry.Key.Equals(ClassName));
+            project.Classes[ClassName].Should().NotBeNull();
             var exception = Assert.Throws<ClassAlreadyExistException>(() => project.AddClass(ClassName));
 
             // THEN
@@ -73,6 +73,19 @@ namespace pva.SuperV.ModelTests
         }
 
         [Fact]
+        public void GivenNewProject_WhenFindingClassInProject_ThenNullableIsReturned()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+
+            // WHEN
+            Class? clazz = project.FindClass(ClassName);
+
+            // THEN
+            clazz.Should().BeNull();
+        }
+
+        [Fact]
         public void GivenNewProjectWithClass_WhenGettingClassInProject_ThenClassIsReturned()
         {
             // GIVEN
@@ -87,19 +100,6 @@ namespace pva.SuperV.ModelTests
         }
 
         [Fact]
-        public void GivenNewProject_WhenFindingClassInProject_ThenNullableIsReturned()
-        {
-            // GIVEN
-            WipProject project = Project.CreateProject(ProjectName);
-
-            // WHEN
-            Class? clazz = project.FindClass(ClassName);
-
-            // THEN
-            clazz.Should().BeNull();
-        }
-
-        [Fact]
         public void GivenNewProject_WhenGettingClassInProject_ThenUnknownClassExceptionIsThrown()
         {
             // GIVEN
@@ -110,6 +110,20 @@ namespace pva.SuperV.ModelTests
 
             // THEN
             Assert.IsType<UnknownClassException>(exception);
+        }
+
+        [Fact]
+        public void GivenProjectWithClass_WhenRemovingClassInProject_ThenClassIsRemoved()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            project.AddClass(ClassName);
+
+            // WHEN
+            project.RemoveClass(ClassName);
+
+            // THEN
+            project.Classes.Should().BeEmpty();
         }
 
         [Fact]
