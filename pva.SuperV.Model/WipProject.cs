@@ -22,7 +22,7 @@ namespace pva.SuperV.Model
             this.Classes = new(runnableProject.Classes.Count);
             runnableProject.Classes
                 .ForEach((k, v) => this.Classes.Add(k, v.Clone()));
-            this.ToLoadInstances = new Dictionary<String, dynamic>(runnableProject.Instances, StringComparer.OrdinalIgnoreCase);
+            this.ToLoadInstances = new(runnableProject.Instances, StringComparer.OrdinalIgnoreCase);
         }
 
         public Class AddClass(String className)
@@ -71,6 +71,13 @@ namespace pva.SuperV.Model
         public RunnableProject CloneAsRunnable()
         {
             return new RunnableProject(this);
+        }
+
+        public override void Unload()
+        {
+            ToLoadInstances.Values.ForEach(instance => instance.Dispose());
+            ToLoadInstances.Clear();
+            base.Unload();
         }
     }
 }

@@ -3,7 +3,7 @@ using pva.SuperV.Model.Exceptions;
 
 namespace pva.SuperV.Model
 {
-    public class RunnableProject : Project, IDisposable
+    public class RunnableProject : Project
     {
         private ProjectAssemblyLoader _projectAssemblyLoader;
         public Dictionary<String, dynamic> Instances { get; init; } = new(StringComparer.OrdinalIgnoreCase);
@@ -12,9 +12,10 @@ namespace pva.SuperV.Model
         {
             this.Name = wipProject.Name;
             this.Version = wipProject.Version;
-            this.Classes = wipProject.Classes;
+            this.Classes = new(wipProject.Classes);
             this._projectAssemblyLoader = new();
             this._projectAssemblyLoader.LoadFromAssemblyPath(GetAssemblyFileName());
+            RecreateInstances(wipProject);
         }
 
         public dynamic? CreateInstance(string className, string instanceName)
@@ -46,31 +47,40 @@ namespace pva.SuperV.Model
             throw new UnknownInstanceException(instanceName);
         }
 
-        public void Unload()
+        private void RecreateInstances(WipProject wipProject)
         {
-            Classes.Clear();
+            wipProject.ToLoadInstances
+                .ForEach((k, v) =>
+                {
+                    string instanceName = k;
+                    Instance oldInstance = v;
+                    Instance newInstance = CreateInstance(oldInstance.Class.Name, instanceName);
+                    Dictionary<string, IField> newFields = new(newInstance.Fields.Count);
+                    newInstance.Fields
+                        .ForEach((k, v) =>
+                        {
+                            string fieldName = k;
+                            if (oldInstance.Fields.TryGetValue(fieldName, out IField oldField))
+                            {
+                                newFields.Add(fieldName, oldField);
+                            }
+                            else
+                            {
+                                newFields.Add(fieldName, v);
+                            }
+                        });
+                    newInstance.Fields = newFields;
+                });
+        }
+
+        public override void Unload()
+        {
             Instances.Values.ForEach(instance =>
                 instance.Dispose());
             Instances.Clear();
             _projectAssemblyLoader.Unload();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            while (_projectAssemblyLoader.Assemblies != null && _projectAssemblyLoader.Assemblies.Any())
-            {
-                Thread.Sleep(100);
-            }
             _projectAssemblyLoader = null;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            Unload();
+            base.Unload();
         }
     }
 }

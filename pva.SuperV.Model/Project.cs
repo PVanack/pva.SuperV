@@ -6,7 +6,7 @@ namespace pva.SuperV.Model
     /// <summary>
     /// SuperV Project class. It contains all the information required (classes, objects, processing).
     /// </summary>
-    public partial class Project
+    public abstract partial class Project: IDisposable
     {
         private const string ProjectNamePattern = "^([A-Z]|[a-z]|[0-9])*$";
         private const string ProjectFileNamePattern = @"^(?<folder>.*[\\\/])?(?<filename>\.*.*?)(?<extension>\.[^.]+?|)$";
@@ -109,6 +109,24 @@ namespace pva.SuperV.Model
         protected int GetNextVersion()
         {
             return GetProjectHighestVersion(Name) + 1;
+        }
+
+        public virtual void Unload()
+        {
+            Classes.Clear();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            Unload();
         }
     }
 }

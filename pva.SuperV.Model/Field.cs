@@ -4,15 +4,5 @@
     {
         public Type Type => typeof(T);
         public virtual T Value { get; set; } = value;
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-        }
     }
 }

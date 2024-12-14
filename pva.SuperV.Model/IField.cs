@@ -1,6 +1,6 @@
 ﻿namespace pva.SuperV.Model
 {
-    public interface IField : IDisposable
+    public interface IField
     {
         Type Type { get; }
     }

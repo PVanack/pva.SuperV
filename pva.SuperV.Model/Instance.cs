@@ -5,7 +5,7 @@ namespace pva.SuperV.Model
 {
     public class Instance : IInstance
     {
-        public Dictionary<string, IField> Fields { get; } = new();
+        public Dictionary<string, IField> Fields { get; set; } = new();
         public string Name { get; set; }
 
         public Class Class { get; set; }
@@ -18,8 +18,6 @@ namespace pva.SuperV.Model
 
         protected virtual void Dispose(bool disposing)
         {
-            Fields.Values
-                .ForEach(field => field.Dispose());
             Fields.Clear();
         }
         public Field<T> GetField<T>(string fieldName)

@@ -28,7 +28,8 @@ namespace pva.SuperV.ModelTests
             Assert.Equal(instance, retrievedInstance);
 
             instance.Dispose();
-            project.Dispose();
+            instance = null;
+            DeleteProject(project);
         }
 
         [Fact]
@@ -45,7 +46,8 @@ namespace pva.SuperV.ModelTests
             project.Instances.Should().BeEmpty();
 
             instance.Dispose();
-            project.Dispose();
+            instance = null;
+            DeleteProject(project);
         }
 
         [Fact]
@@ -58,9 +60,9 @@ namespace pva.SuperV.ModelTests
             // WHEN/THEN
             Assert.Throws<UnknownInstanceException>(() => project.GetInstance("WrongInstance"));
 
-
             instance.Dispose();
-            project.Dispose();
+            instance = null;
+            DeleteProject(project);
         }
 
         [Fact]
@@ -79,7 +81,8 @@ namespace pva.SuperV.ModelTests
             wipProject.Version.Should().Be(runnableProject.Version + 1);
 
             instance.Dispose();
-            runnableProject.Dispose();
+            instance = null;
+            DeleteProject(runnableProject);
         }
 
         [Fact]
@@ -97,11 +100,38 @@ namespace pva.SuperV.ModelTests
             wipProject.ToLoadInstances.Should().BeEmpty();
 
             instance.Dispose();
-            runnableProject.Dispose();
+            instance = null;
+            DeleteProject(runnableProject);
         }
 
         [Fact]
-        public void GivenWipProjectWithClassInstance_WhenGettingField_ThenFieldIsReturned()
+        public void GivenWipProjectWithClassInstance_WhenBuildingRunnableProject_ThenInstancesAreRecreated()
+        {
+            // GIVEN
+            RunnableProject runnableProject = CreateRunnableProject();
+            Instance instance = runnableProject.CreateInstance(ClassName, InstanceName);
+            Field<int> intField = instance.GetField<int>(FieldName);
+            intField.Value = 1234;
+            WipProject wipProject = Project.CreateProject(runnableProject);
+
+            // WHEN
+            runnableProject = ProjectBuilder.Build(wipProject);
+
+            // THEN
+            runnableProject.Instances.Should().HaveCount(1);
+            instance = runnableProject.GetInstance(InstanceName);
+            instance.Should().NotBeNull();
+            instance.Class.Name.Should().Be(ClassName);
+            intField = instance.GetField<int>(FieldName);
+            intField.Value.Should().Be(1234);
+
+            instance.Dispose();
+            instance = null;
+            DeleteProject(runnableProject);
+        }
+
+        [Fact]
+        public void GivenProjectWithClassInstance_WhenGettingField_ThenFieldIsReturned()
         {
             // GIVEN
             RunnableProject runnableProject = CreateRunnableProject();
@@ -114,11 +144,12 @@ namespace pva.SuperV.ModelTests
             field.Should().NotBeNull();
 
             instance.Dispose();
-            runnableProject.Dispose();
+            instance = null;
+            DeleteProject(runnableProject);
         }
 
         [Fact]
-        public void GivenWipProjectWithClassInstance_WhenGettingUnknownField_ThenExceptionIsThrown()
+        public void GivenProjectWithClassInstance_WhenGettingUnknownField_ThenExceptionIsThrown()
         {
             // GIVEN
             RunnableProject runnableProject = CreateRunnableProject();
@@ -128,11 +159,12 @@ namespace pva.SuperV.ModelTests
             Assert.Throws<UnknownFieldException>(() => instance.GetField<int>("UnknownField"));
 
             instance.Dispose();
-            runnableProject.Dispose();
+            instance = null;
+            DeleteProject(runnableProject);
         }
 
         [Fact]
-        public void GivenWipProjectWithClassInstance_WhenGettingFieldWithWrongType_ThenExceptionIsThrown()
+        public void GivenProjectWithClassInstance_WhenGettingFieldWithWrongType_ThenExceptionIsThrown()
         {
             // GIVEN
             RunnableProject runnableProject = CreateRunnableProject();
@@ -142,7 +174,28 @@ namespace pva.SuperV.ModelTests
             Assert.Throws<WrongFieldTypeException>(() => instance.GetField<double>(FieldName));
 
             instance.Dispose();
-            runnableProject.Dispose();
+            instance = null;
+            DeleteProject(runnableProject);
+        }
+
+        private static void DeleteProject(Project project)
+        {
+            project.Dispose();
+#if DELETE_PROJECT
+            bool deleted = false;
+            for (int i = 0; !deleted && i < 10; i++)
+            {
+                try
+                {
+                    File.Delete(project.GetAssemblyFileName());
+                    deleted = true;
+                }
+                catch (Exception ex)
+                {
+                    Thread.Sleep(i * 100);
+                }
+            }
+#endif
         }
 
         private static RunnableProject CreateRunnableProject()
@@ -151,6 +204,7 @@ namespace pva.SuperV.ModelTests
             Class clazz = wipProject.AddClass(ClassName);
             clazz.AddField(new FieldDefinition<int>(FieldName, 10));
             RunnableProject project = ProjectBuilder.Build(wipProject);
+            wipProject.Dispose();
             return project;
         }
     }
