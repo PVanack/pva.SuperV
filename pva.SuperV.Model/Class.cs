@@ -14,12 +14,12 @@ namespace pva.SuperV.Model
 
         private string _name;
 
-        public Class(String className)
+        public Class(string className)
         {
             this.Name = className;
         }
         /// <summary>Gets or sets the name of the class.</summary>
-        public String Name
+        public string Name
         {
             get { return _name; }
             set
@@ -30,7 +30,7 @@ namespace pva.SuperV.Model
         }
 
         /// <summary>Gets the fields defining the class.</summary>
-        public Dictionary<String, IFieldDefinition> FieldDefinitions { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, IFieldDefinition> FieldDefinitions { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
         private static void ValidateName(string name)
         {
@@ -74,7 +74,7 @@ namespace pva.SuperV.Model
                 .ForEach((k, v) =>
                 {
                     codeBuilder.AppendLine(v.GetCode());
-                    ctorBuilder.AppendLine(String.Format("Fields.Add(\"{0}\", {0});", k));
+                    ctorBuilder.AppendLine(string.Format("Fields.Add(\"{0}\", {0});", k));
                 });
             ctorBuilder.AppendLine("}");
             codeBuilder.AppendLine(ctorBuilder.ToString());

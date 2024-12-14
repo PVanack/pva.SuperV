@@ -11,7 +11,7 @@ namespace pva.SuperV.Model
         public static RunnableProject Build(WipProject project)
         {
             string projectAssemblyFileName = project.GetAssemblyFileName();
-            String projectCode = project.GetCode();
+            string projectCode = project.GetCode();
             var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(projectCode), $"{project.Name}-V{project.Version}");
             using (MemoryStream dllStream = new MemoryStream())
             using (MemoryStream pdbStream = new MemoryStream())

@@ -6,7 +6,7 @@ namespace pva.SuperV.Model
 {
     public class WipProject : Project
     {
-        public Dictionary<String, dynamic> ToLoadInstances { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, dynamic> ToLoadInstances { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
         public WipProject(string projectName)
         {
@@ -25,7 +25,7 @@ namespace pva.SuperV.Model
             this.ToLoadInstances = new(runnableProject.Instances, StringComparer.OrdinalIgnoreCase);
         }
 
-        public Class AddClass(String className)
+        public Class AddClass(string className)
 
         {
             if (Classes.ContainsKey(className))
@@ -38,7 +38,7 @@ namespace pva.SuperV.Model
             return clazz;
         }
 
-        public void RemoveClass(String className)
+        public void RemoveClass(string className)
         {
             if (Classes.TryGetValue(className, out var clazz))
             {

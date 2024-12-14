@@ -7,7 +7,7 @@ namespace pva.SuperV.Builder.Exceptions
     [ExcludeFromCodeCoverage(Justification = "Impossible to create a Roslyn compilation error by unit test.")]
     public class ProjectBuildException : Exception
     {
-        public ProjectBuildException(Project project, String diagnostics) : base($"Error building project {project.Name} : {diagnostics}")
+        public ProjectBuildException(Project project, string diagnostics) : base($"Error building project {project.Name} : {diagnostics}")
         {
         }
 

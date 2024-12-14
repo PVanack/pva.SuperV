@@ -13,7 +13,7 @@ namespace pva.SuperV.Model
 
         private string _name;
 
-        public String Name
+        public string Name
         {
             get { return _name; }
             set
@@ -33,13 +33,13 @@ namespace pva.SuperV.Model
 
         public T? DefaultValue { get; set; }
 
-        public FieldDefinition(String name, T? defaultValue)
+        public FieldDefinition(string name, T? defaultValue)
         {
             this.Name = name;
             this.DefaultValue = defaultValue ?? default;
         }
 
-        public String GetCode()
+        public string GetCode()
         {
             StringBuilder codeBuilder = new();
             codeBuilder.AppendLine($"public Field<{typeof(T)}> {Name} {{ get; set; }} = new({DefaultValue});");

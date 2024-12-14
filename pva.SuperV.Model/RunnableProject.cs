@@ -6,7 +6,7 @@ namespace pva.SuperV.Model
     public class RunnableProject : Project
     {
         private ProjectAssemblyLoader _projectAssemblyLoader;
-        public Dictionary<String, dynamic> Instances { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, dynamic> Instances { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
         public RunnableProject(WipProject wipProject)
         {

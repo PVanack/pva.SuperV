@@ -135,10 +135,10 @@ namespace pva.SuperV.ModelTests
             clazz.AddField(new FieldDefinition<int>("IntField", 10));
 
             // WHEN
-            String projectCode = project.GetCode();
+            string projectCode = project.GetCode();
 
             // THEN
-            String expectedCode = $@"using pva.SuperV.Model;
+            string expectedCode = $@"using pva.SuperV.Model;
 using System.Collections.Generic;
 using System.Reflection;
 [assembly: AssemblyProduct(""pva.SuperV"")]

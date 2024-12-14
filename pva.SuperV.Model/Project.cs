@@ -19,7 +19,7 @@ namespace pva.SuperV.Model
 
         public static string ProjectsPath { get; } = Path.Combine(Path.GetTempPath(), "pva.SuperV");
         public static Project? CurrentProject { get; set; }
-        public Dictionary<String, Class> Classes { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, Class> Classes { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
         private string _name;
 
@@ -29,7 +29,7 @@ namespace pva.SuperV.Model
         /// <value>
         /// The project name.
         /// </value>
-        public String Name
+        public string Name
         {
             get { return _name; }
             set
@@ -43,7 +43,7 @@ namespace pva.SuperV.Model
 
         public int Version { get; set; }
 
-        public static WipProject CreateProject(String projectName)
+        public static WipProject CreateProject(string projectName)
         {
             WipProject project = new(projectName);
             return project;
@@ -62,7 +62,7 @@ namespace pva.SuperV.Model
             }
         }
 
-        public Class? FindClass(String className)
+        public Class? FindClass(string className)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace pva.SuperV.Model
             catch { return null; }
         }
 
-        public String GetAssemblyFileName()
+        public string GetAssemblyFileName()
         {
             if (!Directory.Exists(ProjectsPath))
             {
@@ -81,7 +81,7 @@ namespace pva.SuperV.Model
             return Path.Combine(ProjectsPath, $"{Name}-V{Version}.dll");
         }
 
-        public Class GetClass(String className)
+        public Class GetClass(string className)
         {
             if (Classes.TryGetValue(className, out Class? value))
             {
