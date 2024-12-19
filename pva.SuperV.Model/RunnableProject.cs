@@ -1,12 +1,20 @@
 ﻿using pva.Helpers;
 using pva.SuperV.Model.Exceptions;
+using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Model
 {
     public class RunnableProject : Project
     {
-        private ProjectAssemblyLoader _projectAssemblyLoader;
+        [JsonIgnore]
+        private ProjectAssemblyLoader? _projectAssemblyLoader;
+
+        [JsonIgnore]
         public Dictionary<string, dynamic> Instances { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+
+        public RunnableProject()
+        {
+        }
 
         public RunnableProject(WipProject wipProject)
         {
@@ -60,7 +68,7 @@ namespace pva.SuperV.Model
                         .ForEach((k, v) =>
                         {
                             string fieldName = k;
-                            if (oldInstance.Fields.TryGetValue(fieldName, out IField oldField))
+                            if (oldInstance.Fields.TryGetValue(fieldName, out IField? oldField))
                             {
                                 newFields.Add(fieldName, oldField);
                             }
@@ -78,7 +86,7 @@ namespace pva.SuperV.Model
             Instances.Values.ForEach(instance =>
                 instance.Dispose());
             Instances.Clear();
-            _projectAssemblyLoader.Unload();
+            _projectAssemblyLoader?.Unload();
             _projectAssemblyLoader = null;
             base.Unload();
         }

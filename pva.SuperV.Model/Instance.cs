@@ -1,5 +1,4 @@
-﻿using pva.Helpers;
-using pva.SuperV.Model.Exceptions;
+﻿using pva.SuperV.Model.Exceptions;
 
 namespace pva.SuperV.Model
 {
@@ -22,16 +21,21 @@ namespace pva.SuperV.Model
         }
         public Field<T> GetField<T>(string fieldName)
         {
-            if (!Class.FieldDefinitions.ContainsKey(fieldName))
-            {
-                throw new UnknownFieldException(fieldName, Class.Name);
-            }
-            IField field = Fields[fieldName];
+            IField field = GetField(fieldName) as IField;
             if (field.Type != (typeof(T)))
             {
                 throw new WrongFieldTypeException(fieldName, field.Type, typeof(T));
             }
             return field as Field<T>;
+        }
+
+        public IField GetField(string fieldName)
+        {
+            if (!Class.FieldDefinitions.ContainsKey(fieldName))
+            {
+                throw new UnknownFieldException(fieldName, Class.Name);
+            }
+            return Fields[fieldName];
         }
     }
 }

@@ -6,14 +6,9 @@ namespace pva.SuperV.Model
     /// <summary>
     /// SuperV Project class. It contains all the information required (classes, objects, processing).
     /// </summary>
-    public abstract partial class Project: IDisposable
+    public abstract partial class Project : IDisposable
     {
         private const string ProjectNamePattern = "^([A-Z]|[a-z]|[0-9])*$";
-        private const string ProjectFileNamePattern = @"^(?<folder>.*[\\\/])?(?<filename>\.*.*?)(?<extension>\.[^.]+?|)$";
-
-        [GeneratedRegex(ProjectFileNamePattern)]
-        private static partial Regex ProjectFileNameRegex();
-
         [GeneratedRegex(ProjectNamePattern)]
         private static partial Regex ProjectNameRegex();
 
@@ -21,7 +16,7 @@ namespace pva.SuperV.Model
         public static Project? CurrentProject { get; set; }
         public Dictionary<string, Class> Classes { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
-        private string _name;
+        private string? _name;
 
         /// <summary>
         /// Gets or sets the name of the project.
@@ -29,17 +24,17 @@ namespace pva.SuperV.Model
         /// <value>
         /// The project name.
         /// </value>
-        public string Name
+        public string? Name
         {
             get { return _name; }
             set
             {
-                ValidateName(value);
+                ValidateName(value!);
                 _name = value;
             }
         }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public int Version { get; set; }
 
@@ -77,7 +72,6 @@ namespace pva.SuperV.Model
             {
                 Directory.CreateDirectory(ProjectsPath);
             }
-            // TODO Add version in assembly name
             return Path.Combine(ProjectsPath, $"{Name}-V{Version}.dll");
         }
 
@@ -108,13 +102,15 @@ namespace pva.SuperV.Model
 
         protected int GetNextVersion()
         {
-            return GetProjectHighestVersion(Name) + 1;
+            return GetProjectHighestVersion(Name!) + 1;
         }
 
         public virtual void Unload()
         {
             Classes.Clear();
+#pragma warning disable S1215 // "GC.Collect" should not be called
             GC.Collect();
+#pragma warning restore S1215 // "GC.Collect" should not be called
             GC.WaitForPendingFinalizers();
         }
 

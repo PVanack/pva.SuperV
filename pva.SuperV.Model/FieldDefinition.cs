@@ -23,6 +23,8 @@ namespace pva.SuperV.Model
             }
         }
 
+        public Type Type { get; set; }
+
         private static void ValidateName(string name)
         {
             if (!FieldNameRegex().IsMatch(name))
@@ -37,6 +39,7 @@ namespace pva.SuperV.Model
         {
             this.Name = name;
             this.DefaultValue = defaultValue ?? default;
+            this.Type = typeof(T);
         }
 
         public string GetCode()

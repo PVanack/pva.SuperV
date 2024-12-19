@@ -1,5 +1,8 @@
-﻿namespace pva.SuperV.Model
+﻿using System.Text.Json.Serialization;
+
+namespace pva.SuperV.Model
 {
+    [JsonConverter(typeof(InstanceJsonConverter))]
     public interface IInstance : IDisposable
     {
         public String Name { get; set; }

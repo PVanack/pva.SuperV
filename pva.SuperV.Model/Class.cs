@@ -12,19 +12,23 @@ namespace pva.SuperV.Model
         [GeneratedRegex(ClassNamePattern)]
         private static partial Regex ClassNameRegex();
 
-        private string _name;
+        private string? _name;
+
+        public Class()
+        {
+        }
 
         public Class(string className)
         {
             this.Name = className;
         }
         /// <summary>Gets or sets the name of the class.</summary>
-        public string Name
+        public string? Name
         {
             get { return _name; }
             set
             {
-                ValidateName(value);
+                ValidateName(value!);
                 _name = value;
             }
         }
@@ -51,9 +55,9 @@ namespace pva.SuperV.Model
             return field;
         }
 
-        public FieldDefinition<T> GetField<T>(string fieldName)
+        public FieldDefinition<T>? GetField<T>(string fieldName)
         {
-            if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition fieldDefinition))
+            if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
             {
                 return fieldDefinition as FieldDefinition<T>;
             }
@@ -74,7 +78,7 @@ namespace pva.SuperV.Model
                 .ForEach((k, v) =>
                 {
                     codeBuilder.AppendLine(v.GetCode());
-                    ctorBuilder.AppendLine(string.Format("Fields.Add(\"{0}\", {0});", k));
+                    ctorBuilder.AppendFormat("Fields.Add(\"{0}\", {0});", k).AppendLine();
                 });
             ctorBuilder.AppendLine("}");
             codeBuilder.AppendLine(ctorBuilder.ToString());
@@ -84,7 +88,7 @@ namespace pva.SuperV.Model
 
         internal Class Clone()
         {
-            var clazz = new Class(this.Name)
+            var clazz = new Class(this.Name!)
             {
                 FieldDefinitions = new(this.FieldDefinitions.Count)
             };
