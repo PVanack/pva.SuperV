@@ -1,5 +1,6 @@
 using FluentAssertions;
 using pva.Helpers;
+using pva.Helpers.Extensions;
 using pva.SuperV.Model;
 
 namespace pva.SuperV.ModelTests

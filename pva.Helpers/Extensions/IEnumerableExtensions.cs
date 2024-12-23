@@ -1,4 +1,4 @@
-﻿namespace pva.Helpers
+﻿namespace pva.Helpers.Extensions
 {
     public static class IEnumerableExtensions
     {
