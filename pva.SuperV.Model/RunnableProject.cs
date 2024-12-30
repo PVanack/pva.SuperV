@@ -66,8 +66,8 @@ namespace pva.SuperV.Model
                 {
                     string instanceName = k;
                     Instance oldInstance = v;
-                    Instance newInstance = CreateInstance(oldInstance.Class.Name, instanceName);
-                    Dictionary<string, IField> newFields = new(newInstance.Fields.Count);
+                    Instance? newInstance = CreateInstance(oldInstance!.Class!.Name!, instanceName!);
+                    Dictionary<string, IField> newFields = new(newInstance!.Fields!.Count);
                     newInstance.Fields
                         .ForEach((k, v) =>
                         {

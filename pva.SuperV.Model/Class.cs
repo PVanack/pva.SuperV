@@ -47,12 +47,12 @@ namespace pva.SuperV.Model
 
         public FieldDefinition<T> AddField<T>(FieldDefinition<T> field)
         {
-            if (FieldDefinitions.ContainsKey(field.Name))
+            if (FieldDefinitions.ContainsKey(field.Name!))
             {
                 throw new FieldAlreadyExistException(field.Name);
             }
 
-            FieldDefinitions.Add(field.Name, field);
+            FieldDefinitions.Add(field.Name!, field);
             return field;
         }
 

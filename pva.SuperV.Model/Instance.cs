@@ -5,9 +5,9 @@ namespace pva.SuperV.Model
     public class Instance : IInstance
     {
         public Dictionary<string, IField> Fields { get; set; } = [];
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
-        public Class Class { get; set; }
+        public Class Class { get; set; } = null!;
 
         public void Dispose()
         {
@@ -20,7 +20,7 @@ namespace pva.SuperV.Model
             Fields.Clear();
         }
 
-        public Field<T> GetField<T>(string fieldName)
+        public Field<T>? GetField<T>(string fieldName)
         {
             IField field = GetField(fieldName);
             if (field.Type != (typeof(T)))

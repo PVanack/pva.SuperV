@@ -6,7 +6,7 @@ namespace pva.SuperV.Model
     public interface IFieldDefinition
     {
         Type Type { get; set; }
-        string Name { get; set; }
+        string? Name { get; set; }
 
         String GetCode();
 

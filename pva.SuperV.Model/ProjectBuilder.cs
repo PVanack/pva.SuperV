@@ -48,11 +48,11 @@ namespace pva.SuperV.Model
                 * These assemblies couldn't be loaded correctly via the same construction as above,
                 * in specific the System.Runtime.
                 */
-                MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "mscorlib.dll")),
-                MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.dll")),
-                MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Core.dll")),
-                MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Runtime.dll")),
-                MetadataReference.CreateFromFile(Path.Combine(assemblyPath, "System.Collections.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(assemblyPath!, "mscorlib.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(assemblyPath!, "System.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(assemblyPath!, "System.Core.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(assemblyPath!, "System.Runtime.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(assemblyPath!, "System.Collections.dll")),
                 // Basic types assembly
                 MetadataReference.CreateFromFile(typeof(string).Assembly.Location),
                 // SuperV Project assembly

@@ -32,9 +32,9 @@ namespace pva.SuperV.Model
             }
             reader.Read();
             reader.GetByte();
-            Type fieldType = Type.GetType(fieldTypeString);
-            dynamic defaultValue = JsonSerializer.Deserialize(ref reader, fieldType, options);
-            dynamic fieldDefinition = CreateInstance(fieldType, fieldName, defaultValue);
+            Type? fieldType = Type.GetType(fieldTypeString!);
+            dynamic? defaultValue = JsonSerializer.Deserialize(ref reader, fieldType!, options);
+            dynamic fieldDefinition = CreateInstance(fieldType!, fieldName, defaultValue);
 
             reader.Read();
             if (reader.TokenType != JsonTokenType.EndObject)
@@ -52,7 +52,7 @@ namespace pva.SuperV.Model
             writer.WriteString("Name", fieldDefinition.Name);
             dynamic actualFieldDefinition = fieldDefinition;
             Type fieldType = actualFieldDefinition.Type;
-            if (!fieldConverters.TryGetValue(fieldType, out dynamic fieldConverter))
+            if (!fieldConverters.TryGetValue(fieldType, out dynamic? fieldConverter))
             {
                 fieldConverter =
                     JsonSerializerOptions.Default.GetConverter(fieldType);
