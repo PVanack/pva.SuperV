@@ -35,7 +35,10 @@ namespace pva.SuperV.Model
         {
             using StreamWriter outputFile = new(filename);
             Dictionary<string, IInstance> instances = new(project.Instances.Count);
-            project.Instances.ForEach((k, v) => instances.Add(k, v as IInstance));
+            project.Instances.ForEach((k, v) => {
+                var instance = v! as IInstance;
+                instances.Add(k, instance!);
+            });
             outputFile.WriteLine(JsonSerializer.Serialize(instances));
         }
 

@@ -19,12 +19,11 @@ namespace pva.SuperV.ModelTests
 
             // THEN
             Assert.NotNull(instance);
-            Assert.Equal(ProjectHelpers.InstanceName, instance.Name);
+            Assert.Equal(ProjectHelpers.InstanceName, instance!.Name!);
             Assert.Equal(10, instance.IntField.Value);
             Assert.Equal(instance, retrievedInstance);
 
             instance.Dispose();
-            instance = null;
             ProjectHelpers.DeleteProject(project);
         }
 
@@ -36,13 +35,12 @@ namespace pva.SuperV.ModelTests
             var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
 
             // WHEN
-            project.RemoveInstance(instance.Name);
+            project.RemoveInstance(instance!.Name!);
 
             // THEN
             project.Instances.Should().BeEmpty();
 
-            instance.Dispose();
-            instance = null;
+            instance?.Dispose();
             ProjectHelpers.DeleteProject(project);
         }
 
@@ -56,8 +54,7 @@ namespace pva.SuperV.ModelTests
             // WHEN/THEN
             Assert.Throws<UnknownInstanceException>(() => project.GetInstance("WrongInstance"));
 
-            instance.Dispose();
-            instance = null;
+            instance?.Dispose();
             ProjectHelpers.DeleteProject(project);
         }
 
@@ -71,8 +68,7 @@ namespace pva.SuperV.ModelTests
             // WHEN/THEN
             Assert.Throws<InstanceAlreadyExistException>(() => project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName));
 
-            instance.Dispose();
-            instance = null;
+            instance?.Dispose();
             ProjectHelpers.DeleteProject(project);
         }
 
@@ -91,8 +87,7 @@ namespace pva.SuperV.ModelTests
             wipProject.Description.Should().Be(runnableProject.Description);
             wipProject.Version.Should().Be(runnableProject.Version + 1);
 
-            instance.Dispose();
-            instance = null;
+            instance?.Dispose();
             ProjectHelpers.DeleteProject(runnableProject);
         }
 
@@ -110,8 +105,7 @@ namespace pva.SuperV.ModelTests
             // THEN
             wipProject.ToLoadInstances.Should().BeEmpty();
 
-            instance.Dispose();
-            instance = null;
+            instance?.Dispose();
             ProjectHelpers.DeleteProject(runnableProject);
         }
 
@@ -120,9 +114,9 @@ namespace pva.SuperV.ModelTests
         {
             // GIVEN
             RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
-            Instance instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
-            Field<int> intField = instance.GetField<int>(ProjectHelpers.FieldName);
-            intField.Value = 1234;
+            Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            Field<int>? intField = instance?.GetField<int>(ProjectHelpers.FieldName);
+            intField!.Value = 1234;
             WipProject wipProject = Project.CreateProject(runnableProject);
 
             // WHEN
@@ -134,10 +128,9 @@ namespace pva.SuperV.ModelTests
             instance.Should().NotBeNull();
             instance.Class.Name.Should().Be(ProjectHelpers.ClassName);
             intField = instance.GetField<int>(ProjectHelpers.FieldName);
-            intField.Value.Should().Be(1234);
+            intField!.Value.Should().Be(1234);
 
-            instance.Dispose();
-            instance = null;
+            instance?.Dispose();
             ProjectHelpers.DeleteProject(runnableProject);
         }
 
@@ -146,16 +139,15 @@ namespace pva.SuperV.ModelTests
         {
             // GIVEN
             RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
-            Instance instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
 
             // WHEN
-            Field<int> field = instance.GetField<int>(ProjectHelpers.FieldName);
+            Field<int>? field = instance?.GetField<int>(ProjectHelpers.FieldName);
 
             // THEN
             field.Should().NotBeNull();
 
-            instance.Dispose();
-            instance = null;
+            instance?.Dispose();
             ProjectHelpers.DeleteProject(runnableProject);
         }
 
@@ -164,13 +156,12 @@ namespace pva.SuperV.ModelTests
         {
             // GIVEN
             RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
-            Instance instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
 
             // WHEN/THEN
-            Assert.Throws<UnknownFieldException>(() => instance.GetField<int>("UnknownField"));
+            Assert.Throws<UnknownFieldException>(() => instance!.GetField<int>("UnknownField"));
 
-            instance.Dispose();
-            instance = null;
+            instance?.Dispose();
             ProjectHelpers.DeleteProject(runnableProject);
         }
 
@@ -179,13 +170,12 @@ namespace pva.SuperV.ModelTests
         {
             // GIVEN
             RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
-            Instance instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
 
             // WHEN/THEN
-            Assert.Throws<WrongFieldTypeException>(() => instance.GetField<double>(ProjectHelpers.FieldName));
+            Assert.Throws<WrongFieldTypeException>(() => instance!.GetField<double>(ProjectHelpers.FieldName));
 
-            instance.Dispose();
-            instance = null;
+            instance?.Dispose();
             ProjectHelpers.DeleteProject(runnableProject);
         }
     }

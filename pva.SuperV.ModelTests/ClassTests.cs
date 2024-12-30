@@ -46,9 +46,9 @@ namespace pva.SuperV.ModelTests
             // THEN
             clazz.FieldDefinitions.Should().NotBeNull();
             clazz.FieldDefinitions.Should().ContainKey(FieldName);
-            FieldDefinition<int> field = clazz.GetField<int>(FieldName);
-            field.Should().NotBeNull();
-            field.DefaultValue.Should().Be(10);
+            FieldDefinition<int>? field = clazz.GetField<int>(FieldName);
+            field!.Should().NotBeNull();
+            field!.DefaultValue.Should().Be(10);
         }
 
         [Fact]

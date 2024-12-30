@@ -11,14 +11,14 @@ namespace pva.SuperV.Model
         [GeneratedRegex(FieldNamePattern)]
         private static partial Regex FieldNameRegex();
 
-        private string _name;
+        private string? _name;
 
-        public string Name
+        public string? Name
         {
-            get { return _name; }
+            get => _name;
             set
             {
-                ValidateName(value);
+                ValidateName(value!);
                 _name = value;
             }
         }
@@ -51,7 +51,7 @@ namespace pva.SuperV.Model
 
         IFieldDefinition IFieldDefinition.Clone()
         {
-            return new FieldDefinition<T>(this.Name, this.DefaultValue);
+            return new FieldDefinition<T>(this.Name!, this.DefaultValue);
         }
     }
 }

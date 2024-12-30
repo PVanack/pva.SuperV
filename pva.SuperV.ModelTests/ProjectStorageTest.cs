@@ -17,14 +17,13 @@ namespace pva.SuperV.ModelTests
             var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
             string filename = ProjectStorage.SaveProjectDefinition(project);
 
-            RunnableProject loadedProject = ProjectStorage.LoadProjectDefinition<RunnableProject>(filename);
+            RunnableProject? loadedProject = ProjectStorage.LoadProjectDefinition<RunnableProject>(filename);
 
             // THEN
-            CheckProjectProperties(project, loadedProject);
-            CheckProjectClasses(project, loadedProject);
+            CheckProjectProperties(project, loadedProject!);
+            CheckProjectClasses(project, loadedProject!);
 
-            instance.Dispose();
-            instance = null;
+            instance?.Dispose();
             ProjectHelpers.DeleteProject(project);
         }
 
@@ -36,7 +35,7 @@ namespace pva.SuperV.ModelTests
             // WHEN
             RunnableProject project = ProjectHelpers.CreateRunnableProject();
             var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
-            Field<int> intField = instance.GetField<int>(ProjectHelpers.FieldName);
+            Field<int>? intField = instance?.GetField<int>(ProjectHelpers.FieldName);
             string filename = ProjectStorage.SaveProjectInstances(project);
             project.Instances.Clear();
 
@@ -46,14 +45,13 @@ namespace pva.SuperV.ModelTests
             project.Instances.Count.Should().Be(1);
             var loadedInstance = project.GetInstance(ProjectHelpers.InstanceName);
             loadedInstance.Should().NotBeSameAs(instance);
-            loadedInstance.Name.Should().Be(instance.Name);
-            loadedInstance.Class.Name.Should().Be(instance.Class.Name);
+            loadedInstance.Name.Should().Be(instance?.Name);
+            loadedInstance.Class.Name.Should().Be(instance?.Class.Name);
             loadedInstance.Fields.Count.Should().Be(1);
-            Field<int> loadedField = loadedInstance.GetField<int>(ProjectHelpers.FieldName);
-            loadedField.Value.Should().Be(intField.Value);
+            Field<int>? loadedField = loadedInstance.GetField<int>(ProjectHelpers.FieldName);
+            loadedField!.Value.Should().Be(intField!.Value);
 
-            instance.Dispose();
-            instance = null;
+            instance?.Dispose();
             ProjectHelpers.DeleteProject(project);
         }
 
@@ -63,9 +61,9 @@ namespace pva.SuperV.ModelTests
                 .ForEach((k, v) =>
                 {
                     loadedProject.Classes.Should().ContainKey(k);
-                    Class loadedClass = loadedProject.Classes.GetValueOrDefault(k);
-                    loadedClass.Name.Should().Be(v.Name);
-                    loadedClass.FieldDefinitions.Count.Should().Be(v.FieldDefinitions.Count);
+                    Class? loadedClass = loadedProject.Classes.GetValueOrDefault(k);
+                    loadedClass!.Name.Should().Be(v.Name);
+                    loadedClass!.FieldDefinitions.Count.Should().Be(v.FieldDefinitions.Count);
                     CheckClassFieldDefinitions(v, loadedClass);
                 });
         }
@@ -75,11 +73,11 @@ namespace pva.SuperV.ModelTests
             savedClass.FieldDefinitions.ForEach((k, v) =>
             {
                 loadedClass.FieldDefinitions.Should().ContainKey(k);
-                dynamic loadedFieldDefinition = loadedClass.FieldDefinitions.GetValueOrDefault(k);
+                dynamic? loadedFieldDefinition = loadedClass.FieldDefinitions.GetValueOrDefault(k);
                 dynamic savedFieldDefinition = v;
-                Assert.True(loadedFieldDefinition.Name.Equals(savedFieldDefinition.Name));
-                Assert.True(loadedFieldDefinition.Type.Equals(savedFieldDefinition.Type));
-                Assert.True(loadedFieldDefinition.DefaultValue.Equals(savedFieldDefinition.DefaultValue));
+                Assert.True(loadedFieldDefinition!.Name.Equals(savedFieldDefinition.Name));
+                Assert.True(loadedFieldDefinition!.Type.Equals(savedFieldDefinition.Type));
+                Assert.True(loadedFieldDefinition!.DefaultValue.Equals(savedFieldDefinition.DefaultValue));
             });
         }
 

@@ -7,7 +7,7 @@ namespace pva.SuperV.Model
 {
     public class InstanceJsonConverter : JsonConverter<IInstance>
     {
-        public static RunnableProject LoadedProject { get; set; }
+        public static RunnableProject LoadedProject { get; set; } = null!;
         private static readonly Dictionary<Type, dynamic> fieldConverters = [];
 
         public override IInstance? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -28,7 +28,7 @@ namespace pva.SuperV.Model
 
             try
             {
-                IInstance instance = LoadedProject.CreateInstance(instanceClass, instanceName);
+                IInstance? instance = LoadedProject.CreateInstance(instanceClass!, instanceName!);
 
                 reader.Read();
                 if (reader.TokenType != JsonTokenType.StartArray)
@@ -51,8 +51,12 @@ namespace pva.SuperV.Model
                     {
                         throw new JsonException();
                     }
-                    dynamic fieldValue = JsonSerializer.Deserialize(ref reader, Type.GetType(fieldTypeString), options);
-                    ((dynamic)((Instance)instance).GetField(fieldName)).Value = fieldValue;
+
+                    Type? fieldType = Type.GetType(fieldTypeString!);
+                    dynamic? fieldValue = JsonSerializer.Deserialize(ref reader, fieldType!, options);
+                    IField? field = (instance as Instance)?.GetField(fieldName!);
+                    dynamic? dynamicField = field as dynamic;
+                    dynamicField!.Value = fieldValue;
 
                     reader.Read();
                     if (reader.TokenType != JsonTokenType.EndObject)
@@ -70,7 +74,7 @@ namespace pva.SuperV.Model
             }
             catch (Exception ex)
             {
-                throw new InstanceCreationException(instanceName, instanceClass, ex);
+                throw new InstanceCreationException(instanceName!, instanceClass!, ex);
             }
         }
 
@@ -89,7 +93,7 @@ namespace pva.SuperV.Model
                 writer.WriteString("Type", fieldType.ToString());
                 writer.WriteString("Name", k);
                 writer.WritePropertyName("Value");
-                if (!fieldConverters.TryGetValue(fieldType!, out dynamic fieldConverter))
+                if (!fieldConverters.TryGetValue(fieldType!, out dynamic? fieldConverter))
                 {
                     fieldConverter =
                         JsonSerializerOptions.Default.GetConverter(fieldType);
