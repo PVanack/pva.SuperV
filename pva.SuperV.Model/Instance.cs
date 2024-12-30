@@ -4,7 +4,7 @@ namespace pva.SuperV.Model
 {
     public class Instance : IInstance
     {
-        public Dictionary<string, IField> Fields { get; set; } = new();
+        public Dictionary<string, IField> Fields { get; set; } = [];
         public string Name { get; set; }
 
         public Class Class { get; set; }
@@ -19,9 +19,10 @@ namespace pva.SuperV.Model
         {
             Fields.Clear();
         }
+
         public Field<T> GetField<T>(string fieldName)
         {
-            IField field = GetField(fieldName) as IField;
+            IField field = GetField(fieldName);
             if (field.Type != (typeof(T)))
             {
                 throw new WrongFieldTypeException(fieldName, field.Type, typeof(T));

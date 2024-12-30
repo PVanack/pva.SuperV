@@ -1,11 +1,7 @@
 ﻿namespace pva.SuperV.Model
 {
-    internal class FieldWithHistory<T> : Field<T>
+    internal class FieldWithHistory<T>(T value) : Field<T>(value)
     {
-        public FieldWithHistory(T value) : base(value)
-        {
-        }
-
         public override T Value
         {
             get => base.Value;
@@ -18,7 +14,6 @@
 
         private void Historize()
         {
-
         }
     }
 }

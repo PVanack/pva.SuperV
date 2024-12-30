@@ -1,5 +1,4 @@
-﻿using pva.Helpers;
-using pva.Helpers.Extensions;
+﻿using pva.Helpers.Extensions;
 using pva.SuperV.Model.Exceptions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -9,7 +8,7 @@ namespace pva.SuperV.Model
     public class InstanceJsonConverter : JsonConverter<IInstance>
     {
         public static RunnableProject LoadedProject { get; set; }
-        private static Dictionary<Type, dynamic> fieldConverters = new();
+        private static readonly Dictionary<Type, dynamic> fieldConverters = [];
 
         public override IInstance? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -90,8 +89,7 @@ namespace pva.SuperV.Model
                 writer.WriteString("Type", fieldType.ToString());
                 writer.WriteString("Name", k);
                 writer.WritePropertyName("Value");
-                dynamic fieldConverter;
-                if (!fieldConverters.TryGetValue(fieldType!, out fieldConverter))
+                if (!fieldConverters.TryGetValue(fieldType!, out dynamic fieldConverter))
                 {
                     fieldConverter =
                         JsonSerializerOptions.Default.GetConverter(fieldType);
@@ -99,12 +97,10 @@ namespace pva.SuperV.Model
                 }
                 fieldConverter.Write(writer, ((dynamic)v).Value, options);
                 writer.WriteEndObject();
-
             });
             writer.WriteEndArray();
 
             writer.WriteEndObject();
         }
-
     }
 }

@@ -54,7 +54,7 @@ namespace pva.SuperV.Model
         {
             StringBuilder codeBuilder = new();
             codeBuilder.AppendLine($"using {this.GetType().Namespace};");
-            codeBuilder.AppendLine($"using System.Collections.Generic;");
+            codeBuilder.AppendLine("using System.Collections.Generic;");
             codeBuilder.AppendLine("using System.Reflection;");
             codeBuilder.AppendLine("[assembly: AssemblyProduct(\"pva.SuperV\")]");
             codeBuilder.AppendLine($"[assembly: AssemblyTitle(\"{Description}\")]");

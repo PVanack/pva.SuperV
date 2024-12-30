@@ -7,7 +7,9 @@ namespace pva.SuperV.Model
     {
         Type Type { get; set; }
         string Name { get; set; }
+
         String GetCode();
+
         IFieldDefinition Clone();
     }
 }

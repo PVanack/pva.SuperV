@@ -6,7 +6,7 @@ namespace pva.SuperV.Model
 {
     public partial class FieldDefinition<T> : IFieldDefinition
     {
-        private const string FieldNamePattern = "^([A-Z]|[a-z]|[0-9])*$";
+        private const string FieldNamePattern = "^([A-Z]|[a-z]|[0-9]|_)*$";
 
         [GeneratedRegex(FieldNamePattern)]
         private static partial Regex FieldNameRegex();

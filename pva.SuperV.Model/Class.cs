@@ -1,5 +1,4 @@
-﻿using pva.Helpers;
-using pva.Helpers.Extensions;
+﻿using pva.Helpers.Extensions;
 using pva.SuperV.Model.Exceptions;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -8,7 +7,7 @@ namespace pva.SuperV.Model
 {
     public partial class Class
     {
-        private const string ClassNamePattern = "^([A-Z]|[a-z]|[0-9])*$";
+        private const string ClassNamePattern = "^([A-Z]|[a-z]|[0-9]|_)*$";
 
         [GeneratedRegex(ClassNamePattern)]
         private static partial Regex ClassNameRegex();
@@ -23,6 +22,7 @@ namespace pva.SuperV.Model
         {
             this.Name = className;
         }
+
         /// <summary>Gets or sets the name of the class.</summary>
         public string? Name
         {

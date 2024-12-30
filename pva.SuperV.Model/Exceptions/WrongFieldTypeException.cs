@@ -23,6 +23,5 @@ namespace pva.SuperV.Model.Exceptions
         public WrongFieldTypeException(string? message, Exception? innerException) : base(message, innerException)
         {
         }
-
     }
 }

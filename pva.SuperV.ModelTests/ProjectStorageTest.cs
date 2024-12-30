@@ -1,15 +1,12 @@
 using FluentAssertions;
-using pva.Helpers;
 using pva.Helpers.Extensions;
 using pva.SuperV.Model;
 
 namespace pva.SuperV.ModelTests
 {
-
     [Collection("Project building")]
     public class ProjectStorageTest
     {
-
         [Fact]
         public void GivenProjectWithClassAndField_WhenSavingAndReloadingRunnableProjectDefinition_ThenReloadedProjectDefinitionIsSameAsSavedProject()
         {

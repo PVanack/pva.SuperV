@@ -6,6 +6,7 @@ namespace pva.SuperV.Benchmarks
     {
         public static void Main()
         {
+            BenchmarkRunner.Run<ListExtensionsBenchmarks>();
             BenchmarkRunner.Run<ProjectCreationBenchmark>();
             BenchmarkRunner.Run<InstanceCreationBenchmark>();
         }

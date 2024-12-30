@@ -1,5 +1,4 @@
-﻿using pva.Helpers;
-using pva.Helpers.Extensions;
+﻿using pva.Helpers.Extensions;
 using System.Text.Json;
 
 namespace pva.SuperV.Model
@@ -36,10 +35,7 @@ namespace pva.SuperV.Model
         {
             using StreamWriter outputFile = new(filename);
             Dictionary<string, IInstance> instances = new(project.Instances.Count);
-            project.Instances.ForEach((k, v) =>
-            {
-                instances.Add(k, v as IInstance);
-            });
+            project.Instances.ForEach((k, v) => instances.Add(k, v as IInstance));
             outputFile.WriteLine(JsonSerializer.Serialize(instances));
         }
 

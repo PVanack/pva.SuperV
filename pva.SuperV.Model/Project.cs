@@ -9,6 +9,7 @@ namespace pva.SuperV.Model
     public abstract partial class Project : IDisposable
     {
         private const string ProjectNamePattern = "^([A-Z]|[a-z]|[0-9])*$";
+
         [GeneratedRegex(ProjectNamePattern)]
         private static partial Regex ProjectNameRegex();
 

@@ -18,6 +18,7 @@ namespace pva.SuperV.ModelTests
             wipProject.Dispose();
             return project;
         }
+
         public static void DeleteProject(Project project)
         {
             project.Dispose();

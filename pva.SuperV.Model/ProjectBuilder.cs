@@ -13,8 +13,8 @@ namespace pva.SuperV.Model
             string projectAssemblyFileName = project.GetAssemblyFileName();
             string projectCode = project.GetCode();
             var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(projectCode), $"{project.Name}-V{project.Version}");
-            using (MemoryStream dllStream = new MemoryStream())
-            using (MemoryStream pdbStream = new MemoryStream())
+            using (MemoryStream dllStream = new())
+            using (MemoryStream pdbStream = new())
             using (Stream win32resStream = compilation.CreateDefaultWin32Resources(
                 versionResource: true, // Important!
                 noManifest: false,
@@ -43,7 +43,7 @@ namespace pva.SuperV.Model
             var assemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
             List<MetadataReference> refs =
             [
-                /* 
+                /*
                 * Adding some necessary .NET assemblies
                 * These assemblies couldn't be loaded correctly via the same construction as above,
                 * in specific the System.Runtime.

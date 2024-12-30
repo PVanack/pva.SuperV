@@ -25,6 +25,5 @@ namespace pva.SuperV.Model
             }
             return reader.GetString();
         }
-
     }
 }

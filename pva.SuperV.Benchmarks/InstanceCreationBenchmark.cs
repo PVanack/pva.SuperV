@@ -22,9 +22,10 @@ namespace pva.SuperV.Benchmarks
         [Benchmark]
         public void CreateInstances()
         {
+            project.Instances.Clear();
             for (int index = 0; index < InstanceesCount; index++)
             {
-                project.CreateInstance(BenchmarkHelpers.ClassName, string.Format($"{BenchmarkHelpers.InstanceName}-{index}"));
+                project.CreateInstance(BenchmarkHelpers.ClassName, string.Format($"{BenchmarkHelpers.InstanceName}_{index}"));
             }
         }
     }

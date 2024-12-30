@@ -28,6 +28,10 @@ namespace pva.SuperV.Model
 
         public dynamic? CreateInstance(string className, string instanceName)
         {
+            if (Instances.ContainsKey(instanceName))
+            {
+                throw new InstanceAlreadyExistException(instanceName);
+            }
             Class clazz = GetClass(className);
             string classFullName = $"{Name}.V{Version}.{clazz.Name}";
             dynamic? dynamicInstance = Activator.CreateInstanceFrom(GetAssemblyFileName(), classFullName)

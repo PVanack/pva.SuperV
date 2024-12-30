@@ -138,25 +138,27 @@ namespace pva.SuperV.ModelTests
             string projectCode = project.GetCode();
 
             // THEN
-            string expectedCode = $@"using pva.SuperV.Model;
+            string expectedCode = $$"""
+using pva.SuperV.Model;
 using System.Collections.Generic;
 using System.Reflection;
-[assembly: AssemblyProduct(""pva.SuperV"")]
-[assembly: AssemblyTitle(""{project.Description}"")]
-[assembly: AssemblyVersion(""{project.Version}"")]
-[assembly: AssemblyFileVersion(""{project.Version}"")]
-[assembly: AssemblyInformationalVersion(""{project.Version}"")]
-namespace {ProjectName}.V{project.Version} {{
-public class {ClassName} : Instance {{
-public Field<System.Int32> IntField {{ get; set; }} = new(10);
+[assembly: AssemblyProduct("pva.SuperV")]
+[assembly: AssemblyTitle("{{project.Description}}")]
+[assembly: AssemblyVersion("{{project.Version}}")]
+[assembly: AssemblyFileVersion("{{project.Version}}")]
+[assembly: AssemblyInformationalVersion("{{project.Version}}")]
+namespace {{ProjectName}}.V{{project.Version}} {
+public class {{ClassName}} : Instance {
+public Field<System.Int32> IntField { get; set; } = new(10);
 
-public TestClass() {{Fields.Add(""IntField"", IntField);
-}}
+public TestClass() {Fields.Add("IntField", IntField);
+}
 
-}}
+}
 
-}}
-";
+}
+
+""";
             projectCode.Should().BeEquivalentTo(expectedCode);
         }
     }

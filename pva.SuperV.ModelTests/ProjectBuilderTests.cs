@@ -5,7 +5,6 @@ using pva.SuperV.Model.Exceptions;
 namespace pva.SuperV.ModelTests
 {
     [Collection("Project building")]
-
     public class ProjectBuilderTests
     {
         [Fact]
@@ -56,6 +55,21 @@ namespace pva.SuperV.ModelTests
 
             // WHEN/THEN
             Assert.Throws<UnknownInstanceException>(() => project.GetInstance("WrongInstance"));
+
+            instance.Dispose();
+            instance = null;
+            ProjectHelpers.DeleteProject(project);
+        }
+
+        [Fact]
+        public void GivenProjectWithClassInstance_WheCreatingInstanceWithSameName_ThenExceptionIsThrown()
+        {
+            // GIVEN
+            RunnableProject project = ProjectHelpers.CreateRunnableProject();
+            var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+
+            // WHEN/THEN
+            Assert.Throws<InstanceAlreadyExistException>(() => project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName));
 
             instance.Dispose();
             instance = null;
@@ -174,7 +188,5 @@ namespace pva.SuperV.ModelTests
             instance = null;
             ProjectHelpers.DeleteProject(runnableProject);
         }
-
-
     }
 }

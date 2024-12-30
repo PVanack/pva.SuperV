@@ -6,7 +6,7 @@ namespace pva.SuperV.Model
 {
     public class FieldDefinitionJsonConverter : JsonConverter<IFieldDefinition>
     {
-        private static Dictionary<Type, dynamic> fieldConverters = new();
+        private static readonly Dictionary<Type, dynamic> fieldConverters = [];
 
         public override IFieldDefinition? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -52,8 +52,7 @@ namespace pva.SuperV.Model
             writer.WriteString("Name", fieldDefinition.Name);
             dynamic actualFieldDefinition = fieldDefinition;
             Type fieldType = actualFieldDefinition.Type;
-            dynamic fieldConverter;
-            if (!fieldConverters.TryGetValue(fieldType, out fieldConverter))
+            if (!fieldConverters.TryGetValue(fieldType, out dynamic fieldConverter))
             {
                 fieldConverter =
                     JsonSerializerOptions.Default.GetConverter(fieldType);
@@ -65,7 +64,7 @@ namespace pva.SuperV.Model
             writer.WriteEndObject();
         }
 
-        static ConstructorInfo GetConstructor(Type targetType, Type argumentType)
+        private static ConstructorInfo GetConstructor(Type targetType, Type argumentType)
         {
             return typeof(FieldDefinition<>)
                 .MakeGenericType(targetType).
@@ -73,7 +72,7 @@ namespace pva.SuperV.Model
                 ?? throw new InvalidOperationException($"No constructor found for FieldDefinition<{targetType.Name}>.");
         }
 
-        static IFieldDefinition CreateInstance(Type targetType, string fieldName, object value)
+        private static IFieldDefinition CreateInstance(Type targetType, string fieldName, object value)
         {
             var ctor = GetConstructor(targetType, targetType);
             return (IFieldDefinition)ctor.Invoke([fieldName, value]);
