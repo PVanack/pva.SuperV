@@ -19,10 +19,11 @@ namespace pva.SuperV.Benchmarks
             WipProject theProject = Project.CreateProject(BenchmarkHelpers.ProjectName);
             for (int classIndex = 0; classIndex < ClassesCount; classIndex++)
             {
-                Class clazz = theProject.AddClass(String.Format($"{BenchmarkHelpers.ClassName}_{classIndex}"));
+                string className = $"{BenchmarkHelpers.ClassName}_{classIndex}";
+                _ = theProject.AddClass(className);
                 for (int fieldIndex = 0; fieldIndex < FieldsCount; fieldIndex++)
                 {
-                    clazz.AddField(new FieldDefinition<int>(String.Format($"{BenchmarkHelpers.FieldName}_{fieldIndex}"), fieldIndex));
+                    theProject.AddField(className, new FieldDefinition<int>(String.Format($"{BenchmarkHelpers.FieldName}_{fieldIndex}"), fieldIndex));
                 }
             }
             ProjectBuilder.Build(theProject);
@@ -37,8 +38,8 @@ namespace pva.SuperV.Benchmarks
         public static RunnableProject SetupForCreateInstances()
         {
             WipProject wipProject = Project.CreateProject(BenchmarkHelpers.ProjectName);
-            Class clazz = wipProject.AddClass(BenchmarkHelpers.ClassName);
-            clazz.AddField(new FieldDefinition<int>(BenchmarkHelpers.FieldName, 10));
+            _ = wipProject.AddClass(BenchmarkHelpers.ClassName);
+            wipProject.AddField(BenchmarkHelpers.ClassName, new FieldDefinition<int>(BenchmarkHelpers.FieldName, 10));
             return ProjectBuilder.Build(wipProject);
         }
 

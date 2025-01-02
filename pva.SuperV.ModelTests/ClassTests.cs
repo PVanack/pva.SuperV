@@ -10,11 +10,14 @@ namespace pva.SuperV.ModelTests
         private const string ClassName = "TestClass";
         private const string FieldName = "IntField";
 
-        [Fact]
-        public void GivenInvalidClassName_WhenCreatingClass_ThenInvalidClassNameExceptionIsThrown()
+        [Theory]
+        [InlineData("AS.0")]
+        [InlineData("0AS")]
+        [InlineData("AS-0")]
+        public void GivenInvalidClassName_WhenCreatingClass_ThenInvalidClassNameExceptionIsThrown(string invalidClassName)
         {
             // WHEN/THEN
-            Assert.Throws<InvalidClassNameException>(() => new Class("AZ.0"));
+            Assert.Throws<InvalidClassNameException>(() => new Class(invalidClassName));
         }
 
         [Fact]
@@ -41,7 +44,7 @@ namespace pva.SuperV.ModelTests
             Class clazz = project.AddClass(ClassName);
 
             // WHEN
-            clazz.AddField(new FieldDefinition<int>(FieldName, 10));
+            project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10));
 
             // THEN
             clazz.FieldDefinitions.Should().NotBeNull();
@@ -56,11 +59,11 @@ namespace pva.SuperV.ModelTests
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            Class clazz = project.AddClass(ClassName);
-            clazz.AddField(new FieldDefinition<int>(FieldName, 10));
+            _ = project.AddClass(ClassName);
+            project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10));
 
             // WHEN/THEN
-            Assert.Throws<FieldAlreadyExistException>(() => clazz.AddField(new FieldDefinition<int>(FieldName, 10)));
+            Assert.Throws<FieldAlreadyExistException>(() => project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10)));
         }
 
         [Fact]
@@ -69,10 +72,10 @@ namespace pva.SuperV.ModelTests
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
             Class clazz = project.AddClass(ClassName);
-            clazz.AddField(new FieldDefinition<int>(FieldName, 10));
+            project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10));
 
             // WHEN
-            clazz.RemoveField(FieldName);
+            project.RemoveField(ClassName, FieldName);
 
             // THEN
             clazz.FieldDefinitions.Should().BeEmpty();

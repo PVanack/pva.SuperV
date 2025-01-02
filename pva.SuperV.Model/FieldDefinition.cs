@@ -6,9 +6,7 @@ namespace pva.SuperV.Model
 {
     public partial class FieldDefinition<T> : IFieldDefinition
     {
-        private const string FieldNamePattern = "^([A-Z]|[a-z]|[0-9]|_)*$";
-
-        [GeneratedRegex(FieldNamePattern)]
+        [GeneratedRegex(Constants.IdentifierNamePattern)]
         private static partial Regex FieldNameRegex();
 
         private string? _name;
@@ -25,11 +23,13 @@ namespace pva.SuperV.Model
 
         public Type Type { get; set; }
 
+        public FieldFormatter? Formatter { get; set; }
+
         private static void ValidateName(string name)
         {
             if (!FieldNameRegex().IsMatch(name))
             {
-                throw new InvalidFieldNameException(name, FieldNamePattern);
+                throw new InvalidFieldNameException(name, Constants.IdentifierNamePattern);
             }
         }
 
@@ -51,7 +51,11 @@ namespace pva.SuperV.Model
 
         IFieldDefinition IFieldDefinition.Clone()
         {
-            return new FieldDefinition<T>(this.Name!, this.DefaultValue);
+            FieldDefinition<T> fieldDefinition = new(this.Name!, this.DefaultValue)
+            {
+                Formatter = this.Formatter
+            };
+            return fieldDefinition;
         }
     }
 }

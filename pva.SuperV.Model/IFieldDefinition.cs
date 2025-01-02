@@ -7,6 +7,7 @@ namespace pva.SuperV.Model
     {
         Type Type { get; set; }
         string? Name { get; set; }
+        FieldFormatter? Formatter { get; set; }
 
         String GetCode();
 

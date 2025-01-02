@@ -7,9 +7,7 @@ namespace pva.SuperV.Model
 {
     public partial class Class
     {
-        private const string ClassNamePattern = "^([A-Z]|[a-z]|[0-9]|_)*$";
-
-        [GeneratedRegex(ClassNamePattern)]
+        [GeneratedRegex(Constants.IdentifierNamePattern)]
         private static partial Regex ClassNameRegex();
 
         private string? _name;
@@ -41,17 +39,22 @@ namespace pva.SuperV.Model
         {
             if (!ClassNameRegex().IsMatch(name))
             {
-                throw new InvalidClassNameException(name, ClassNamePattern);
+                throw new InvalidClassNameException(name, Constants.IdentifierNamePattern);
             }
         }
 
-        public FieldDefinition<T> AddField<T>(FieldDefinition<T> field)
+        internal FieldDefinition<T> AddField<T>(FieldDefinition<T> field)
+        {
+            return AddField<T>(field, null);
+        }
+
+        internal FieldDefinition<T> AddField<T>(FieldDefinition<T> field, FieldFormatter? formatter)
         {
             if (FieldDefinitions.ContainsKey(field.Name!))
             {
                 throw new FieldAlreadyExistException(field.Name);
             }
-
+            field.Formatter = formatter;
             FieldDefinitions.Add(field.Name!, field);
             return field;
         }
@@ -65,7 +68,7 @@ namespace pva.SuperV.Model
             throw new UnknownFieldException(fieldName);
         }
 
-        public void RemoveField(string fieldName)
+        internal void RemoveField(string fieldName)
         {
             FieldDefinitions.Remove(fieldName);
         }

@@ -7,7 +7,15 @@ namespace pva.SuperV.Model
         [JsonIgnore]
         public Type Type => typeof(T);
 
+        public IFieldDefinition? FieldDefinition { get; set; }
+
         [JsonIgnore]
         public virtual T Value { get; set; } = value;
+
+        public override string? ToString()
+        {
+            return FieldDefinition?.Formatter?.ConvertToString(Value) ??
+                Value?.ToString();
+        }
     }
 }

@@ -4,10 +4,11 @@ namespace pva.SuperV.Model
 {
     public class Instance : IInstance
     {
-        public Dictionary<string, IField> Fields { get; set; } = [];
         public string Name { get; set; } = null!;
 
         public Class Class { get; set; } = null!;
+
+        public Dictionary<string, IField> Fields { get; set; } = [];
 
         public void Dispose()
         {

@@ -21,6 +21,7 @@ namespace pva.SuperV.Model
             this.Name = wipProject.Name;
             this.Version = wipProject.Version;
             this.Classes = new(wipProject.Classes);
+            this.FieldFormatters = new(wipProject.FieldFormatters);
             this._projectAssemblyLoader = new();
             this._projectAssemblyLoader.LoadFromAssemblyPath(GetAssemblyFileName());
             RecreateInstances(wipProject);
@@ -36,10 +37,16 @@ namespace pva.SuperV.Model
             string classFullName = $"{Name}.V{Version}.{clazz.Name}";
             dynamic? dynamicInstance = Activator.CreateInstanceFrom(GetAssemblyFileName(), classFullName)
                 ?.Unwrap();
-            if (dynamicInstance != null)
+            if (dynamicInstance is not null)
             {
                 dynamicInstance.Name = instanceName;
                 dynamicInstance.Class = clazz;
+                IInstance? instance = dynamicInstance as IInstance;
+                clazz.FieldDefinitions.ForEach((k, v) =>
+                {
+                    instance!.Fields.TryGetValue(k, out IField? field);
+                    field!.FieldDefinition = v;
+                });
                 Instances.Add(instanceName, dynamicInstance);
             }
             return dynamicInstance;

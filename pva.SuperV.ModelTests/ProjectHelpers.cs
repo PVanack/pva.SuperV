@@ -7,13 +7,18 @@ namespace pva.SuperV.ModelTests
         public const string ProjectName = "TestProject";
         public const string ClassName = "TestClass";
         public const string InstanceName = "Instance";
-        public const string FieldName = "IntField";
+        public const string IntFieldName = "IntField";
+        public const string IntFieldWithEnumName = "IntWithEnumField";
+        public const string EnumFormatterName = "ClosedOpened";
 
         public static RunnableProject CreateRunnableProject()
         {
             WipProject wipProject = Project.CreateProject(ProjectName);
-            Class clazz = wipProject.AddClass(ClassName);
-            clazz.AddField(new FieldDefinition<int>(FieldName, 10));
+            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            wipProject.AddFieldFormatter(formatter);
+            _ = wipProject.AddClass(ClassName);
+            wipProject.AddField(ClassName, new FieldDefinition<int>(IntFieldName, 10));
+            wipProject.AddField(ClassName, new FieldDefinition<int>(IntFieldWithEnumName, 1), EnumFormatterName);
             RunnableProject project = ProjectBuilder.Build(wipProject);
             wipProject.Dispose();
             return project;

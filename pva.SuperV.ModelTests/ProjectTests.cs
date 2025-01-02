@@ -9,11 +9,14 @@ namespace pva.SuperV.ModelTests
         private const string ProjectName = "TestProject";
         private const string ClassName = "TestClass";
 
-        [Fact]
-        public void GivenInvalidProjectName_WhenCreatingProject_ThenInvalidProjectNameExceptionIsThrown()
+        [Theory]
+        [InlineData("AS.0")]
+        [InlineData("0AS")]
+        [InlineData("AS-0")]
+        public void GivenInvalidProjectName_WhenCreatingProject_ThenInvalidProjectNameExceptionIsThrown(string invalidProjectName)
         {
             // WHEN/THEN
-            Assert.Throws<InvalidProjectNameException>(() => Project.CreateProject("AS.@"));
+            Assert.Throws<InvalidProjectNameException>(() => Project.CreateProject(invalidProjectName));
         }
 
         [Fact]
@@ -131,8 +134,8 @@ namespace pva.SuperV.ModelTests
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            Class clazz = project.AddClass(ClassName);
-            clazz.AddField(new FieldDefinition<int>("IntField", 10));
+            _ = project.AddClass(ClassName);
+            project.AddField(ClassName, new FieldDefinition<int>("IntField", 10));
 
             // WHEN
             string projectCode = project.GetCode();
@@ -160,6 +163,121 @@ public TestClass() {Fields.Add("IntField", IntField);
 
 """;
             projectCode.Should().BeEquivalentTo(expectedCode);
+        }
+
+        [Fact]
+        public void GivenProjectWithClassAndFormatter_WhenGettingFormatter_ThenFormatterIsReturned()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            project.AddFieldFormatter(formatter);
+
+            // WHEN
+            FieldFormatter foundFormatter = project.GetFormatter(ProjectHelpers.EnumFormatterName);
+
+            // THEN
+            foundFormatter.Should()
+                .NotBeNull().And
+                .Be(formatter);
+        }
+
+        [Fact]
+        public void GivenProjectWithClassAndFormatter_WhenGettingUnknownFormatter_ThenExceptionIsThrown()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            project.AddFieldFormatter(formatter);
+
+            // WHEN
+            Assert.Throws<UnknownFormatterException>(() => project.GetFormatter("UnknownFormatter"));
+        }
+
+        [Fact]
+        public void GivenProjectWithClassAndFormatter_WhenFindingFormatter_ThenFormatterIsReturned()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            project.AddFieldFormatter(formatter);
+
+            // WHEN
+            FieldFormatter? foundFormatter = project.FindFormatter(ProjectHelpers.EnumFormatterName);
+
+            // THEN
+            foundFormatter.Should()
+                .NotBeNull().And
+                .Be(formatter);
+        }
+
+        [Fact]
+        public void GivenProjectWithClassAndFormatter_WhenFindingUnknownFormatter_ThenNullIsReturned()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            project.AddFieldFormatter(formatter);
+
+            // WHEN
+            FieldFormatter? foundFormatter = project.FindFormatter("UnknownFormatter");
+
+            // THEN
+            foundFormatter.Should().BeNull();
+        }
+
+        [Fact]
+        public void GivenProjectWithClassAndFormatter_WhenAddingFieldWithFormatter_ThenFieldHasFormatter()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            project.AddFieldFormatter(formatter);
+            _ = project.AddClass(ClassName);
+
+            // WHEN
+            FieldDefinition<int> field = project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), ProjectHelpers.EnumFormatterName);
+
+            // THEN
+            field.Formatter.Should().Be(formatter);
+        }
+
+        [Fact]
+        public void GivenProjectWithClassAndFormatter_WhenAddingFieldWithFormatterWithWrongType_ThenExceptionIsThrown()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            project.AddFieldFormatter(formatter);
+            _ = project.AddClass(ClassName);
+
+            // WHEN/THEN
+            Assert.Throws<InvalidTypeForFormatterException>(() => project.AddField(ClassName, new FieldDefinition<double>("DoubleField", 10.0), ProjectHelpers.EnumFormatterName));
+        }
+
+        [Fact]
+        public void GivenProjectWithClassAndFormatter_WhenAddingFieldWithUnknownFormatter_ThenExceptionIsThrown()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            project.AddFieldFormatter(formatter);
+            _ = project.AddClass(ClassName);
+
+            // WHEN/THEN
+            Assert.Throws<UnknownFormatterException>(() => project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), "UnknownFormetter"));
+        }
+
+        [Fact]
+        public void GivenProjectWithClassAndFormatter_WhenAddingFormatterWithSameName_ThenExceptionIsThrown()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            project.AddFieldFormatter(formatter);
+
+            // WHEN/THEN
+            Assert.Throws<FormatterAlreadyExistException>(() => project.AddFieldFormatter(formatter));
         }
     }
 }
