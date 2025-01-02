@@ -2,6 +2,7 @@
 
 namespace pva.SuperV.Model.Exceptions
 {
+    /// <summary>Exception thrown when an error occurs while creating an instance.</summary>
     [ExcludeFromCodeCoverage]
     public class InstanceCreationException : Exception
     {

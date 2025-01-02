@@ -2,6 +2,7 @@
 
 namespace pva.SuperV.Model.Exceptions
 {
+    /// <summary>Exception thrown when name of a field formatter contains invalid character(s).</summary>
     [Serializable]
     public class InvalidFormatterNameException : Exception
     {

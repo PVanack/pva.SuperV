@@ -2,6 +2,7 @@
 
 namespace pva.SuperV.Model.Exceptions
 {
+    /// <summary>Exception thrown when an unknown field is referenced.</summary>
     [Serializable]
     public class UnknownFieldException : Exception
     {

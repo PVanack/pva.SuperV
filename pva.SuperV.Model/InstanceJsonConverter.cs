@@ -5,11 +5,36 @@ using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Model
 {
+    /// <summary>
+    /// Json converter for an instance.
+    /// </summary>
+    /// <seealso cref="System.Text.Json.Serialization.JsonConverter&lt;pva.SuperV.Model.IInstance&gt;" />
     public class InstanceJsonConverter : JsonConverter<IInstance>
     {
-        public static RunnableProject LoadedProject { get; set; } = null!;
+        /// <summary>
+        /// The field converters
+        /// </summary>
         private static readonly Dictionary<Type, dynamic> fieldConverters = [];
 
+        /// <summary>
+        /// Gets or sets the loaded project. Set before deserializing.
+        /// </summary>
+        /// <value>
+        /// The loaded project.
+        /// </value>
+        public static RunnableProject LoadedProject { get; set; } = null!;
+
+        /// <summary>
+        /// Reads and converts the JSON to type <typeparamref name="T" />.
+        /// </summary>
+        /// <param name="reader">The reader.</param>
+        /// <param name="typeToConvert">The type to convert.</param>
+        /// <param name="options">An object that specifies serialization options to use.</param>
+        /// <returns>
+        /// The converted value.
+        /// </returns>
+        /// <exception cref="System.Text.Json.JsonException"></exception>
+        /// <exception cref="pva.SuperV.Model.Exceptions.InstanceCreationException"></exception>
         public override IInstance? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject)
@@ -78,6 +103,12 @@ namespace pva.SuperV.Model
             }
         }
 
+        /// <summary>
+        /// Writes a specified value as JSON.
+        /// </summary>
+        /// <param name="writer">The writer to write to.</param>
+        /// <param name="value">The value to convert to JSON.</param>
+        /// <param name="options">An object that specifies serialization options to use.</param>
         public override void Write(Utf8JsonWriter writer, IInstance value, JsonSerializerOptions options)
         {
             Instance instance = (Instance)value;

@@ -2,6 +2,7 @@
 
 namespace pva.SuperV.Model.Exceptions
 {
+    /// <summary>Exception thrown when type requested doesn't match actual field type.</summary>
     [Serializable]
     public class WrongFieldTypeException : Exception
     {

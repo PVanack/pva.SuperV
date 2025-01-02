@@ -2,10 +2,11 @@
 
 namespace pva.SuperV.Model.Exceptions
 {
+    /// <summary>Exception thrown when a field formatter with same name already exists in a project.</summary>
     [Serializable]
     public class FormatterAlreadyExistException : Exception
     {
-        public FormatterAlreadyExistException(string? enumName) : base($"Enum {enumName} already exists")
+        public FormatterAlreadyExistException(string? formatterName) : base($"Field formatter {formatterName} already exists")
         {
         }
 

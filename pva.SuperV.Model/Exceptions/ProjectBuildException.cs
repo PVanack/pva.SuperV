@@ -1,8 +1,9 @@
 ﻿using pva.SuperV.Model;
 using System.Diagnostics.CodeAnalysis;
 
-namespace pva.SuperV.Builder.Exceptions
+namespace pva.SuperV.Model.Exceptions
 {
+    /// <summary>Exception thrown when an error occurs while building a project.</summary>
     [Serializable]
     [ExcludeFromCodeCoverage(Justification = "Impossible to create a Roslyn compilation error by unit test.")]
     public class ProjectBuildException : Exception

@@ -2,6 +2,7 @@
 
 namespace pva.SuperV.Model.Exceptions
 {
+    /// <summary>Exception thrown when a field with same name already exists in a class.</summary>
     [Serializable]
     public class FieldAlreadyExistException : Exception
     {
