@@ -2,6 +2,7 @@
 
 namespace pva.SuperV.Model.Exceptions
 {
+    /// <summary>Exception thrown when an instance with same name already exists in a project.</summary>
     [Serializable]
     public class InstanceAlreadyExistException : Exception
     {

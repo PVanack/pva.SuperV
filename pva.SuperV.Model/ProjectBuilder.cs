@@ -1,13 +1,22 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using pva.Helpers.Extensions;
-using pva.SuperV.Builder.Exceptions;
+using pva.SuperV.Model.Exceptions;
 using System.Text;
 
 namespace pva.SuperV.Model
 {
+    /// <summary>
+    /// Class for building a <see cref="WipProject"/> and convert it to a <see cref="RunnableProject"/> by generating an assembly and creating instances.
+    /// </summary>
     public static class ProjectBuilder
     {
+        /// <summary>
+        /// Builds the specified <see cref="WipProject"/>.
+        /// </summary>
+        /// <param name="project">The WIP project.</param>
+        /// <returns>a <see cref="RunnableProject"/></returns>
+        /// <exception cref="pva.SuperV.Model.Exceptions.ProjectBuildException"></exception>
         public static RunnableProject Build(WipProject project)
         {
             string projectAssemblyFileName = project.GetAssemblyFileName();
@@ -38,6 +47,12 @@ namespace pva.SuperV.Model
             return project.CloneAsRunnable();
         }
 
+        /// <summary>
+        /// Creates a <see cref="CSharpCompilation"/> to generate an assembly for the project.
+        /// </summary>
+        /// <param name="tree">The tree.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>A <see cref="CSharpCompilation"/></returns>
         private static CSharpCompilation CreateCompilation(SyntaxTree tree, string name)
         {
             var assemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location);

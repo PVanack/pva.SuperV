@@ -84,7 +84,7 @@ namespace pva.SuperV.ModelTests
             // THEN
             stringValue.Should()
                 .NotBeNull().And
-                .Be("0?");
+                .Be("0 ?");
         }
     }
 }

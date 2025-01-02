@@ -4,6 +4,7 @@ using pva.SuperV.Model;
 
 namespace pva.SuperV.Benchmarks
 {
+    /// <summary>Benchmark on project creation with different number of classes and fields.</summary>
     [SimpleJob(launchCount: 1, warmupCount: 1, iterationCount: 1)]
     public class ProjectCreationBenchmark
     {
@@ -30,6 +31,7 @@ namespace pva.SuperV.Benchmarks
         }
     }
 
+    /// <summary>Benchmark on instances creation.</summary>
     [SimpleJob(RunStrategy.Throughput)]
     public class InstanceCreation
     {

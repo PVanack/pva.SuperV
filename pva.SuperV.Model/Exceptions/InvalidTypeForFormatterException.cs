@@ -2,6 +2,7 @@
 
 namespace pva.SuperV.Model.Exceptions
 {
+    /// <summary>Exception thrown when field on which a formatter is applied is not one of the allowed types of formatter.</summary>
     [Serializable]
     public class InvalidTypeForFormatterException : Exception
     {

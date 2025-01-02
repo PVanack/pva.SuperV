@@ -5,17 +5,29 @@ using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Model
 {
+    /// <summary>Dynamic class of a <see cref="Project"/>. It contains dynamic fields on which processing can be defined.</summary>
     public partial class Class
     {
+        /// <summary>Regex for validating class name.</summary>
         [GeneratedRegex(Constants.IdentifierNamePattern)]
         private static partial Regex ClassNameRegex();
 
+        /// <summary>
+        /// Name of class. Access done through <see cref="Name"./>
+        /// </summary>
         private string? _name;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Class"/> class. Used by JSON deserialization.
+        /// </summary>
         public Class()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Class"/> class.
+        /// </summary>
+        /// <param name="className">Name of the class.</param>
         public Class(string className)
         {
             this.Name = className;
@@ -35,6 +47,11 @@ namespace pva.SuperV.Model
         /// <summary>Gets the fields defining the class.</summary>
         public Dictionary<string, IFieldDefinition> FieldDefinitions { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
+        /// <summary>
+        /// Validates the name of the class.
+        /// </summary>
+        /// <param name="name">The name to be validated.</param>
+        /// <exception cref="pva.SuperV.Model.Exceptions.InvalidClassNameException"></exception>
         private static void ValidateName(string name)
         {
             if (!ClassNameRegex().IsMatch(name))
@@ -43,11 +60,25 @@ namespace pva.SuperV.Model
             }
         }
 
+        /// <summary>
+        /// Adds a field definition to the class.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field">The field.</param>
+        /// <returns>The field once it has been added.</returns>
         internal FieldDefinition<T> AddField<T>(FieldDefinition<T> field)
         {
             return AddField<T>(field, null);
         }
 
+        /// <summary>
+        /// Adds a field with a field formatter.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="field">The <see cref="FieldDefinition{T}" to be added.</param>
+        /// <param name="formatter">The formatter to be used when using ToString()."/>.</param>
+        /// <returns></returns>
+        /// <exception cref="pva.SuperV.Model.Exceptions.FieldAlreadyExistException"></exception>
         internal FieldDefinition<T> AddField<T>(FieldDefinition<T> field, FieldFormatter? formatter)
         {
             if (FieldDefinitions.ContainsKey(field.Name!))
@@ -59,6 +90,13 @@ namespace pva.SuperV.Model
             return field;
         }
 
+        /// <summary>
+        /// Gets a field of a specific type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="fieldName">Name of the field to be retrieved.</param>
+        /// <returns>The field</returns>
+        /// <exception cref="pva.SuperV.Model.Exceptions.UnknownFieldException"></exception>
         public FieldDefinition<T>? GetField<T>(string fieldName)
         {
             if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
@@ -68,12 +106,20 @@ namespace pva.SuperV.Model
             throw new UnknownFieldException(fieldName);
         }
 
+        /// <summary>
+        /// Removes a field.
+        /// </summary>
+        /// <param name="fieldName">Name of the field to be removed.</param>
         internal void RemoveField(string fieldName)
         {
             FieldDefinitions.Remove(fieldName);
         }
 
-        public string GetCode()
+        /// <summary>
+        /// Gets the C# code for the class.
+        /// </summary>
+        /// <returns>C# code of class</returns>
+        internal string GetCode()
         {
             StringBuilder codeBuilder = new();
             StringBuilder ctorBuilder = new($"public {Name}() {{");
@@ -90,6 +136,10 @@ namespace pva.SuperV.Model
             return codeBuilder.ToString();
         }
 
+        /// <summary>
+        /// Clones this instance.
+        /// </summary>
+        /// <returns>A new <see cref="Class"/> clone of class instance.</returns>
         internal Class Clone()
         {
             var clazz = new Class(this.Name!)

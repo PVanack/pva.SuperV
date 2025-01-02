@@ -2,6 +2,7 @@
 
 namespace pva.SuperV.Model.Exceptions
 {
+    /// <summary>Exception thrown when name of a class contains invalid character(s).</summary>
     [Serializable]
     public class InvalidClassNameException : Exception
     {

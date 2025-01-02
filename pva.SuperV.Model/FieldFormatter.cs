@@ -4,11 +4,17 @@ using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Model
 {
+    /// <summary>
+    /// Base class for <see cref="Field{T}"/> formatting. If adding new formatters, they need to be added as JsonDerivedType annotation.
+    /// </summary>
     [JsonDerivedType(typeof(EnumFormatter), typeDiscriminator: "Enum")]
     public abstract partial class FieldFormatter
     {
+        /// <summary>
+        /// Regex for validating the field formatter's name.
+        /// </summary>
         [GeneratedRegex(Constants.IdentifierNamePattern)]
-        private static partial Regex EnumNameRegex();
+        private static partial Regex FieldFormatterNameRegex();
 
         private string? _name;
 
@@ -38,7 +44,7 @@ namespace pva.SuperV.Model
 
         private static void ValidateName(string name)
         {
-            if (!EnumNameRegex().IsMatch(name))
+            if (!FieldFormatterNameRegex().IsMatch(name))
             {
                 throw new InvalidFormatterNameException(name, Constants.IdentifierNamePattern);
             }

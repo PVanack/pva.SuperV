@@ -2,6 +2,7 @@
 
 namespace pva.SuperV.Benchmarks
 {
+    /// <summary>Benchmark on Enumerable extensions.</summary>
     [SimpleJob(launchCount: 1, warmupCount: 10, iterationCount: 10)]
     public class ListExtensionsBenchmarks
     {
