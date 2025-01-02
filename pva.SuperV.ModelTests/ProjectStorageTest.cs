@@ -51,6 +51,7 @@ namespace pva.SuperV.ModelTests
             loadedInstance.Fields.Count.Should().Be(2);
             Field<int>? loadedField = loadedInstance.GetField<int>(ProjectHelpers.IntFieldName);
             loadedField!.Value.Should().Be(intField.Value);
+            loadedField!.Value.ToString().Should().Be(intField.Value.ToString());
 
             instance.Dispose();
             ProjectHelpers.DeleteProject(project);
