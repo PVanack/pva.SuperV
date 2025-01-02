@@ -35,7 +35,8 @@ namespace pva.SuperV.Model
         {
             using StreamWriter outputFile = new(filename);
             Dictionary<string, IInstance> instances = new(project.Instances.Count);
-            project.Instances.ForEach((k, v) => {
+            project.Instances.ForEach((k, v) =>
+            {
                 var instance = v! as IInstance;
                 instances.Add(k, instance!);
             });

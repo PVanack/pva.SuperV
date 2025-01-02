@@ -8,14 +8,13 @@ namespace pva.SuperV.Model
     /// </summary>
     public abstract partial class Project : IDisposable
     {
-        private const string ProjectNamePattern = "^([A-Z]|[a-z]|[0-9])*$";
-
-        [GeneratedRegex(ProjectNamePattern)]
+        [GeneratedRegex(Constants.IdentifierNamePattern)]
         private static partial Regex ProjectNameRegex();
 
         public static string ProjectsPath { get; } = Path.Combine(Path.GetTempPath(), "pva.SuperV");
         public static Project? CurrentProject { get; set; }
         public Dictionary<string, Class> Classes { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, FieldFormatter> FieldFormatters { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
         private string? _name;
 
@@ -54,8 +53,18 @@ namespace pva.SuperV.Model
         {
             if (!ProjectNameRegex().IsMatch(name))
             {
-                throw new InvalidProjectNameException(name, ProjectNamePattern);
+                throw new InvalidProjectNameException(name, Constants.IdentifierNamePattern);
             }
+        }
+
+        public Class GetClass(string className)
+        {
+            if (Classes.TryGetValue(className, out Class? value))
+            {
+                return value;
+            }
+
+            throw new UnknownClassException(className);
         }
 
         public Class? FindClass(string className)
@@ -67,6 +76,25 @@ namespace pva.SuperV.Model
             catch { return null; }
         }
 
+        public FieldFormatter GetFormatter(string formatterName)
+        {
+            if (FieldFormatters.TryGetValue(formatterName, out FieldFormatter? value))
+            {
+                return value;
+            }
+
+            throw new UnknownFormatterException(formatterName);
+        }
+
+        public FieldFormatter? FindFormatter(string formatterName)
+        {
+            try
+            {
+                return GetFormatter(formatterName);
+            }
+            catch { return null; }
+        }
+
         public string GetAssemblyFileName()
         {
             if (!Directory.Exists(ProjectsPath))
@@ -74,16 +102,6 @@ namespace pva.SuperV.Model
                 Directory.CreateDirectory(ProjectsPath);
             }
             return Path.Combine(ProjectsPath, $"{Name}-V{Version}.dll");
-        }
-
-        public Class GetClass(string className)
-        {
-            if (Classes.TryGetValue(className, out Class? value))
-            {
-                return value;
-            }
-
-            throw new UnknownClassException(className);
         }
 
         protected static int GetProjectHighestVersion(string projectName)

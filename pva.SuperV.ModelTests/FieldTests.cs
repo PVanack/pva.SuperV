@@ -5,11 +5,14 @@ namespace pva.SuperV.ModelTests
 {
     public class FieldTests
     {
-        [Fact]
-        public void GivenInvalidFieldName_WhenCreatingField_ThenInvalidFieldNameExceptionIsThrown()
+        [Theory]
+        [InlineData("AS.0")]
+        [InlineData("0AS")]
+        [InlineData("AS-0")]
+        public void GivenInvalidFieldName_WhenCreatingField_ThenInvalidFieldNameExceptionIsThrown(string invalidFieldName)
         {
             // WHEN/THEN
-            Assert.Throws<InvalidFieldNameException>(() => new FieldDefinition<int>("AZ.0", 10));
+            Assert.Throws<InvalidFieldNameException>(() => new FieldDefinition<int>(invalidFieldName, 10));
         }
     }
 }

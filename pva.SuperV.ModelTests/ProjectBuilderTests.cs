@@ -21,6 +21,8 @@ namespace pva.SuperV.ModelTests
             Assert.NotNull(instance);
             Assert.Equal(ProjectHelpers.InstanceName, instance!.Name!);
             Assert.Equal(10, instance.IntField.Value);
+            Assert.Equal(1, instance.IntWithEnumField.Value);
+            Assert.Equal("Opened", instance.IntWithEnumField.ToString());
             Assert.Equal(instance, retrievedInstance);
 
             instance.Dispose();
@@ -115,7 +117,7 @@ namespace pva.SuperV.ModelTests
             // GIVEN
             RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
             Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
-            Field<int>? intField = instance?.GetField<int>(ProjectHelpers.FieldName);
+            Field<int>? intField = instance?.GetField<int>(ProjectHelpers.IntFieldName);
             intField!.Value = 1234;
             WipProject wipProject = Project.CreateProject(runnableProject);
 
@@ -127,7 +129,7 @@ namespace pva.SuperV.ModelTests
             instance = runnableProject.GetInstance(ProjectHelpers.InstanceName);
             instance.Should().NotBeNull();
             instance.Class.Name.Should().Be(ProjectHelpers.ClassName);
-            intField = instance.GetField<int>(ProjectHelpers.FieldName);
+            intField = instance.GetField<int>(ProjectHelpers.IntFieldName);
             intField!.Value.Should().Be(1234);
 
             instance?.Dispose();
@@ -142,7 +144,7 @@ namespace pva.SuperV.ModelTests
             Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
 
             // WHEN
-            Field<int>? field = instance?.GetField<int>(ProjectHelpers.FieldName);
+            Field<int>? field = instance?.GetField<int>(ProjectHelpers.IntFieldName);
 
             // THEN
             field.Should().NotBeNull();
@@ -173,7 +175,7 @@ namespace pva.SuperV.ModelTests
             Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
 
             // WHEN/THEN
-            Assert.Throws<WrongFieldTypeException>(() => instance!.GetField<double>(ProjectHelpers.FieldName));
+            Assert.Throws<WrongFieldTypeException>(() => instance!.GetField<double>(ProjectHelpers.IntFieldName));
 
             instance?.Dispose();
             ProjectHelpers.DeleteProject(runnableProject);

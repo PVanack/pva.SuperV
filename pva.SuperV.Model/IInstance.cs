@@ -7,5 +7,6 @@ namespace pva.SuperV.Model
     {
         public String Name { get; set; }
         public Class Class { get; set; }
+        public Dictionary<string, IField> Fields { get; set; }
     }
 }

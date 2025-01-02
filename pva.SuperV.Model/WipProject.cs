@@ -22,11 +22,11 @@ namespace pva.SuperV.Model
             this.Classes = new(runnableProject.Classes.Count);
             runnableProject.Classes
                 .ForEach((k, v) => this.Classes.Add(k, v.Clone()));
+            this.FieldFormatters = new(runnableProject.FieldFormatters);
             this.ToLoadInstances = new(runnableProject.Instances, StringComparer.OrdinalIgnoreCase);
         }
 
         public Class AddClass(string className)
-
         {
             if (Classes.ContainsKey(className))
             {
@@ -48,6 +48,41 @@ namespace pva.SuperV.Model
                     .ToList()
                     .ForEach(instance => ToLoadInstances.Remove(instance.Name));
             }
+        }
+
+        public FieldDefinition<T> AddField<T>(string className, FieldDefinition<T> field)
+        {
+            Class? clazz = GetClass(className);
+            return clazz!.AddField<T>(field);
+        }
+
+        public FieldDefinition<T> AddField<T>(string className, FieldDefinition<T> field, string formatterName)
+        {
+            Class? clazz = GetClass(className);
+            FieldFormatter? formatter = GetFormatter(formatterName);
+            formatter.ValidateAllowedType(typeof(T));
+            return clazz!.AddField<T>(field, formatter);
+        }
+
+        public void RemoveField(string className, string fieldName)
+        {
+            Class? clazz = GetClass(className);
+            clazz!.RemoveField(fieldName);
+        }
+
+        public void AddFieldFormatter(FieldFormatter fieldFormatter)
+        {
+            if (FieldFormatters.ContainsKey(fieldFormatter.Name!))
+            {
+                throw new FormatterAlreadyExistException(fieldFormatter.Name);
+            }
+
+            FieldFormatters.Add(fieldFormatter.Name!, fieldFormatter);
+        }
+
+        public void RemoveFormatEnum(string enumName)
+        {
+            FieldFormatters.Remove(enumName);
         }
 
         public string GetCode()

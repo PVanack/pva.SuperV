@@ -22,8 +22,9 @@ namespace pva.SuperV.ModelTests
             // THEN
             CheckProjectProperties(project, loadedProject!);
             CheckProjectClasses(project, loadedProject!);
+            CheckProjectFieldFormatters(project, loadedProject!);
 
-            instance?.Dispose();
+            instance!.Dispose();
             ProjectHelpers.DeleteProject(project);
         }
 
@@ -35,7 +36,7 @@ namespace pva.SuperV.ModelTests
             // WHEN
             RunnableProject project = ProjectHelpers.CreateRunnableProject();
             var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
-            Field<int>? intField = instance?.GetField<int>(ProjectHelpers.FieldName);
+            Field<int> intField = instance!.GetField<int>(ProjectHelpers.IntFieldName);
             string filename = ProjectStorage.SaveProjectInstances(project);
             project.Instances.Clear();
 
@@ -45,14 +46,22 @@ namespace pva.SuperV.ModelTests
             project.Instances.Count.Should().Be(1);
             var loadedInstance = project.GetInstance(ProjectHelpers.InstanceName);
             loadedInstance.Should().NotBeSameAs(instance);
-            loadedInstance.Name.Should().Be(instance?.Name);
-            loadedInstance.Class.Name.Should().Be(instance?.Class.Name);
-            loadedInstance.Fields.Count.Should().Be(1);
-            Field<int>? loadedField = loadedInstance.GetField<int>(ProjectHelpers.FieldName);
-            loadedField!.Value.Should().Be(intField!.Value);
+            loadedInstance.Name.Should().Be(instance.Name);
+            loadedInstance.Class.Name.Should().Be(instance.Class.Name);
+            loadedInstance.Fields.Count.Should().Be(2);
+            Field<int>? loadedField = loadedInstance.GetField<int>(ProjectHelpers.IntFieldName);
+            loadedField!.Value.Should().Be(intField.Value);
 
-            instance?.Dispose();
+            instance.Dispose();
             ProjectHelpers.DeleteProject(project);
+        }
+
+        private static void CheckProjectProperties(RunnableProject project, RunnableProject loadedProject)
+        {
+            loadedProject.Should().NotBeNull();
+            loadedProject.Name.Should().Be(project.Name);
+            loadedProject.Description.Should().Be(project.Description);
+            loadedProject.Classes.Count.Should().Be(project.Classes.Count);
         }
 
         private static void CheckProjectClasses(RunnableProject project, RunnableProject loadedProject)
@@ -77,16 +86,22 @@ namespace pva.SuperV.ModelTests
                 dynamic savedFieldDefinition = v;
                 Assert.True(loadedFieldDefinition!.Name.Equals(savedFieldDefinition.Name));
                 Assert.True(loadedFieldDefinition!.Type.Equals(savedFieldDefinition.Type));
+                FieldFormatter? loadedFieldFormatter = loadedFieldDefinition!.Formatter;
+                FieldFormatter? savedFieldFormatter = savedFieldDefinition!.Formatter;
+                loadedFieldFormatter?.Should().BeEquivalentTo(savedFieldFormatter);
                 Assert.True(loadedFieldDefinition!.DefaultValue.Equals(savedFieldDefinition.DefaultValue));
             });
         }
 
-        private static void CheckProjectProperties(RunnableProject project, RunnableProject loadedProject)
+        private static void CheckProjectFieldFormatters(RunnableProject project, RunnableProject loadedProject)
         {
-            loadedProject.Should().NotBeNull();
-            loadedProject.Name.Should().Be(project.Name);
-            loadedProject.Description.Should().Be(project.Description);
-            loadedProject.Classes.Count.Should().Be(project.Classes.Count);
+            project.FieldFormatters
+                .ForEach((k, v) =>
+                {
+                    loadedProject.FieldFormatters.Should().ContainKey(k);
+                    FieldFormatter? loadedFieldFormatter = loadedProject.FieldFormatters.GetValueOrDefault(k);
+                    loadedFieldFormatter!.Should().BeEquivalentTo(v);
+                });
         }
     }
 }
