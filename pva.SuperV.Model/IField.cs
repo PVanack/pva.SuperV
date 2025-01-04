@@ -1,7 +1,7 @@
 ﻿namespace pva.SuperV.Model
 {
     /// <summary>
-    /// Field interface used in order to store <see cref="Field{T}" in list of <see cref="Instance"/>/>
+    /// Used to store <see cref="Field{T}"/> in fields dictonnary of <see cref="Instance"/>
     /// </summary>
     public interface IField
     {

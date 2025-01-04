@@ -1,9 +1,10 @@
-﻿using System.Text.Json.Serialization;
+﻿using pva.SuperV.Model.Exceptions;
+using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Model
 {
     /// <summary>
-    /// Base class of <see cref="Instance"/> to store dynamically generated instances in dictionnaries.
+    /// Used to store dynamically generated <see cref="Instance"/> in dictionnaries.
     /// </summary>
     /// <seealso cref="System.IDisposable" />
     [JsonConverter(typeof(InstanceJsonConverter))]
@@ -30,5 +31,22 @@ namespace pva.SuperV.Model
         /// The fields.
         /// </value>
         public Dictionary<string, IField> Fields { get; set; }
+
+        /// <summary>
+        /// Gets a field of the instance.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="fieldName">Name of the field.</param>
+        /// <returns>The field.</returns>
+        /// <exception cref="pva.SuperV.Model.Exceptions.WrongFieldTypeException"></exception>
+        Field<T>? GetField<T>(string fieldName);
+
+        /// <summary>
+        /// Gets a field of the instance.
+        /// </summary>
+        /// <param name="fieldName">Name of the field.</param>
+        /// <returns>The field.</returns>
+        /// <exception cref="pva.SuperV.Model.Exceptions.UnknownFieldException"></exception>
+        IField GetField(string fieldName);
     }
 }
