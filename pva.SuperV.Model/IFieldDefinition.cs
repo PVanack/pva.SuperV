@@ -3,7 +3,7 @@
 namespace pva.SuperV.Model
 {
     /// <summary>
-    /// Field definition base class to store those if list/dictionnaries.
+    /// Field definition base interface to store <see cref="FieldDefinition{T}"/> in list/dictionnaries.
     /// </summary>
     [JsonConverter(typeof(FieldDefinitionJsonConverter))]
     public interface IFieldDefinition

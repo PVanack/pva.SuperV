@@ -101,7 +101,11 @@ namespace pva.SuperV.Model
         {
             if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
             {
-                return fieldDefinition as FieldDefinition<T>;
+                if (fieldDefinition.Type == typeof(T))
+                {
+                    return fieldDefinition as FieldDefinition<T>;
+                }
+                throw new WrongFieldTypeException(fieldName, typeof(T), fieldDefinition.Type);
             }
             throw new UnknownFieldException(fieldName);
         }
@@ -142,10 +146,7 @@ namespace pva.SuperV.Model
         /// <returns>A new <see cref="Class"/> clone of class instance.</returns>
         internal Class Clone()
         {
-            var clazz = new Class(this.Name!)
-            {
-                FieldDefinitions = new(this.FieldDefinitions.Count)
-            };
+            var clazz = new Class(this.Name!);
             FieldDefinitions
                 .ForEach((k, v) => clazz.FieldDefinitions.Add(k, v.Clone()));
             return clazz;

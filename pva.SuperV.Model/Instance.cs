@@ -51,11 +51,11 @@ namespace pva.SuperV.Model
         }
 
         /// <summary>
-        /// Gets the field.
+        /// Gets a field of the instance.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="fieldName">Name of the field.</param>
-        /// <returns></returns>
+        /// <returns>The field.</returns>
         /// <exception cref="pva.SuperV.Model.Exceptions.WrongFieldTypeException"></exception>
         public Field<T>? GetField<T>(string fieldName)
         {
@@ -68,10 +68,10 @@ namespace pva.SuperV.Model
         }
 
         /// <summary>
-        /// Gets the field.
+        /// Gets a field of the instance.
         /// </summary>
         /// <param name="fieldName">Name of the field.</param>
-        /// <returns></returns>
+        /// <returns>The field.</returns>
         /// <exception cref="pva.SuperV.Model.Exceptions.UnknownFieldException"></exception>
         public IField GetField(string fieldName)
         {

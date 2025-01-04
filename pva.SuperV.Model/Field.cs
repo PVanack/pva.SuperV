@@ -26,6 +26,8 @@ namespace pva.SuperV.Model
         /// </value>
         public IFieldDefinition? FieldDefinition { get; set; }
 
+        private T _value = value;
+
         /// <summary>
         /// Gets or sets the value of the field.
         /// </summary>
@@ -33,7 +35,14 @@ namespace pva.SuperV.Model
         /// The value.
         /// </value>
         [JsonIgnore]
-        public virtual T Value { get; set; } = value;
+        public virtual T Value
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+            }
+        }
 
         /// <summary>
         /// Converts field's value to string. If a field formatter is defined in field definition, it's used.
