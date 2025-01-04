@@ -42,7 +42,16 @@ namespace pva.SuperV.Engine
         public static T? LoadProjectDefinition<T>(string filename) where T : Project
         {
             string json = File.ReadAllText(filename);
-            return JsonSerializer.Deserialize<T>(json);
+            T? projectInstance = JsonSerializer.Deserialize<T>(json);
+            projectInstance!.Classes.Values.ForEach(clazz =>
+            {
+                clazz.FieldDefinitions.Values.ForEach(field =>
+                {
+                    field.ValuePostChangeProcessings.ForEach(postProcessing =>
+                        postProcessing.BuildAfterDeserialization(clazz));
+                });
+            });
+            return projectInstance;
         }
 
         /// <summary>

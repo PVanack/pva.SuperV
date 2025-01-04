@@ -19,6 +19,15 @@ namespace pva.SuperV.Engine
         public Type Type => typeof(T);
 
         /// <summary>
+        /// Gets or sets the instance to which the field belongs.
+        /// </summary>
+        /// <value>
+        /// The instance.
+        /// </value>
+        [JsonIgnore]
+        public Instance? Instance { get; set; }
+
+        /// <summary>
         /// Gets or sets the field definition associated with field.
         /// </summary>
         /// <value>
@@ -40,7 +49,14 @@ namespace pva.SuperV.Engine
             get => _value;
             set
             {
+                T previousValue = _value;
                 _value = value;
+                FieldDefinition?.ValuePostChangeProcessings.ForEach(
+                    processing =>
+                        {
+                            FieldValueProcessing<T>? fieldValueProcessing = processing as FieldValueProcessing<T>;
+                            fieldValueProcessing!.ProcessValue(Instance!, this, !previousValue!.Equals(value), previousValue, value);
+                        });
             }
         }
 

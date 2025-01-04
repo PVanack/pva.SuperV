@@ -11,18 +11,18 @@ namespace pva.SuperV.EngineTests
         public void GivenProjectWithClassAndField_WhenBuildingAndCreatingClassInstance_ThenInstanceIsCreated()
         {
             // GIVEN
+            RunnableProject project = ProjectHelpers.CreateRunnableProject();
 
             // WHEN
-            RunnableProject project = ProjectHelpers.CreateRunnableProject();
             var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
             var retrievedInstance = project.GetInstance(ProjectHelpers.InstanceName);
 
             // THEN
             Assert.NotNull(instance);
             Assert.Equal(ProjectHelpers.InstanceName, instance!.Name!);
-            Assert.Equal(10, instance.IntField.Value);
-            Assert.Equal(1, instance.IntWithEnumField.Value);
-            Assert.Equal("Opened", instance.IntWithEnumField.ToString());
+            Assert.Equal(10, instance.Value.Value);
+            Assert.Equal(1, instance.AlarmState.Value);
+            Assert.Equal("High", instance.AlarmState.ToString());
             Assert.Equal(instance, retrievedInstance);
 
             instance.Dispose();
@@ -117,7 +117,7 @@ namespace pva.SuperV.EngineTests
             // GIVEN
             RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
             Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
-            Field<int>? intField = instance?.GetField<int>(ProjectHelpers.IntFieldName);
+            Field<int>? intField = instance?.GetField<int>(ProjectHelpers.ValueFieldName);
             intField!.Value = 1234;
             WipProject wipProject = Project.CreateProject(runnableProject);
 
@@ -129,7 +129,7 @@ namespace pva.SuperV.EngineTests
             instance = runnableProject.GetInstance(ProjectHelpers.InstanceName);
             instance.Should().NotBeNull();
             instance.Class.Name.Should().Be(ProjectHelpers.ClassName);
-            intField = instance.GetField<int>(ProjectHelpers.IntFieldName);
+            intField = instance.GetField<int>(ProjectHelpers.ValueFieldName);
             intField!.Value.Should().Be(1234);
 
             instance?.Dispose();
@@ -144,7 +144,7 @@ namespace pva.SuperV.EngineTests
             Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
 
             // WHEN
-            Field<int>? field = instance?.GetField<int>(ProjectHelpers.IntFieldName);
+            Field<int>? field = instance?.GetField<int>(ProjectHelpers.ValueFieldName);
 
             // THEN
             field.Should().NotBeNull();
@@ -175,7 +175,25 @@ namespace pva.SuperV.EngineTests
             Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
 
             // WHEN/THEN
-            Assert.Throws<WrongFieldTypeException>(() => instance!.GetField<double>(ProjectHelpers.IntFieldName));
+            Assert.Throws<WrongFieldTypeException>(() => instance!.GetField<double>(ProjectHelpers.ValueFieldName));
+
+            instance?.Dispose();
+            ProjectHelpers.DeleteProject(runnableProject);
+        }
+
+        [Fact]
+        public void GivenProjectWithClassInstance_WhenSettingFieldValue_ThenValueChangeProcessingIsPerformed()
+        {
+            // GIVEN
+            RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
+            dynamic? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+
+            // WHEN
+            instance!.Value.Value = 50;
+            instance!.Value.Value = 110;
+
+            // THEN
+            Assert.True(instance.AlarmState.Value == 2);
 
             instance?.Dispose();
             ProjectHelpers.DeleteProject(runnableProject);

@@ -7,18 +7,35 @@ namespace pva.SuperV.EngineTests
         public const string ProjectName = "TestProject";
         public const string ClassName = "TestClass";
         public const string InstanceName = "Instance";
-        public const string IntFieldName = "IntField";
-        public const string IntFieldWithEnumName = "IntWithEnumField";
-        public const string EnumFormatterName = "ClosedOpened";
+        public const string ValueFieldName = "Value";
+        public const string AlarmStateFieldName = "AlarmState";
+        public const string AlarmStatesFormatterName = "AlarmStates";
+        private const string HighHighLimitFieldName = "HighHighLimit";
+        private const string HighLimitFieldName = "HighLimit";
+        private const string LowLimitFieldName = "LowLimit";
+        private const string LowLowLimitFieldName = "LowLowlimit";
 
         public static RunnableProject CreateRunnableProject()
         {
             WipProject wipProject = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, new Dictionary<int, string>{
+                { -2, "LowLow" },
+                { -1, "Low" },
+                { 0, "OK" },
+                { 1, "High" },
+                { 2, "HighHigh" }
+            });
             wipProject.AddFieldFormatter(formatter);
-            _ = wipProject.AddClass(ClassName);
-            wipProject.AddField(ClassName, new FieldDefinition<int>(IntFieldName, 10));
-            wipProject.AddField(ClassName, new FieldDefinition<int>(IntFieldWithEnumName, 1), EnumFormatterName);
+            Class clazz = wipProject.AddClass(ClassName);
+            wipProject.AddField(ClassName, new FieldDefinition<int>(ValueFieldName, 10));
+            wipProject.AddField(ClassName, new FieldDefinition<int>(HighHighLimitFieldName, 100));
+            wipProject.AddField(ClassName, new FieldDefinition<int>(HighLimitFieldName, 90));
+            wipProject.AddField(ClassName, new FieldDefinition<int>(LowLimitFieldName, 10));
+            wipProject.AddField(ClassName, new FieldDefinition<int>(LowLowLimitFieldName, 0));
+            wipProject.AddField(ClassName, new FieldDefinition<int>(AlarmStateFieldName, 1), AlarmStatesFormatterName);
+            wipProject.AddFieldChangePostProcessing<int>(ClassName, ValueFieldName, new AlarmStateProcessing<int>("ValueAlarmState", clazz, ValueFieldName,
+                HighHighLimitFieldName, HighLimitFieldName, LowLimitFieldName, LowLowLimitFieldName, null, AlarmStateFieldName, null)
+                );
             RunnableProject project = ProjectBuilder.Build(wipProject);
             wipProject.Dispose();
             return project;

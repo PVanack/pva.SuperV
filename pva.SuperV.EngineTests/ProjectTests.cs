@@ -154,7 +154,7 @@ namespace {{ProjectName}}.V{{project.Version}} {
 public class {{ClassName}} : Instance {
 public Field<System.Int32> IntField { get; set; } = new(10);
 
-public TestClass() {Fields.Add("IntField", IntField);
+public TestClass() {Fields.Add("IntField", IntField);IntField.Instance = this;
 }
 
 }
@@ -170,11 +170,11 @@ public TestClass() {Fields.Add("IntField", IntField);
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
 
             // WHEN
-            FieldFormatter foundFormatter = project.GetFormatter(ProjectHelpers.EnumFormatterName);
+            FieldFormatter foundFormatter = project.GetFormatter(ProjectHelpers.AlarmStatesFormatterName);
 
             // THEN
             foundFormatter.Should()
@@ -187,7 +187,7 @@ public TestClass() {Fields.Add("IntField", IntField);
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
 
             // WHEN
@@ -199,11 +199,11 @@ public TestClass() {Fields.Add("IntField", IntField);
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
 
             // WHEN
-            FieldFormatter? foundFormatter = project.FindFormatter(ProjectHelpers.EnumFormatterName);
+            FieldFormatter? foundFormatter = project.FindFormatter(ProjectHelpers.AlarmStatesFormatterName);
 
             // THEN
             foundFormatter.Should()
@@ -216,7 +216,7 @@ public TestClass() {Fields.Add("IntField", IntField);
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
 
             // WHEN
@@ -231,12 +231,12 @@ public TestClass() {Fields.Add("IntField", IntField);
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
             _ = project.AddClass(ClassName);
 
             // WHEN
-            FieldDefinition<int> field = project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), ProjectHelpers.EnumFormatterName);
+            FieldDefinition<int> field = project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), ProjectHelpers.AlarmStatesFormatterName);
 
             // THEN
             field.Formatter.Should().Be(formatter);
@@ -247,12 +247,12 @@ public TestClass() {Fields.Add("IntField", IntField);
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
             _ = project.AddClass(ClassName);
 
             // WHEN/THEN
-            Assert.Throws<InvalidTypeForFormatterException>(() => project.AddField(ClassName, new FieldDefinition<double>("DoubleField", 10.0), ProjectHelpers.EnumFormatterName));
+            Assert.Throws<InvalidTypeForFormatterException>(() => project.AddField(ClassName, new FieldDefinition<double>("DoubleField", 10.0), ProjectHelpers.AlarmStatesFormatterName));
         }
 
         [Fact]
@@ -260,7 +260,7 @@ public TestClass() {Fields.Add("IntField", IntField);
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
             _ = project.AddClass(ClassName);
 
@@ -273,7 +273,7 @@ public TestClass() {Fields.Add("IntField", IntField);
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.EnumFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
 
             // WHEN/THEN

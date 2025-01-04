@@ -90,6 +90,12 @@ namespace pva.SuperV.Engine
             return field;
         }
 
+        internal void AddFieldChangePostProcessing<T>(string fieldName, FieldValueProcessing<T> fieldValueProcessing)
+        {
+            FieldDefinition<T>? fieldDefinition = GetField<T>(fieldName);
+            fieldDefinition!.ValuePostChangeProcessings.Add(fieldValueProcessing!);
+        }
+
         /// <summary>
         /// Gets a field of a specific type.
         /// </summary>
@@ -132,7 +138,7 @@ namespace pva.SuperV.Engine
                 .ForEach((k, v) =>
                 {
                     codeBuilder.AppendLine(v.GetCode());
-                    ctorBuilder.AppendFormat("Fields.Add(\"{0}\", {0});", k).AppendLine();
+                    ctorBuilder.AppendFormat("Fields.Add(\"{0}\", {0});{0}.Instance = this;", k).AppendLine();
                 });
             ctorBuilder.AppendLine("}");
             codeBuilder.AppendLine(ctorBuilder.ToString());

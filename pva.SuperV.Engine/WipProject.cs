@@ -140,6 +140,19 @@ namespace pva.SuperV.Engine
         }
 
         /// <summary>
+        /// Adds a field change post processing on a field..
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="className">Name of the class.</param>
+        /// <param name="fieldName">Name of the field.</param>
+        /// <param name="fieldValueProcessing">The field value processing.</param>
+        public void AddFieldChangePostProcessing<T>(string className, string fieldName, FieldValueProcessing<T> fieldValueProcessing)
+        {
+            Class? clazz = GetClass(className);
+            clazz!.AddFieldChangePostProcessing(fieldName, fieldValueProcessing);
+        }
+
+        /// <summary>
         /// Gets the C# code for generating the project's assembly with <see cref="ProjectBuilder.Build(WipProject)"/>.
         /// </summary>
         /// <returns>C# code.</returns>

@@ -1,4 +1,6 @@
 ﻿using System.Numerics;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 namespace pva.SuperV.Engine
 {
@@ -124,7 +126,43 @@ namespace pva.SuperV.Engine
         public AlarmStateProcessing(string name, Class clazz, string trigerringFieldName,
             string? highHighLimitFieldName, string highLimitFieldName, string lowLimitFieldName, string? lowLowLimitFieldName,
             string? deadbandFieldName, string alarmStateFieldName, string? ackStateFieldName)
-            : base(name)
+            : base(name, clazz)
+        {
+            CtorArguments.Add(trigerringFieldName);
+            CtorArguments.Add(highHighLimitFieldName ?? "");
+            CtorArguments.Add(highLimitFieldName);
+            CtorArguments.Add(lowLimitFieldName);
+            CtorArguments.Add(lowLowLimitFieldName ?? "");
+            CtorArguments.Add(deadbandFieldName ?? "");
+            CtorArguments.Add(alarmStateFieldName);
+            CtorArguments.Add(ackStateFieldName ?? "");
+
+            ValidateParameters(clazz, trigerringFieldName,
+                highHighLimitFieldName, highLimitFieldName, lowLimitFieldName, lowLowLimitFieldName, deadbandFieldName,
+                alarmStateFieldName, ackStateFieldName);
+        }
+
+        /// <summary>
+        /// Builds the field value processing from the <see cref="P:pva.SuperV.Engine.FieldValueProcessing`1.CtorArguments" /> after deserialization.
+        /// </summary>
+        /// <param name="clazz">The clazz.</param>
+        public override void BuildAfterDeserialization(Class clazz)
+        {
+            string? trigerringFieldName = GetCtorArgument<string>(0);
+            string? highHighLimitFieldName = GetCtorArgument<string>(1);
+            string? highLimitFieldName = GetCtorArgument<string>(2);
+            string? lowLimitFieldName = GetCtorArgument<string>(3);
+            string? lowLowLimitFieldName = GetCtorArgument<string>(4);
+            string? deadbandFieldName = GetCtorArgument<string>(5);
+            string? alarmStateFieldName = GetCtorArgument<string>(6);
+            string? ackStateFieldName = GetCtorArgument<string>(7);
+
+            ValidateParameters(clazz, trigerringFieldName,
+                highHighLimitFieldName, highLimitFieldName, lowLimitFieldName, lowLowLimitFieldName, deadbandFieldName,
+                alarmStateFieldName, ackStateFieldName);
+        }
+
+        private void ValidateParameters(Class clazz, string? trigerringFieldName, string? highHighLimitFieldName, string? highLimitFieldName, string? lowLimitFieldName, string? lowLowLimitFieldName, string? deadbandFieldName, string? alarmStateFieldName, string? ackStateFieldName)
         {
             TrigerringFieldDefinition = GetFieldDefinition<T>(clazz, trigerringFieldName);
             HighHighLimitField = GetFieldDefinition<T>(clazz, highHighLimitFieldName);
