@@ -7,7 +7,7 @@ namespace pva.SuperV.Engine
     /// <summary>
     /// Json converter for field definition
     /// </summary>
-    /// <seealso cref="System.Text.Json.Serialization.JsonConverter&lt;pva.SuperV.Model.IFieldDefinition&gt;" />
+    /// <seealso cref="System.Text.Json.Serialization.JsonConverter&lt;pva.SuperV.Engine.IFieldDefinition&gt;" />
     public class FieldDefinitionJsonConverter : JsonConverter<IFieldDefinition>
     {
         /// <summary>

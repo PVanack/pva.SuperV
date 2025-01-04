@@ -6,7 +6,7 @@ namespace pva.SuperV.Engine
     /// Field of an <see cref="Instance"/>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="pva.SuperV.Model.IField" />
+    /// <seealso cref="pva.SuperV.Engine.IField" />
     public class Field<T>(T value) : IField
     {
         /// <summary>

@@ -16,7 +16,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="project">The WIP project.</param>
         /// <returns>a <see cref="RunnableProject"/></returns>
-        /// <exception cref="pva.SuperV.Model.Exceptions.ProjectBuildException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.ProjectBuildException"></exception>
         public static RunnableProject Build(WipProject project)
         {
             string projectAssemblyFileName = project.GetAssemblyFileName();

@@ -14,18 +14,22 @@ namespace pva.SuperV.Engine
         /// The high-high alarm state value.
         /// </summary>
         private const int HighHighAlarmState = 2;
+
         /// <summary>
         /// The high alarm state value.
         /// </summary>
         private const int HighAlarmState = 1;
+
         /// <summary>
         /// The ok alarm state value
         /// </summary>
         private const int OkAlarmState = 0;
+
         /// <summary>
         /// The low alarm state value.
         /// </summary>
         private const int LowAlarmState = -1;
+
         /// <summary>
         /// The low-low alarm state value.
         /// </summary>
@@ -35,6 +39,7 @@ namespace pva.SuperV.Engine
         /// The acknowledge state value
         /// </summary>
         private const int AckState = 0;
+
         /// <summary>
         /// The unacknowledge state value.
         /// </summary>
@@ -47,6 +52,7 @@ namespace pva.SuperV.Engine
         /// The high-high limit field definition.
         /// </value>
         public FieldDefinition<T>? HighHighLimitField { get; set; }
+
         /// <summary>
         /// Gets or sets the high limit field definition.
         /// </summary>
@@ -54,6 +60,7 @@ namespace pva.SuperV.Engine
         /// The high limit field definition.
         /// </value>
         public FieldDefinition<T>? HighLimitField { get; set; }
+
         /// <summary>
         /// Gets or sets the low limit field definition.
         /// </summary>
@@ -61,6 +68,7 @@ namespace pva.SuperV.Engine
         /// The low limit field definition.
         /// </value>
         public FieldDefinition<T>? LowLimitField { get; set; }
+
         /// <summary>
         /// Gets or sets the low-low limit field definition.
         /// </summary>
@@ -68,6 +76,7 @@ namespace pva.SuperV.Engine
         /// The low-low limit field definition.
         /// </value>
         public FieldDefinition<T>? LowLowLimitField { get; set; }
+
         /// <summary>
         /// Gets or sets the deadband field definition.
         /// </summary>
@@ -75,6 +84,7 @@ namespace pva.SuperV.Engine
         /// The deadband field definition.
         /// </value>
         public FieldDefinition<T>? DeadbandField { get; set; }
+
         /// <summary>
         /// Gets or sets the alarm state field definition.
         /// </summary>
@@ -82,6 +92,7 @@ namespace pva.SuperV.Engine
         /// The alarm state field definition.
         /// </value>
         public FieldDefinition<int>? AlarmStateField { get; set; }
+
         /// <summary>
         /// Gets or sets the acknowledgement state field definition.
         /// </summary>

@@ -51,7 +51,7 @@ namespace pva.SuperV.Engine
         /// Validates the name of the class.
         /// </summary>
         /// <param name="name">The name to be validated.</param>
-        /// <exception cref="pva.SuperV.Model.Exceptions.InvalidClassNameException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.InvalidClassNameException"></exception>
         private static void ValidateName(string name)
         {
             if (!ClassNameRegex().IsMatch(name))
@@ -78,7 +78,7 @@ namespace pva.SuperV.Engine
         /// <param name="field">The <see cref="FieldDefinition{T}" to be added.</param>
         /// <param name="formatter">The formatter to be used when using ToString()."/>.</param>
         /// <returns></returns>
-        /// <exception cref="pva.SuperV.Model.Exceptions.FieldAlreadyExistException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.FieldAlreadyExistException"></exception>
         internal FieldDefinition<T> AddField<T>(FieldDefinition<T> field, FieldFormatter? formatter)
         {
             if (FieldDefinitions.ContainsKey(field.Name!))
@@ -96,7 +96,7 @@ namespace pva.SuperV.Engine
         /// <typeparam name="T"></typeparam>
         /// <param name="fieldName">Name of the field to be retrieved.</param>
         /// <returns>The field</returns>
-        /// <exception cref="pva.SuperV.Model.Exceptions.UnknownFieldException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownFieldException"></exception>
         public FieldDefinition<T>? GetField<T>(string fieldName)
         {
             if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))

@@ -7,7 +7,7 @@ namespace pva.SuperV.Engine
     /// <summary>
     /// WIP (Work In Progress) project. It allows adding/changing/removing <see cref="Class"/>, <see cref="FieldDefinition{T}"/>, but can' add/change/remove instances.
     /// </summary>
-    /// <seealso cref="pva.SuperV.Model.Project" />
+    /// <seealso cref="pva.SuperV.Engine.Project" />
     public class WipProject : Project
     {
         /// <summary>
@@ -46,7 +46,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="className">Name of the class.</param>
         /// <returns>The newly created <see cref="Class"/>.</returns>
-        /// <exception cref="pva.SuperV.Model.Exceptions.ClassAlreadyExistException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.ClassAlreadyExistException"></exception>
         public Class AddClass(string className)
         {
             if (Classes.ContainsKey(className))
@@ -119,7 +119,7 @@ namespace pva.SuperV.Engine
         /// Adds a field formatter to project to be later used for a specific field formatting (<see cref="AddField{T}(string, FieldDefinition{T}, string)"/>.
         /// </summary>
         /// <param name="fieldFormatter">The field formatter.</param>
-        /// <exception cref="pva.SuperV.Model.Exceptions.FormatterAlreadyExistException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.FormatterAlreadyExistException"></exception>
         public void AddFieldFormatter(FieldFormatter fieldFormatter)
         {
             if (FieldFormatters.ContainsKey(fieldFormatter.Name!))

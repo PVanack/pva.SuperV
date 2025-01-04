@@ -15,6 +15,7 @@ namespace pva.SuperV.Engine
         /// The type.
         /// </value>
         Type Type { get; set; }
+
         /// <summary>
         /// Gets or sets the name of the field.
         /// </summary>
@@ -22,6 +23,7 @@ namespace pva.SuperV.Engine
         /// The name.
         /// </value>
         string? Name { get; set; }
+        
         /// <summary>
         /// Gets or sets the field formatter.
         /// </summary>

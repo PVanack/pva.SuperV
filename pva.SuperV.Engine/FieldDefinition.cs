@@ -8,7 +8,7 @@ namespace pva.SuperV.Engine
     /// Definition of a field used in a <see cref="Class"/>.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="pva.SuperV.Model.IFieldDefinition" />
+    /// <seealso cref="pva.SuperV.Engine.IFieldDefinition" />
     public partial class FieldDefinition<T> : IFieldDefinition
     {
         /// <summary>
@@ -102,7 +102,7 @@ namespace pva.SuperV.Engine
         /// Validates the name of the field.
         /// </summary>
         /// <param name="name">The name.</param>
-        /// <exception cref="pva.SuperV.Model.Exceptions.InvalidFieldNameException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.InvalidFieldNameException"></exception>
         private static void ValidateName(string name)
         {
             if (!FieldNameRegex().IsMatch(name))

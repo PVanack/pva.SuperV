@@ -5,7 +5,7 @@ namespace pva.SuperV.Engine
     /// <summary>
     /// Enum formatter for integer fields. Allows to display the string representation according to a list of strings.
     /// </summary>
-    /// <seealso cref="pva.SuperV.Model.FieldFormatter" />
+    /// <seealso cref="pva.SuperV.Engine.FieldFormatter" />
     public class EnumFormatter : FieldFormatter
     {
         /// <summary>
