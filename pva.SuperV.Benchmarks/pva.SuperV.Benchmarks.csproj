@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\pva.SuperV.Model\pva.SuperV.Model.csproj" />
+    <ProjectReference Include="..\pva.SuperV.Engine\pva.SuperV.Engine.csproj" />
   </ItemGroup>
 
 </Project>
