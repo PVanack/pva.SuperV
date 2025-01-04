@@ -7,13 +7,13 @@ namespace pva.SuperV.Engine
     /// <summary>
     /// Json converter for field definition
     /// </summary>
-    /// <seealso cref="System.Text.Json.Serialization.JsonConverter&lt;pva.SuperV.Model.IFieldDefinition&gt;" />
+    /// <seealso cref="System.Text.Json.Serialization.JsonConverter&lt;pva.SuperV.Engine.IFieldDefinition&gt;" />
     public class FieldDefinitionJsonConverter : JsonConverter<IFieldDefinition>
     {
         /// <summary>
         /// The field converters cache.
         /// </summary>
-        private static readonly Dictionary<Type, dynamic> fieldConverters = [];
+        private static readonly Dictionary<Type, dynamic> fieldConvertersCache = [];
 
         /// <summary>
         /// Reads and converts the JSON to type <typeparamref name="T" />.
@@ -51,13 +51,26 @@ namespace pva.SuperV.Engine
             reader.GetByte();
             Type? fieldType = Type.GetType(fieldTypeString!);
             dynamic? defaultValue = JsonSerializer.Deserialize(ref reader, fieldType!, options);
-            dynamic fieldDefinition = CreateInstance(fieldType!, fieldName, defaultValue);
+            reader.Read();
+            if (reader.TokenType != JsonTokenType.PropertyName)
+            {
+                throw new JsonException();
+            }
 
+            readPropertyName = reader.GetString();
+            if (readPropertyName != "ValuePostChangeProcessings")
+            {
+                throw new JsonException();
+            }
+            List<IFieldValueProcessing>? fieldValueProcessings = JsonSerializer.Deserialize<List<IFieldValueProcessing>>(ref reader, options);
             reader.Read();
             if (reader.TokenType != JsonTokenType.EndObject)
             {
                 throw new JsonException();
             }
+
+            IFieldDefinition fieldDefinition = CreateInstance(fieldType!, fieldName, defaultValue);
+            fieldDefinition.ValuePostChangeProcessings = fieldValueProcessings!;
             return fieldDefinition;
         }
 
@@ -75,14 +88,16 @@ namespace pva.SuperV.Engine
             writer.WriteString("Name", fieldDefinition.Name);
             dynamic actualFieldDefinition = fieldDefinition;
             Type fieldType = actualFieldDefinition.Type;
-            if (!fieldConverters.TryGetValue(fieldType, out dynamic? fieldConverter))
+            if (!fieldConvertersCache.TryGetValue(fieldType, out dynamic? fieldConverter))
             {
-                fieldConverter =
-                    JsonSerializerOptions.Default.GetConverter(fieldType);
-                fieldConverters.Add(fieldType, fieldConverter);
+                fieldConverter = JsonSerializerOptions.Default.GetConverter(fieldType);
+                fieldConvertersCache.Add(fieldType, fieldConverter);
             }
             writer.WritePropertyName("DefaultValue");
             fieldConverter.Write(writer, actualFieldDefinition.DefaultValue, options);
+
+            writer.WritePropertyName("ValuePostChangeProcessings");
+            JsonSerializer.Serialize<List<IFieldValueProcessing>>(writer, fieldDefinition!.ValuePostChangeProcessings, options);
 
             writer.WriteEndObject();
         }

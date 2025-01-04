@@ -8,7 +8,7 @@ namespace pva.SuperV.Engine
     /// <summary>
     /// Json converter for an instance.
     /// </summary>
-    /// <seealso cref="System.Text.Json.Serialization.JsonConverter&lt;pva.SuperV.Model.IInstance&gt;" />
+    /// <seealso cref="System.Text.Json.Serialization.JsonConverter&lt;pva.SuperV.Engine.IInstance&gt;" />
     public class InstanceJsonConverter : JsonConverter<IInstance>
     {
         /// <summary>
@@ -34,7 +34,7 @@ namespace pva.SuperV.Engine
         /// The converted value.
         /// </returns>
         /// <exception cref="System.Text.Json.JsonException"></exception>
-        /// <exception cref="pva.SuperV.Model.Exceptions.InstanceCreationException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.InstanceCreationException"></exception>
         public override IInstance? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject)

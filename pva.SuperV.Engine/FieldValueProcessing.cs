@@ -4,15 +4,8 @@
     /// Base class for value processing of a <see cref="Field{T}"/> trigerring field
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class FieldValueProcessing<T>
+    public abstract class FieldValueProcessing<T>: IFieldValueProcessing
     {
-        /// <summary>
-        /// Gets or sets the field definition which triggers the processing..
-        /// </summary>
-        /// <value>
-        /// The trigerring field definition.
-        /// </value>
-        public FieldDefinition<T>? TrigerringFieldDefinition { get; set; }
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
@@ -20,6 +13,46 @@
         /// The name.
         /// </value>
         public string? Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the class name.
+        /// </summary>
+        /// <value>
+        /// The class name.
+        /// </value>
+        public string? ClassName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the trigerring field.
+        /// </summary>
+        /// <value>
+        /// The type of the trigerring field.
+        /// </value>
+        public Type TrigerringFieldType => typeof(T);
+
+        /// <summary>
+        /// Gets the additional types.
+        /// </summary>
+        /// <value>
+        /// The additional types.
+        /// </value>
+        public List<Type> AdditionalTypes { get; set; } = [];
+
+        /// <summary>
+        /// Gets or sets the constructor arguments.
+        /// </summary>
+        /// <value>
+        /// The constructor arguments.
+        /// </value>
+        public List<Object> CtorArguments { get; set; } = [];
+
+        /// <summary>
+        /// Gets the field definition which triggers the processing.
+        /// </summary>
+        /// <value>
+        /// The trigerring field definition.
+        /// </value>
+        public FieldDefinition<T>? TrigerringFieldDefinition { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FieldValueProcessing{T}"/> class. Ctor used for deserialization.
@@ -32,9 +65,30 @@
         /// Initializes a new instance of the <see cref="FieldValueProcessing{T}"/> class.
         /// </summary>
         /// <param name="name">The name of processing.</param>
-        protected FieldValueProcessing(string name)
+        /// <param name="clazz">Name of the class</param>
+        protected FieldValueProcessing(string name, Class clazz)
         {
             this.Name = name;
+            this.ClassName = clazz.Name;
+        }
+
+        /// <summary>
+        /// Builds the field value processing from the <see cref="CtorArguments" /> after deserialization.
+        /// </summary>
+        /// <param name="clazz">The clazz.</param>
+        public abstract void BuildAfterDeserialization(Class clazz);
+
+        /// <summary>
+        /// Gets a ctor argument.
+        /// </summary>
+        /// <typeparam name="T1">The type of the argument.</typeparam>
+        /// <param name="index">The index of argument.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
+        protected T1? GetCtorArgument<T1>(int index)
+        {
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(index, CtorArguments.Count);
+            return (T1)CtorArguments[index];
         }
 
         /// <summary>

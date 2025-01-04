@@ -22,7 +22,7 @@
         IFieldDefinition? FieldDefinition { get; set; }
 
         /// <summary>
-        /// Converts to string.
+        /// Converts field's value to string. If a field formatter is defined in field definition, it's used.
         /// </summary>
         /// <returns>String representation of field's value.</returns>
         string? ToString();

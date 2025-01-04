@@ -7,7 +7,7 @@ namespace pva.SuperV.Engine
     /// <summary>
     /// A runnable project. It allows to create new instances. However its definitions are fixed and can't be changed.
     /// </summary>
-    /// <seealso cref="pva.SuperV.Model.Project" />
+    /// <seealso cref="pva.SuperV.Engine.Project" />
     public class RunnableProject : Project
     {
         /// <summary>
@@ -53,7 +53,7 @@ namespace pva.SuperV.Engine
         /// <param name="className">Name of the class.</param>
         /// <param name="instanceName">Name of the instance.</param>
         /// <returns>The newly created instance.</returns>
-        /// <exception cref="pva.SuperV.Model.Exceptions.InstanceAlreadyExistException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.InstanceAlreadyExistException"></exception>
         public dynamic? CreateInstance(string className, string instanceName)
         {
             if (Instances.ContainsKey(instanceName))
@@ -93,7 +93,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="instanceName">Name of the instance.</param>
         /// <returns>The <see cref="Instance"/></returns>
-        /// <exception cref="pva.SuperV.Model.Exceptions.UnknownInstanceException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownInstanceException"></exception>
         public Instance GetInstance(string instanceName)
         {
             if (Instances.TryGetValue(instanceName, out var instance))

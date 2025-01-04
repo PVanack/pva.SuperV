@@ -5,7 +5,7 @@ namespace pva.SuperV.Engine
     /// <summary>
     /// Generated instance.
     /// </summary>
-    /// <seealso cref="pva.SuperV.Model.IInstance" />
+    /// <seealso cref="pva.SuperV.Engine.IInstance" />
     public class Instance : IInstance
     {
         /// <summary>
@@ -56,7 +56,7 @@ namespace pva.SuperV.Engine
         /// <typeparam name="T"></typeparam>
         /// <param name="fieldName">Name of the field.</param>
         /// <returns>The field.</returns>
-        /// <exception cref="pva.SuperV.Model.Exceptions.WrongFieldTypeException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.WrongFieldTypeException"></exception>
         public Field<T>? GetField<T>(string fieldName)
         {
             IField field = GetField(fieldName);
@@ -72,7 +72,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="fieldName">Name of the field.</param>
         /// <returns>The field.</returns>
-        /// <exception cref="pva.SuperV.Model.Exceptions.UnknownFieldException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownFieldException"></exception>
         public IField GetField(string fieldName)
         {
             if (!Class.FieldDefinitions.ContainsKey(fieldName))

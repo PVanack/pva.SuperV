@@ -1,4 +1,6 @@
 ﻿using System.Numerics;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 
 namespace pva.SuperV.Engine
 {
@@ -14,18 +16,22 @@ namespace pva.SuperV.Engine
         /// The high-high alarm state value.
         /// </summary>
         private const int HighHighAlarmState = 2;
+
         /// <summary>
         /// The high alarm state value.
         /// </summary>
         private const int HighAlarmState = 1;
+
         /// <summary>
         /// The ok alarm state value
         /// </summary>
         private const int OkAlarmState = 0;
+
         /// <summary>
         /// The low alarm state value.
         /// </summary>
         private const int LowAlarmState = -1;
+
         /// <summary>
         /// The low-low alarm state value.
         /// </summary>
@@ -35,6 +41,7 @@ namespace pva.SuperV.Engine
         /// The acknowledge state value
         /// </summary>
         private const int AckState = 0;
+
         /// <summary>
         /// The unacknowledge state value.
         /// </summary>
@@ -47,6 +54,7 @@ namespace pva.SuperV.Engine
         /// The high-high limit field definition.
         /// </value>
         public FieldDefinition<T>? HighHighLimitField { get; set; }
+
         /// <summary>
         /// Gets or sets the high limit field definition.
         /// </summary>
@@ -54,6 +62,7 @@ namespace pva.SuperV.Engine
         /// The high limit field definition.
         /// </value>
         public FieldDefinition<T>? HighLimitField { get; set; }
+
         /// <summary>
         /// Gets or sets the low limit field definition.
         /// </summary>
@@ -61,6 +70,7 @@ namespace pva.SuperV.Engine
         /// The low limit field definition.
         /// </value>
         public FieldDefinition<T>? LowLimitField { get; set; }
+
         /// <summary>
         /// Gets or sets the low-low limit field definition.
         /// </summary>
@@ -68,6 +78,7 @@ namespace pva.SuperV.Engine
         /// The low-low limit field definition.
         /// </value>
         public FieldDefinition<T>? LowLowLimitField { get; set; }
+
         /// <summary>
         /// Gets or sets the deadband field definition.
         /// </summary>
@@ -75,6 +86,7 @@ namespace pva.SuperV.Engine
         /// The deadband field definition.
         /// </value>
         public FieldDefinition<T>? DeadbandField { get; set; }
+
         /// <summary>
         /// Gets or sets the alarm state field definition.
         /// </summary>
@@ -82,6 +94,7 @@ namespace pva.SuperV.Engine
         /// The alarm state field definition.
         /// </value>
         public FieldDefinition<int>? AlarmStateField { get; set; }
+
         /// <summary>
         /// Gets or sets the acknowledgement state field definition.
         /// </summary>
@@ -113,7 +126,43 @@ namespace pva.SuperV.Engine
         public AlarmStateProcessing(string name, Class clazz, string trigerringFieldName,
             string? highHighLimitFieldName, string highLimitFieldName, string lowLimitFieldName, string? lowLowLimitFieldName,
             string? deadbandFieldName, string alarmStateFieldName, string? ackStateFieldName)
-            : base(name)
+            : base(name, clazz)
+        {
+            CtorArguments.Add(trigerringFieldName);
+            CtorArguments.Add(highHighLimitFieldName ?? "");
+            CtorArguments.Add(highLimitFieldName);
+            CtorArguments.Add(lowLimitFieldName);
+            CtorArguments.Add(lowLowLimitFieldName ?? "");
+            CtorArguments.Add(deadbandFieldName ?? "");
+            CtorArguments.Add(alarmStateFieldName);
+            CtorArguments.Add(ackStateFieldName ?? "");
+
+            ValidateParameters(clazz, trigerringFieldName,
+                highHighLimitFieldName, highLimitFieldName, lowLimitFieldName, lowLowLimitFieldName, deadbandFieldName,
+                alarmStateFieldName, ackStateFieldName);
+        }
+
+        /// <summary>
+        /// Builds the field value processing from the <see cref="P:pva.SuperV.Engine.FieldValueProcessing`1.CtorArguments" /> after deserialization.
+        /// </summary>
+        /// <param name="clazz">The clazz.</param>
+        public override void BuildAfterDeserialization(Class clazz)
+        {
+            string? trigerringFieldName = GetCtorArgument<string>(0);
+            string? highHighLimitFieldName = GetCtorArgument<string>(1);
+            string? highLimitFieldName = GetCtorArgument<string>(2);
+            string? lowLimitFieldName = GetCtorArgument<string>(3);
+            string? lowLowLimitFieldName = GetCtorArgument<string>(4);
+            string? deadbandFieldName = GetCtorArgument<string>(5);
+            string? alarmStateFieldName = GetCtorArgument<string>(6);
+            string? ackStateFieldName = GetCtorArgument<string>(7);
+
+            ValidateParameters(clazz, trigerringFieldName,
+                highHighLimitFieldName, highLimitFieldName, lowLimitFieldName, lowLowLimitFieldName, deadbandFieldName,
+                alarmStateFieldName, ackStateFieldName);
+        }
+
+        private void ValidateParameters(Class clazz, string? trigerringFieldName, string? highHighLimitFieldName, string? highLimitFieldName, string? lowLimitFieldName, string? lowLowLimitFieldName, string? deadbandFieldName, string? alarmStateFieldName, string? ackStateFieldName)
         {
             TrigerringFieldDefinition = GetFieldDefinition<T>(clazz, trigerringFieldName);
             HighHighLimitField = GetFieldDefinition<T>(clazz, highHighLimitFieldName);

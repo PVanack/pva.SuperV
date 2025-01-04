@@ -9,7 +9,7 @@ namespace pva.SuperV.Engine
     public static class ProjectStorage
     {
         /// <summary>
-        /// Saves the project definition.
+        /// Saves a project definition.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="project">The project for which definitions should be saved.</param>
@@ -22,7 +22,7 @@ namespace pva.SuperV.Engine
         }
 
         /// <summary>
-        /// Saves the project definition.
+        /// Saves a project definition.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="project">The project.</param>
@@ -34,7 +34,7 @@ namespace pva.SuperV.Engine
         }
 
         /// <summary>
-        /// Loads the project definition from a file.
+        /// Loads a project definition from a file.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="filename">The filename.</param>
@@ -42,11 +42,20 @@ namespace pva.SuperV.Engine
         public static T? LoadProjectDefinition<T>(string filename) where T : Project
         {
             string json = File.ReadAllText(filename);
-            return JsonSerializer.Deserialize<T>(json);
+            T? projectInstance = JsonSerializer.Deserialize<T>(json);
+            projectInstance!.Classes.Values.ForEach(clazz =>
+            {
+                clazz.FieldDefinitions.Values.ForEach(field =>
+                {
+                    field.ValuePostChangeProcessings.ForEach(postProcessing =>
+                        postProcessing.BuildAfterDeserialization(clazz));
+                });
+            });
+            return projectInstance;
         }
 
         /// <summary>
-        /// Saves the project instances.
+        /// Saves a project instances.
         /// </summary>
         /// <param name="project">The project.</param>
         /// <returns>File name where project instances were saved.</returns>

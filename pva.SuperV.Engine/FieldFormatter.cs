@@ -28,20 +28,40 @@ namespace pva.SuperV.Engine
             }
         }
 
+        /// <summary>
+        /// Gets or sets the allowed types.
+        /// </summary>
+        /// <value>
+        /// The allowed types.
+        /// </value>
         [JsonIgnore]
         public HashSet<Type> AllowedTypes { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FieldFormatter"/> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="allowedTypes">The allowed types.</param>
         protected FieldFormatter(string name, HashSet<Type> allowedTypes)
         {
             this.Name = name;
             this.AllowedTypes = allowedTypes;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FieldFormatter"/> class.
+        /// </summary>
+        /// <param name="allowedTypes">The allowed types.</param>
         protected FieldFormatter(HashSet<Type> allowedTypes)
         {
             AllowedTypes = allowedTypes;
         }
 
+        /// <summary>
+        /// Validates the name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.InvalidFormatterNameException"></exception>
         private static void ValidateName(string name)
         {
             if (!FieldFormatterNameRegex().IsMatch(name))
@@ -50,6 +70,11 @@ namespace pva.SuperV.Engine
             }
         }
 
+        /// <summary>
+        /// Validates that type is part of the allowed types of formatter.
+        /// </summary>
+        /// <param name="fieldType">Type of the field.</param>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.InvalidTypeForFormatterException"></exception>
         internal void ValidateAllowedType(Type fieldType)
         {
             if (!AllowedTypes.Contains(fieldType))
@@ -58,6 +83,11 @@ namespace pva.SuperV.Engine
             }
         }
 
+        /// <summary>
+        /// Converts a value to string.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>String representing the value.</returns>
         public abstract string? ConvertToString(dynamic? value);
     }
 }

@@ -36,7 +36,7 @@ namespace pva.SuperV.EngineTests
             // WHEN
             RunnableProject project = ProjectHelpers.CreateRunnableProject();
             var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
-            Field<int> intField = instance!.GetField<int>(ProjectHelpers.IntFieldName);
+            Field<int> intField = instance!.GetField<int>(ProjectHelpers.ValueFieldName);
             string filename = ProjectStorage.SaveProjectInstances(project);
             project.Instances.Clear();
 
@@ -48,10 +48,11 @@ namespace pva.SuperV.EngineTests
             loadedInstance.Should().NotBeSameAs(instance);
             loadedInstance.Name.Should().Be(instance.Name);
             loadedInstance.Class.Name.Should().Be(instance.Class.Name);
-            loadedInstance.Fields.Count.Should().Be(2);
-            Field<int>? loadedField = loadedInstance.GetField<int>(ProjectHelpers.IntFieldName);
+            loadedInstance.Fields.Count.Should().Be(6);
+            Field<int>? loadedField = loadedInstance.GetField<int>(ProjectHelpers.ValueFieldName);
             loadedField!.Value.Should().Be(intField.Value);
             loadedField!.Value.ToString().Should().Be(intField.Value.ToString());
+            loadedField!.Instance.Should().Be(loadedInstance);
 
             instance.Dispose();
             ProjectHelpers.DeleteProject(project);
@@ -83,14 +84,21 @@ namespace pva.SuperV.EngineTests
             savedClass.FieldDefinitions.ForEach((k, v) =>
             {
                 loadedClass.FieldDefinitions.Should().ContainKey(k);
-                dynamic? loadedFieldDefinition = loadedClass.FieldDefinitions.GetValueOrDefault(k);
-                dynamic savedFieldDefinition = v;
-                Assert.True(loadedFieldDefinition!.Name.Equals(savedFieldDefinition.Name));
-                Assert.True(loadedFieldDefinition!.Type.Equals(savedFieldDefinition.Type));
+                IFieldDefinition? loadedFieldDefinition = loadedClass.FieldDefinitions.GetValueOrDefault(k);
+                IFieldDefinition? savedFieldDefinition = v;
+                loadedFieldDefinition.Name.Should().Be(savedFieldDefinition.Name);
+                loadedFieldDefinition.Type.Should().Be(savedFieldDefinition.Type);
+                Assert.True(((dynamic)loadedFieldDefinition)!.DefaultValue.Equals(((dynamic)savedFieldDefinition)!.DefaultValue));
                 FieldFormatter? loadedFieldFormatter = loadedFieldDefinition!.Formatter;
                 FieldFormatter? savedFieldFormatter = savedFieldDefinition!.Formatter;
                 loadedFieldFormatter?.Should().BeEquivalentTo(savedFieldFormatter);
-                Assert.True(loadedFieldDefinition!.DefaultValue.Equals(savedFieldDefinition.DefaultValue));
+                loadedFieldDefinition?.ValuePostChangeProcessings.Should().HaveCount(savedFieldDefinition.ValuePostChangeProcessings.Count);
+                for (int index = 0; index < savedFieldDefinition?.ValuePostChangeProcessings.Count; index++)
+                {
+                    IFieldValueProcessing savedProcessing = savedFieldDefinition.ValuePostChangeProcessings[index];
+                    IFieldValueProcessing loadedProcesing = loadedFieldDefinition!.ValuePostChangeProcessings[index];
+                    loadedProcesing?.Should().BeEquivalentTo(savedProcessing);
+                }
             });
         }
 

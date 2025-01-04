@@ -8,7 +8,7 @@ namespace pva.SuperV.Engine
     /// Definition of a field used in a <see cref="Class"/>.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="pva.SuperV.Model.IFieldDefinition" />
+    /// <seealso cref="pva.SuperV.Engine.IFieldDefinition" />
     public partial class FieldDefinition<T> : IFieldDefinition
     {
         /// <summary>
@@ -63,6 +63,22 @@ namespace pva.SuperV.Engine
         public T? DefaultValue { get; set; }
 
         /// <summary>
+        /// Gets or sets the value post change processings.
+        /// </summary>
+        /// <value>
+        /// The value post change processings.
+        /// </value>
+        public List<IFieldValueProcessing> ValuePostChangeProcessings { get; set; } = [];
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FieldDefinition{T}"/> class.
+        /// </summary>
+        /// <param name="name">The name of the field.</param>
+        public FieldDefinition(string name): this(name, default)
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="FieldDefinition{T}"/> class.
         /// </summary>
         /// <param name="name">The name of the field.</param>
@@ -81,8 +97,16 @@ namespace pva.SuperV.Engine
         public string GetCode()
         {
             StringBuilder codeBuilder = new();
-            codeBuilder.AppendLine($"public Field<{typeof(T)}> {Name} {{ get; set; }} = new({DefaultValue});");
+            codeBuilder.AppendLine($"public Field<{typeof(T)}> {Name} {{ get; set; }} = new({GetStringifiedValue(DefaultValue)});");
             return codeBuilder.ToString();
+        }
+
+        private static string? GetStringifiedValue(T? defaultValue)
+        {
+            if (typeof(T).Equals(typeof(string))) {
+                return $"\"{defaultValue}\"";
+            }
+            return defaultValue!.ToString();
         }
 
         /// <summary>
@@ -102,7 +126,7 @@ namespace pva.SuperV.Engine
         /// Validates the name of the field.
         /// </summary>
         /// <param name="name">The name.</param>
-        /// <exception cref="pva.SuperV.Model.Exceptions.InvalidFieldNameException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.InvalidFieldNameException"></exception>
         private static void ValidateName(string name)
         {
             if (!FieldNameRegex().IsMatch(name))

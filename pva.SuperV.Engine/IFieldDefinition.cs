@@ -15,6 +15,7 @@ namespace pva.SuperV.Engine
         /// The type.
         /// </value>
         Type Type { get; set; }
+
         /// <summary>
         /// Gets or sets the name of the field.
         /// </summary>
@@ -22,6 +23,7 @@ namespace pva.SuperV.Engine
         /// The name.
         /// </value>
         string? Name { get; set; }
+
         /// <summary>
         /// Gets or sets the field formatter.
         /// </summary>
@@ -29,6 +31,14 @@ namespace pva.SuperV.Engine
         /// The formatter.
         /// </value>
         FieldFormatter? Formatter { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value post change processings.
+        /// </summary>
+        /// <value>
+        /// The value post change processings.
+        /// </value>
+        List<IFieldValueProcessing> ValuePostChangeProcessings { get; set; }
 
         /// <summary>
         /// Gets the C# code representation of the field in class.

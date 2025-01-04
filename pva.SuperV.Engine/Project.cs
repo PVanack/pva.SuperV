@@ -105,7 +105,7 @@ namespace pva.SuperV.Engine
         /// Validates the name of the project.
         /// </summary>
         /// <param name="name">The name.</param>
-        /// <exception cref="pva.SuperV.Model.Exceptions.InvalidProjectNameException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.InvalidProjectNameException"></exception>
         private static void ValidateName(string name)
         {
             if (!ProjectNameRegex().IsMatch(name))
@@ -119,7 +119,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="className">Name of the class.</param>
         /// <returns>Found class</returns>
-        /// <exception cref="pva.SuperV.Model.Exceptions.UnknownClassException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownClassException"></exception>
         public Class GetClass(string className)
         {
             if (Classes.TryGetValue(className, out Class? value))
@@ -149,7 +149,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="formatterName">Name of the formatter.</param>
         /// <returns><see cref="FieldFormatter"/></returns>
-        /// <exception cref="pva.SuperV.Model.Exceptions.UnknownFormatterException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownFormatterException"></exception>
         public FieldFormatter GetFormatter(string formatterName)
         {
             if (FieldFormatters.TryGetValue(formatterName, out FieldFormatter? value))
