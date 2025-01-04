@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
-using pva.SuperV.Model;
+using pva.SuperV.Engine;
 
 namespace pva.SuperV.Benchmarks
 {
