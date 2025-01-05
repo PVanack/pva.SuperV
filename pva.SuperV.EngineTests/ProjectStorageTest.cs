@@ -37,6 +37,7 @@ namespace pva.SuperV.EngineTests
             RunnableProject project = ProjectHelpers.CreateRunnableProject();
             var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
             Field<int> intField = instance!.GetField<int>(ProjectHelpers.ValueFieldName);
+            intField.Value = 314;
             string filename = ProjectStorage.SaveProjectInstances(project);
             project.Instances.Clear();
 
