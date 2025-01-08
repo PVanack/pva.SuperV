@@ -69,7 +69,6 @@
         protected FieldValueProcessing(string name, Class clazz)
         {
             this.Name = name;
-            this.ClassName = clazz.Name;
         }
 
         /// <summary>
