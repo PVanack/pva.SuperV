@@ -34,7 +34,6 @@ namespace pva.SuperV.Engine
 
             string? fieldValueProcessingTypeString = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Type");
             String? fieldValueProcessingName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
-            String? className = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Class");
 
             List<Object> ctorArguments = ReadParameters(ref reader, options);
             Type? fieldType = Type.GetType(fieldValueProcessingTypeString!);
@@ -45,7 +44,6 @@ namespace pva.SuperV.Engine
             }
             IFieldValueProcessing fieldValueProcessing = CreateInstance(fieldType!);
             fieldValueProcessing.Name = fieldValueProcessingName;
-            fieldValueProcessing.ClassName = className;
             fieldValueProcessing.CtorArguments = ctorArguments;
             return fieldValueProcessing;
         }
@@ -116,7 +114,6 @@ namespace pva.SuperV.Engine
             writer.WriteStartObject();
             writer.WriteString("Type", fieldValueProcessing.GetType().ToString());
             writer.WriteString("Name", fieldValueProcessing.Name);
-            writer.WriteString("Class", fieldValueProcessing.ClassName);
             WriteCtorParameters(writer, fieldValueProcessing, options);
             writer.WriteEndObject();
         }

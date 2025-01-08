@@ -17,14 +17,6 @@ namespace pva.SuperV.Engine
         public string? Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the class.
-        /// </summary>
-        /// <value>
-        /// The class.
-        /// </value>
-        public string? ClassName { get; set; }
-
-        /// <summary>
         /// Gets the type of the trigerring field.
         /// </summary>
         /// <value>
