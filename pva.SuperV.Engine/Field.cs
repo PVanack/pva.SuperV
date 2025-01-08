@@ -47,17 +47,73 @@ namespace pva.SuperV.Engine
         public virtual T Value
         {
             get => _value;
-            set
-            {
-                T previousValue = _value;
-                _value = value;
-                FieldDefinition?.ValuePostChangeProcessings.ForEach(
-                    processing =>
-                        {
-                            FieldValueProcessing<T>? fieldValueProcessing = processing as FieldValueProcessing<T>;
-                            fieldValueProcessing!.ProcessValue(Instance!, this, !previousValue!.Equals(value), previousValue, value);
-                        });
-            }
+        }
+
+        private DateTime? _timestamp;
+        /// <summary>
+        /// Gets or sets the timestamp of value.
+        /// </summary>
+        /// <value>
+        /// The timestamp.
+        /// </value>
+        public DateTime? Timestamp { get => _timestamp ?? DateTime.Now; }
+
+        QualityLevel? _quality;
+        /// <summary>
+        /// Gets or sets the quality level of the value.
+        /// </summary>
+        /// <value>
+        /// The quality <see cref="QualityLevel" />.
+        /// </value>
+        public QualityLevel? Quality { get => _quality ?? QualityLevel.GOOD; }
+
+        /// <summary>
+        /// Sets the value with <see cref="DateTime.UtcNow"/> timestamp and a <see cref="QualityLevel.GOOD"/>.
+        /// </summary>
+        /// <param name="newValue">The value to be set.</param>
+        public void SetValue(T newValue)
+        {
+            SetValue(newValue, DateTime.UtcNow, QualityLevel.GOOD);
+        }
+
+        /// <summary>
+        /// Sets the value and associated timestamp with a <see cref="QualityLevel.GOOD"/>.
+        /// </summary>
+        /// <param name="newValue">The value to be set.</param>
+        /// <param name="timestamp">The timestamp of value.</param>
+        public void SetValue(T newValue, DateTime timestamp)
+        {
+            SetValue(newValue, timestamp, QualityLevel.GOOD);
+        }
+
+        /// <summary>
+        /// Sets the value and associated quality with a <see cref="DateTime.UtcNow"/> timestamp .
+        /// </summary>
+        /// <param name="newValue">The value to be set.</param>
+        /// <param name="quality">The quality of value.</param>
+        public void SetValue(T newValue, QualityLevel quality)
+        {
+            SetValue(newValue, DateTime.UtcNow, quality);
+        }
+
+        /// <summary>
+        /// Sets the value and associated timestamp with a <see cref="QualityLevel.GOOD"/>.
+        /// </summary>
+        /// <param name="newValue">The value to be set.</param>
+        /// <param name="timestamp">The timestamp of value.</param>
+        /// <param name="quality">The quality of value.</param>
+        public void SetValue(T newValue, DateTime timestamp, QualityLevel quality)
+        {
+            T? previousValue = _value;
+            _timestamp = timestamp;
+            _quality = quality;
+            _value = newValue;
+            FieldDefinition?.ValuePostChangeProcessings.ForEach(
+                processing =>
+                {
+                    FieldValueProcessing<T>? fieldValueProcessing = processing as FieldValueProcessing<T>;
+                    fieldValueProcessing!.ProcessValue(Instance!, this, !previousValue!.Equals(newValue), previousValue, newValue);
+                });
         }
 
         /// <summary>

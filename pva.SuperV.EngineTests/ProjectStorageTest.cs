@@ -37,7 +37,7 @@ namespace pva.SuperV.EngineTests
             RunnableProject project = ProjectHelpers.CreateRunnableProject();
             var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
             Field<int> intField = instance!.GetField<int>(ProjectHelpers.ValueFieldName);
-            intField.Value = 314;
+            intField.SetValue(314);
             string filename = ProjectStorage.SaveProjectInstances(project);
             project.Instances.Clear();
 
@@ -87,8 +87,9 @@ namespace pva.SuperV.EngineTests
                 loadedClass.FieldDefinitions.Should().ContainKey(k);
                 IFieldDefinition? loadedFieldDefinition = loadedClass.FieldDefinitions.GetValueOrDefault(k);
                 IFieldDefinition? savedFieldDefinition = v;
-                loadedFieldDefinition.Name.Should().Be(savedFieldDefinition.Name);
-                loadedFieldDefinition.Type.Should().Be(savedFieldDefinition.Type);
+                loadedFieldDefinition.Should().NotBeNull();
+                loadedFieldDefinition!.Name.Should().Be(savedFieldDefinition.Name);
+                loadedFieldDefinition!.Type.Should().Be(savedFieldDefinition.Type);
                 Assert.True(((dynamic)loadedFieldDefinition)!.DefaultValue.Equals(((dynamic)savedFieldDefinition)!.DefaultValue));
                 FieldFormatter? loadedFieldFormatter = loadedFieldDefinition!.Formatter;
                 FieldFormatter? savedFieldFormatter = savedFieldDefinition!.Formatter;

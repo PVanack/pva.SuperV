@@ -118,7 +118,7 @@ namespace pva.SuperV.EngineTests
             RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
             Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
             Field<int>? intField = instance?.GetField<int>(ProjectHelpers.ValueFieldName);
-            intField!.Value = 1234;
+            intField!.SetValue(1234);
             WipProject wipProject = Project.CreateProject(runnableProject);
 
             // WHEN
@@ -189,11 +189,12 @@ namespace pva.SuperV.EngineTests
             dynamic? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
 
             // WHEN
-            instance!.Value.Value = 50;
-            instance!.Value.Value = 110;
+            instance!.Value.SetValue(50);
+            instance!.Value.SetValue(110);
 
             // THEN
-            Assert.True(instance.AlarmState.Value == 2);
+            int alarmState = instance.AlarmState.Value;
+            alarmState.Should().Be(2);
 
             instance?.Dispose();
             ProjectHelpers.DeleteProject(runnableProject);

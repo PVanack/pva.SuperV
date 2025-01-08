@@ -1,5 +1,6 @@
 ﻿using pva.Helpers.Extensions;
 using pva.SuperV.Engine.Exceptions;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -11,6 +12,11 @@ namespace pva.SuperV.Engine
     /// <seealso cref="System.Text.Json.Serialization.JsonConverter&lt;pva.SuperV.Engine.IInstance&gt;" />
     public class InstanceJsonConverter : JsonConverter<IInstance>
     {
+        /// <summary>
+        /// The iso8601 UTC date format used to save/load date times.
+        /// </summary>
+        private const string Iso8601UtcDateFormat = "yyyy-MM-ddTHH:mm:ss.sssZ";
+
         /// <summary>
         /// The field converters
         /// </summary>
@@ -37,69 +43,78 @@ namespace pva.SuperV.Engine
         /// <exception cref="pva.SuperV.Engine.Exceptions.InstanceCreationException"></exception>
         public override IInstance? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType != JsonTokenType.StartObject)
+                if (reader.TokenType != JsonTokenType.StartObject)
             {
                 throw new JsonException();
             }
 
             string? instanceClass = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Class");
             String? instanceName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
-
             reader.Read();
             if (reader.TokenType != JsonTokenType.PropertyName)
             {
                 throw new JsonException();
             }
-
             try
             {
                 IInstance? instance = LoadedProject.CreateInstance(instanceClass!, instanceName!);
+                DeserialiweFields(ref reader, options, instance!);
+                return instance;
+            }
+            catch (Exception ex)
+            {
+                throw new InstanceCreationException(instanceName!, instanceClass!, ex);
+            }
+        }
+
+        private static void DeserialiweFields(ref Utf8JsonReader reader, JsonSerializerOptions options, IInstance instance)
+        {
+            reader.Read();
+            if (reader.TokenType != JsonTokenType.StartArray)
+            {
+                throw new JsonException();
+            }
+
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+            {
+                if (reader.TokenType != JsonTokenType.StartObject)
+                {
+                    throw new JsonException();
+                }
+                string? fieldTypeString = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Type");
+                String? fieldName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
 
                 reader.Read();
-                if (reader.TokenType != JsonTokenType.StartArray)
+                string? readPropertyName = reader.GetString();
+                if (readPropertyName != "Value")
                 {
                     throw new JsonException();
                 }
 
-                while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
-                {
-                    if (reader.TokenType != JsonTokenType.StartObject)
-                    {
-                        throw new JsonException();
-                    }
-                    string? fieldTypeString = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Type");
-                    String? fieldName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
+                Type? fieldType = Type.GetType(fieldTypeString!);
+                dynamic? fieldValue = JsonSerializer.Deserialize(ref reader, fieldType!, options);
+                string? valueTimestampStr = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Timestamp");
+                DateTime.TryParseExact(valueTimestampStr, Iso8601UtcDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal,
+                    out DateTime valueTimestamp);
+                string? valueQualityStr = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Quality");
+                Enum.TryParse<QualityLevel>(valueQualityStr, out QualityLevel valueQuality);
 
-                    reader.Read();
-                    string? readPropertyName = reader.GetString();
-                    if (readPropertyName != "Value")
-                    {
-                        throw new JsonException();
-                    }
+                IField? field = (instance as Instance)?.GetField(fieldName!);
+                dynamic? dynamicField = field as dynamic;
 
-                    Type? fieldType = Type.GetType(fieldTypeString!);
-                    dynamic? fieldValue = JsonSerializer.Deserialize(ref reader, fieldType!, options);
-                    IField? field = (instance as Instance)?.GetField(fieldName!);
-                    dynamic? dynamicField = field as dynamic;
-                    dynamicField!.Value = fieldValue;
-
-                    reader.Read();
-                    if (reader.TokenType != JsonTokenType.EndObject)
-                    {
-                        throw new JsonException();
-                    }
-                }
+                dynamicField!.SetValue(fieldValue, valueTimestamp, valueQuality);
 
                 reader.Read();
                 if (reader.TokenType != JsonTokenType.EndObject)
                 {
                     throw new JsonException();
                 }
-                return instance;
             }
-            catch (Exception ex)
+
+            reader.Read();
+            if (reader.TokenType != JsonTokenType.EndObject)
             {
-                throw new InstanceCreationException(instanceName!, instanceClass!, ex);
+                throw new JsonException();
             }
         }
 
@@ -116,6 +131,12 @@ namespace pva.SuperV.Engine
 
             writer.WriteString("Class", instance.Class.Name);
             writer.WriteString("Name", instance.Name);
+            SerializeFields(writer, options, instance);
+            writer.WriteEndObject();
+        }
+
+        private static void SerializeFields(Utf8JsonWriter writer, JsonSerializerOptions options, Instance instance)
+        {
             writer.WriteStartArray("Fields");
             instance.Fields.ForEach((k, v) =>
             {
@@ -131,11 +152,11 @@ namespace pva.SuperV.Engine
                     fieldConverters.Add(fieldType, fieldConverter);
                 }
                 fieldConverter.Write(writer, ((dynamic)v).Value, options);
+                writer.WriteString("Timestamp", v.Timestamp?.ToUniversalTime().ToString(Iso8601UtcDateFormat));
+                writer.WriteString("Quality", v.Quality?.ToString());
                 writer.WriteEndObject();
             });
             writer.WriteEndArray();
-
-            writer.WriteEndObject();
         }
     }
 }

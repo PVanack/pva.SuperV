@@ -219,10 +219,10 @@ namespace pva.SuperV.Engine
 
                 if (newAlarmState != previousAlarmState)
                 {
-                    alarmState.Value = newAlarmState;
+                    alarmState.SetValue(newAlarmState);
                     if (ackState is not null && newAlarmState != OkAlarmState && ackState.Value != UnackState)
                     {
-                        ackState.Value = UnackState;
+                        ackState.SetValue(UnackState);
                     }
                 }
             }
