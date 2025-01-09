@@ -47,6 +47,7 @@ namespace pva.SuperV.Engine
         public virtual T Value
         {
             get => _value;
+            set => SetValue(value);
         }
 
         private DateTime? _timestamp;
@@ -105,14 +106,24 @@ namespace pva.SuperV.Engine
         public void SetValue(T newValue, DateTime timestamp, QualityLevel quality)
         {
             T? previousValue = _value;
+            SetValueInternal(newValue, timestamp, quality);
+            ProcessNewValue(!previousValue!.Equals(newValue), newValue, previousValue);
+        }
+
+        internal void SetValueInternal(T newValue, DateTime timestamp, QualityLevel quality)
+        {
             _timestamp = timestamp;
             _quality = quality;
             _value = newValue;
+        }
+
+        private void ProcessNewValue(bool hasValueChanged, T newValue, T? previousValue)
+        {
             FieldDefinition?.ValuePostChangeProcessings.ForEach(
                 processing =>
                 {
                     FieldValueProcessing<T>? fieldValueProcessing = processing as FieldValueProcessing<T>;
-                    fieldValueProcessing!.ProcessValue(Instance!, this, !previousValue!.Equals(newValue), previousValue, newValue);
+                    fieldValueProcessing!.ProcessValue(Instance!, this, hasValueChanged, previousValue, newValue);
                 });
         }
 
