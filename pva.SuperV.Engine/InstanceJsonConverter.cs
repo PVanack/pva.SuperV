@@ -77,38 +77,7 @@ namespace pva.SuperV.Engine
 
             while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
             {
-                if (reader.TokenType != JsonTokenType.StartObject)
-                {
-                    throw new JsonException();
-                }
-                string? fieldTypeString = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Type");
-                String? fieldName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
-
-                reader.Read();
-                string? readPropertyName = reader.GetString();
-                if (readPropertyName != "Value")
-                {
-                    throw new JsonException();
-                }
-
-                Type? fieldType = Type.GetType(fieldTypeString!);
-                dynamic? fieldValue = JsonSerializer.Deserialize(ref reader, fieldType!, options);
-                string? valueTimestampStr = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Timestamp");
-                DateTime.TryParseExact(valueTimestampStr, Iso8601UtcDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal,
-                    out DateTime valueTimestamp);
-                string? valueQualityStr = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Quality");
-                Enum.TryParse<QualityLevel>(valueQualityStr, out QualityLevel valueQuality);
-
-                IField? field = (instance as Instance)?.GetField(fieldName!);
-                dynamic? dynamicField = field as dynamic;
-
-                dynamicField!.SetValue(fieldValue, valueTimestamp, valueQuality);
-
-                reader.Read();
-                if (reader.TokenType != JsonTokenType.EndObject)
-                {
-                    throw new JsonException();
-                }
+                reader = DeserializeField(reader, options, instance);
             }
 
             reader.Read();
@@ -116,6 +85,43 @@ namespace pva.SuperV.Engine
             {
                 throw new JsonException();
             }
+        }
+
+        private static Utf8JsonReader DeserializeField(Utf8JsonReader reader, JsonSerializerOptions options, IInstance instance)
+        {
+            if (reader.TokenType != JsonTokenType.StartObject)
+            {
+                throw new JsonException();
+            }
+            string? fieldTypeString = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Type");
+            String? fieldName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
+
+            reader.Read();
+            string? readPropertyName = reader.GetString();
+            if (readPropertyName != "Value")
+            {
+                throw new JsonException();
+            }
+
+            Type? fieldType = Type.GetType(fieldTypeString!);
+            dynamic? fieldValue = JsonSerializer.Deserialize(ref reader, fieldType!, options);
+            string? valueTimestampStr = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Timestamp");
+            DateTime.TryParseExact(valueTimestampStr, Iso8601UtcDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal,
+                out DateTime valueTimestamp);
+            string? valueQualityStr = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Quality");
+            Enum.TryParse<QualityLevel>(valueQualityStr, out QualityLevel valueQuality);
+
+            IField? field = (instance as Instance)?.GetField(fieldName!);
+            dynamic? dynamicField = field;
+            dynamicField!.SetValueInternal(fieldValue, valueTimestamp, valueQuality);
+
+            reader.Read();
+            if (reader.TokenType != JsonTokenType.EndObject)
+            {
+                throw new JsonException();
+            }
+
+            return reader;
         }
 
         /// <summary>
