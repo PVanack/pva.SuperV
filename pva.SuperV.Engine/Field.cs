@@ -47,7 +47,12 @@ namespace pva.SuperV.Engine
         public virtual T Value
         {
             get => _value;
-            set => SetValue(value);
+#pragma warning disable S4275 // Getters and setters should access the expected fields
+            set
+#pragma warning restore S4275 // Getters and setters should access the expected fields
+            {
+                SetValue(value);
+            }
         }
 
         private DateTime? _timestamp;
@@ -107,7 +112,7 @@ namespace pva.SuperV.Engine
         {
             T? previousValue = _value;
             SetValueInternal(newValue, timestamp, quality);
-            ProcessNewValue(!previousValue!.Equals(newValue), newValue, previousValue);
+            ProcessNewValue(!previousValue!.Equals(newValue), newValue, previousValue!);
         }
 
         internal void SetValueInternal(T newValue, DateTime timestamp, QualityLevel quality)
@@ -117,7 +122,7 @@ namespace pva.SuperV.Engine
             _value = newValue;
         }
 
-        private void ProcessNewValue(bool hasValueChanged, T newValue, T? previousValue)
+        private void ProcessNewValue(bool hasValueChanged, T newValue, T previousValue)
         {
             FieldDefinition?.ValuePostChangeProcessings.ForEach(
                 processing =>
