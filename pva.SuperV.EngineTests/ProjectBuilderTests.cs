@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Shouldly;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 
@@ -40,7 +40,7 @@ namespace pva.SuperV.EngineTests
             project.RemoveInstance(instance!.Name!);
 
             // THEN
-            project.Instances.Should().BeEmpty();
+            project.Instances.ShouldBeEmpty();
 
             instance?.Dispose();
             ProjectHelpers.DeleteProject(project);
@@ -85,9 +85,9 @@ namespace pva.SuperV.EngineTests
             WipProject wipProject = Project.CreateProject(runnableProject);
 
             // THEN
-            wipProject.Name.Should().Be(runnableProject.Name);
-            wipProject.Description.Should().Be(runnableProject.Description);
-            wipProject.Version.Should().Be(runnableProject.Version + 1);
+            wipProject.Name.ShouldBe(runnableProject.Name);
+            wipProject.Description.ShouldBe(runnableProject.Description);
+            wipProject.Version.ShouldBe(runnableProject.Version + 1);
 
             instance?.Dispose();
             ProjectHelpers.DeleteProject(runnableProject);
@@ -105,7 +105,7 @@ namespace pva.SuperV.EngineTests
             wipProject.RemoveClass(ProjectHelpers.ClassName);
 
             // THEN
-            wipProject.ToLoadInstances.Should().BeEmpty();
+            wipProject.ToLoadInstances.ShouldBeEmpty();
 
             instance?.Dispose();
             ProjectHelpers.DeleteProject(runnableProject);
@@ -125,12 +125,12 @@ namespace pva.SuperV.EngineTests
             runnableProject = ProjectBuilder.Build(wipProject);
 
             // THEN
-            runnableProject.Instances.Should().HaveCount(1);
+            runnableProject.Instances.Count.ShouldBe(1);
             instance = runnableProject.GetInstance(ProjectHelpers.InstanceName);
-            instance.Should().NotBeNull();
-            instance.Class.Name.Should().Be(ProjectHelpers.ClassName);
+            instance.ShouldNotBeNull();
+            instance.Class.Name.ShouldBe(ProjectHelpers.ClassName);
             intField = instance.GetField<int>(ProjectHelpers.ValueFieldName);
-            intField!.Value.Should().Be(1234);
+            intField!.Value.ShouldBe(1234);
 
             instance?.Dispose();
             ProjectHelpers.DeleteProject(runnableProject);
@@ -147,7 +147,7 @@ namespace pva.SuperV.EngineTests
             Field<int>? field = instance?.GetField<int>(ProjectHelpers.ValueFieldName);
 
             // THEN
-            field.Should().NotBeNull();
+            field.ShouldNotBeNull();
 
             instance?.Dispose();
             ProjectHelpers.DeleteProject(runnableProject);
@@ -194,7 +194,7 @@ namespace pva.SuperV.EngineTests
 
             // THEN
             int alarmState = instance.AlarmState.Value;
-            alarmState.Should().Be(2);
+            alarmState.ShouldBe(2);
 
             instance?.Dispose();
             ProjectHelpers.DeleteProject(runnableProject);

@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using Shouldly;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 
@@ -30,10 +30,10 @@ namespace pva.SuperV.EngineTests
             Class clazz = project.AddClass(ClassName);
 
             // THEN
-            clazz.Should().NotBeNull();
-            clazz.Name.Should().Be(ClassName);
-            clazz.FieldDefinitions.Should().NotBeNull();
-            clazz.FieldDefinitions.Should().BeEmpty();
+            clazz.ShouldNotBeNull()
+                .Name.ShouldBe(ClassName);
+            clazz.FieldDefinitions.ShouldNotBeNull();
+            clazz.FieldDefinitions.ShouldBeEmpty();
         }
 
         [Fact]
@@ -47,11 +47,11 @@ namespace pva.SuperV.EngineTests
             project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10));
 
             // THEN
-            clazz.FieldDefinitions.Should().NotBeNull();
-            clazz.FieldDefinitions.Should().ContainKey(FieldName);
+            clazz.FieldDefinitions.ShouldNotBeNull()
+                .ShouldContainKey(FieldName);
             FieldDefinition<int>? field = clazz.GetField<int>(FieldName);
-            field!.Should().NotBeNull();
-            field!.DefaultValue.Should().Be(10);
+            field!.ShouldNotBeNull();
+            field!.DefaultValue.ShouldBe(10);
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace pva.SuperV.EngineTests
             project.RemoveField(ClassName, FieldName);
 
             // THEN
-            clazz.FieldDefinitions.Should().BeEmpty();
+            clazz.FieldDefinitions.ShouldBeEmpty();
             Assert.Throws<UnknownFieldException>(() => clazz.GetField<int>(FieldName));
         }
     }
