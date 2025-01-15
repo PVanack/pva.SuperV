@@ -63,7 +63,19 @@ namespace pva.SuperV.Engine
                 throw new JsonException();
             }
             List<IFieldValueProcessing>? fieldValueProcessings = JsonSerializer.Deserialize<List<IFieldValueProcessing>>(ref reader, options);
+
+            FieldFormatter? fieldFormatter = null;
             reader.Read();
+            if (reader.TokenType == JsonTokenType.PropertyName)
+            {
+                if (reader.GetString() != "Formatter")
+                {
+                    throw new JsonException();
+                }
+                fieldFormatter = JsonSerializer.Deserialize<FieldFormatter>(ref reader, options);
+                reader.Read();
+            }
+
             if (reader.TokenType != JsonTokenType.EndObject)
             {
                 throw new JsonException();
@@ -71,6 +83,7 @@ namespace pva.SuperV.Engine
 
             IFieldDefinition fieldDefinition = CreateInstance(fieldType!, fieldName, defaultValue);
             fieldDefinition.ValuePostChangeProcessings = fieldValueProcessings!;
+            fieldDefinition.Formatter = fieldFormatter;
             return fieldDefinition;
         }
 
@@ -99,6 +112,11 @@ namespace pva.SuperV.Engine
             writer.WritePropertyName("ValuePostChangeProcessings");
             JsonSerializer.Serialize<List<IFieldValueProcessing>>(writer, fieldDefinition!.ValuePostChangeProcessings, options);
 
+            if (fieldDefinition!.Formatter is not null)
+            {
+                writer.WritePropertyName("Formatter");
+                JsonSerializer.Serialize<FieldFormatter>(writer, fieldDefinition!.Formatter, options);
+            }
             writer.WriteEndObject();
         }
 
