@@ -1,6 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using pva.SuperV.Engine.JsonConverters;
+using System.Text.Json.Serialization;
 
-namespace pva.SuperV.Engine
+namespace pva.SuperV.Engine.Processing
 {
     /// <summary>
     /// Interface for value processing of a <see cref="Field{T}"/> trigerring field. Used to allow usage in List/Dictionnaries.
@@ -38,7 +39,7 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The constructor arguments.
         /// </value>
-        List<Object> CtorArguments { get; set; }
+        List<object> CtorArguments { get; set; }
 
         /// <summary>
         /// Builds the field value processing from the <see cref="CtorArguments"/> after deserialization.

@@ -1,13 +1,14 @@
-﻿using System.Reflection;
+﻿using pva.SuperV.Engine.Processing;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace pva.SuperV.Engine
+namespace pva.SuperV.Engine.JsonConverters
 {
     /// <summary>
     /// Json converter for field definition
     /// </summary>
-    /// <seealso cref="System.Text.Json.Serialization.JsonConverter&lt;pva.SuperV.Engine.IFieldDefinition&gt;" />
+    /// <seealso cref="JsonConverter&lt;IFieldDefinition&gt;" />
     public class FieldDefinitionJsonConverter : JsonConverter<IFieldDefinition>
     {
         /// <summary>
@@ -24,7 +25,7 @@ namespace pva.SuperV.Engine
         /// <returns>
         /// The converted value.
         /// </returns>
-        /// <exception cref="System.Text.Json.JsonException"></exception>
+        /// <exception cref="JsonException"></exception>
         public override IFieldDefinition? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject)
@@ -34,7 +35,7 @@ namespace pva.SuperV.Engine
 
             string? fieldTypeString = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Type");
 
-            String? fieldName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
+            string? fieldName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
 
             reader.Read();
             if (reader.TokenType != JsonTokenType.PropertyName)
@@ -110,12 +111,12 @@ namespace pva.SuperV.Engine
             fieldConverter.Write(writer, actualFieldDefinition.DefaultValue, options);
 
             writer.WritePropertyName("ValuePostChangeProcessings");
-            JsonSerializer.Serialize<List<IFieldValueProcessing>>(writer, fieldDefinition!.ValuePostChangeProcessings, options);
+            JsonSerializer.Serialize(writer, fieldDefinition!.ValuePostChangeProcessings, options);
 
             if (fieldDefinition!.Formatter is not null)
             {
                 writer.WritePropertyName("Formatter");
-                JsonSerializer.Serialize<FieldFormatter>(writer, fieldDefinition!.Formatter, options);
+                JsonSerializer.Serialize(writer, fieldDefinition!.Formatter, options);
             }
             writer.WriteEndObject();
         }
@@ -139,7 +140,7 @@ namespace pva.SuperV.Engine
         /// <param name="targetType">Type of the target.</param>
         /// <param name="argumentType">Type of the argument.</param>
         /// <returns></returns>
-        /// <exception cref="System.InvalidOperationException">No constructor found for FieldDefinition<{targetType.Name}>.</exception>
+        /// <exception cref="InvalidOperationException">No constructor found for FieldDefinition<{targetType.Name}>.</exception>
         private static ConstructorInfo GetConstructor(Type targetType, Type argumentType)
         {
             return typeof(FieldDefinition<>)

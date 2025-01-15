@@ -1,13 +1,14 @@
-﻿using System.Reflection;
+﻿using pva.SuperV.Engine.Processing;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace pva.SuperV.Engine
+namespace pva.SuperV.Engine.JsonConverters
 {
     /// <summary>
     /// Json converter for field value processing
     /// </summary>
-    /// <seealso cref="System.Text.Json.Serialization.JsonConverter{pva.SuperV.Engine.IFieldValueProcessing}" />
+    /// <seealso cref="JsonConverter{IFieldValueProcessing}" />
     public class FieldValueProcessingJsonConverter : JsonConverter<IFieldValueProcessing>
     {
         /// <summary>
@@ -24,7 +25,7 @@ namespace pva.SuperV.Engine
         /// <returns>
         /// The converted value.
         /// </returns>
-        /// <exception cref="System.Text.Json.JsonException"></exception>
+        /// <exception cref="JsonException"></exception>
         public override IFieldValueProcessing? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject)
@@ -33,9 +34,9 @@ namespace pva.SuperV.Engine
             }
 
             string? fieldValueProcessingTypeString = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Type");
-            String? fieldValueProcessingName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
+            string? fieldValueProcessingName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
 
-            List<Object> ctorArguments = ReadParameters(ref reader, options);
+            List<object> ctorArguments = ReadParameters(ref reader, options);
             Type? fieldType = Type.GetType(fieldValueProcessingTypeString!);
             reader.Read();
             if (reader.TokenType != JsonTokenType.EndObject)
@@ -77,7 +78,7 @@ namespace pva.SuperV.Engine
                 {
                     throw new JsonException();
                 }
-                String? paramTypeString = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Type");
+                string? paramTypeString = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Type");
 
                 reader.Read();
                 if (reader.TokenType != JsonTokenType.PropertyName)
@@ -154,7 +155,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="fieldProcesingType">Type of the target.</param>
         /// <returns></returns>
-        /// <exception cref="System.InvalidOperationException">No constructor found for FieldValueProcessing<{targetType.Name}>.</exception>
+        /// <exception cref="InvalidOperationException">No constructor found for FieldValueProcessing<{targetType.Name}>.</exception>
         private static ConstructorInfo GetConstructor(Type fieldProcesingType)
         {
             return fieldProcesingType

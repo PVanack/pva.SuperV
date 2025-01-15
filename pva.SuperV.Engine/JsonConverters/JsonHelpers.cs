@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace pva.SuperV.Engine
+namespace pva.SuperV.Engine.JsonConverters
 {
     /// <summary>
     /// Json helpers.
@@ -13,8 +13,8 @@ namespace pva.SuperV.Engine
         /// <param name="reader">The reader.</param>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns>Value of property from Json</returns>
-        /// <exception cref="System.Text.Json.JsonException"></exception>
-        public static String? GetStringPropertyFromUtfReader(ref Utf8JsonReader reader, string propertyName)
+        /// <exception cref="JsonException"></exception>
+        public static string? GetStringPropertyFromUtfReader(ref Utf8JsonReader reader, string propertyName)
         {
             reader.Read();
             if (reader.TokenType != JsonTokenType.PropertyName)
