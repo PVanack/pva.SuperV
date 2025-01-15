@@ -1,7 +1,6 @@
-﻿using FluentAssertions;
-using NSubstitute;
+﻿using NSubstitute;
 using pva.SuperV.Engine;
-using System.Text.Json;
+using Shouldly;
 
 namespace pva.SuperV.EngineTests
 {
@@ -67,8 +66,8 @@ namespace pva.SuperV.EngineTests
             alarmStateProcessing.ProcessValue(instance, valueField, true, 50.0, valueField.Value);
 
             // THEN
-            alarmStateField.Value.Should().Be(2);
-            ackStateField.Value.Should().Be(1);
+            alarmStateField.Value.ShouldBe(2);
+            ackStateField.Value.ShouldBe(1);
         }
 
         [Fact]
@@ -94,8 +93,8 @@ namespace pva.SuperV.EngineTests
             alarmStateProcessing.ProcessValue(instance, valueField, true, 50.0, valueField.Value);
 
             // THEN
-            alarmStateField.Value.Should().Be(1);
-            ackStateField.Value.Should().Be(1);
+            alarmStateField.Value.ShouldBe(1);
+            ackStateField.Value.ShouldBe(1);
         }
 
         [Fact]
@@ -121,8 +120,8 @@ namespace pva.SuperV.EngineTests
             alarmStateProcessing.ProcessValue(instance, valueField, true, 50.0, valueField.Value);
 
             // THEN
-            alarmStateField.Value.Should().Be(-1);
-            ackStateField.Value.Should().Be(1);
+            alarmStateField.Value.ShouldBe(-1);
+            ackStateField.Value.ShouldBe(1);
         }
 
         [Fact]
@@ -148,8 +147,8 @@ namespace pva.SuperV.EngineTests
             alarmStateProcessing.ProcessValue(instance, valueField, true, 50.0, valueField.Value);
 
             // THEN
-            alarmStateField.Value.Should().Be(-2);
-            ackStateField.Value.Should().Be(1);
+            alarmStateField.Value.ShouldBe(-2);
+            ackStateField.Value.ShouldBe(1);
         }
 
         [Fact]
@@ -175,8 +174,8 @@ namespace pva.SuperV.EngineTests
             alarmStateProcessing.ProcessValue(instance, valueField, true, 50.0, valueField.Value);
 
             // THEN
-            alarmStateField.Value.Should().Be(0);
-            ackStateField.Value.Should().Be(0);
+            alarmStateField.Value.ShouldBe(0);
+            ackStateField.Value.ShouldBe(0);
         }
     }
 }

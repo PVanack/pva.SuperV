@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Shouldly;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 
@@ -26,9 +26,9 @@ namespace pva.SuperV.EngineTests
             WipProject project = Project.CreateProject(ProjectName);
 
             // THEN
-            project.Should().NotBeNull();
-            project.Name.Should().Be(ProjectName);
-            project.Classes.Should().BeEmpty();
+            project.ShouldNotBeNull();
+            project.Name.ShouldBe(ProjectName);
+            project.Classes.ShouldBeEmpty();
         }
 
         [Fact]
@@ -41,8 +41,8 @@ namespace pva.SuperV.EngineTests
             project.AddClass(ClassName);
 
             // THEN
-            project.Classes.Should().Satisfy(entry => entry.Key.Equals(ClassName));
-            project.Classes[ClassName].Should().NotBeNull();
+            project.Classes.ShouldContainKey(ClassName);
+            project.Classes[ClassName].ShouldNotBeNull();
         }
 
         [Fact]
@@ -53,8 +53,8 @@ namespace pva.SuperV.EngineTests
 
             // WHEN
             project.AddClass(ClassName);
-            project.Classes.Should().Satisfy(entry => entry.Key.Equals(ClassName));
-            project.Classes[ClassName].Should().NotBeNull();
+            project.Classes.ShouldContainKey(ClassName);
+            project.Classes[ClassName].ShouldNotBeNull();
             var exception = Assert.Throws<ClassAlreadyExistException>(() => project.AddClass(ClassName));
 
             // THEN
@@ -72,7 +72,7 @@ namespace pva.SuperV.EngineTests
             Class? clazz = project.FindClass(ClassName);
 
             // THEN
-            clazz.Should().NotBeNull();
+            clazz.ShouldNotBeNull();
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace pva.SuperV.EngineTests
             Class? clazz = project.FindClass(ClassName);
 
             // THEN
-            clazz.Should().BeNull();
+            clazz.ShouldBeNull();
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace pva.SuperV.EngineTests
             Class clazz = project.GetClass(ClassName);
 
             // THEN
-            clazz.Should().NotBeNull();
+            clazz.ShouldNotBeNull();
         }
 
         [Fact]
@@ -126,7 +126,7 @@ namespace pva.SuperV.EngineTests
             project.RemoveClass(ClassName);
 
             // THEN
-            project.Classes.Should().BeEmpty();
+            project.Classes.ShouldBeEmpty();
         }
 
         [Fact]
@@ -162,7 +162,7 @@ public TestClass() {Fields.Add("IntField", IntField);IntField.Instance = this;
 }
 
 """;
-            projectCode.Should().BeEquivalentTo(expectedCode);
+            projectCode.ShouldBe(expectedCode);
         }
 
         [Fact]
@@ -177,9 +177,8 @@ public TestClass() {Fields.Add("IntField", IntField);IntField.Instance = this;
             FieldFormatter foundFormatter = project.GetFormatter(ProjectHelpers.AlarmStatesFormatterName);
 
             // THEN
-            foundFormatter.Should()
-                .NotBeNull().And
-                .Be(formatter);
+            foundFormatter.ShouldNotBeNull()
+                .ShouldBe(formatter);
         }
 
         [Fact]
@@ -206,9 +205,8 @@ public TestClass() {Fields.Add("IntField", IntField);IntField.Instance = this;
             FieldFormatter? foundFormatter = project.FindFormatter(ProjectHelpers.AlarmStatesFormatterName);
 
             // THEN
-            foundFormatter.Should()
-                .NotBeNull().And
-                .Be(formatter);
+            foundFormatter.ShouldNotBeNull()
+                .ShouldBe(formatter);
         }
 
         [Fact]
@@ -223,7 +221,7 @@ public TestClass() {Fields.Add("IntField", IntField);IntField.Instance = this;
             FieldFormatter? foundFormatter = project.FindFormatter("UnknownFormatter");
 
             // THEN
-            foundFormatter.Should().BeNull();
+            foundFormatter.ShouldBeNull();
         }
 
         [Fact]
@@ -239,7 +237,7 @@ public TestClass() {Fields.Add("IntField", IntField);IntField.Instance = this;
             FieldDefinition<int> field = project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), ProjectHelpers.AlarmStatesFormatterName);
 
             // THEN
-            field.Formatter.Should().Be(formatter);
+            field.Formatter.ShouldBe(formatter);
         }
 
         [Fact]

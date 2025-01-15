@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using Shouldly;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 
@@ -15,13 +15,10 @@ namespace pva.SuperV.EngineTests
             EnumFormatter formatter = new(EnumName, ["Closed", "Opened"]);
 
             // THEN
-            formatter.Should().NotBeNull();
-            formatter.Values.Should()
-                .HaveCount(2).And
-                .Contain(
-                    new KeyValuePair<int, string>(0, "Closed"),
-                    new KeyValuePair<int, string>(1, "Opened")
-                    );
+            formatter.Values.ShouldNotBeNull()
+                .ShouldContain(valuePair =>
+                    (valuePair.Key == 0 && valuePair.Value.Equals("Closed")) ||
+                    (valuePair.Key == 1 && valuePair.Value.Equals("Opened")));
         }
 
         [Fact]
@@ -31,16 +28,14 @@ namespace pva.SuperV.EngineTests
             EnumFormatter formatter = new(EnumName, new Dictionary<int, string>() { { 23, "Closed" }, { 32, "Opened" } });
 
             // THEN
-            formatter.Should().NotBeNull();
-            formatter.AllowedTypes.Should()
-                .HaveCount(2).And
-                .Contain([typeof(int), typeof(long)]);
-            formatter.Values.Should()
-                .HaveCount(2).And
-                .Contain(
-                    new KeyValuePair<int, string>(23, "Closed"),
-                    new KeyValuePair<int, string>(32, "Opened")
-                    );
+            formatter.AllowedTypes.ShouldNotBeNull()
+                .ShouldContain(type =>
+                    type == typeof(int) ||
+                    type == typeof(long));
+            formatter.Values.ShouldNotBeNull()
+                .ShouldContain(valuePair =>
+                    (valuePair.Key == 23 && valuePair.Value.Equals("Closed")) ||
+                    (valuePair.Key == 32 && valuePair.Value.Equals("Opened")));
         }
 
         [Theory]
@@ -66,9 +61,8 @@ namespace pva.SuperV.EngineTests
             string? stringValue = formatter.ConvertToString(value);
 
             // THEN
-            stringValue.Should()
-                .NotBeNull().And
-                .Be("Closed");
+            stringValue.ShouldNotBeNull()
+                .ShouldBe("Closed");
         }
 
         [Fact]
@@ -82,9 +76,8 @@ namespace pva.SuperV.EngineTests
             string? stringValue = formatter.ConvertToString(value);
 
             // THEN
-            stringValue.Should()
-                .NotBeNull().And
-                .Be("0 ?");
+            stringValue.ShouldNotBeNull()
+                .ShouldBe("0 ?");
         }
     }
 }
