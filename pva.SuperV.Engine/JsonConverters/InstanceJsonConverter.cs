@@ -4,12 +4,12 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace pva.SuperV.Engine
+namespace pva.SuperV.Engine.JsonConverters
 {
     /// <summary>
     /// Json converter for an instance.
     /// </summary>
-    /// <seealso cref="System.Text.Json.Serialization.JsonConverter&lt;pva.SuperV.Engine.IInstance&gt;" />
+    /// <seealso cref="JsonConverter&lt;IInstance&gt;" />
     public class InstanceJsonConverter : JsonConverter<IInstance>
     {
         /// <summary>
@@ -39,17 +39,17 @@ namespace pva.SuperV.Engine
         /// <returns>
         /// The converted value.
         /// </returns>
-        /// <exception cref="System.Text.Json.JsonException"></exception>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.InstanceCreationException"></exception>
+        /// <exception cref="JsonException"></exception>
+        /// <exception cref="InstanceCreationException"></exception>
         public override IInstance? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-                if (reader.TokenType != JsonTokenType.StartObject)
+            if (reader.TokenType != JsonTokenType.StartObject)
             {
                 throw new JsonException();
             }
 
             string? instanceClass = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Class");
-            String? instanceName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
+            string? instanceName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
             reader.Read();
             if (reader.TokenType != JsonTokenType.PropertyName)
             {
@@ -94,7 +94,7 @@ namespace pva.SuperV.Engine
                 throw new JsonException();
             }
             string? fieldTypeString = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Type");
-            String? fieldName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
+            string? fieldName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
 
             reader.Read();
             string? readPropertyName = reader.GetString();
@@ -109,7 +109,7 @@ namespace pva.SuperV.Engine
             DateTime.TryParseExact(valueTimestampStr, Iso8601UtcDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal,
                 out DateTime valueTimestamp);
             string? valueQualityStr = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Quality");
-            Enum.TryParse<QualityLevel>(valueQualityStr, out QualityLevel valueQuality);
+            Enum.TryParse(valueQualityStr, out QualityLevel valueQuality);
 
             IField? field = (instance as Instance)?.GetField(fieldName!);
             dynamic? dynamicField = field;

@@ -1,5 +1,6 @@
 ﻿using NSubstitute;
 using pva.SuperV.Engine;
+using pva.SuperV.Engine.Processing;
 using Shouldly;
 
 namespace pva.SuperV.EngineTests

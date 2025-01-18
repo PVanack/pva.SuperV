@@ -1,10 +1,10 @@
-﻿namespace pva.SuperV.Engine
+﻿namespace pva.SuperV.Engine.Processing
 {
     /// <summary>
     /// Base class for value processing of a <see cref="Field{T}"/> trigerring field
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class FieldValueProcessing<T>: IFieldValueProcessing
+    public abstract class FieldValueProcessing<T> : IFieldValueProcessing
     {
         /// <summary>
         /// Gets or sets the name.
@@ -44,7 +44,7 @@
         /// <value>
         /// The constructor arguments.
         /// </value>
-        public List<Object> CtorArguments { get; set; } = [];
+        public List<object> CtorArguments { get; set; } = [];
 
         /// <summary>
         /// Gets the field definition which triggers the processing.
@@ -68,7 +68,7 @@
         /// <param name="clazz">Name of the class</param>
         protected FieldValueProcessing(string name, Class clazz)
         {
-            this.Name = name;
+            Name = name;
         }
 
         /// <summary>
@@ -83,7 +83,7 @@
         /// <typeparam name="T1">The type of the argument.</typeparam>
         /// <param name="index">The index of argument.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">index</exception>
+        /// <exception cref="ArgumentOutOfRangeException">index</exception>
         protected T1? GetCtorArgument<T1>(int index)
         {
             ArgumentOutOfRangeException.ThrowIfGreaterThan(index, CtorArguments.Count);
@@ -109,7 +109,7 @@
         /// <returns><see cref="FieldDefinition{T}"/></returns>
         protected static FieldDefinition<T1>? GetFieldDefinition<T1>(Class clazz, string? fieldName)
         {
-            return String.IsNullOrEmpty(fieldName)
+            return string.IsNullOrEmpty(fieldName)
                 ? null
                 : clazz.GetField<T1>(fieldName);
         }
@@ -123,7 +123,7 @@
         /// <returns><see cref="Field{T}"/></returns>
         protected static Field<T1>? GetInstanceField<T1>(IInstance instance, string? fieldName)
         {
-            return String.IsNullOrEmpty(fieldName)
+            return string.IsNullOrEmpty(fieldName)
                 ? null
                 : instance.GetField<T1>(fieldName);
         }

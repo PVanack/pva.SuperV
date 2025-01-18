@@ -1,5 +1,6 @@
 ﻿using pva.Helpers.Extensions;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.Processing;
 using System.Text;
 
 namespace pva.SuperV.Engine
@@ -55,6 +56,26 @@ namespace pva.SuperV.Engine
             }
 
             Class clazz = new(className);
+            Classes.Add(className, clazz);
+            return clazz;
+        }
+
+        /// <summary>
+        /// Adds a new class with inheritance to the project.
+        /// </summary>
+        /// <param name="className">Name of the class.</param>
+        /// <param name="baseClassName">Name of the base class.</param>
+        /// <returns>The newly created <see cref="Class"/>.</returns>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.ClassAlreadyExistException"></exception>
+        public Class AddClass(string className, string? baseClassName)
+        {
+            Class? baseClass = baseClassName is null ? null : GetClass(baseClassName);
+            if (Classes.ContainsKey(className))
+            {
+                throw new ClassAlreadyExistException(className);
+            }
+
+            Class clazz = new(className, baseClass);
             Classes.Add(className, clazz);
             return clazz;
         }

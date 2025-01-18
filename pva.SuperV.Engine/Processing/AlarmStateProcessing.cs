@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 
-namespace pva.SuperV.Engine
+namespace pva.SuperV.Engine.Processing
 {
     /// <summary>
     /// Alarm state generation processing on a field.
