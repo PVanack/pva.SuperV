@@ -8,7 +8,7 @@ namespace pva.SuperV.EngineTests
     public class ProjectBuilderTests
     {
         [Fact]
-        public void GivenProjectWithClassAndField_WhenBuildingAndCreatingClassInstance_ThenInstanceIsCreated()
+        public void GivenProjectWithClassAndField_WhenBuildingAndCreatingClassInstance_ThenInstanceIsCreatedAndHasInheritedProperties()
         {
             // GIVEN
             RunnableProject project = ProjectHelpers.CreateRunnableProject();
@@ -24,6 +24,8 @@ namespace pva.SuperV.EngineTests
             Assert.Equal(1, instance.AlarmState.Value);
             Assert.Equal("High", instance.AlarmState.ToString());
             Assert.Equal(instance, retrievedInstance);
+
+            Assert.Equal("InheritedField", instance.InheritedField.Value);
 
             instance.Dispose();
             ProjectHelpers.DeleteProject(project);

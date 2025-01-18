@@ -75,11 +75,16 @@ namespace pva.SuperV.Engine
         /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownFieldException"></exception>
         public IField GetField(string fieldName)
         {
-            if (!Class.FieldDefinitions.ContainsKey(fieldName))
+            Class? actualClass = Class;
+            while (actualClass is not null)
             {
-                throw new UnknownFieldException(fieldName, Class.Name);
+                if (actualClass.FieldDefinitions.ContainsKey(fieldName))
+                {
+                    return Fields[fieldName];
+                }
+                actualClass = actualClass.BaseClass;
             }
-            return Fields[fieldName];
+            throw new UnknownFieldException(fieldName, Class.Name);
         }
     }
 }

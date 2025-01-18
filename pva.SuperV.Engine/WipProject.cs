@@ -61,6 +61,26 @@ namespace pva.SuperV.Engine
         }
 
         /// <summary>
+        /// Adds a new class with inheritance to the project.
+        /// </summary>
+        /// <param name="className">Name of the class.</param>
+        /// <param name="baseClassName">Name of the base class.</param>
+        /// <returns>The newly created <see cref="Class"/>.</returns>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.ClassAlreadyExistException"></exception>
+        public Class AddClass(string className, string? baseClassName)
+        {
+            Class? baseClass = baseClassName is null ? null : GetClass(baseClassName);
+            if (Classes.ContainsKey(className))
+            {
+                throw new ClassAlreadyExistException(className);
+            }
+
+            Class clazz = new(className, baseClass);
+            Classes.Add(className, clazz);
+            return clazz;
+        }
+
+        /// <summary>
         /// Removes a class from project.
         /// </summary>
         /// <param name="className">Name of the class.</param>

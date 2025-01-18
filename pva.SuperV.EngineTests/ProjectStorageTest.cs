@@ -51,7 +51,7 @@ namespace pva.SuperV.EngineTests
             loadedInstance.ShouldNotBeSameAs(instance);
             loadedInstance.Name.ShouldBe(instance.Name);
             loadedInstance.Class.Name.ShouldBe(instance.Class.Name);
-            loadedInstance.Fields.Count.ShouldBe(6);
+            loadedInstance.Fields.Count.ShouldBe(7);
             Field<int>? loadedField = loadedInstance.GetField<int>(ProjectHelpers.ValueFieldName);
             loadedField!.Value.ShouldBe(intField.Value);
             loadedField!.Value.ToString().ShouldBe(intField.Value.ToString());

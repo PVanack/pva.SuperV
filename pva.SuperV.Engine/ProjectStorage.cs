@@ -46,6 +46,10 @@ namespace pva.SuperV.Engine
             T? projectInstance = JsonSerializer.Deserialize<T>(json);
             projectInstance!.Classes.Values.ForEach(clazz =>
             {
+                if (clazz.BaseClassName != null)
+                {
+                    clazz.BaseClass = projectInstance.GetClass(clazz.BaseClassName);
+                }
                 clazz.FieldDefinitions.Values.ForEach(field =>
                 {
                     field.ValuePostChangeProcessings.ForEach(postProcessing =>

@@ -1,4 +1,5 @@
 ﻿using pva.SuperV.Engine;
+using pva.SuperV.Engine.Processing;
 
 namespace pva.SuperV.EngineTests
 {
@@ -15,9 +16,15 @@ namespace pva.SuperV.EngineTests
         private const string LowLimitFieldName = "LowLimit";
         private const string LowLowLimitFieldName = "LowLowlimit";
 
+        public const string BaseClassName = "TestBaseClass";
+        public const string BaseClassFieldName = "InheritedField";
+
         public static RunnableProject CreateRunnableProject()
         {
             WipProject wipProject = Project.CreateProject(ProjectName);
+            _ = wipProject.AddClass(BaseClassName);
+            wipProject.AddField(BaseClassName, new FieldDefinition<string>(BaseClassFieldName, "InheritedField"));
+
             EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, new Dictionary<int, string>{
                 { -2, "LowLow" },
                 { -1, "Low" },
@@ -26,7 +33,7 @@ namespace pva.SuperV.EngineTests
                 { 2, "HighHigh" }
             });
             wipProject.AddFieldFormatter(formatter);
-            Class clazz = wipProject.AddClass(ClassName);
+            Class clazz = wipProject.AddClass(ClassName, BaseClassName);
             wipProject.AddField(ClassName, new FieldDefinition<int>(ValueFieldName, 10));
             wipProject.AddField(ClassName, new FieldDefinition<int>(HighHighLimitFieldName, 100));
             wipProject.AddField(ClassName, new FieldDefinition<int>(HighLimitFieldName, 90));

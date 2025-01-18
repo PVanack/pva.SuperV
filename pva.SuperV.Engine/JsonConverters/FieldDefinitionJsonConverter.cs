@@ -49,7 +49,6 @@ namespace pva.SuperV.Engine.JsonConverters
                 throw new JsonException();
             }
             reader.Read();
-            reader.GetByte();
             Type? fieldType = Type.GetType(fieldTypeString!);
             dynamic? defaultValue = JsonSerializer.Deserialize(ref reader, fieldType!, options);
             reader.Read();

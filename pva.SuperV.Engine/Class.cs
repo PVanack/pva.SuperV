@@ -2,6 +2,7 @@
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.Processing;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Engine
@@ -18,22 +19,6 @@ namespace pva.SuperV.Engine
         /// </summary>
         private string? _name;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Class"/> class. Used by JSON deserialization.
-        /// </summary>
-        public Class()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Class"/> class.
-        /// </summary>
-        /// <param name="className">Name of the class.</param>
-        public Class(string className)
-        {
-            this.Name = className;
-        }
-
         /// <summary>Gets or sets the name of the class.</summary>
         public string? Name
         {
@@ -45,8 +30,52 @@ namespace pva.SuperV.Engine
             }
         }
 
+        /// <summary>
+        /// Gets or sets the base class.
+        /// </summary>
+        /// <value>
+        /// The base class.
+        /// </value>
+        [JsonIgnore]
+        public Class? BaseClass { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the base class.
+        /// </summary>
+        /// <value>
+        /// The name of the base class.
+        /// </value>
+        public string? BaseClassName { get; set; }
+
         /// <summary>Gets the fields defining the class.</summary>
         public Dictionary<string, IFieldDefinition> FieldDefinitions { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Class"/> class. Used by JSON deserialization.
+        /// </summary>
+        public Class()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Class"/> class.
+        /// </summary>
+        /// <param name="className">Name of the class.</param>
+        public Class(string className) : this(className, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Class"/> class with inheritance from a base class.
+        /// </summary>
+        /// <param name="className">Name of the class.</param>
+        /// <param name="baseClass">Base class.</param>
+        public Class(string className, Class? baseClass)
+        {
+            this.Name = className;
+            this.BaseClass = baseClass;
+            this.BaseClassName = baseClass?.Name;
+        }
 
         /// <summary>
         /// Validates the name of the class.
@@ -103,6 +132,7 @@ namespace pva.SuperV.Engine
         /// <typeparam name="T"></typeparam>
         /// <param name="fieldName">Name of the field to be retrieved.</param>
         /// <returns>The field</returns>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.WrongFieldTypeException"></exception>
         /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownFieldException"></exception>
         public FieldDefinition<T>? GetField<T>(string fieldName)
         {
@@ -113,6 +143,10 @@ namespace pva.SuperV.Engine
                     return fieldDefinition as FieldDefinition<T>;
                 }
                 throw new WrongFieldTypeException(fieldName, typeof(T), fieldDefinition.Type);
+            }
+            else if (BaseClass is not null)
+            {
+                return BaseClass.GetField<T>(fieldName);
             }
             throw new UnknownFieldException(fieldName);
         }
@@ -134,7 +168,8 @@ namespace pva.SuperV.Engine
         {
             StringBuilder codeBuilder = new();
             StringBuilder ctorBuilder = new($"public {Name}() {{");
-            codeBuilder.AppendLine($"public class {Name} : Instance {{");
+            string baseClass = BaseClass is null ? "Instance" : BaseClass.Name!;
+            codeBuilder.AppendLine($"public class {Name} : {baseClass} {{");
             FieldDefinitions
                 .ForEach((k, v) =>
                 {
@@ -153,7 +188,7 @@ namespace pva.SuperV.Engine
         /// <returns>A new <see cref="Class"/> clone of class instance.</returns>
         internal Class Clone()
         {
-            var clazz = new Class(this.Name!);
+            var clazz = new Class(this.Name!, BaseClass);
             FieldDefinitions
                 .ForEach((k, v) => clazz.FieldDefinitions.Add(k, v.Clone()));
             return clazz;

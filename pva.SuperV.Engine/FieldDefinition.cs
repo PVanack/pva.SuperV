@@ -1,5 +1,7 @@
 ﻿using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.Processing;
+using System.Globalization;
+using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -75,7 +77,7 @@ namespace pva.SuperV.Engine
         /// Initializes a new instance of the <see cref="FieldDefinition{T}"/> class.
         /// </summary>
         /// <param name="name">The name of the field.</param>
-        public FieldDefinition(string name): this(name, default)
+        public FieldDefinition(string name) : this(name, default)
         {
         }
 
@@ -104,8 +106,17 @@ namespace pva.SuperV.Engine
 
         private static string? GetStringifiedValue(T? defaultValue)
         {
-            if (typeof(T).Equals(typeof(string))) {
+            if (typeof(T).Equals(typeof(string)))
+            {
                 return $"\"{defaultValue}\"";
+            }
+            else if (defaultValue is double number)
+            {
+                return number.ToString(CultureInfo.InvariantCulture);
+            }
+            else if (defaultValue is DateTime dateTime)
+            {
+                return dateTime.ToString(CultureInfo.InvariantCulture);
             }
             return defaultValue!.ToString();
         }
