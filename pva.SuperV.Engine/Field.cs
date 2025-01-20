@@ -45,12 +45,11 @@ namespace pva.SuperV.Engine
         /// The value.
         /// </value>
         [JsonIgnore]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Bug", "S4275:Getters and setters should access the expected fields", Justification = "<Pending>")]
         public virtual T Value
         {
             get => _value;
-#pragma warning disable S4275 // Getters and setters should access the expected fields
             set
-#pragma warning restore S4275 // Getters and setters should access the expected fields
             {
                 SetValue(value);
             }

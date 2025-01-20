@@ -21,6 +21,7 @@ namespace pva.SuperV.Engine
         /// The projects path.
         /// </value>
         public static string ProjectsPath { get; } = Path.Combine(Path.GetTempPath(), "pva.SuperV");
+
         /// <summary>
         /// Gets or sets the current project.
         /// </summary>
@@ -28,20 +29,6 @@ namespace pva.SuperV.Engine
         /// The current project.
         /// </value>
         public static Project? CurrentProject { get; set; }
-        /// <summary>
-        /// Gets the classes of project.
-        /// </summary>
-        /// <value>
-        /// The classes.
-        /// </value>
-        public Dictionary<string, Class> Classes { get; init; } = new(StringComparer.OrdinalIgnoreCase);
-        /// <summary>
-        /// Gets the field formatters.
-        /// </summary>
-        /// <value>
-        /// The field formatters.
-        /// </value>
-        public Dictionary<string, FieldFormatter> FieldFormatters { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// The name of project. Use <see cref="Name"/> to access its content.
@@ -79,6 +66,38 @@ namespace pva.SuperV.Engine
         /// The version.
         /// </value>
         public int Version { get; set; }
+
+        /// <summary>
+        /// Gets the classes of project.
+        /// </summary>
+        /// <value>
+        /// The classes.
+        /// </value>
+        public Dictionary<string, Class> Classes { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Gets the field formatters.
+        /// </summary>
+        /// <value>
+        /// The field formatters.
+        /// </value>
+        public Dictionary<string, FieldFormatter> FieldFormatters { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Gets the history repositories.
+        /// </summary>
+        /// <value>
+        /// The history repositories.
+        /// </value>
+        public Dictionary<string, HistoryRepository> HistoryRepositories { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Gets the history repositories.
+        /// </summary>
+        /// <value>
+        /// The history repositories.
+        /// </value>
+        public IHistoryStorageEngine? HistoryStorageEngine { get; set; }
 
         /// <summary>
         /// Creates an empty <see cref="WipProject"/>.
@@ -219,12 +238,11 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Unloads the project.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S1215:\"GC.Collect\" should not be called", Justification = "This call is used to unload the project assembly")]
         public virtual void Unload()
         {
             Classes.Clear();
-#pragma warning disable S1215 // "GC.Collect" should not be called
             GC.Collect();
-#pragma warning restore S1215 // "GC.Collect" should not be called
             GC.WaitForPendingFinalizers();
         }
 

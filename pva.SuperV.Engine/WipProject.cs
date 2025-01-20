@@ -196,6 +196,30 @@ namespace pva.SuperV.Engine
         }
 
         /// <summary>
+        /// Adds a history repository to project./>.
+        /// </summary>
+        /// <param name="historyRepository">The history repository.</param>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.HistoryRepositoryAlreadyExistException"></exception>
+        public void AddHistoryRepository(HistoryRepository historyRepository)
+        {
+            if (HistoryRepositories.ContainsKey(historyRepository.Name!))
+            {
+                throw new HistoryRepositoryAlreadyExistException(historyRepository.Name);
+            }
+
+            HistoryRepositories.Add(historyRepository.Name, historyRepository);
+        }
+
+        /// <summary>
+        /// Removes a history repository.
+        /// </summary>
+        /// <param name="historyRepositoryName">Name of the history repository.</param>
+        public void RemoveHistoryRepository(string historyRepositoryName)
+        {
+            HistoryRepositories.Remove(historyRepositoryName);
+        }
+
+        /// <summary>
         /// Clones as <see cref="RunnableProject"/>.
         /// </summary>
         /// <returns><see cref="RunnableProject"/></returns>

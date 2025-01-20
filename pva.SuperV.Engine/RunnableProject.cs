@@ -42,9 +42,32 @@ namespace pva.SuperV.Engine
             this.Version = wipProject.Version;
             this.Classes = new(wipProject.Classes);
             this.FieldFormatters = new(wipProject.FieldFormatters);
+            CreateHistoryRepositories(wipProject.HistoryStorageEngine, wipProject.HistoryRepositories);
             this._projectAssemblyLoader = new();
             this._projectAssemblyLoader.LoadFromAssemblyPath(GetAssemblyFileName());
             RecreateInstances(wipProject);
+        }
+
+        private void CreateHistoryRepositories(IHistoryStorageEngine? historyStorageEngine, Dictionary<string, HistoryRepository> historyRepositories)
+        {
+            if (historyRepositories.Keys.Count > 0)
+            {
+                if (historyStorageEngine is null)
+                {
+                    throw new NoHistoryStorageEngineException(this.Name);
+                }
+                historyRepositories.ForEach((k, v) =>
+                {
+                    if (!historyStorageEngine.RepositoryExists(k))
+                    {
+                        historyStorageEngine.CreateRepository(v!);
+                    }
+                    else
+                    {
+                        historyStorageEngine.UpdateRepository(v!);
+                    }
+                });
+            }
         }
 
         /// <summary>

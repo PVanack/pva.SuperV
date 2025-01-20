@@ -18,6 +18,7 @@ namespace pva.SuperV.EngineTests
 
         public const string BaseClassName = "TestBaseClass";
         public const string BaseClassFieldName = "InheritedField";
+        public const string HistoryRepositoryName = "HistoryRepository";
 
         public static RunnableProject CreateRunnableProject()
         {
