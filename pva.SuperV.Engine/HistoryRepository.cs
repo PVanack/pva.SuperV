@@ -1,5 +1,9 @@
 ﻿
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.HistoryStorage;
+using pva.SuperV.Engine.Processing;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Engine
@@ -24,6 +28,15 @@ namespace pva.SuperV.Engine
         public string Name { get; set; } = ValidateName(name);
 
         /// <summary>
+        /// Gets or sets the history storage engine used to store values.
+        /// </summary>
+        /// <value>
+        /// The history storage engine.
+        /// </value>
+        [JsonIgnore]
+        public IHistoryStorageEngine? HistoryStorageEngine { get; set; }
+
+        /// <summary>
         /// Validates the name of the history repository.
         /// </summary>
         /// <param name="name">The history repository name.</param>
@@ -36,6 +49,20 @@ namespace pva.SuperV.Engine
                 throw new InvalidHistoryRepositoryNameException(name, Constants.IdentifierNamePattern);
             }
             return name;
+        }
+
+        internal string? UpsertClassTimeSerie<T>(string projectName, string className, HistorizationProcessing<T> historizationProcessing)
+        {
+            if (HistoryStorageEngine is null)
+            {
+                throw new NoHistoryStorageEngineException();
+            }
+            return HistoryStorageEngine.UpsertClassTimeSerie(projectName, className, historizationProcessing);
+        }
+
+        public void HistorizeValues(string classTimeSerieId, IInstance instance, DateTime dateTime, List<IField> fieldsToHistorize)
+        {
+            HistoryStorageEngine?.HistorizeValues(classTimeSerieId, instance.Name!, dateTime, fieldsToHistorize);
         }
     }
 }

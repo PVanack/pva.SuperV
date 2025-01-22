@@ -1,4 +1,7 @@
-﻿using pva.SuperV.Engine.Exceptions;
+﻿using pva.Helpers.Extensions;
+using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.HistoryStorage;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Engine
@@ -83,13 +86,12 @@ namespace pva.SuperV.Engine
         /// </value>
         public Dictionary<string, FieldFormatter> FieldFormatters { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
+        private IHistoryStorageEngine? _historyStorageEngine;
+
         /// <summary>
-        /// Gets the history repositories.
+        /// The history storage engin connection string.
         /// </summary>
-        /// <value>
-        /// The history repositories.
-        /// </value>
-        public Dictionary<string, HistoryRepository> HistoryRepositories { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+        public string? HistoryStorageEngineConnectionString { get; set; }
 
         /// <summary>
         /// Gets the history repositories.
@@ -97,7 +99,24 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The history repositories.
         /// </value>
-        public IHistoryStorageEngine? HistoryStorageEngine { get; set; }
+        [JsonIgnore]
+        public IHistoryStorageEngine? HistoryStorageEngine
+        {
+            get => _historyStorageEngine;
+            set
+            {
+                _historyStorageEngine = value;
+                HistoryRepositories.Values.ForEach(historyRepository => historyRepository.HistoryStorageEngine = _historyStorageEngine);
+            }
+        }
+
+        /// <summary>
+        /// Gets the history repositories.
+        /// </summary>
+        /// <value>
+        /// The history repositories.
+        /// </value>
+        public Dictionary<string, HistoryRepository> HistoryRepositories { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Creates an empty <see cref="WipProject"/>.

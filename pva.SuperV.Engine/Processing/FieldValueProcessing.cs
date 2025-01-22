@@ -65,8 +65,7 @@
         /// Initializes a new instance of the <see cref="FieldValueProcessing{T}"/> class.
         /// </summary>
         /// <param name="name">The name of processing.</param>
-        /// <param name="clazz">Name of the class</param>
-        protected FieldValueProcessing(string name, Class clazz)
+        protected FieldValueProcessing(string name)
         {
             Name = name;
         }
@@ -74,8 +73,9 @@
         /// <summary>
         /// Builds the field value processing from the <see cref="CtorArguments" /> after deserialization.
         /// </summary>
+        /// <param name="project">The project.</param>
         /// <param name="clazz">The clazz.</param>
-        public abstract void BuildAfterDeserialization(Class clazz);
+        public abstract void BuildAfterDeserialization(Project project, Class clazz);
 
         /// <summary>
         /// Gets a ctor argument.
@@ -103,6 +103,19 @@
         /// <summary>
         /// Gets a field definition from a class.
         /// </summary>
+        /// <param name="clazz">The class from which to get field definition.</param>
+        /// <param name="fieldName">Name of the field.</param>
+        /// <returns><see cref="FieldDefinition{T}"/></returns>
+        protected static IFieldDefinition? GetFieldDefinition(Class clazz, string? fieldName)
+        {
+            return string.IsNullOrEmpty(fieldName)
+                ? null
+                : clazz.GetField(fieldName);
+        }
+
+        /// <summary>
+        /// Gets a field definition from a class.
+        /// </summary>
         /// <typeparam name="T1">The type of the field definition.</typeparam>
         /// <param name="clazz">The class from which to get field definition.</param>
         /// <param name="fieldName">Name of the field.</param>
@@ -112,6 +125,19 @@
             return string.IsNullOrEmpty(fieldName)
                 ? null
                 : clazz.GetField<T1>(fieldName);
+        }
+
+        /// <summary>
+        /// Gets a field from an instance.
+        /// </summary>
+        /// <param name="instance">The instance from which to get the field.</param>
+        /// <param name="fieldName">Name of the field.</param>
+        /// <returns><see cref="Field{T}"/></returns>
+        protected static IField? GetInstanceField(IInstance instance, string? fieldName)
+        {
+            return string.IsNullOrEmpty(fieldName)
+                ? null
+                : instance.GetField(fieldName);
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using NSubstitute;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.HistoryStorage;
 using Shouldly;
 
 namespace pva.SuperV.EngineTests;
@@ -16,7 +17,6 @@ public class HistoryRepositoryTests
         // WHEN/THEN
         Assert.Throws<InvalidHistoryRepositoryNameException>(() => new HistoryRepository(invalidHistoryRepositoryName));
     }
-
 
     [Fact]
     public void GivenProjectWithHistoryRepository_WhenAddingRepositoryWithSameName_ThenExceptionIsThrown()
@@ -61,31 +61,10 @@ public class HistoryRepositoryTests
         // WHEN
         HistoryRepository historyRepository = new(ProjectHelpers.HistoryRepositoryName);
         wipProject.AddHistoryRepository(historyRepository);
-        historyStorageEngineMock.RepositoryExists(ProjectHelpers.HistoryRepositoryName)
-            .Returns(false);
         _ = ProjectBuilder.Build(wipProject);
 
         // THEN
-        historyStorageEngineMock.Received().CreateRepository(historyRepository);
-    }
-
-    [Fact]
-    public void GivenProjectWithHistoryStorageEngine_WhenUpdatingRepositoryAndBuldingProject_ThenHistoryRepositoryIsUpdated()
-    {
-        // GIVEN
-        var historyStorageEngineMock = Substitute.For<IHistoryStorageEngine>();
-        WipProject wipProject = Project.CreateProject(ProjectHelpers.ProjectName);
-        wipProject.HistoryStorageEngine = historyStorageEngineMock;
-
-        // WHEN
-        HistoryRepository historyRepository = new(ProjectHelpers.HistoryRepositoryName);
-        wipProject.AddHistoryRepository(historyRepository);
-        historyStorageEngineMock.RepositoryExists(ProjectHelpers.HistoryRepositoryName)
-            .Returns(true);
-        _ = ProjectBuilder.Build(wipProject);
-
-        // THEN
-        historyStorageEngineMock.Received().UpdateRepository(historyRepository);
+        historyStorageEngineMock.Received(1).UpsertRepository(wipProject.Name!, historyRepository);
     }
 
     [Fact]

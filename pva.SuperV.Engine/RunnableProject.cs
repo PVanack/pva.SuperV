@@ -1,5 +1,6 @@
 ﻿using pva.Helpers.Extensions;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.HistoryStorage;
 using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Engine
@@ -42,6 +43,9 @@ namespace pva.SuperV.Engine
             this.Version = wipProject.Version;
             this.Classes = new(wipProject.Classes);
             this.FieldFormatters = new(wipProject.FieldFormatters);
+            this.HistoryStorageEngineConnectionString = wipProject.HistoryStorageEngineConnectionString;
+            this.HistoryStorageEngine = wipProject.HistoryStorageEngine;
+            this.HistoryRepositories = new(wipProject.HistoryRepositories);
             CreateHistoryRepositories(wipProject.HistoryStorageEngine, wipProject.HistoryRepositories);
             this._projectAssemblyLoader = new();
             this._projectAssemblyLoader.LoadFromAssemblyPath(GetAssemblyFileName());
@@ -56,17 +60,8 @@ namespace pva.SuperV.Engine
                 {
                     throw new NoHistoryStorageEngineException(this.Name);
                 }
-                historyRepositories.ForEach((k, v) =>
-                {
-                    if (!historyStorageEngine.RepositoryExists(k))
-                    {
-                        historyStorageEngine.CreateRepository(v!);
-                    }
-                    else
-                    {
-                        historyStorageEngine.UpdateRepository(v!);
-                    }
-                });
+                historyRepositories.Values.ForEach(repository => 
+                    historyStorageEngine.UpsertRepository(Name!, repository));
             }
         }
 

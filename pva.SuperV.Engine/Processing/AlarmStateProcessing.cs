@@ -124,7 +124,7 @@ namespace pva.SuperV.Engine.Processing
         public AlarmStateProcessing(string name, Class clazz, string trigerringFieldName,
             string? highHighLimitFieldName, string highLimitFieldName, string lowLimitFieldName, string? lowLowLimitFieldName,
             string? deadbandFieldName, string alarmStateFieldName, string? ackStateFieldName)
-            : base(name, clazz)
+            : base(name)
         {
             CtorArguments.Add(trigerringFieldName);
             CtorArguments.Add(highHighLimitFieldName ?? "");
@@ -143,8 +143,9 @@ namespace pva.SuperV.Engine.Processing
         /// <summary>
         /// Builds the field value processing from the <see cref="P:pva.SuperV.Engine.FieldValueProcessing`1.CtorArguments" /> after deserialization.
         /// </summary>
+        /// <param name="project">The project.</param>
         /// <param name="clazz">The clazz.</param>
-        public override void BuildAfterDeserialization(Class clazz)
+        public override void BuildAfterDeserialization(Project project, Class clazz)
         {
             string? trigerringFieldName = GetCtorArgument<string>(0);
             string? highHighLimitFieldName = GetCtorArgument<string>(1);

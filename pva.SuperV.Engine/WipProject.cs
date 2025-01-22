@@ -183,7 +183,7 @@ namespace pva.SuperV.Engine
             codeBuilder.AppendLine($"using {this.GetType().Namespace};");
             codeBuilder.AppendLine("using System.Collections.Generic;");
             codeBuilder.AppendLine("using System.Reflection;");
-            codeBuilder.AppendLine("[assembly: AssemblyProduct(\"pva.SuperV\")]");
+            codeBuilder.AppendLine($"[assembly: AssemblyProduct(\"{Name}\")]");
             codeBuilder.AppendLine($"[assembly: AssemblyTitle(\"{Description}\")]");
             codeBuilder.AppendLine($"[assembly: AssemblyVersion(\"{Version}\")]");
             codeBuilder.AppendLine($"[assembly: AssemblyFileVersion(\"{Version}\")]");
@@ -207,6 +207,7 @@ namespace pva.SuperV.Engine
                 throw new HistoryRepositoryAlreadyExistException(historyRepository.Name);
             }
 
+            historyRepository.HistoryStorageEngine = HistoryStorageEngine;
             HistoryRepositories.Add(historyRepository.Name, historyRepository);
         }
 

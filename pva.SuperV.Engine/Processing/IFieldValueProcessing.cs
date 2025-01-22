@@ -44,7 +44,8 @@ namespace pva.SuperV.Engine.Processing
         /// <summary>
         /// Builds the field value processing from the <see cref="CtorArguments"/> after deserialization.
         /// </summary>
+        /// <param name="project">The project.</param>
         /// <param name="clazz">The clazz.</param>
-        void BuildAfterDeserialization(Class clazz);
+        void BuildAfterDeserialization(Project project, Class clazz);
     }
 }

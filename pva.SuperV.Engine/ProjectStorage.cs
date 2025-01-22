@@ -1,4 +1,5 @@
 ﻿using pva.Helpers.Extensions;
+using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.JsonConverters;
 using System.Text.Json;
 
@@ -44,6 +45,7 @@ namespace pva.SuperV.Engine
         {
             string json = File.ReadAllText(filename);
             T? projectInstance = JsonSerializer.Deserialize<T>(json);
+            projectInstance.HistoryStorageEngine = HistoryStorageEngineFactory.CreateHistoryStorageEngine(projectInstance.HistoryStorageEngineConnectionString);
             projectInstance!.Classes.Values.ForEach(clazz =>
             {
                 if (clazz.BaseClassName != null)
@@ -53,7 +55,7 @@ namespace pva.SuperV.Engine
                 clazz.FieldDefinitions.Values.ForEach(field =>
                 {
                     field.ValuePostChangeProcessings.ForEach(postProcessing =>
-                        postProcessing.BuildAfterDeserialization(clazz));
+                        postProcessing.BuildAfterDeserialization(projectInstance, clazz));
                 });
             });
             return projectInstance;

@@ -145,7 +145,7 @@ namespace pva.SuperV.EngineTests
 using pva.SuperV.Engine;
 using System.Collections.Generic;
 using System.Reflection;
-[assembly: AssemblyProduct("pva.SuperV")]
+[assembly: AssemblyProduct("{{project.Name}}")]
 [assembly: AssemblyTitle("{{project.Description}}")]
 [assembly: AssemblyVersion("{{project.Version}}")]
 [assembly: AssemblyFileVersion("{{project.Version}}")]

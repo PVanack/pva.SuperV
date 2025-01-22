@@ -127,6 +127,25 @@ namespace pva.SuperV.Engine
         }
 
         /// <summary>
+        /// Gets a field.
+        /// </summary>
+        /// <param name="fieldName">Name of the field to be retrieved.</param>
+        /// <returns>The field</returns>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownFieldException"></exception>
+        public IFieldDefinition GetField(string fieldName)
+        {
+            if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
+            {
+                return fieldDefinition;
+            }
+            else if (BaseClass is not null)
+            {
+                return BaseClass.GetField(fieldName);
+            }
+            throw new UnknownFieldException(fieldName);
+        }
+
+        /// <summary>
         /// Gets a field of a specific type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -136,19 +155,12 @@ namespace pva.SuperV.Engine
         /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownFieldException"></exception>
         public FieldDefinition<T>? GetField<T>(string fieldName)
         {
-            if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
+            IFieldDefinition fieldDefinition = GetField(fieldName);
+            if (fieldDefinition.Type == typeof(T))
             {
-                if (fieldDefinition.Type == typeof(T))
-                {
-                    return fieldDefinition as FieldDefinition<T>;
-                }
-                throw new WrongFieldTypeException(fieldName, typeof(T), fieldDefinition.Type);
+                return fieldDefinition as FieldDefinition<T>;
             }
-            else if (BaseClass is not null)
-            {
-                return BaseClass.GetField<T>(fieldName);
-            }
-            throw new UnknownFieldException(fieldName);
+            throw new WrongFieldTypeException(fieldName, typeof(T), fieldDefinition.Type);
         }
 
         /// <summary>
