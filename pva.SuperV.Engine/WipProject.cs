@@ -1,5 +1,6 @@
 ﻿using pva.Helpers.Extensions;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
 using System.Text;
 
@@ -183,7 +184,7 @@ namespace pva.SuperV.Engine
             codeBuilder.AppendLine($"using {this.GetType().Namespace};");
             codeBuilder.AppendLine("using System.Collections.Generic;");
             codeBuilder.AppendLine("using System.Reflection;");
-            codeBuilder.AppendLine("[assembly: AssemblyProduct(\"pva.SuperV\")]");
+            codeBuilder.AppendLine($"[assembly: AssemblyProduct(\"{Name}\")]");
             codeBuilder.AppendLine($"[assembly: AssemblyTitle(\"{Description}\")]");
             codeBuilder.AppendLine($"[assembly: AssemblyVersion(\"{Version}\")]");
             codeBuilder.AppendLine($"[assembly: AssemblyFileVersion(\"{Version}\")]");
@@ -193,6 +194,31 @@ namespace pva.SuperV.Engine
                 .ForEach((_, v) => codeBuilder.AppendLine(v.GetCode()));
             codeBuilder.AppendLine("}");
             return codeBuilder.ToString();
+        }
+
+        /// <summary>
+        /// Adds a history repository to project./>.
+        /// </summary>
+        /// <param name="historyRepository">The history repository.</param>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.HistoryRepositoryAlreadyExistException"></exception>
+        public void AddHistoryRepository(HistoryRepository historyRepository)
+        {
+            if (HistoryRepositories.ContainsKey(historyRepository.Name!))
+            {
+                throw new HistoryRepositoryAlreadyExistException(historyRepository.Name);
+            }
+
+            historyRepository.HistoryStorageEngine = HistoryStorageEngine;
+            HistoryRepositories.Add(historyRepository.Name, historyRepository);
+        }
+
+        /// <summary>
+        /// Removes a history repository.
+        /// </summary>
+        /// <param name="historyRepositoryName">Name of the history repository.</param>
+        public void RemoveHistoryRepository(string historyRepositoryName)
+        {
+            HistoryRepositories.Remove(historyRepositoryName);
         }
 
         /// <summary>

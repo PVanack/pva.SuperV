@@ -1,4 +1,7 @@
-﻿using pva.SuperV.Engine.Exceptions;
+﻿using pva.Helpers.Extensions;
+using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.HistoryStorage;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Engine
@@ -21,6 +24,7 @@ namespace pva.SuperV.Engine
         /// The projects path.
         /// </value>
         public static string ProjectsPath { get; } = Path.Combine(Path.GetTempPath(), "pva.SuperV");
+
         /// <summary>
         /// Gets or sets the current project.
         /// </summary>
@@ -28,20 +32,6 @@ namespace pva.SuperV.Engine
         /// The current project.
         /// </value>
         public static Project? CurrentProject { get; set; }
-        /// <summary>
-        /// Gets the classes of project.
-        /// </summary>
-        /// <value>
-        /// The classes.
-        /// </value>
-        public Dictionary<string, Class> Classes { get; init; } = new(StringComparer.OrdinalIgnoreCase);
-        /// <summary>
-        /// Gets the field formatters.
-        /// </summary>
-        /// <value>
-        /// The field formatters.
-        /// </value>
-        public Dictionary<string, FieldFormatter> FieldFormatters { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// The name of project. Use <see cref="Name"/> to access its content.
@@ -81,13 +71,77 @@ namespace pva.SuperV.Engine
         public int Version { get; set; }
 
         /// <summary>
+        /// Gets the classes of project.
+        /// </summary>
+        /// <value>
+        /// The classes.
+        /// </value>
+        public Dictionary<string, Class> Classes { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Gets the field formatters.
+        /// </summary>
+        /// <value>
+        /// The field formatters.
+        /// </value>
+        public Dictionary<string, FieldFormatter> FieldFormatters { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+
+        private IHistoryStorageEngine? _historyStorageEngine;
+
+        /// <summary>
+        /// The history storage engin connection string.
+        /// </summary>
+        public string? HistoryStorageEngineConnectionString { get; set; }
+
+        /// <summary>
+        /// Gets the history repositories.
+        /// </summary>
+        /// <value>
+        /// The history repositories.
+        /// </value>
+        [JsonIgnore]
+        public IHistoryStorageEngine? HistoryStorageEngine
+        {
+            get => _historyStorageEngine;
+            set
+            {
+                _historyStorageEngine = value;
+                HistoryRepositories.Values.ForEach(historyRepository => historyRepository.HistoryStorageEngine = _historyStorageEngine);
+            }
+        }
+
+        /// <summary>
+        /// Gets the history repositories.
+        /// </summary>
+        /// <value>
+        /// The history repositories.
+        /// </value>
+        public Dictionary<string, HistoryRepository> HistoryRepositories { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+        /// <summary>
         /// Creates an empty <see cref="WipProject"/>.
         /// </summary>
         /// <param name="projectName">Name of the project.</param>
         /// <returns>The created <see cref="WipProject"/></returns>
         public static WipProject CreateProject(string projectName)
         {
+            return CreateProject(projectName, null);
+        }
+
+        /// <summary>
+        /// Creates an empty <see cref="WipProject"/>.
+        /// </summary>
+        /// <param name="projectName">Name of the project.</param>
+        /// <param name="historyStorageEngineConnectionString">History storage connection string.</param>
+        /// <returns>The created <see cref="WipProject"/></returns>
+        public static WipProject CreateProject(string projectName, string? historyStorageEngineConnectionString)
+        {
             WipProject project = new(projectName);
+            if (!String.IsNullOrEmpty(historyStorageEngineConnectionString))
+            {
+                project.HistoryStorageEngineConnectionString = historyStorageEngineConnectionString;
+                project.HistoryStorageEngine = HistoryStorageEngineFactory.CreateHistoryStorageEngine(historyStorageEngineConnectionString);
+            }
+
             return project;
         }
 
@@ -219,12 +273,11 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Unloads the project.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S1215:\"GC.Collect\" should not be called", Justification = "This call is used to unload the project assembly")]
         public virtual void Unload()
         {
             Classes.Clear();
-#pragma warning disable S1215 // "GC.Collect" should not be called
             GC.Collect();
-#pragma warning restore S1215 // "GC.Collect" should not be called
             GC.WaitForPendingFinalizers();
         }
 

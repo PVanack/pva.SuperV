@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace pva.SuperV.Engine
+﻿namespace pva.SuperV.Engine
 {
     /// <summary>
     /// Quaity levels of a <see cref="Field{T}" value./>

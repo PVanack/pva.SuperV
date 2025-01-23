@@ -7,13 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="6.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="FluentAssertions" Version="7.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
+    <PackageReference Include="TDengine.Connector" Version="3.1.5" />
   </ItemGroup>
+
+  <Target Name="copyDLLDependency" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <DepDLLFiles Include="$(PkgTDengine_Connector)\runtimes\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DepDLLFiles)" DestinationFolder="$(OutDir)" />
+  </Target>
 
   <ItemGroup>
     <ProjectReference Include="..\pva.Helpers\pva.Helpers.csproj" />
