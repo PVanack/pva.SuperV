@@ -42,7 +42,7 @@ namespace pva.SuperV.EngineTests
             DateTime valueTs = DateTime.Now;
             List<IField> actualHistorizedFields = [];
             historyStorageEngine
-                .HistorizeValues(Arg.Any<string>(), ProjectHelpers.InstanceName, valueTs, Arg.Do<List<IField>>(arg => actualHistorizedFields = arg));
+                .HistorizeValues(Arg.Any<string>(), Arg.Any<string>(), ProjectHelpers.InstanceName, valueTs, Arg.Do<List<IField>>(arg => actualHistorizedFields = arg));
 
             // WHEN
             valueField.SetValue(100.0, valueTs);

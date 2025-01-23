@@ -1,4 +1,7 @@
-﻿using NSubstitute;
+﻿using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Containers;
+using Microsoft.Extensions.Logging.Abstractions;
+using NSubstitute;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
@@ -22,12 +25,60 @@ namespace pva.SuperV.EngineTests
         public const string BaseClassFieldName = "InheritedField";
         public const string HistoryRepositoryName = "HistoryRepository";
 
+        private static IContainer? tdEngineContainer;
+
+        public static async Task<string> StartTDengineContainer()
+        {
+            tdEngineContainer = new ContainerBuilder()
+                .WithImage("tdengine/tdengine:latest")
+                .WithPortBinding(6030, false)
+                .WithPortBinding(6031, false)
+                .WithPortBinding(6032, false)
+                .WithPortBinding(6033, false)
+                .WithPortBinding(6034, false)
+                .WithPortBinding(6035, false)
+                .WithPortBinding(6036, false)
+                .WithPortBinding(6037, false)
+                .WithPortBinding(6038, false)
+                .WithPortBinding(6039, false)
+                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(6030))
+                .Build();
+
+            // Start the container.
+            await tdEngineContainer.StartAsync()
+              .ConfigureAwait(false);
+            return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
+        }
+
+        public static async Task StopTDengineContainer()
+        {
+            if (tdEngineContainer != null)
+            {
+                await tdEngineContainer.StopAsync()
+                    .ConfigureAwait(false);
+            }
+        }
+
         public static RunnableProject CreateRunnableProject()
         {
-            IHistoryStorageEngine historyStorageEngine = Substitute.For<IHistoryStorageEngine>();
-            WipProject wipProject = Project.CreateProject(ProjectName);
-            wipProject.HistoryStorageEngineConnectionString = "fake";
-            wipProject.HistoryStorageEngine = historyStorageEngine;
+            return CreateRunnableProject("");
+        }
+
+        public static RunnableProject CreateRunnableProject(string? historyEngineType)
+        {
+            string? connectionString = historyEngineType;
+            if (!String.IsNullOrEmpty(historyEngineType) && historyEngineType.Equals(HistoryStorageEngineFactory.TdEngineHistoryStorage))
+            {
+                string tdEngineConnectionString = Task.Run(async () => await StartTDengineContainer()).Result;
+                connectionString = $"{HistoryStorageEngineFactory.TdEngineHistoryStorage}:{tdEngineConnectionString}";
+            }
+
+            WipProject wipProject = Project.CreateProject(ProjectName, connectionString);
+            if (String.IsNullOrEmpty(historyEngineType))
+            {
+                IHistoryStorageEngine historyStorageEngine = Substitute.For<IHistoryStorageEngine>();
+                wipProject.HistoryStorageEngine = historyStorageEngine;
+            }
             HistoryRepository historyRepository = new(ProjectHelpers.HistoryRepositoryName);
             wipProject.AddHistoryRepository(historyRepository);
 
@@ -65,6 +116,8 @@ namespace pva.SuperV.EngineTests
 
         public static void DeleteProject(Project project)
         {
+//            Task.Run(async () => await StopTDengineContainer());
+
             project.Dispose();
 #if DELETE_PROJECT_FILE
             bool deleted = false;

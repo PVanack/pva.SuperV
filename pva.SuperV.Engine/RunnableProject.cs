@@ -1,6 +1,7 @@
 ﻿using pva.Helpers.Extensions;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
+using pva.SuperV.Engine.Processing;
 using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Engine
@@ -46,22 +47,66 @@ namespace pva.SuperV.Engine
             this.HistoryStorageEngineConnectionString = wipProject.HistoryStorageEngineConnectionString;
             this.HistoryStorageEngine = wipProject.HistoryStorageEngine;
             this.HistoryRepositories = new(wipProject.HistoryRepositories);
-            CreateHistoryRepositories(wipProject.HistoryStorageEngine, wipProject.HistoryRepositories);
+            CreateHistoryRepositories(wipProject.HistoryStorageEngine);
+            CreateHistoryClassTimeSeries();
             this._projectAssemblyLoader = new();
             this._projectAssemblyLoader.LoadFromAssemblyPath(GetAssemblyFileName());
             RecreateInstances(wipProject);
         }
 
-        private void CreateHistoryRepositories(IHistoryStorageEngine? historyStorageEngine, Dictionary<string, HistoryRepository> historyRepositories)
+        private void CreateHistoryClassTimeSeries()
         {
-            if (historyRepositories.Keys.Count > 0)
+            Classes.Values.ForEach(clazz =>
+            {
+                clazz.FieldDefinitions.Values.ForEach(fieldDefinition =>
+                {
+                    fieldDefinition.ValuePostChangeProcessings
+                        .Where(vp => vp is IHistorizationProcessing)
+                        .ForEach(vp =>
+                            {
+                                IHistorizationProcessing hp = vp as IHistorizationProcessing;
+                                hp.UpsertInHistoryStorage(this.Name!, clazz.Name!);
+                            });
+                });
+            });
+        }
+
+        public List<HistoryRow> GetHistoryValues(string instanceName, DateTime from, DateTime to, List<string> fieldNames)
+        {
+            IInstance instance = GetInstance(instanceName);
+            List<IFieldDefinition> fields = [];
+            HistoryRepository? historyRepository = null;
+            string? classTimeSerieId = null;
+            fieldNames.ForEach(fieldName => {
+                IFieldDefinition field = instance.Class.GetField(fieldName);
+                IHistorizationProcessing? hp =  field.ValuePostChangeProcessings
+                    .Where(vp => vp is IHistorizationProcessing)
+                    .Select(hp => hp as IHistorizationProcessing)
+                    .FirstOrDefault();
+                if (hp != null)
+                {
+                    historyRepository = hp.HistoryRepository;
+                    classTimeSerieId = hp.ClassTimeSerieId;
+                }
+                fields.Add(field);
+            });
+            if (historyRepository is null || classTimeSerieId is null)
+            {
+                throw new NoHistoryStorageEngineException();
+            }
+            return HistoryStorageEngine!.GetHistoryValues(historyRepository.HistoryStorageId, classTimeSerieId!, instanceName, from, to, fields);
+        }
+
+        private void CreateHistoryRepositories(IHistoryStorageEngine? historyStorageEngine)
+        {
+            if (HistoryRepositories.Keys.Count > 0)
             {
                 if (historyStorageEngine is null)
                 {
                     throw new NoHistoryStorageEngineException(this.Name);
                 }
-                historyRepositories.Values.ForEach(repository => 
-                    historyStorageEngine.UpsertRepository(Name!, repository));
+                HistoryRepositories.Values.ForEach(repository =>
+                    repository.UpsertRepository(Name!, historyStorageEngine));
             }
         }
 

@@ -45,7 +45,7 @@ namespace pva.SuperV.Engine
         {
             string json = File.ReadAllText(filename);
             T? projectInstance = JsonSerializer.Deserialize<T>(json);
-            projectInstance.HistoryStorageEngine = HistoryStorageEngineFactory.CreateHistoryStorageEngine(projectInstance.HistoryStorageEngineConnectionString);
+            projectInstance!.HistoryStorageEngine = HistoryStorageEngineFactory.CreateHistoryStorageEngine(projectInstance.HistoryStorageEngineConnectionString);
             projectInstance!.Classes.Values.ForEach(clazz =>
             {
                 if (clazz.BaseClassName != null)

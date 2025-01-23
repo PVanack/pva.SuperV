@@ -8,7 +8,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
+    <PackageReference Include="TDengine.Connector" Version="3.1.5" />
   </ItemGroup>
+
+  <Target Name="copyDLLDependency" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <DepDLLFiles Include="$(PkgTDengine_Connector)\runtimes\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DepDLLFiles)" DestinationFolder="$(OutDir)" />
+  </Target>
 
   <ItemGroup>
     <ProjectReference Include="..\pva.Helpers\pva.Helpers.csproj" />

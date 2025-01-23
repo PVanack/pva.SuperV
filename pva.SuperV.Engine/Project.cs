@@ -117,7 +117,6 @@ namespace pva.SuperV.Engine
         /// The history repositories.
         /// </value>
         public Dictionary<string, HistoryRepository> HistoryRepositories { get; init; } = new(StringComparer.OrdinalIgnoreCase);
-
         /// <summary>
         /// Creates an empty <see cref="WipProject"/>.
         /// </summary>
@@ -125,7 +124,24 @@ namespace pva.SuperV.Engine
         /// <returns>The created <see cref="WipProject"/></returns>
         public static WipProject CreateProject(string projectName)
         {
+            return CreateProject(projectName, null);
+        }
+
+        /// <summary>
+        /// Creates an empty <see cref="WipProject"/>.
+        /// </summary>
+        /// <param name="projectName">Name of the project.</param>
+        /// <param name="historyStorageEngineConnectionString">History storage connection string.</param>
+        /// <returns>The created <see cref="WipProject"/></returns>
+        public static WipProject CreateProject(string projectName, string? historyStorageEngineConnectionString)
+        {
             WipProject project = new(projectName);
+            if (!String.IsNullOrEmpty(historyStorageEngineConnectionString))
+            {
+                project.HistoryStorageEngineConnectionString = historyStorageEngineConnectionString;
+                project.HistoryStorageEngine = HistoryStorageEngineFactory.CreateHistoryStorageEngine(historyStorageEngineConnectionString);
+            }
+
             return project;
         }
 

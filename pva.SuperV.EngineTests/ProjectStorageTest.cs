@@ -14,7 +14,7 @@ namespace pva.SuperV.EngineTests
             // GIVEN
 
             // WHEN
-            RunnableProject project = ProjectHelpers.CreateRunnableProject();
+            RunnableProject project = ProjectHelpers.CreateRunnableProject("NullHistoryStorage");
             var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
             string filename = ProjectStorage.SaveProjectDefinition(project);
 
@@ -35,7 +35,7 @@ namespace pva.SuperV.EngineTests
             // GIVEN
 
             // WHEN
-            RunnableProject project = ProjectHelpers.CreateRunnableProject();
+            RunnableProject project = ProjectHelpers.CreateRunnableProject("NullHistoryStorage");
             Instance? instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName) as Instance;
             Field<int>? intField = instance!.GetField<int>(ProjectHelpers.ValueFieldName);
             intField!.SetValue(314);

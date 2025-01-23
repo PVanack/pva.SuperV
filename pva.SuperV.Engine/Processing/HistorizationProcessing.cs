@@ -3,22 +3,23 @@ using pva.SuperV.Engine.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace pva.SuperV.Engine.Processing
 {
-    public class HistorizationProcessing<T> : FieldValueProcessing<T>
+    public class HistorizationProcessing<T> : FieldValueProcessing<T>, IHistorizationProcessing
     {
-        private HistoryRepository? _historyRepository;
-        private FieldDefinition<DateTime>? _timestampField;
+        public HistoryRepository? HistoryRepository { get; set; }
+        public FieldDefinition<DateTime>? TimestampFieldDefinition { get; set; }
 
-        private List<IFieldDefinition> FieldsToHistorize { get; } = [];
+        public List<IFieldDefinition> FieldsToHistorize { get; } = [];
 
         /// <summary>
         /// The class time serie ID returned from history storage.
         /// </summary>
-        private string? _classTimeSerieId;
+        public string? ClassTimeSerieId { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HistorizationProcessing{T}"/> class. Used for deserialization.
@@ -37,7 +38,6 @@ namespace pva.SuperV.Engine.Processing
             fieldsToHistorize.ForEach(fieldtoHistorize =>
                 CtorArguments.Add(fieldtoHistorize));
             ValidateParameters(project, clazz, trigerringFieldName, historyRepositoryName, timestampFieldName, fieldsToHistorize);
-            _classTimeSerieId = _historyRepository?.UpsertClassTimeSerie(project.Name!, clazz.Name!, this);
         }
 
         private void ValidateParameters(Project project, Class clazz, string trigerringFieldName, string historyRepositoryName, string? timestampFieldName, List<string> fieldsToHistorize)
@@ -45,11 +45,11 @@ namespace pva.SuperV.Engine.Processing
             TrigerringFieldDefinition = GetFieldDefinition<T>(clazz, trigerringFieldName);
             if (!String.IsNullOrEmpty(timestampFieldName))
             {
-                _timestampField = GetFieldDefinition<DateTime>(clazz, timestampFieldName);
+                TimestampFieldDefinition = GetFieldDefinition<DateTime>(clazz, timestampFieldName);
             }
             if (project.HistoryRepositories.TryGetValue(historyRepositoryName, out var repository))
             {
-                _historyRepository = repository;
+                HistoryRepository = repository;
             }
             else
             {
@@ -71,19 +71,25 @@ namespace pva.SuperV.Engine.Processing
             string historyRepositorydName = GetCtorArgument<string>(1)!;
             string? timestampFieldName = GetCtorArgument<string?>(2);
             List<string> fieldsToHistorize = [];
-            for (int index = 3; index < CtorArguments.Count; index++)
+            for (int index = 3; index < CtorArguments.Count-1; index++)
             {
                 fieldsToHistorize.Add(GetCtorArgument<string>(index)!);
             }
+            ClassTimeSerieId = GetCtorArgument<string?>(CtorArguments.Count-1);
             ValidateParameters(project, clazz, trigerringFieldName, historyRepositorydName, timestampFieldName, fieldsToHistorize);
-            _classTimeSerieId = _historyRepository?.UpsertClassTimeSerie(project.Name!, clazz.Name!, this);
+        }
+
+        public void UpsertInHistoryStorage(string projectName, string className)
+        {
+            ClassTimeSerieId = HistoryRepository?.UpsertClassTimeSerie(projectName, className, this);
+            CtorArguments.Add(ClassTimeSerieId!);
         }
 
         public override void ProcessValue(IInstance instance, Field<T> changedField, bool valueChanged, T previousValue, T currentValue)
         {
             DateTime? historyTs;
-            if (_timestampField != null) {
-                Field<DateTime>? timestamp = GetInstanceField<DateTime>(instance, _timestampField?.Name) ;
+            if (TimestampFieldDefinition != null) {
+                Field<DateTime>? timestamp = GetInstanceField<DateTime>(instance, TimestampFieldDefinition?.Name) ;
                 historyTs = timestamp?.Value;
             }
             else {
@@ -98,7 +104,7 @@ namespace pva.SuperV.Engine.Processing
                     fieldsToHistorize.Add(field);
                 }
             });
-            _historyRepository?.HistorizeValues(_classTimeSerieId!, instance, historyTs ?? DateTime.Now, fieldsToHistorize);
+            HistoryRepository?.HistorizeValues(ClassTimeSerieId!, instance, historyTs ?? DateTime.Now, fieldsToHistorize);
         }
     }
 }

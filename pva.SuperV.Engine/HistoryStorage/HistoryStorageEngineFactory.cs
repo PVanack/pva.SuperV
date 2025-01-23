@@ -8,17 +8,28 @@ namespace pva.SuperV.Engine.HistoryStorage
 {
     public static class HistoryStorageEngineFactory
     {
+        public const string NullHistoryStorage = "NullHistoryStorage";
+        public const string TdEngineHistoryStorage = "TDengine";
+
         public static IHistoryStorageEngine? CreateHistoryStorageEngine(string? connectionString)
         {
             if (String.IsNullOrEmpty(connectionString))
             {
                 return null;
             }
-            return connectionString.ToLower() switch
+            if (connectionString.StartsWith(NullHistoryStorage))
             {
-                "fake" => new FakeHistoryStorageEngine(),
-                _ => throw new ArgumentException($"Unknown history storage engine connection string: {connectionString}"),
-            };
+                return new NullHistoryStorageEngine();
+            }
+            else if (connectionString.StartsWith(TdEngineHistoryStorage))
+            {
+                string tdEngineConnectionString = connectionString.Replace($"{TdEngineHistoryStorage}:", "").Trim();
+                return new TDengineHistoryStorage(tdEngineConnectionString);
+            }
+            else
+            {
+                throw new ArgumentException($"Unknown history storage engine connection string: {connectionString}");
+            }
         }
     }
 }

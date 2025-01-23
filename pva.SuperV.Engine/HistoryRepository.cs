@@ -37,6 +37,12 @@ namespace pva.SuperV.Engine
         public IHistoryStorageEngine? HistoryStorageEngine { get; set; }
 
         /// <summary>
+        /// Gets of sets the history storage ID.
+        /// </summary>
+        /// <value> The history storage ID</value>
+        public string HistoryStorageId { get; set; }
+
+        /// <summary>
         /// Validates the name of the history repository.
         /// </summary>
         /// <param name="name">The history repository name.</param>
@@ -51,18 +57,23 @@ namespace pva.SuperV.Engine
             return name;
         }
 
+        internal void UpsertRepository(string projectName, IHistoryStorageEngine historyStorageEngine)
+        {
+            HistoryStorageId = historyStorageEngine?.UpsertRepository(projectName, this);
+        }
+
         internal string? UpsertClassTimeSerie<T>(string projectName, string className, HistorizationProcessing<T> historizationProcessing)
         {
             if (HistoryStorageEngine is null)
             {
                 throw new NoHistoryStorageEngineException();
             }
-            return HistoryStorageEngine.UpsertClassTimeSerie(projectName, className, historizationProcessing);
+            return HistoryStorageEngine.UpsertClassTimeSerie(HistoryStorageId, projectName, className, historizationProcessing);
         }
 
         public void HistorizeValues(string classTimeSerieId, IInstance instance, DateTime dateTime, List<IField> fieldsToHistorize)
         {
-            HistoryStorageEngine?.HistorizeValues(classTimeSerieId, instance.Name!, dateTime, fieldsToHistorize);
+            HistoryStorageEngine?.HistorizeValues(HistoryStorageId, classTimeSerieId, instance.Name!, dateTime, fieldsToHistorize);
         }
     }
 }
