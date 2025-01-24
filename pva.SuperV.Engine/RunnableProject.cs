@@ -61,19 +61,16 @@ namespace pva.SuperV.Engine
                 clazz.FieldDefinitions.Values.ForEach(fieldDefinition =>
                 {
                     fieldDefinition.ValuePostChangeProcessings
-                        .Where(vp => vp is IHistorizationProcessing)
-                        .ForEach(vp =>
-                            {
-                                IHistorizationProcessing hp = vp as IHistorizationProcessing;
-                                hp.UpsertInHistoryStorage(this.Name!, clazz.Name!);
-                            });
+                        .OfType<IHistorizationProcessing>()
+                        .ForEach(hp =>
+                            hp?.UpsertInHistoryStorage(this.Name!, clazz.Name!));
                 });
             });
         }
 
         public List<HistoryRow> GetHistoryValues(string instanceName, DateTime from, DateTime to, List<string> fieldNames)
         {
-            IInstance instance = GetInstance(instanceName);
+            Instance instance = GetInstance(instanceName);
             List<IFieldDefinition> fields = [];
             HistoryRepository? historyRepository = null;
             string? classTimeSerieId = null;
@@ -81,8 +78,7 @@ namespace pva.SuperV.Engine
             {
                 IFieldDefinition field = instance.Class.GetField(fieldName);
                 IHistorizationProcessing? hp = field.ValuePostChangeProcessings
-                    .Where(vp => vp is IHistorizationProcessing)
-                    .Select(hp => hp as IHistorizationProcessing)
+                    .OfType<IHistorizationProcessing>()
                     .FirstOrDefault();
                 if (hp != null)
                 {
@@ -117,12 +113,12 @@ namespace pva.SuperV.Engine
         /// <param name="className">Name of the class.</param>
         /// <param name="instanceName">Name of the instance.</param>
         /// <returns>The newly created instance.</returns>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.InstanceAlreadyExistException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
         public dynamic? CreateInstance(string className, string instanceName)
         {
             if (Instances.ContainsKey(instanceName))
             {
-                throw new InstanceAlreadyExistException(instanceName);
+                throw new EntityAlreadyExistException("Instance", instanceName);
             }
             Class clazz = GetClass(className);
             string classFullName = $"{Name}.V{Version}.{clazz.Name}";
@@ -164,7 +160,7 @@ namespace pva.SuperV.Engine
             {
                 return instance;
             }
-            throw new UnknownInstanceException(instanceName);
+            throw new UnknownEntityException("Instance", instanceName);
         }
 
         /// <summary>

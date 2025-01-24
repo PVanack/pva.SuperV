@@ -1,8 +1,6 @@
-﻿using pva.SuperV.Engine.Exceptions;
-using pva.SuperV.Engine.Processing;
+﻿using pva.SuperV.Engine.Processing;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Engine
 {
@@ -11,14 +9,8 @@ namespace pva.SuperV.Engine
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="pva.SuperV.Engine.IFieldDefinition" />
-    public partial class FieldDefinition<T> : IFieldDefinition
+    public class FieldDefinition<T> : IFieldDefinition
     {
-        /// <summary>
-        /// Regex used to validate the field name.
-        /// </summary>
-        [GeneratedRegex(Constants.IdentifierNamePattern)]
-        private static partial Regex FieldNameRegex();
-
         /// <summary>
         /// The name of the field. Uses <see cref="Name"/> to access value.
         /// </summary>
@@ -35,7 +27,7 @@ namespace pva.SuperV.Engine
             get => _name;
             set
             {
-                ValidateName(value!);
+                IdentifierValidation.ValidateIdentifier("field", value);
                 _name = value;
             }
         }
@@ -131,19 +123,6 @@ namespace pva.SuperV.Engine
                 Formatter = this.Formatter
             };
             return fieldDefinition;
-        }
-
-        /// <summary>
-        /// Validates the name of the field.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.InvalidFieldNameException"></exception>
-        private static void ValidateName(string name)
-        {
-            if (!FieldNameRegex().IsMatch(name))
-            {
-                throw new InvalidFieldNameException(name, Constants.IdentifierNamePattern);
-            }
         }
     }
 }

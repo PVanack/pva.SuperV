@@ -1,6 +1,5 @@
 ﻿using pva.SuperV.Engine.Exceptions;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Engine
 {
@@ -8,14 +7,8 @@ namespace pva.SuperV.Engine
     /// Base class for <see cref="Field{T}"/> formatting. If adding new formatters, they need to be added as JsonDerivedType annotation.
     /// </summary>
     [JsonDerivedType(typeof(EnumFormatter), typeDiscriminator: "Enum")]
-    public abstract partial class FieldFormatter
+    public abstract class FieldFormatter
     {
-        /// <summary>
-        /// Regex for validating the field formatter's name.
-        /// </summary>
-        [GeneratedRegex(Constants.IdentifierNamePattern)]
-        private static partial Regex FieldFormatterNameRegex();
-
         private string? _name;
 
         public string? Name
@@ -23,7 +16,7 @@ namespace pva.SuperV.Engine
             get => _name;
             init
             {
-                ValidateName(value!);
+                IdentifierValidation.ValidateIdentifier("field value formatter", value);
                 _name = value;
             }
         }
@@ -55,19 +48,6 @@ namespace pva.SuperV.Engine
         protected FieldFormatter(HashSet<Type> allowedTypes)
         {
             AllowedTypes = allowedTypes;
-        }
-
-        /// <summary>
-        /// Validates the name.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.InvalidFormatterNameException"></exception>
-        private static void ValidateName(string name)
-        {
-            if (!FieldFormatterNameRegex().IsMatch(name))
-            {
-                throw new InvalidFormatterNameException(name, Constants.IdentifierNamePattern);
-            }
         }
 
         /// <summary>

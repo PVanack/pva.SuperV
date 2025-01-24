@@ -46,7 +46,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="fieldName">Name of the field.</param>
         /// <returns>The field.</returns>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownFieldException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownEntityException"></exception>
         IField GetField(string fieldName);
     }
 }

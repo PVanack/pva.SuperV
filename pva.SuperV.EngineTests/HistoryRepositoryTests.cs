@@ -15,7 +15,7 @@ public class HistoryRepositoryTests
     public void GivenInvalidHistoryRepositoryName_WhenCreatingRepository_ThenInvalidHistoryRepositoryNameExceptionIsThrown(string invalidHistoryRepositoryName)
     {
         // WHEN/THEN
-        Assert.Throws<InvalidHistoryRepositoryNameException>(() => new HistoryRepository(invalidHistoryRepositoryName));
+        Assert.Throws<InvalidIdentifierNameException>(() => new HistoryRepository(invalidHistoryRepositoryName));
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public class HistoryRepositoryTests
 
         // WHEN
         HistoryRepository historyRepositoryOther = new(ProjectHelpers.HistoryRepositoryName);
-        Assert.Throws<HistoryRepositoryAlreadyExistException>(() => wipProject.AddHistoryRepository(historyRepositoryOther));
+        Assert.Throws<EntityAlreadyExistException>(() => wipProject.AddHistoryRepository(historyRepositoryOther));
     }
 
     [Fact]

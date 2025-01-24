@@ -1,5 +1,4 @@
-﻿using pva.Helpers.Extensions;
-using pva.SuperV.Engine.Exceptions;
+﻿using pva.SuperV.Engine.Exceptions;
 
 namespace pva.SuperV.Engine.Processing
 {
@@ -47,7 +46,7 @@ namespace pva.SuperV.Engine.Processing
             }
             else
             {
-                throw new UnknownHistoryRepositoryException(historyRepositoryName);
+                throw new UnknownEntityException("History repository", historyRepositoryName);
             }
             fieldsToHistorize.ForEach(fieldToHistorize =>
             {

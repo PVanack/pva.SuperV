@@ -5,9 +5,10 @@ namespace pva.SuperV.Engine.Exceptions
     /// <summary>Exception thrown when an error occurs while building a project.</summary>
     [Serializable]
     [ExcludeFromCodeCoverage(Justification = "Impossible to create a Roslyn compilation error by unit test.")]
-    public class ProjectBuildException : Exception
+    public class ProjectBuildException : SuperVException
     {
-        public ProjectBuildException(Project project, string diagnostics) : base($"Error building project {project.Name} : {diagnostics}")
+        public ProjectBuildException(Project project, string diagnostics)
+            : base($"Error building project {project.Name} : {diagnostics}")
         {
         }
 

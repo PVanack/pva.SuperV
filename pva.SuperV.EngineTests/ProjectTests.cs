@@ -16,7 +16,7 @@ namespace pva.SuperV.EngineTests
         public void GivenInvalidProjectName_WhenCreatingProject_ThenInvalidProjectNameExceptionIsThrown(string invalidProjectName)
         {
             // WHEN/THEN
-            Assert.Throws<InvalidProjectNameException>(() => Project.CreateProject(invalidProjectName));
+            Assert.Throws<InvalidIdentifierNameException>(() => Project.CreateProject(invalidProjectName));
         }
 
         [Fact]
@@ -51,14 +51,11 @@ namespace pva.SuperV.EngineTests
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
 
-            // WHEN
+            // WHEN/THEN
             project.AddClass(ClassName);
             project.Classes.ShouldContainKey(ClassName);
             project.Classes[ClassName].ShouldNotBeNull();
-            var exception = Assert.Throws<ClassAlreadyExistException>(() => project.AddClass(ClassName));
-
-            // THEN
-            Assert.IsType<ClassAlreadyExistException>(exception);
+            Assert.Throws<EntityAlreadyExistException>(() => project.AddClass(ClassName));
         }
 
         [Fact]
@@ -109,10 +106,7 @@ namespace pva.SuperV.EngineTests
             WipProject project = Project.CreateProject(ProjectName);
 
             // WHEN
-            var exception = Assert.Throws<UnknownClassException>(() => project.GetClass(ClassName));
-
-            // THEN
-            Assert.IsType<UnknownClassException>(exception);
+            Assert.Throws<UnknownEntityException>(() => project.GetClass(ClassName));
         }
 
         [Fact]
@@ -190,7 +184,7 @@ public TestClass() {Fields.Add("IntField", IntField);IntField.Instance = this;
             project.AddFieldFormatter(formatter);
 
             // WHEN
-            Assert.Throws<UnknownFormatterException>(() => project.GetFormatter("UnknownFormatter"));
+            Assert.Throws<UnknownEntityException>(() => project.GetFormatter("UnknownFormatter"));
         }
 
         [Fact]
@@ -263,7 +257,7 @@ public TestClass() {Fields.Add("IntField", IntField);IntField.Instance = this;
             _ = project.AddClass(ClassName);
 
             // WHEN/THEN
-            Assert.Throws<UnknownFormatterException>(() => project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), "UnknownFormetter"));
+            Assert.Throws<UnknownEntityException>(() => project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), "UnknownFormetter"));
         }
 
         [Fact]
@@ -275,7 +269,7 @@ public TestClass() {Fields.Add("IntField", IntField);IntField.Instance = this;
             project.AddFieldFormatter(formatter);
 
             // WHEN/THEN
-            Assert.Throws<FormatterAlreadyExistException>(() => project.AddFieldFormatter(formatter));
+            Assert.Throws<EntityAlreadyExistException>(() => project.AddFieldFormatter(formatter));
         }
     }
 }

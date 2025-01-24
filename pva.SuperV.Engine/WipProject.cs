@@ -47,12 +47,12 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="className">Name of the class.</param>
         /// <returns>The newly created <see cref="Class"/>.</returns>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.ClassAlreadyExistException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
         public Class AddClass(string className)
         {
             if (Classes.ContainsKey(className))
             {
-                throw new ClassAlreadyExistException(className);
+                throw new EntityAlreadyExistException("Class", className);
             }
 
             Class clazz = new(className);
@@ -66,13 +66,13 @@ namespace pva.SuperV.Engine
         /// <param name="className">Name of the class.</param>
         /// <param name="baseClassName">Name of the base class.</param>
         /// <returns>The newly created <see cref="Class"/>.</returns>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.ClassAlreadyExistException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
         public Class AddClass(string className, string? baseClassName)
         {
             Class? baseClass = baseClassName is null ? null : GetClass(baseClassName);
             if (Classes.ContainsKey(className))
             {
-                throw new ClassAlreadyExistException(className);
+                throw new EntityAlreadyExistException("Class", className);
             }
 
             Class clazz = new(className, baseClass);
@@ -140,12 +140,12 @@ namespace pva.SuperV.Engine
         /// Adds a field formatter to project to be later used for a specific field formatting (<see cref="AddField{T}(string, FieldDefinition{T}, string)"/>.
         /// </summary>
         /// <param name="fieldFormatter">The field formatter.</param>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.FormatterAlreadyExistException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
         public void AddFieldFormatter(FieldFormatter fieldFormatter)
         {
             if (FieldFormatters.ContainsKey(fieldFormatter.Name!))
             {
-                throw new FormatterAlreadyExistException(fieldFormatter.Name);
+                throw new EntityAlreadyExistException("Field formatter", fieldFormatter.Name);
             }
 
             FieldFormatters.Add(fieldFormatter.Name!, fieldFormatter);
@@ -199,12 +199,12 @@ namespace pva.SuperV.Engine
         /// Adds a history repository to project./>.
         /// </summary>
         /// <param name="historyRepository">The history repository.</param>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.HistoryRepositoryAlreadyExistException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
         public void AddHistoryRepository(HistoryRepository historyRepository)
         {
             if (HistoryRepositories.ContainsKey(historyRepository.Name!))
             {
-                throw new HistoryRepositoryAlreadyExistException(historyRepository.Name);
+                throw new EntityAlreadyExistException("History repository", historyRepository.Name);
             }
 
             historyRepository.HistoryStorageEngine = HistoryStorageEngine;
