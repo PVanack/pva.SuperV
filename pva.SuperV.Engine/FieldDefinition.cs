@@ -91,23 +91,28 @@ namespace pva.SuperV.Engine
         public string GetCode()
         {
             StringBuilder codeBuilder = new();
-            codeBuilder.AppendLine($"public Field<{typeof(T)}> {Name} {{ get; set; }} = new({GetStringifiedValue(DefaultValue)});");
+            codeBuilder.AppendLine($"public Field<{typeof(T)}> {Name} {{ get; set; }} = new({GetCodeValueForNew(DefaultValue)});");
             return codeBuilder.ToString();
         }
 
-        private static string? GetStringifiedValue(T? defaultValue)
+        private static string? GetCodeValueForNew(T? defaultValue)
         {
             if (typeof(T).Equals(typeof(string)))
             {
                 return $"\"{defaultValue}\"";
             }
-            else if (defaultValue is double number)
+            else if (defaultValue is bool boolean)
             {
-                return number.ToString(CultureInfo.InvariantCulture);
+                string booleanValue = boolean ? "true" : "false";
+                return $"{booleanValue}";
             }
             else if (defaultValue is DateTime dateTime)
             {
-                return dateTime.ToString(CultureInfo.InvariantCulture);
+                return $"new {typeof(T)}({dateTime.Ticks.ToString(CultureInfo.InvariantCulture)}L)";
+            }
+            else if (defaultValue is TimeSpan timespan)
+            {
+                return $"new {typeof(T)}({timespan.Ticks.ToString(CultureInfo.InvariantCulture)}L)";
             }
             return defaultValue!.ToString();
         }

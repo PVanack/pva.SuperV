@@ -205,5 +205,30 @@ namespace pva.SuperV.Engine
             _projectAssemblyLoader?.Unload();
             _projectAssemblyLoader = null;
         }
+        public void SetInstanceValue<T>(string instanceName, string fieldName, T fieldValue)
+        {
+            SetInstanceValue(instanceName, fieldName, fieldValue, DateTime.UtcNow, QualityLevel.GOOD);
+        }
+
+        public void SetInstanceValue<T>(string instanceName, string fieldName, T fieldValue, DateTime timestamp)
+        {
+            SetInstanceValue(instanceName, fieldName, fieldValue, timestamp, QualityLevel.GOOD);
+        }
+
+        public void SetInstanceValue<T>(string instanceName, string fieldName, T fieldValue, QualityLevel qualityLevel)
+        {
+            SetInstanceValue(instanceName, fieldName, fieldValue, DateTime.UtcNow, qualityLevel);
+        }
+
+        public void SetInstanceValue<T>(string instanceName, string fieldName, T fieldValue, DateTime timestamp, QualityLevel qualityLevel)
+        {
+            Instance instance = GetInstance(instanceName);
+            IField field = instance.GetField(fieldName);
+            if (field is not Field<T> typedField)
+            {
+                throw new WrongFieldTypeException(fieldName);
+            }
+            typedField.SetValue(fieldValue, timestamp, qualityLevel);
+        }
     }
 }
