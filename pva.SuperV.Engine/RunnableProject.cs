@@ -77,9 +77,10 @@ namespace pva.SuperV.Engine
             List<IFieldDefinition> fields = [];
             HistoryRepository? historyRepository = null;
             string? classTimeSerieId = null;
-            fieldNames.ForEach(fieldName => {
+            fieldNames.ForEach(fieldName =>
+            {
                 IFieldDefinition field = instance.Class.GetField(fieldName);
-                IHistorizationProcessing? hp =  field.ValuePostChangeProcessings
+                IHistorizationProcessing? hp = field.ValuePostChangeProcessings
                     .Where(vp => vp is IHistorizationProcessing)
                     .Select(hp => hp as IHistorizationProcessing)
                     .FirstOrDefault();
@@ -204,9 +205,9 @@ namespace pva.SuperV.Engine
             Instances.Values.ForEach(instance =>
                 instance.Dispose());
             Instances.Clear();
+            base.Unload();
             _projectAssemblyLoader?.Unload();
             _projectAssemblyLoader = null;
-            base.Unload();
         }
     }
 }
