@@ -61,27 +61,24 @@ namespace pva.SuperV.Engine
                 clazz.FieldDefinitions.Values.ForEach(fieldDefinition =>
                 {
                     fieldDefinition.ValuePostChangeProcessings
-                        .Where(vp => vp is IHistorizationProcessing)
-                        .ForEach(vp =>
-                            {
-                                IHistorizationProcessing hp = vp as IHistorizationProcessing;
-                                hp.UpsertInHistoryStorage(this.Name!, clazz.Name!);
-                            });
+                        .OfType<IHistorizationProcessing>()
+                        .ForEach(hp =>
+                            hp?.UpsertInHistoryStorage(this.Name!, clazz.Name!));
                 });
             });
         }
 
         public List<HistoryRow> GetHistoryValues(string instanceName, DateTime from, DateTime to, List<string> fieldNames)
         {
-            IInstance instance = GetInstance(instanceName);
+            Instance instance = GetInstance(instanceName);
             List<IFieldDefinition> fields = [];
             HistoryRepository? historyRepository = null;
             string? classTimeSerieId = null;
-            fieldNames.ForEach(fieldName => {
+            fieldNames.ForEach(fieldName =>
+            {
                 IFieldDefinition field = instance.Class.GetField(fieldName);
-                IHistorizationProcessing? hp =  field.ValuePostChangeProcessings
-                    .Where(vp => vp is IHistorizationProcessing)
-                    .Select(hp => hp as IHistorizationProcessing)
+                IHistorizationProcessing? hp = field.ValuePostChangeProcessings
+                    .OfType<IHistorizationProcessing>()
                     .FirstOrDefault();
                 if (hp != null)
                 {
@@ -116,12 +113,12 @@ namespace pva.SuperV.Engine
         /// <param name="className">Name of the class.</param>
         /// <param name="instanceName">Name of the instance.</param>
         /// <returns>The newly created instance.</returns>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.InstanceAlreadyExistException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
         public dynamic? CreateInstance(string className, string instanceName)
         {
             if (Instances.ContainsKey(instanceName))
             {
-                throw new InstanceAlreadyExistException(instanceName);
+                throw new EntityAlreadyExistException("Instance", instanceName);
             }
             Class clazz = GetClass(className);
             string classFullName = $"{Name}.V{Version}.{clazz.Name}";
@@ -163,7 +160,7 @@ namespace pva.SuperV.Engine
             {
                 return instance;
             }
-            throw new UnknownInstanceException(instanceName);
+            throw new UnknownEntityException("Instance", instanceName);
         }
 
         /// <summary>
@@ -204,9 +201,34 @@ namespace pva.SuperV.Engine
             Instances.Values.ForEach(instance =>
                 instance.Dispose());
             Instances.Clear();
+            base.Unload();
             _projectAssemblyLoader?.Unload();
             _projectAssemblyLoader = null;
-            base.Unload();
+        }
+        public void SetInstanceValue<T>(string instanceName, string fieldName, T fieldValue)
+        {
+            SetInstanceValue(instanceName, fieldName, fieldValue, DateTime.UtcNow, QualityLevel.GOOD);
+        }
+
+        public void SetInstanceValue<T>(string instanceName, string fieldName, T fieldValue, DateTime timestamp)
+        {
+            SetInstanceValue(instanceName, fieldName, fieldValue, timestamp, QualityLevel.GOOD);
+        }
+
+        public void SetInstanceValue<T>(string instanceName, string fieldName, T fieldValue, QualityLevel qualityLevel)
+        {
+            SetInstanceValue(instanceName, fieldName, fieldValue, DateTime.UtcNow, qualityLevel);
+        }
+
+        public void SetInstanceValue<T>(string instanceName, string fieldName, T fieldValue, DateTime timestamp, QualityLevel qualityLevel)
+        {
+            Instance instance = GetInstance(instanceName);
+            IField field = instance.GetField(fieldName);
+            if (field is not Field<T> typedField)
+            {
+                throw new WrongFieldTypeException(fieldName);
+            }
+            typedField.SetValue(fieldValue, timestamp, qualityLevel);
         }
     }
 }

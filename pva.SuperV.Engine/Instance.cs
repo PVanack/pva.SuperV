@@ -72,7 +72,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="fieldName">Name of the field.</param>
         /// <returns>The field.</returns>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownFieldException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownEntityException"></exception>
         public IField GetField(string fieldName)
         {
             Class? actualClass = Class;
@@ -84,7 +84,7 @@ namespace pva.SuperV.Engine
                 }
                 actualClass = actualClass.BaseClass;
             }
-            throw new UnknownFieldException(fieldName, Class.Name);
+            throw new UnknownEntityException(fieldName, Class.Name);
         }
     }
 }

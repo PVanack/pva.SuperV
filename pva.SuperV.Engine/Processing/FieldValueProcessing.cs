@@ -65,6 +65,12 @@
         /// Initializes a new instance of the <see cref="FieldValueProcessing{T}"/> class.
         /// </summary>
         /// <param name="name">The name of processing.</param>
+        /// <param name="clazz">Name of the class</param>
+        protected FieldValueProcessing(string name, Class clazz)
+        {
+            Name = name;
+        }
+
         protected FieldValueProcessing(string name)
         {
             Name = name;
@@ -73,7 +79,6 @@
         /// <summary>
         /// Builds the field value processing from the <see cref="CtorArguments" /> after deserialization.
         /// </summary>
-        /// <param name="project">The project.</param>
         /// <param name="clazz">The clazz.</param>
         public abstract void BuildAfterDeserialization(Project project, Class clazz);
 
@@ -105,7 +110,7 @@
         /// </summary>
         /// <param name="clazz">The class from which to get field definition.</param>
         /// <param name="fieldName">Name of the field.</param>
-        /// <returns><see cref="FieldDefinition{T}"/></returns>
+        /// <returns><see cref="IFieldDefinition"/></returns>
         protected static IFieldDefinition? GetFieldDefinition(Class clazz, string? fieldName)
         {
             return string.IsNullOrEmpty(fieldName)
@@ -132,7 +137,7 @@
         /// </summary>
         /// <param name="instance">The instance from which to get the field.</param>
         /// <param name="fieldName">Name of the field.</param>
-        /// <returns><see cref="Field{T}"/></returns>
+        /// <returns><see cref="IField"/></returns>
         protected static IField? GetInstanceField(IInstance instance, string? fieldName)
         {
             return string.IsNullOrEmpty(fieldName)

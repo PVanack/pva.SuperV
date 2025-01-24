@@ -3,17 +3,12 @@ using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.Processing;
 using System.Text;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Engine
 {
     /// <summary>Dynamic class of a <see cref="Project"/>. It contains dynamic fields on which processing can be defined.</summary>
-    public partial class Class
+    public class Class
     {
-        /// <summary>Regex for validating class name.</summary>
-        [GeneratedRegex(Constants.IdentifierNamePattern)]
-        private static partial Regex ClassNameRegex();
-
         /// <summary>
         /// Name of class. Access done through <see cref="Name"./>
         /// </summary>
@@ -25,7 +20,7 @@ namespace pva.SuperV.Engine
             get { return _name; }
             set
             {
-                ValidateName(value!);
+                IdentifierValidation.ValidateIdentifier("class", value);
                 _name = value;
             }
         }
@@ -78,19 +73,6 @@ namespace pva.SuperV.Engine
         }
 
         /// <summary>
-        /// Validates the name of the class.
-        /// </summary>
-        /// <param name="name">The name to be validated.</param>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.InvalidClassNameException"></exception>
-        private static void ValidateName(string name)
-        {
-            if (!ClassNameRegex().IsMatch(name))
-            {
-                throw new InvalidClassNameException(name, Constants.IdentifierNamePattern);
-            }
-        }
-
-        /// <summary>
         /// Adds a field definition to the class.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -108,12 +90,12 @@ namespace pva.SuperV.Engine
         /// <param name="field">The <see cref="FieldDefinition{T}" to be added.</param>
         /// <param name="formatter">The formatter to be used when using ToString()."/>.</param>
         /// <returns></returns>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.FieldAlreadyExistException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
         internal FieldDefinition<T> AddField<T>(FieldDefinition<T> field, FieldFormatter? formatter)
         {
             if (FieldDefinitions.ContainsKey(field.Name!))
             {
-                throw new FieldAlreadyExistException(field.Name);
+                throw new EntityAlreadyExistException("Field", field.Name);
             }
             field.Formatter = formatter;
             FieldDefinitions.Add(field.Name!, field);
@@ -131,7 +113,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="fieldName">Name of the field to be retrieved.</param>
         /// <returns>The field</returns>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownFieldException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownEntityException"></exception>
         public IFieldDefinition GetField(string fieldName)
         {
             if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
@@ -142,7 +124,7 @@ namespace pva.SuperV.Engine
             {
                 return BaseClass.GetField(fieldName);
             }
-            throw new UnknownFieldException(fieldName);
+            throw new UnknownEntityException("Field", fieldName);
         }
 
         /// <summary>
@@ -152,7 +134,7 @@ namespace pva.SuperV.Engine
         /// <param name="fieldName">Name of the field to be retrieved.</param>
         /// <returns>The field</returns>
         /// <exception cref="pva.SuperV.Engine.Exceptions.WrongFieldTypeException"></exception>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownFieldException"></exception>
+        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownEntityException"></exception>
         public FieldDefinition<T>? GetField<T>(string fieldName)
         {
             IFieldDefinition fieldDefinition = GetField(fieldName);

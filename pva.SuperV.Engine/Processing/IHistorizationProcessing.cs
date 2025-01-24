@@ -8,7 +8,6 @@
         /// </summary>
         string? ClassTimeSerieId { get; set; }
 
-
         void UpsertInHistoryStorage(string projectName, string className);
     }
 }

@@ -1,11 +1,4 @@
-﻿using pva.Helpers.Extensions;
-using pva.SuperV.Engine.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+﻿using pva.SuperV.Engine.Exceptions;
 
 namespace pva.SuperV.Engine.Processing
 {
@@ -53,7 +46,7 @@ namespace pva.SuperV.Engine.Processing
             }
             else
             {
-                throw new UnknownHistoryRepositoryException(historyRepositoryName);
+                throw new UnknownEntityException("History repository", historyRepositoryName);
             }
             fieldsToHistorize.ForEach(fieldToHistorize =>
             {
@@ -71,11 +64,11 @@ namespace pva.SuperV.Engine.Processing
             string historyRepositorydName = GetCtorArgument<string>(1)!;
             string? timestampFieldName = GetCtorArgument<string?>(2);
             List<string> fieldsToHistorize = [];
-            for (int index = 3; index < CtorArguments.Count-1; index++)
+            for (int index = 3; index < CtorArguments.Count - 1; index++)
             {
                 fieldsToHistorize.Add(GetCtorArgument<string>(index)!);
             }
-            ClassTimeSerieId = GetCtorArgument<string?>(CtorArguments.Count-1);
+            ClassTimeSerieId = GetCtorArgument<string?>(CtorArguments.Count - 1);
             ValidateParameters(project, clazz, trigerringFieldName, historyRepositorydName, timestampFieldName, fieldsToHistorize);
         }
 
@@ -88,11 +81,13 @@ namespace pva.SuperV.Engine.Processing
         public override void ProcessValue(IInstance instance, Field<T> changedField, bool valueChanged, T previousValue, T currentValue)
         {
             DateTime? historyTs;
-            if (TimestampFieldDefinition != null) {
-                Field<DateTime>? timestamp = GetInstanceField<DateTime>(instance, TimestampFieldDefinition?.Name) ;
+            if (TimestampFieldDefinition != null)
+            {
+                Field<DateTime>? timestamp = GetInstanceField<DateTime>(instance, TimestampFieldDefinition?.Name);
                 historyTs = timestamp?.Value;
             }
-            else {
+            else
+            {
                 historyTs = changedField.Timestamp.GetValueOrDefault();
             }
             List<IField> fieldsToHistorize = [];

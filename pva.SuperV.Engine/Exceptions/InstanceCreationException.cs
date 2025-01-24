@@ -4,10 +4,10 @@ namespace pva.SuperV.Engine.Exceptions
 {
     /// <summary>Exception thrown when an error occurs while creating an instance.</summary>
     [ExcludeFromCodeCoverage]
-    public class InstanceCreationException : Exception
+    public class InstanceCreationException : SuperVException
     {
-        public InstanceCreationException(string instanceName, string className, Exception innerException) :
-            base($"Error creating instance {instanceName} with class {className}", innerException)
+        public InstanceCreationException(string instanceName, string className, Exception innerException)
+            : base($"Error creating instance {instanceName} with class {className}", innerException)
         {
         }
 

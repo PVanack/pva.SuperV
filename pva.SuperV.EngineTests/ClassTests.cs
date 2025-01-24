@@ -17,7 +17,7 @@ namespace pva.SuperV.EngineTests
         public void GivenInvalidClassName_WhenCreatingClass_ThenInvalidClassNameExceptionIsThrown(string invalidClassName)
         {
             // WHEN/THEN
-            Assert.Throws<InvalidClassNameException>(() => new Class(invalidClassName));
+            Assert.Throws<InvalidIdentifierNameException>(() => new Class(invalidClassName));
         }
 
         [Fact]
@@ -63,7 +63,7 @@ namespace pva.SuperV.EngineTests
             project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10));
 
             // WHEN/THEN
-            Assert.Throws<FieldAlreadyExistException>(() => project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10)));
+            Assert.Throws<EntityAlreadyExistException>(() => project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10)));
         }
 
         [Fact]
@@ -79,7 +79,7 @@ namespace pva.SuperV.EngineTests
 
             // THEN
             clazz.FieldDefinitions.ShouldBeEmpty();
-            Assert.Throws<UnknownFieldException>(() => clazz.GetField<int>(FieldName));
+            Assert.Throws<UnknownEntityException>(() => clazz.GetField<int>(FieldName));
         }
     }
 }

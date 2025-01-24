@@ -2,21 +2,14 @@
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Engine
 {
     /// <summary>
     /// SuperV Project class. It contains all the information required (<see cref="Class"/>, <see cref="Instance"/>, processing).
     /// </summary>
-    public abstract partial class Project : IDisposable
+    public abstract class Project : IDisposable
     {
-        /// <summary>
-        /// Regex for validating project name.
-        /// </summary>
-        [GeneratedRegex(Constants.IdentifierNamePattern)]
-        private static partial Regex ProjectNameRegex();
-
         /// <summary>
         /// Gets the projects path where all SuperV stuff is stored (generated assemblies, project definitions and snapshots).
         /// </summary>
@@ -49,7 +42,7 @@ namespace pva.SuperV.Engine
             get { return _name; }
             set
             {
-                ValidateName(value!);
+                IdentifierValidation.ValidateIdentifier("project", value);
                 _name = value;
             }
         }
@@ -156,19 +149,6 @@ namespace pva.SuperV.Engine
         }
 
         /// <summary>
-        /// Validates the name of the project.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.InvalidProjectNameException"></exception>
-        private static void ValidateName(string name)
-        {
-            if (!ProjectNameRegex().IsMatch(name))
-            {
-                throw new InvalidProjectNameException(name, Constants.IdentifierNamePattern);
-            }
-        }
-
-        /// <summary>
         /// Gets a class for a name.
         /// </summary>
         /// <param name="className">Name of the class.</param>
@@ -181,7 +161,7 @@ namespace pva.SuperV.Engine
                 return value;
             }
 
-            throw new UnknownClassException(className);
+            throw new UnknownEntityException("Class", className);
         }
 
         /// <summary>
@@ -211,7 +191,7 @@ namespace pva.SuperV.Engine
                 return value;
             }
 
-            throw new UnknownFormatterException(formatterName);
+            throw new UnknownEntityException("Field formatter", formatterName);
         }
 
         /// <summary>

@@ -4,10 +4,10 @@ namespace pva.SuperV.Engine.Exceptions
 {
     /// <summary>Exception thrown when field on which a formatter is applied is not one of the allowed types of formatter.</summary>
     [Serializable]
-    public class InvalidTypeForFormatterException : Exception
+    public class InvalidTypeForFormatterException : SuperVException
     {
-        public InvalidTypeForFormatterException(Type fieldType, string fieldFormatterName) :
-            base($"Invalid type {fieldType.Name} for formatter {fieldFormatterName}.")
+        public InvalidTypeForFormatterException(Type fieldType, string fieldFormatterName)
+            : base($"Invalid type {fieldType.Name} for formatter {fieldFormatterName}.")
         {
         }
 

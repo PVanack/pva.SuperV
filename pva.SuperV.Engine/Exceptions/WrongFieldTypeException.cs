@@ -4,9 +4,10 @@ namespace pva.SuperV.Engine.Exceptions
 {
     /// <summary>Exception thrown when type requested doesn't match actual field type.</summary>
     [Serializable]
-    public class WrongFieldTypeException : Exception
+    public class WrongFieldTypeException : SuperVException
     {
-        public WrongFieldTypeException(string fieldName, Type requestedType, Type actualType) : base($"Wrong field type requested for {fieldName}: actual is {actualType} requested is {requestedType}")
+        public WrongFieldTypeException(string fieldName, Type requestedType, Type actualType)
+            : base($"Wrong field type requested for {fieldName}: actual is {actualType} requested is {requestedType}")
         {
         }
 

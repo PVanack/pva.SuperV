@@ -2,30 +2,22 @@
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 
 namespace pva.SuperV.Engine
 {
     /// <summary>
     /// History repository to store history of instance values.
     /// </summary>
-    public partial class HistoryRepository(string name)
+    public class HistoryRepository(string name)
     {
-        /// <summary>
-        /// Regex used to validate the repository name.
-        /// </summary>
-        [GeneratedRegex(Constants.IdentifierNamePattern)]
-        private static partial Regex HistoryRepositoryNameRegex();
-
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
         /// <value>
         /// The name.
         /// </value>
-        public string Name { get; set; } = ValidateName(name);
+        public string Name { get; set; } = IdentifierValidation.ValidateIdentifier("history repository", name);
 
         /// <summary>
         /// Gets or sets the history storage engine used to store values.
@@ -41,21 +33,6 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <value> The history storage ID</value>
         public string HistoryStorageId { get; set; }
-
-        /// <summary>
-        /// Validates the name of the history repository.
-        /// </summary>
-        /// <param name="name">The history repository name.</param>
-        /// <returns></returns>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.InvalidHistoryRepositoryNameException"></exception>
-        private static string ValidateName(string name)
-        {
-            if (!HistoryRepositoryNameRegex().IsMatch(name))
-            {
-                throw new InvalidHistoryRepositoryNameException(name, Constants.IdentifierNamePattern);
-            }
-            return name;
-        }
 
         internal void UpsertRepository(string projectName, IHistoryStorageEngine historyStorageEngine)
         {

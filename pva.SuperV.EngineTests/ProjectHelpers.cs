@@ -1,6 +1,5 @@
 ﻿using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
-using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.HistoryStorage;
@@ -66,6 +65,14 @@ namespace pva.SuperV.EngineTests
 
         public static RunnableProject CreateRunnableProject(string? historyEngineType)
         {
+            WipProject wipProject = CreateWipProject(historyEngineType);
+            RunnableProject project = ProjectBuilder.Build(wipProject);
+            wipProject.Dispose();
+            return project;
+        }
+
+        public static WipProject CreateWipProject(string? historyEngineType)
+        {
             string? connectionString = historyEngineType;
             if (!String.IsNullOrEmpty(historyEngineType) && historyEngineType.Equals(HistoryStorageEngineFactory.TdEngineHistoryStorage))
             {
@@ -108,15 +115,12 @@ namespace pva.SuperV.EngineTests
             List<string> FieldsToHistorize = [ValueFieldName];
             HistorizationProcessing<int> historizationProcessing = new("Historization", wipProject, clazz, ValueFieldName, historyRepository.Name, null, FieldsToHistorize);
             wipProject.AddFieldChangePostProcessing(ClassName, ValueFieldName, historizationProcessing);
-
-            RunnableProject project = ProjectBuilder.Build(wipProject);
-            wipProject.Dispose();
-            return project;
+            return wipProject;
         }
 
         public static void DeleteProject(Project project)
         {
-//            Task.Run(async () => await StopTDengineContainer());
+            //            Task.Run(async () => await StopTDengineContainer());
 
             project.Dispose();
 #if DELETE_PROJECT_FILE

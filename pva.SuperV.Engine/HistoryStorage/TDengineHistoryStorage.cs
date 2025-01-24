@@ -1,10 +1,7 @@
-﻿using pva.Helpers.Extensions;
+﻿using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.Processing;
-using System.Collections.Generic;
-using System.Text;
 using TDengine.Driver;
 using TDengine.Driver.Client;
-using TDengine.Driver.Client.Websocket;
 
 namespace pva.SuperV.Engine.HistoryStorage
 {
@@ -35,7 +32,6 @@ namespace pva.SuperV.Engine.HistoryStorage
         private readonly string connectionString;
         private ITDengineClient? tdEngineClient;
 
-
         public TDengineHistoryStorage(string tdEngineConnectionString)
         {
             this.connectionString = tdEngineConnectionString;
@@ -50,42 +46,57 @@ namespace pva.SuperV.Engine.HistoryStorage
                 // Open connection with using block, it will close the connection automatically
                 tdEngineClient = DbDriver.Open(builder);
             }
-            catch (TDengineError e)
-            {
-                // handle TDengine error
-                throw new ApplicationException($"Failed to connect to {builder}; ErrCode: {e.Code}; ErrMessage: {e.Error}");
-            }
             catch (Exception e)
             {
-                // handle other exceptions
-                throw new ApplicationException($"Failed to connect to {builder}; Err: {e.Message}");
+                throw new TdEngineException($"connect to {builder}", e);
             }
         }
 
         public string UpsertRepository(string projectName, HistoryRepository repository)
         {
             string repositoryName = $"{projectName}{repository.Name}".ToLowerInvariant();
-            tdEngineClient?.Exec($"CREATE DATABASE IF NOT EXISTS {repositoryName} PRECISION 'ns' KEEP 3650 DURATION 10 BUFFER 16;");
+            try
+            {
+                tdEngineClient?.Exec($"CREATE DATABASE IF NOT EXISTS {repositoryName} PRECISION 'ns' KEEP 3650 DURATION 10 BUFFER 16;");
+            }
+            catch (Exception e)
+            {
+                throw new TdEngineException($"upsert repository {repositoryName}", e);
+            }
             return repositoryName;
         }
 
         public void DeleteRepository(string projectName, string repositoryName)
         {
             string repositoryActualName = $"{projectName}{repositoryName}".ToLowerInvariant();
-            tdEngineClient?.Exec($"DROP DATABASE {repositoryActualName};");
+            try
+            {
+                tdEngineClient?.Exec($"DROP DATABASE {repositoryActualName};");
+            }
+            catch (Exception e)
+            {
+                throw new TdEngineException($"delete repository {repositoryActualName}", e);
+            }
         }
 
         public string UpsertClassTimeSerie<T>(string repositoryStorageId, string projectName, string className, HistorizationProcessing<T> historizationProcessing)
         {
-            tdEngineClient?.Exec($"USE {repositoryStorageId};");
-            string fieldNames = "TS TIMESTAMP,";
-            fieldNames +=
-                historizationProcessing.FieldsToHistorize
-                    .Select(field => $"_{field.Name} {GetFieldDbType(field!)}")
-                    .Aggregate((a, b) => $"{a},{b}");
             string tableName = $"{projectName}{className}{historizationProcessing.Name}".ToLowerInvariant();
-            string command = $"CREATE STABLE IF NOT EXISTS {tableName} ({fieldNames}) TAGS (instance varchar(64));";
-            tdEngineClient?.Exec(command);
+            try
+            {
+                tdEngineClient?.Exec($"USE {repositoryStorageId};");
+                string fieldNames = "TS TIMESTAMP,";
+                fieldNames +=
+                    historizationProcessing.FieldsToHistorize
+                        .Select(field => $"_{field.Name} {GetFieldDbType(field!)}")
+                        .Aggregate((a, b) => $"{a},{b}");
+                string command = $"CREATE STABLE IF NOT EXISTS {tableName} ({fieldNames}) TAGS (instance varchar(64));";
+                tdEngineClient?.Exec(command);
+            }
+            catch (Exception e)
+            {
+                throw new TdEngineException($"upsert class time series {tableName}", e);
+            }
             return tableName;
         }
 
@@ -93,78 +104,62 @@ namespace pva.SuperV.Engine.HistoryStorage
         {
             string instanceTableName = instanceName.ToLowerInvariant();
             tdEngineClient!.Exec($"USE {repositoryStorageId};");
-            using (var stmt = tdEngineClient!.StmtInit())
+            using var stmt = tdEngineClient!.StmtInit();
+            try
             {
-                try
-                {
-                    string fieldsPlaceholders = Enumerable.Repeat("?", fieldsToHistorize.Count + 1)
-                        .Aggregate((a, b) => $"{a},{b}");
-                    string sql = $"INSERT INTO ? USING {classTimeSerieId} TAGS(?) VALUES ({fieldsPlaceholders});";
-                    List<object> rowValues = new(fieldsToHistorize.Count + 1)
+                string fieldsPlaceholders = Enumerable.Repeat("?", fieldsToHistorize.Count + 1)
+                    .Aggregate((a, b) => $"{a},{b}");
+                string sql = $"INSERT INTO ? USING {classTimeSerieId} TAGS(?) VALUES ({fieldsPlaceholders});";
+                List<object> rowValues = new(fieldsToHistorize.Count + 1)
                     {
                         dateTime
                     };
-                    fieldsToHistorize.ForEach(field =>
-                        rowValues.Add(((dynamic)field).Value));
-                    stmt.Prepare(sql);
-                    // set table name
-                    stmt.SetTableName($"{instanceTableName}");
-                    // set tags
-                    stmt.SetTags(new object[] { instanceTableName });
-                    // bind row values
-                    stmt.BindRow(rowValues.ToArray());
-                    // add batch
-                    stmt.AddBatch();
-                    // execute
-                    stmt.Exec();
-                }
-                catch (TDengineError e)
-                {
-                    // handle TDengine error
-                    throw new ApplicationException($"Failed to insert to table {classTimeSerieId} using stmt, ErrCode: {e.Code}, ErrMessage: {e.Error}");
-                }
-                catch (Exception e)
-                {
-                    // handle other exceptions
-                    throw new ApplicationException($"Failed to insert to table {classTimeSerieId} using stmt, ErrMessage: {e.Message}");
-                }
+                fieldsToHistorize.ForEach(field =>
+                    rowValues.Add(((dynamic)field).Value));
+                stmt.Prepare(sql);
+                // set table name
+                stmt.SetTableName($"{instanceTableName}");
+                // set tags
+                stmt.SetTags([instanceTableName]);
+                // bind row values
+                stmt.BindRow([.. rowValues]);
+                // add batch
+                stmt.AddBatch();
+                // execute
+                stmt.Exec();
+            }
+            catch (Exception e)
+            {
+                throw new TdEngineException($"insert to table {classTimeSerieId}", e);
             }
         }
 
         public List<HistoryRow> GetHistoryValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime from, DateTime to, List<IFieldDefinition> fields)
         {
             string instanceTableName = instanceName.ToLowerInvariant();
-            tdEngineClient!.Exec($"USE {repositoryStorageId};");
-            string fieldNames = $"TS," + fields.Select(field => $"_{field.Name}")
-                .Aggregate((a, b) => $"{a},{b}");
-            string query = $"SELECT {fieldNames} FROM {instanceTableName} WHERE TS between {FormatDate(from)} and {FormatDate(to)}";
             List<HistoryRow> rows = [];
-            using (var row = tdEngineClient!.Query(query))
+            try
             {
-                try
+                tdEngineClient!.Exec($"USE {repositoryStorageId};");
+                string fieldNames = "TS," + fields.Select(field => $"_{field.Name}")
+                    .Aggregate((a, b) => $"{a},{b}");
+                string query = $"SELECT {fieldNames} FROM {instanceTableName} WHERE TS between {FormatToSqlDate(from)} and {FormatToSqlDate(to)}";
+                using IRows row = tdEngineClient!.Query(query);
+                while (row.Read())
                 {
-                    while (row.Read())
-                    {
-                        rows.Add(new HistoryRow(row));
-                    }
+                    rows.Add(new HistoryRow(row));
                 }
-                catch (TDengineError e)
-                {
-                    // handle TDengine error
-                    throw new ApplicationException($"Failed to select from  table {classTimeSerieId} using stmt, ErrCode: {e.Code}, ErrMessage: {e.Error}");
-                }
-                catch (Exception e)
-                {
-                    // handle other exceptions
-                    throw new ApplicationException($"Failed to select from table {classTimeSerieId} using stmt, ErrMessage: {e.Message}");
-                }
+            }
+            catch (Exception e)
+            {
+                throw new TdEngineException($"select from table {instanceTableName}", e);
             }
             return rows;
         }
 
-        private string FormatDate(DateTime dateTime)
+        private static string FormatToSqlDate(DateTime dateTime)
         {
-            return $"\"{dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff")}\"";
+            return $"\"{dateTime:yyyy-MM-dd HH:mm:ss.fff}\"";
         }
         public void Dispose()
         {
@@ -183,7 +178,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             {
                 return dbType;
             }
-            throw new ApplicationException($"Field {field.Name} has unhandled type {field.Type}");
+            throw new UnhandledFieldTypeException(field.Name, field.Type);
         }
     }
 }
