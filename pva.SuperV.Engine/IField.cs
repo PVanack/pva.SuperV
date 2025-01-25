@@ -35,7 +35,7 @@
         /// <value>
         /// The quality <see cref="QualityLevel"/>.
         /// </value>
-        public QualityLevel? Quality { get; }
+        QualityLevel? Quality { get; }
 
         /// <summary>
         /// Converts field's value to string. If a field formatter is defined in field definition, it's used.

@@ -16,21 +16,21 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The name.
         /// </value>
-        public String Name { get; set; }
+        String Name { get; set; }
         /// <summary>
         /// Gets or sets the class of the instance.
         /// </summary>
         /// <value>
         /// The class.
         /// </value>
-        public Class Class { get; set; }
+        Class Class { get; set; }
         /// <summary>
         /// Gets or sets the fields contained in instance.
         /// </summary>
         /// <value>
         /// The fields.
         /// </value>
-        public Dictionary<string, IField> Fields { get; set; }
+        Dictionary<string, IField> Fields { get; set; }
 
         /// <summary>
         /// Gets a field of the instance.

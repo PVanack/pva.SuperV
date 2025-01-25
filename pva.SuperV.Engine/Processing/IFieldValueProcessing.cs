@@ -15,7 +15,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The name.
         /// </value>
-        public string? Name { get; set; }
+        string? Name { get; set; }
 
         /// <summary>
         /// Gets the type of the trigerring field.
