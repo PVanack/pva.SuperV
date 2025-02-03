@@ -9,7 +9,7 @@ namespace pva.SuperV.Engine
     [JsonDerivedType(typeof(EnumFormatter), typeDiscriminator: "Enum")]
     public abstract class FieldFormatter
     {
-        private string? _name;
+        private readonly string? _name;
 
         public string? Name
         {
@@ -28,7 +28,7 @@ namespace pva.SuperV.Engine
         /// The allowed types.
         /// </value>
         [JsonIgnore]
-        public HashSet<Type> AllowedTypes { get; set; }
+        public HashSet<Type> AllowedTypes { get; init; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FieldFormatter"/> class.
@@ -37,8 +37,8 @@ namespace pva.SuperV.Engine
         /// <param name="allowedTypes">The allowed types.</param>
         protected FieldFormatter(string name, HashSet<Type> allowedTypes)
         {
-            this.Name = name;
-            this.AllowedTypes = allowedTypes;
+            Name = name;
+            AllowedTypes = allowedTypes;
         }
 
         /// <summary>

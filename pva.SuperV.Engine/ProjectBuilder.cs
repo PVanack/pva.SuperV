@@ -24,7 +24,7 @@ namespace pva.SuperV.Engine
             var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(projectCode), $"{project.Name}-V{project.Version}");
             using (MemoryStream dllStream = new())
             using (MemoryStream pdbStream = new())
-            using (Stream win32resStream = compilation.CreateDefaultWin32Resources(
+            using (Stream win32ResStream = compilation.CreateDefaultWin32Resources(
                 versionResource: true, // Important!
                 noManifest: false,
                 manifestContents: null,
@@ -33,7 +33,7 @@ namespace pva.SuperV.Engine
                 var compilationResult = compilation.Emit(
                     peStream: dllStream,
                     pdbStream: pdbStream,
-                    win32Resources: win32resStream);
+                    win32Resources: win32ResStream);
 
                 if (!compilationResult.Success)
                 {
@@ -71,7 +71,7 @@ namespace pva.SuperV.Engine
                 // Basic types assembly
                 MetadataReference.CreateFromFile(typeof(string).Assembly.Location),
                 // SuperV Project assembly
-                MetadataReference.CreateFromFile(typeof(Project).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Project).Assembly.Location)
             ];
 
             return CSharpCompilation

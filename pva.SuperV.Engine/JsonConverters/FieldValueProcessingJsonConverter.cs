@@ -14,10 +14,10 @@ namespace pva.SuperV.Engine.JsonConverters
         /// <summary>
         /// The field converters cache.
         /// </summary>
-        private static readonly Dictionary<Type, dynamic> argConvertersCache = [];
+        private static readonly Dictionary<Type, dynamic> ArgConvertersCache = [];
 
         /// <summary>
-        /// Reads and converts the JSON to type <typeparamref name="T" />.
+        /// Reads and converts the JSON to type.
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <param name="typeToConvert">The type to convert.</param>
@@ -26,7 +26,7 @@ namespace pva.SuperV.Engine.JsonConverters
         /// The converted value.
         /// </returns>
         /// <exception cref="JsonException"></exception>
-        public override IFieldValueProcessing? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override IFieldValueProcessing Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject)
             {
@@ -127,10 +127,10 @@ namespace pva.SuperV.Engine.JsonConverters
                     Type argType = arg.GetType();
                     writer.WriteStartObject();
                     writer.WriteString("Type", argType.ToString());
-                    if (!argConvertersCache.TryGetValue(argType, out dynamic? argConverter))
+                    if (!ArgConvertersCache.TryGetValue(argType, out dynamic? argConverter))
                     {
                         argConverter = JsonSerializerOptions.Default.GetConverter(argType);
-                        argConvertersCache.Add(argType, argConverter);
+                        ArgConvertersCache.Add(argType, argConverter);
                     }
                     writer.WritePropertyName("Value");
                     JsonSerializer.Serialize(writer, arg, options);
@@ -155,7 +155,7 @@ namespace pva.SuperV.Engine.JsonConverters
         /// </summary>
         /// <param name="fieldProcesingType">Type of the target.</param>
         /// <returns></returns>
-        /// <exception cref="InvalidOperationException">No constructor found for FieldValueProcessing<{targetType.Name}>.</exception>
+        /// <exception cref="InvalidOperationException">No constructor found for FieldValueProcessing{targetType.Name}.</exception>
         private static ConstructorInfo GetConstructor(Type fieldProcesingType)
         {
             return fieldProcesingType

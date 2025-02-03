@@ -21,7 +21,7 @@ namespace pva.SuperV.Engine
         /// <exception cref="InvalidIdentifierNameException"></exception>
         public static string ValidateIdentifier(string entityType, string? identifier)
         {
-            if (String.IsNullOrEmpty(identifier) || !IdentifierNameRegex().IsMatch(identifier))
+            if (string.IsNullOrEmpty(identifier) || !IdentifierNameRegex().IsMatch(identifier))
             {
                 throw new InvalidIdentifierNameException(entityType, identifier, Constants.IdentifierNamePattern);
             }

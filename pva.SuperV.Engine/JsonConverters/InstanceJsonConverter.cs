@@ -20,7 +20,7 @@ namespace pva.SuperV.Engine.JsonConverters
         /// <summary>
         /// The field converters
         /// </summary>
-        private static readonly Dictionary<Type, dynamic> fieldConverters = [];
+        private static readonly Dictionary<Type, dynamic> FieldConverters = [];
 
         /// <summary>
         /// Gets or sets the loaded project. Set before deserializing.
@@ -31,7 +31,7 @@ namespace pva.SuperV.Engine.JsonConverters
         public static RunnableProject LoadedProject { get; set; } = null!;
 
         /// <summary>
-        /// Reads and converts the JSON to type <typeparamref name="T" />.
+        /// Reads and converts the JSON to type.
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <param name="typeToConvert">The type to convert.</param>
@@ -151,11 +151,11 @@ namespace pva.SuperV.Engine.JsonConverters
                 writer.WriteString("Type", fieldType.ToString());
                 writer.WriteString("Name", k);
                 writer.WritePropertyName("Value");
-                if (!fieldConverters.TryGetValue(fieldType!, out dynamic? fieldConverter))
+                if (!FieldConverters.TryGetValue(fieldType!, out dynamic fieldConverter))
                 {
                     fieldConverter =
                         JsonSerializerOptions.Default.GetConverter(fieldType);
-                    fieldConverters.Add(fieldType, fieldConverter);
+                    FieldConverters.Add(fieldType, fieldConverter);
                 }
                 fieldConverter.Write(writer, ((dynamic)v).Value, options);
                 writer.WriteString("Timestamp", v.Timestamp?.ToUniversalTime().ToString(Iso8601UtcDateFormat));

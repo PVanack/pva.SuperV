@@ -10,12 +10,12 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Timestamp of history row.
         /// </summary>
-        public DateTime Ts { get; set; }
+        public DateTime Ts { get; }
 
         /// <summary>
         /// List of values
         /// </summary>
-        public List<dynamic> Values { get; set; } = [];
+        public List<dynamic> Values { get; } = [];
 
         /// <summary>
         /// Builds a row from a TDengine row. TODO Refactor this

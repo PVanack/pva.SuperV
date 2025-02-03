@@ -93,7 +93,7 @@ namespace pva.SuperV.EngineTests
         private static void GivenProjectWithSpecificField_WhenBuildingAndReloadingProject_ThenFieldValueIsAsExpected<T>(T fieldValue)
         {
             WipProject wipProject = Project.CreateProject(ProjectHelpers.ProjectName);
-            Class clazz = wipProject.AddClass(ProjectHelpers.ClassName);
+            _ = wipProject.AddClass(ProjectHelpers.ClassName);
             wipProject.AddField<T>(ProjectHelpers.ClassName, new FieldDefinition<T>(ProjectHelpers.ValueFieldName));
             RunnableProject runnableProject = ProjectBuilder.Build(wipProject);
 
@@ -110,13 +110,11 @@ namespace pva.SuperV.EngineTests
             RunnableProject? loadedProject = ProjectStorage.LoadProjectDefinition<RunnableProject>(projectDefinitionFileName);
             ProjectStorage.LoadProjectInstances(loadedProject!, projectInstancesFileName);
 
-            IInstance loadedInstance = loadedProject.GetInstance(ProjectHelpers.InstanceName);
+            Instance? loadedInstance = loadedProject!.GetInstance(ProjectHelpers.InstanceName);
 
-            field = loadedInstance.GetField<T>(ProjectHelpers.ValueFieldName);
+            field = loadedInstance!.GetField<T>(ProjectHelpers.ValueFieldName);
 
             field!.Value.ShouldBe(fieldValue);
-
-
         }
     }
 }

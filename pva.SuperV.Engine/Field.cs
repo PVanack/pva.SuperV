@@ -49,10 +49,7 @@ namespace pva.SuperV.Engine
         public virtual T Value
         {
             get => _value;
-            set
-            {
-                SetValue(value);
-            }
+            set => SetValue(value);
         }
 
         private DateTime? _timestamp;
@@ -62,34 +59,34 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The timestamp.
         /// </value>
-        public DateTime? Timestamp { get => _timestamp ?? DateTime.Now; }
+        public DateTime? Timestamp => _timestamp ?? DateTime.Now;
 
-        QualityLevel? _quality;
+        private QualityLevel? _quality;
         /// <summary>
         /// Gets or sets the quality level of the value.
         /// </summary>
         /// <value>
         /// The quality <see cref="QualityLevel" />.
         /// </value>
-        public QualityLevel? Quality { get => _quality ?? QualityLevel.GOOD; }
+        public QualityLevel? Quality => _quality ?? QualityLevel.Good;
 
         /// <summary>
-        /// Sets the value with <see cref="DateTime.UtcNow"/> timestamp and a <see cref="QualityLevel.GOOD"/>.
+        /// Sets the value with <see cref="DateTime.UtcNow"/> timestamp and a <see cref="QualityLevel.Good"/>.
         /// </summary>
         /// <param name="newValue">The value to be set.</param>
         public void SetValue(T newValue)
         {
-            SetValue(newValue, DateTime.UtcNow, QualityLevel.GOOD);
+            SetValue(newValue, DateTime.UtcNow, QualityLevel.Good);
         }
 
         /// <summary>
-        /// Sets the value and associated timestamp with a <see cref="QualityLevel.GOOD"/>.
+        /// Sets the value and associated timestamp with a <see cref="QualityLevel.Good"/>.
         /// </summary>
         /// <param name="newValue">The value to be set.</param>
         /// <param name="timestamp">The timestamp of value.</param>
         public void SetValue(T newValue, DateTime timestamp)
         {
-            SetValue(newValue, timestamp, QualityLevel.GOOD);
+            SetValue(newValue, timestamp, QualityLevel.Good);
         }
 
         /// <summary>
@@ -103,19 +100,19 @@ namespace pva.SuperV.Engine
         }
 
         /// <summary>
-        /// Sets the value and associated timestamp with a <see cref="QualityLevel.GOOD"/>.
+        /// Sets the value and associated timestamp with a <see cref="QualityLevel.Good"/>.
         /// </summary>
         /// <param name="newValue">The value to be set.</param>
         /// <param name="timestamp">The timestamp of value.</param>
         /// <param name="quality">The quality of value.</param>
         public void SetValue(T newValue, DateTime timestamp, QualityLevel quality)
         {
-            T? previousValue = _value;
+            T previousValue = _value;
             SetValueInternal(newValue, timestamp, quality);
             ProcessNewValue(!previousValue!.Equals(newValue), newValue, previousValue!);
         }
 
-        internal void SetValueInternal(T newValue, DateTime timestamp, QualityLevel quality)
+        public void SetValueInternal(T newValue, DateTime timestamp, QualityLevel quality)
         {
             _timestamp = timestamp;
             _quality = quality;

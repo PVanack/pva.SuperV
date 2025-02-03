@@ -41,12 +41,12 @@ namespace pva.SuperV.Engine
         /// <typeparam name="T"></typeparam>
         /// <param name="filename">The filename.</param>
         /// <returns></returns>
-        public static T? LoadProjectDefinition<T>(string filename) where T : Project
+        public static T LoadProjectDefinition<T>(string filename) where T : Project
         {
             string json = File.ReadAllText(filename);
             T? projectInstance = JsonSerializer.Deserialize<T>(json);
             projectInstance!.HistoryStorageEngine = HistoryStorageEngineFactory.CreateHistoryStorageEngine(projectInstance.HistoryStorageEngineConnectionString);
-            projectInstance!.Classes.Values.ForEach(clazz =>
+            projectInstance.Classes.Values.ForEach(clazz =>
             {
                 if (clazz.BaseClassName != null)
                 {
@@ -84,7 +84,7 @@ namespace pva.SuperV.Engine
             Dictionary<string, IInstance> instances = new(project.Instances.Count);
             project.Instances.ForEach((k, v) =>
             {
-                var instance = v! as IInstance;
+                var instance = v as IInstance;
                 instances.Add(k, instance!);
             });
             outputFile.WriteLine(JsonSerializer.Serialize(instances));

@@ -17,7 +17,7 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The name.
         /// </value>
-        public string Name { get; set; } = IdentifierValidation.ValidateIdentifier("history repository", name);
+        public string Name { get; } = IdentifierValidation.ValidateIdentifier("history repository", name);
 
         /// <summary>
         /// Gets or sets the history storage engine used to store values.
@@ -32,7 +32,7 @@ namespace pva.SuperV.Engine
         /// Gets of sets the history storage ID.
         /// </summary>
         /// <value> The history storage ID</value>
-        public string HistoryStorageId { get; set; }
+        public string? HistoryStorageId { get; set; }
 
         /// <summary>
         /// Upserts the repository in storage engine.
@@ -40,9 +40,7 @@ namespace pva.SuperV.Engine
         /// <param name="projectName">Name of project.</param>
         /// <param name="historyStorageEngine">History storage engine.</param>
         internal void UpsertRepository(string projectName, IHistoryStorageEngine historyStorageEngine)
-        {
-            HistoryStorageId = historyStorageEngine?.UpsertRepository(projectName, this);
-        }
+            => HistoryStorageId = historyStorageEngine.UpsertRepository(projectName, this);
 
         /// <summary>
         /// Upserts a time series in storage engine.
@@ -53,13 +51,13 @@ namespace pva.SuperV.Engine
         /// <param name="historizationProcessing">History processing for which the time series is to be created.</param>
         /// <returns></returns>
         /// <exception cref="NoHistoryStorageEngineException"></exception>
-        internal string? UpsertClassTimeSerie<T>(string projectName, string className, HistorizationProcessing<T> historizationProcessing)
+        internal string UpsertClassTimeSerie<T>(string projectName, string className, HistorizationProcessing<T> historizationProcessing)
         {
             if (HistoryStorageEngine is null)
             {
                 throw new NoHistoryStorageEngineException();
             }
-            return HistoryStorageEngine.UpsertClassTimeSerie(HistoryStorageId, projectName, className, historizationProcessing);
+            return HistoryStorageEngine.UpsertClassTimeSerie(HistoryStorageId!, projectName, className, historizationProcessing);
         }
 
         /// <summary>
@@ -71,7 +69,7 @@ namespace pva.SuperV.Engine
         /// <param name="fieldsToHistorize">List of fields to be historized.</param>
         public void HistorizeValues(string classTimeSerieId, IInstance instance, DateTime timestamp, List<IField> fieldsToHistorize)
         {
-            HistoryStorageEngine?.HistorizeValues(HistoryStorageId, classTimeSerieId, instance.Name!, timestamp, fieldsToHistorize);
+            HistoryStorageEngine?.HistorizeValues(HistoryStorageId!, classTimeSerieId, instance.Name, timestamp, fieldsToHistorize);
         }
     }
 }

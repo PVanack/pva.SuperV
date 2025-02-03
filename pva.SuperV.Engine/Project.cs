@@ -39,7 +39,7 @@ namespace pva.SuperV.Engine
         /// </value>
         public string? Name
         {
-            get { return _name; }
+            get => _name;
             set
             {
                 IdentifierValidation.ValidateIdentifier("project", value);
@@ -129,12 +129,13 @@ namespace pva.SuperV.Engine
         public static WipProject CreateProject(string projectName, string? historyStorageEngineConnectionString)
         {
             WipProject project = new(projectName);
-            if (!String.IsNullOrEmpty(historyStorageEngineConnectionString))
+            if (string.IsNullOrEmpty(historyStorageEngineConnectionString))
             {
-                project.HistoryStorageEngineConnectionString = historyStorageEngineConnectionString;
-                project.HistoryStorageEngine = HistoryStorageEngineFactory.CreateHistoryStorageEngine(historyStorageEngineConnectionString);
+                return project;
             }
-
+            
+            project.HistoryStorageEngineConnectionString = historyStorageEngineConnectionString;
+            project.HistoryStorageEngine = HistoryStorageEngineFactory.CreateHistoryStorageEngine(historyStorageEngineConnectionString);
             return project;
         }
 

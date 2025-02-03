@@ -65,8 +65,7 @@
         /// Initializes a new instance of the <see cref="FieldValueProcessing{T}"/> class.
         /// </summary>
         /// <param name="name">The name of processing.</param>
-        /// <param name="clazz">Name of the class</param>
-        protected FieldValueProcessing(string name, Class clazz)
+        protected FieldValueProcessing(string name, Class _)
         {
             Name = name;
         }
@@ -89,7 +88,7 @@
         /// <param name="index">The index of argument.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException">index</exception>
-        protected T1? GetCtorArgument<T1>(int index)
+        protected T1 GetCtorArgument<T1>(int index)
         {
             ArgumentOutOfRangeException.ThrowIfGreaterThan(index, CtorArguments.Count);
             return (T1)CtorArguments[index];

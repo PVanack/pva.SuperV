@@ -10,7 +10,7 @@ namespace pva.SuperV.Engine
     public class Class
     {
         /// <summary>
-        /// Name of class. Access done through <see cref="Name"./>
+        /// Name of class. Access done through <see cref="Name"/>.
         /// </summary>
         private string? _name;
 
@@ -87,7 +87,7 @@ namespace pva.SuperV.Engine
         /// Adds a field with a field formatter.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="field">The <see cref="FieldDefinition{T}" to be added.</param>
+        /// <param name="field">The <see cref="FieldDefinition{T}"/> to be added.</param>
         /// <param name="formatter">The formatter to be used when using ToString()."/>.</param>
         /// <returns></returns>
         /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
@@ -120,7 +120,7 @@ namespace pva.SuperV.Engine
             {
                 return fieldDefinition;
             }
-            else if (BaseClass is not null)
+            if (BaseClass is not null)
             {
                 return BaseClass.GetField(fieldName);
             }
@@ -182,7 +182,7 @@ namespace pva.SuperV.Engine
         /// <returns>A new <see cref="Class"/> clone of class instance.</returns>
         internal Class Clone()
         {
-            var clazz = new Class(this.Name!, BaseClass);
+            var clazz = new Class(Name!, BaseClass);
             FieldDefinitions
                 .ForEach((k, v) => clazz.FieldDefinitions.Add(k, v.Clone()));
             return clazz;

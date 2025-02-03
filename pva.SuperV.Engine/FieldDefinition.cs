@@ -54,7 +54,7 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The default value.
         /// </value>
-        public T? DefaultValue { get; set; }
+        public T? DefaultValue { get; }
 
         /// <summary>
         /// Gets or sets the value post change processings.
@@ -79,9 +79,9 @@ namespace pva.SuperV.Engine
         /// <param name="defaultValue">The default value for fields.</param>
         public FieldDefinition(string name, T? defaultValue)
         {
-            this.Name = name;
-            this.DefaultValue = defaultValue ?? default;
-            this.Type = typeof(T);
+            Name = name;
+            DefaultValue = defaultValue ?? default;
+            Type = typeof(T);
         }
 
         /// <summary>
@@ -91,7 +91,8 @@ namespace pva.SuperV.Engine
         public string GetCode()
         {
             StringBuilder codeBuilder = new();
-            codeBuilder.AppendLine($"public Field<{typeof(T)}> {Name} {{ get; set; }} = new({GetCodeValueForNew(DefaultValue)});");
+            codeBuilder.AppendLine(
+                $"public Field<{typeof(T)}> {Name} {{ get; set; }} = new({GetCodeValueForNew(DefaultValue)});");
             return codeBuilder.ToString();
         }
 
@@ -101,19 +102,22 @@ namespace pva.SuperV.Engine
             {
                 return $"\"{defaultValue}\"";
             }
-            else if (defaultValue is bool boolean)
+            else
             {
-                string booleanValue = boolean ? "true" : "false";
-                return $"{booleanValue}";
+                switch (defaultValue)
+                {
+                    case bool boolean:
+                    {
+                        string booleanValue = boolean ? "true" : "false";
+                        return $"{booleanValue}";
+                    }
+                    case DateTime dateTime:
+                        return $"new {typeof(T)}({dateTime.Ticks.ToString(CultureInfo.InvariantCulture)}L)";
+                    case TimeSpan timespan:
+                        return $"new {typeof(T)}({timespan.Ticks.ToString(CultureInfo.InvariantCulture)}L)";
+                }
             }
-            else if (defaultValue is DateTime dateTime)
-            {
-                return $"new {typeof(T)}({dateTime.Ticks.ToString(CultureInfo.InvariantCulture)}L)";
-            }
-            else if (defaultValue is TimeSpan timespan)
-            {
-                return $"new {typeof(T)}({timespan.Ticks.ToString(CultureInfo.InvariantCulture)}L)";
-            }
+
             return defaultValue!.ToString();
         }
 
@@ -123,9 +127,9 @@ namespace pva.SuperV.Engine
         /// <returns></returns>
         IFieldDefinition IFieldDefinition.Clone()
         {
-            FieldDefinition<T> fieldDefinition = new(this.Name!, this.DefaultValue)
+            FieldDefinition<T> fieldDefinition = new(Name!, DefaultValue)
             {
-                Formatter = this.Formatter
+                Formatter = Formatter
             };
             return fieldDefinition;
         }

@@ -51,7 +51,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The high-high limit field definition.
         /// </value>
-        public FieldDefinition<T>? HighHighLimitField { get; set; }
+        private FieldDefinition<T>? HighHighLimitField { get; set; }
 
         /// <summary>
         /// Gets or sets the high limit field definition.
@@ -59,7 +59,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The high limit field definition.
         /// </value>
-        public FieldDefinition<T>? HighLimitField { get; set; }
+        private FieldDefinition<T>? HighLimitField { get; set; }
 
         /// <summary>
         /// Gets or sets the low limit field definition.
@@ -67,7 +67,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The low limit field definition.
         /// </value>
-        public FieldDefinition<T>? LowLimitField { get; set; }
+        private FieldDefinition<T>? LowLimitField { get; set; }
 
         /// <summary>
         /// Gets or sets the low-low limit field definition.
@@ -75,7 +75,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The low-low limit field definition.
         /// </value>
-        public FieldDefinition<T>? LowLowLimitField { get; set; }
+        private FieldDefinition<T>? LowLowLimitField { get; set; }
 
         /// <summary>
         /// Gets or sets the deadband field definition.
@@ -83,7 +83,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The deadband field definition.
         /// </value>
-        public FieldDefinition<T>? DeadbandField { get; set; }
+        private FieldDefinition<T>? DeadbandField { get; set; }
 
         /// <summary>
         /// Gets or sets the alarm state field definition.
@@ -91,7 +91,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The alarm state field definition.
         /// </value>
-        public FieldDefinition<int>? AlarmStateField { get; set; }
+        private FieldDefinition<int>? AlarmStateField { get; set; }
 
         /// <summary>
         /// Gets or sets the acknowledgement state field definition.
@@ -99,7 +99,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The acknowledgement state field definition.
         /// </value>
-        public FieldDefinition<int>? AckStateField { get; set; }
+        private FieldDefinition<int>? AckStateField { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AlarmStateProcessing{T}"/> class. Used for deserialization.
@@ -183,47 +183,50 @@ namespace pva.SuperV.Engine.Processing
         /// <param name="currentValue">The current value of field.</param>
         public override void ProcessValue(IInstance instance, Field<T> changedField, bool valueChanged, T previousValue, T currentValue)
         {
-            if (valueChanged)
+            if (!valueChanged)
             {
-                Field<T>? highHighLimit = GetInstanceField<T>(instance, HighHighLimitField?.Name);
-                Field<T>? highLimit = GetInstanceField<T>(instance, HighLimitField?.Name);
-                Field<T>? lowLimit = GetInstanceField<T>(instance, LowLimitField?.Name);
-                Field<T>? lowLowLimit = GetInstanceField<T>(instance, LowLowLimitField?.Name);
-                Field<T>? deadband = GetInstanceField<T>(instance, DeadbandField?.Name);
-                Field<int> alarmState = GetInstanceField<int>(instance, AlarmStateField?.Name)!;
-                Field<int>? ackState = GetInstanceField<int>(instance, AckStateField?.Name);
-                int previousAlarmState = alarmState.Value;
-                int newAlarmState;
-                // TODO: Handle deadband
-                if (highHighLimit is not null && currentValue >= highHighLimit.Value)
-                {
-                    newAlarmState = HighHighAlarmState;
-                }
-                else if (highHighLimit is not null && currentValue < highHighLimit.Value && currentValue >= highLimit!.Value)
-                {
-                    newAlarmState = HighAlarmState;
-                }
-                else if (lowLowLimit is not null && currentValue <= lowLowLimit.Value)
-                {
-                    newAlarmState = LowLowAlarmState;
-                }
-                else if (currentValue <= lowLimit!.Value)
-                {
-                    newAlarmState = LowAlarmState;
-                }
-                else
-                {
-                    newAlarmState = OkAlarmState;
-                }
+                return;
+            }
+            Field<T>? highHighLimit = GetInstanceField<T>(instance, HighHighLimitField?.Name);
+            Field<T>? highLimit = GetInstanceField<T>(instance, HighLimitField?.Name);
+            Field<T>? lowLimit = GetInstanceField<T>(instance, LowLimitField?.Name);
+            Field<T>? lowLowLimit = GetInstanceField<T>(instance, LowLowLimitField?.Name);
+            Field<T>? deadband = GetInstanceField<T>(instance, DeadbandField?.Name);
+            Field<int> alarmState = GetInstanceField<int>(instance, AlarmStateField?.Name)!;
+            Field<int>? ackState = GetInstanceField<int>(instance, AckStateField?.Name);
+            int previousAlarmState = alarmState.Value;
+            int newAlarmState;
+            // TODO: Handle deadband
+            if (highHighLimit is not null && currentValue >= highHighLimit.Value)
+            {
+                newAlarmState = HighHighAlarmState;
+            }
+            else if (highHighLimit is not null && currentValue < highHighLimit.Value && currentValue >= highLimit!.Value)
+            {
+                newAlarmState = HighAlarmState;
+            }
+            else if (lowLowLimit is not null && currentValue <= lowLowLimit.Value)
+            {
+                newAlarmState = LowLowAlarmState;
+            }
+            else if (currentValue <= lowLimit!.Value)
+            {
+                newAlarmState = LowAlarmState;
+            }
+            else
+            {
+                newAlarmState = OkAlarmState;
+            }
 
-                if (newAlarmState != previousAlarmState)
-                {
-                    alarmState.SetValue(newAlarmState);
-                    if (ackState is not null && newAlarmState != OkAlarmState && ackState.Value != UnackState)
-                    {
-                        ackState.SetValue(UnackState);
-                    }
-                }
+            if (newAlarmState == previousAlarmState)
+            {
+                return;
+            }
+
+            alarmState.SetValue(newAlarmState);
+            if (ackState is not null && newAlarmState != OkAlarmState && ackState.Value != UnackState)
+            {
+                ackState.SetValue(UnackState);
             }
         }
     }

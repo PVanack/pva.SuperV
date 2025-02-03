@@ -60,7 +60,7 @@ namespace pva.SuperV.Engine
         public Field<T>? GetField<T>(string fieldName)
         {
             IField field = GetField(fieldName);
-            if (field.Type != (typeof(T)))
+            if (field.Type != typeof(T))
             {
                 throw new WrongFieldTypeException(fieldName, field.Type, typeof(T));
             }

@@ -11,6 +11,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// Null history storage string.
         /// </summary>
         public const string NullHistoryStorage = "NullHistoryStorage";
+
         /// <summary>
         /// TDengine history storage string.
         /// </summary>
@@ -24,23 +25,23 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <exception cref="ArgumentException"></exception>
         public static IHistoryStorageEngine? CreateHistoryStorageEngine(string? connectionString)
         {
-            if (String.IsNullOrEmpty(connectionString))
+            if (string.IsNullOrEmpty(connectionString))
             {
                 return null;
             }
+
             if (connectionString.StartsWith(NullHistoryStorage))
             {
                 return new NullHistoryStorageEngine();
             }
-            else if (connectionString.StartsWith(TdEngineHistoryStorage))
+
+            if (connectionString.StartsWith(TdEngineHistoryStorage))
             {
                 string tdEngineConnectionString = connectionString.Replace($"{TdEngineHistoryStorage}:", "").Trim();
                 return new TDengineHistoryStorage(tdEngineConnectionString);
             }
-            else
-            {
-                throw new UnknownHistoryStorageEngineException(connectionString);
-            }
+
+            throw new UnknownHistoryStorageEngineException(connectionString);
         }
     }
 }

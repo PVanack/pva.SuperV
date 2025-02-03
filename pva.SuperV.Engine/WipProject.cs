@@ -14,7 +14,7 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// To be loaded instances when the project is converted to a <see cref="RunnableProject"/> through <see cref="ProjectBuilder.Build(WipProject)"/>.
         /// </summary>
-        public Dictionary<string, dynamic> ToLoadInstances { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, dynamic> ToLoadInstances { get; } = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WipProject"/> class.
@@ -23,7 +23,7 @@ namespace pva.SuperV.Engine
         public WipProject(string projectName)
         {
             Name = projectName;
-            this.Version = GetNextVersion();
+            Version = GetNextVersion();
         }
 
         /// <summary>
@@ -32,14 +32,14 @@ namespace pva.SuperV.Engine
         /// <param name="runnableProject">The runnable project.</param>
         public WipProject(RunnableProject runnableProject)
         {
-            this.Name = runnableProject.Name;
-            this.Description = runnableProject.Description;
-            this.Version = GetNextVersion();
-            this.Classes = new(runnableProject.Classes.Count);
+            Name = runnableProject.Name;
+            Description = runnableProject.Description;
+            Version = GetNextVersion();
+            Classes = new(runnableProject.Classes.Count);
             runnableProject.Classes
-                .ForEach((k, v) => this.Classes.Add(k, v.Clone()));
-            this.FieldFormatters = new(runnableProject.FieldFormatters);
-            this.ToLoadInstances = new(runnableProject.Instances, StringComparer.OrdinalIgnoreCase);
+                .ForEach((k, v) => Classes.Add(k, v.Clone()));
+            FieldFormatters = new(runnableProject.FieldFormatters);
+            ToLoadInstances = new(runnableProject.Instances, StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -86,9 +86,8 @@ namespace pva.SuperV.Engine
         /// <param name="className">Name of the class.</param>
         public void RemoveClass(string className)
         {
-            if (Classes.TryGetValue(className, out var clazz))
+            if (Classes.Remove(className, out var clazz))
             {
-                Classes.Remove(className);
                 ToLoadInstances.Values
                     .Where(instance => instance.Class.Name.Equals(clazz.Name))
                     .ToList()
@@ -105,8 +104,8 @@ namespace pva.SuperV.Engine
         /// <returns></returns>
         public FieldDefinition<T> AddField<T>(string className, FieldDefinition<T> field)
         {
-            Class? clazz = GetClass(className);
-            return clazz!.AddField<T>(field);
+            Class clazz = GetClass(className);
+            return clazz.AddField(field);
         }
 
         /// <summary>
@@ -119,10 +118,10 @@ namespace pva.SuperV.Engine
         /// <returns></returns>
         public FieldDefinition<T> AddField<T>(string className, FieldDefinition<T> field, string formatterName)
         {
-            Class? clazz = GetClass(className);
-            FieldFormatter? formatter = GetFormatter(formatterName);
+            Class clazz = GetClass(className);
+            FieldFormatter formatter = GetFormatter(formatterName);
             formatter.ValidateAllowedType(typeof(T));
-            return clazz!.AddField<T>(field, formatter);
+            return clazz.AddField(field, formatter);
         }
 
         /// <summary>
@@ -132,8 +131,8 @@ namespace pva.SuperV.Engine
         /// <param name="fieldName">Name of the field.</param>
         public void RemoveField(string className, string fieldName)
         {
-            Class? clazz = GetClass(className);
-            clazz!.RemoveField(fieldName);
+            Class clazz = GetClass(className);
+            clazz.RemoveField(fieldName);
         }
 
         /// <summary>
@@ -169,8 +168,8 @@ namespace pva.SuperV.Engine
         /// <param name="fieldValueProcessing">The field value processing.</param>
         public void AddFieldChangePostProcessing<T>(string className, string fieldName, FieldValueProcessing<T> fieldValueProcessing)
         {
-            Class? clazz = GetClass(className);
-            clazz!.AddFieldChangePostProcessing(fieldName, fieldValueProcessing);
+            Class clazz = GetClass(className);
+            clazz.AddFieldChangePostProcessing(fieldName, fieldValueProcessing);
         }
 
         /// <summary>
@@ -180,7 +179,7 @@ namespace pva.SuperV.Engine
         public string GetCode()
         {
             StringBuilder codeBuilder = new();
-            codeBuilder.AppendLine($"using {this.GetType().Namespace};");
+            codeBuilder.AppendLine($"using {GetType().Namespace};");
             codeBuilder.AppendLine("using System.Collections.Generic;");
             codeBuilder.AppendLine("using System.Reflection;");
             codeBuilder.AppendLine($"[assembly: AssemblyProduct(\"{Name}\")]");
@@ -202,7 +201,7 @@ namespace pva.SuperV.Engine
         /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
         public void AddHistoryRepository(HistoryRepository historyRepository)
         {
-            if (HistoryRepositories.ContainsKey(historyRepository.Name!))
+            if (HistoryRepositories.ContainsKey(historyRepository.Name))
             {
                 throw new EntityAlreadyExistException("History repository", historyRepository.Name);
             }

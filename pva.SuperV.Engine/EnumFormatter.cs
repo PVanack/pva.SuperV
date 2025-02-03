@@ -11,7 +11,7 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// The allowed types for Enum formatter.
         /// </summary>
-        private static readonly HashSet<Type> allowedTypes = [typeof(int), typeof(long)];
+        private static readonly HashSet<Type> EnumAllowedTypes = [typeof(int), typeof(long)];
 
         /// <summary>
         /// Gets or sets the string values of enum.
@@ -24,7 +24,7 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Initializes a new instance of the <see cref="EnumFormatter"/> class. Used by JSON deserializer.
         /// </summary>
-        public EnumFormatter() : base(allowedTypes)
+        public EnumFormatter() : base(EnumAllowedTypes)
         {
         }
 
@@ -33,7 +33,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="enumName">Name of the enum.</param>
         /// <param name="values">The string values of enum.</param>
-        public EnumFormatter(string enumName, HashSet<string> values) : base(enumName, allowedTypes)
+        public EnumFormatter(string enumName, HashSet<string> values) : base(enumName, EnumAllowedTypes)
         {
             int index = 0;
             values.ForEach(value => Values.Add(index++, value));
@@ -44,7 +44,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="enumName">Name of the enum.</param>
         /// <param name="values">The value pairs (int and string).</param>
-        public EnumFormatter(string enumName, Dictionary<int, string> values) : base(enumName, allowedTypes)
+        public EnumFormatter(string enumName, Dictionary<int, string> values) : base(enumName, EnumAllowedTypes)
         {
             Values = values;
         }
@@ -53,7 +53,7 @@ namespace pva.SuperV.Engine
         /// Converts a value to string.
         /// </summary>
         /// <param name="value">The (int) value.</param>
-        /// <returns>String representation of value. If int value is not found in <see cref="Values", the int value with a question mark is returned./></returns>
+        /// <returns>String representation of value. If int value is not found in <see cref="Values"/>, the int value with a question mark is returned.</returns>
         public override string? ConvertToString(dynamic? value)
         {
             if (value is null)

@@ -13,7 +13,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <summary>
         /// Contains the equivalence between .Net and TDengine data types for the types being handled.
         /// </summary>
-        private static readonly Dictionary<Type, string> dotnetToDbTypes = new()
+        private static readonly Dictionary<Type, string> DotnetToDbTypes = new()
         {
             { typeof(DateTime), "TIMESTAMP" },
             { typeof(short), "SMALLINT"},
@@ -39,12 +39,12 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <summary>
         /// The connection string to the TDengine backend.
         /// </summary>
-        private readonly string connectionString;
+        private readonly string _connectionString;
 
         /// <summary>
         /// The TDengine clinet.
         /// </summary>
-        private ITDengineClient? tdEngineClient;
+        private ITDengineClient? _tdEngineClient;
 
         /// <summary>
         /// Builds a TDengine connection from connection stirng.
@@ -52,7 +52,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <param name="tdEngineConnectionString">The TDengine connection string.</param>
         public TDengineHistoryStorage(string tdEngineConnectionString)
         {
-            this.connectionString = tdEngineConnectionString;
+            _connectionString = tdEngineConnectionString;
             Connect();
         }
 
@@ -62,11 +62,11 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <exception cref="TdEngineException"></exception>
         private void Connect()
         {
-            var builder = new ConnectionStringBuilder(connectionString);
+            var builder = new ConnectionStringBuilder(_connectionString);
             try
             {
                 // Open connection with using block, it will close the connection automatically
-                tdEngineClient = DbDriver.Open(builder);
+                _tdEngineClient = DbDriver.Open(builder);
             }
             catch (Exception e)
             {
@@ -85,7 +85,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             string repositoryName = $"{projectName}{repository.Name}".ToLowerInvariant();
             try
             {
-                tdEngineClient?.Exec($"CREATE DATABASE IF NOT EXISTS {repositoryName} PRECISION 'ns' KEEP 3650 DURATION 10 BUFFER 16;");
+                _tdEngineClient?.Exec($"CREATE DATABASE IF NOT EXISTS {repositoryName} PRECISION 'ns' KEEP 3650 DURATION 10 BUFFER 16;");
             }
             catch (Exception e)
             {
@@ -104,7 +104,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             string repositoryActualName = $"{projectName}{repositoryName}".ToLowerInvariant();
             try
             {
-                tdEngineClient?.Exec($"DROP DATABASE {repositoryActualName};");
+                _tdEngineClient?.Exec($"DROP DATABASE {repositoryActualName};");
             }
             catch (Exception e)
             {
@@ -126,14 +126,14 @@ namespace pva.SuperV.Engine.HistoryStorage
             string tableName = $"{projectName}{className}{historizationProcessing.Name}".ToLowerInvariant();
             try
             {
-                tdEngineClient?.Exec($"USE {repositoryStorageId};");
+                _tdEngineClient?.Exec($"USE {repositoryStorageId};");
                 string fieldNames = "TS TIMESTAMP,";
                 fieldNames +=
                     historizationProcessing.FieldsToHistorize
-                        .Select(field => $"_{field.Name} {GetFieldDbType(field!)}")
+                        .Select(field => $"_{field.Name} {GetFieldDbType(field)}")
                         .Aggregate((a, b) => $"{a},{b}");
                 string command = $"CREATE STABLE IF NOT EXISTS {tableName} ({fieldNames}) TAGS (instance varchar(64));";
-                tdEngineClient?.Exec(command);
+                _tdEngineClient?.Exec(command);
             }
             catch (Exception e)
             {
@@ -153,8 +153,8 @@ namespace pva.SuperV.Engine.HistoryStorage
         public void HistorizeValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime timestamp, List<IField> fieldsToHistorize)
         {
             string instanceTableName = instanceName.ToLowerInvariant();
-            tdEngineClient!.Exec($"USE {repositoryStorageId};");
-            using var stmt = tdEngineClient!.StmtInit();
+            _tdEngineClient!.Exec($"USE {repositoryStorageId};");
+            using var stmt = _tdEngineClient!.StmtInit();
             try
             {
                 string fieldsPlaceholders = Enumerable.Repeat("?", fieldsToHistorize.Count + 1)
@@ -200,11 +200,11 @@ namespace pva.SuperV.Engine.HistoryStorage
             List<HistoryRow> rows = [];
             try
             {
-                tdEngineClient!.Exec($"USE {repositoryStorageId};");
+                _tdEngineClient!.Exec($"USE {repositoryStorageId};");
                 string fieldNames = "TS," + fields.Select(field => $"_{field.Name}")
                     .Aggregate((a, b) => $"{a},{b}");
                 string query = $"SELECT {fieldNames} FROM {instanceTableName} WHERE TS between {FormatToSqlDate(from)} and {FormatToSqlDate(to)}";
-                using IRows row = tdEngineClient!.Query(query);
+                using IRows row = _tdEngineClient!.Query(query);
                 while (row.Read())
                 {
                     rows.Add(new HistoryRow(row));
@@ -242,7 +242,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            tdEngineClient?.Dispose();
+            _tdEngineClient?.Dispose();
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <exception cref="UnhandledFieldTypeException"></exception>
         private static string GetFieldDbType(IFieldDefinition field)
         {
-            if (dotnetToDbTypes.TryGetValue(field.Type, out var dbType))
+            if (DotnetToDbTypes.TryGetValue(field.Type, out var dbType))
             {
                 return dbType;
             }

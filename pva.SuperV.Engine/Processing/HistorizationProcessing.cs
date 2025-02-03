@@ -60,7 +60,6 @@ namespace pva.SuperV.Engine.Processing
         /// <summary>
         /// Validate the processing parameters.
         /// </summary>
-        /// <param name="name">Name of instance.</param>
         /// <param name="project">Project.</param>
         /// <param name="clazz">Class.</param>
         /// <param name="trigerringFieldName">Field trigerring the processing.</param>
@@ -71,7 +70,7 @@ namespace pva.SuperV.Engine.Processing
         private void ValidateParameters(Project project, Class clazz, string trigerringFieldName, string historyRepositoryName, string? timestampFieldName, List<string> fieldsToHistorize)
         {
             TrigerringFieldDefinition = GetFieldDefinition<T>(clazz, trigerringFieldName);
-            if (!String.IsNullOrEmpty(timestampFieldName))
+            if (!string.IsNullOrEmpty(timestampFieldName))
             {
                 TimestampFieldDefinition = GetFieldDefinition<DateTime>(clazz, timestampFieldName);
             }
@@ -146,7 +145,7 @@ namespace pva.SuperV.Engine.Processing
             List<IField> fieldsToHistorize = [];
             FieldsToHistorize.ForEach(fieldToHistorize =>
             {
-                IField? field = GetInstanceField(instance, fieldToHistorize?.Name);
+                IField? field = GetInstanceField(instance, fieldToHistorize.Name);
                 if (field != null)
                 {
                     fieldsToHistorize.Add(field);

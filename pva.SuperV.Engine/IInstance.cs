@@ -16,7 +16,7 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The name.
         /// </value>
-        String Name { get; set; }
+        string Name { get; set; }
         /// <summary>
         /// Gets or sets the class of the instance.
         /// </summary>
