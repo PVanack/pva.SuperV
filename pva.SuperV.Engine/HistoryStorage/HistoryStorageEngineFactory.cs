@@ -7,15 +7,6 @@ namespace pva.SuperV.Engine.HistoryStorage
     /// </summary>
     public static class HistoryStorageEngineFactory
     {
-        /// <summary>
-        /// Null history storage string.
-        /// </summary>
-        public const string NullHistoryStorage = "NullHistoryStorage";
-
-        /// <summary>
-        /// TDengine history storage string.
-        /// </summary>
-        public const string TdEngineHistoryStorage = "TDengine";
 
         /// <summary>
         /// Creates the appropriate history storage engine based on connection string.
@@ -30,14 +21,14 @@ namespace pva.SuperV.Engine.HistoryStorage
                 return null;
             }
 
-            if (connectionString.StartsWith(NullHistoryStorage))
+            if (connectionString.StartsWith(NullHistoryStorageEngine.Prefix))
             {
                 return new NullHistoryStorageEngine();
             }
 
-            if (connectionString.StartsWith(TdEngineHistoryStorage))
+            if (connectionString.StartsWith(TDengineHistoryStorage.Prefix))
             {
-                string tdEngineConnectionString = connectionString.Replace($"{TdEngineHistoryStorage}:", "").Trim();
+                string tdEngineConnectionString = connectionString.Replace($"{TDengineHistoryStorage.Prefix}:", "").Trim();
                 return new TDengineHistoryStorage(tdEngineConnectionString);
             }
 

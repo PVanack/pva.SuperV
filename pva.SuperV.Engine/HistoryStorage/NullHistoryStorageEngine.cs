@@ -8,6 +8,11 @@ namespace pva.SuperV.Engine.HistoryStorage
     public class NullHistoryStorageEngine : IHistoryStorageEngine
     {
         /// <summary>
+        /// Null history storage string.
+        /// </summary>
+        public const string Prefix = "NullHistoryStorage";
+
+        /// <summary>
         /// Upsert a history repository in storage engine.
         /// </summary>
         /// <param name="projectName">Project name to zhich the repository belongs.</param>

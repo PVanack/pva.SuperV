@@ -11,6 +11,11 @@ namespace pva.SuperV.Engine.HistoryStorage
     public class TDengineHistoryStorage : IHistoryStorageEngine
     {
         /// <summary>
+        /// TDengine history storage string.
+        /// </summary>
+        public const string Prefix = "TDengine";
+
+        /// <summary>
         /// Contains the equivalence between .Net and TDengine data types for the types being handled.
         /// </summary>
         private static readonly Dictionary<Type, string> DotnetToDbTypes = new()

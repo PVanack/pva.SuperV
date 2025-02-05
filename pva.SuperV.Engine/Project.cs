@@ -1,6 +1,7 @@
 ﻿using pva.Helpers.Extensions;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
+using System.Collections.Concurrent;
 using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Engine
@@ -110,6 +111,12 @@ namespace pva.SuperV.Engine
         /// The history repositories.
         /// </value>
         public Dictionary<string, HistoryRepository> HistoryRepositories { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// List of projects in use.
+        /// </summary>
+        public static ConcurrentDictionary<string, Project> Projects { get; } = new(StringComparer.OrdinalIgnoreCase);
+
         /// <summary>
         /// Creates an empty <see cref="WipProject"/>.
         /// </summary>
@@ -129,6 +136,7 @@ namespace pva.SuperV.Engine
         public static WipProject CreateProject(string projectName, string? historyStorageEngineConnectionString)
         {
             WipProject project = new(projectName);
+            Projects[project.Name!] = project;
             if (string.IsNullOrEmpty(historyStorageEngineConnectionString))
             {
                 return project;
@@ -146,7 +154,21 @@ namespace pva.SuperV.Engine
         /// <returns>The new <see cref="WipProject"/></returns>
         public static WipProject CreateProject(RunnableProject runnableProject)
         {
-            return new WipProject(runnableProject);
+            WipProject wipProject = new(runnableProject);
+            Projects[wipProject.Name!] = wipProject;
+            return wipProject;
+        }
+
+        /// <summary>
+        /// Builds the specified <see cref="WipProject"/>.
+        /// </summary>
+        /// <param name="project">The WIP project.</param>
+        /// <returns>a <see cref="RunnableProject"/></returns>
+        public static RunnableProject Build(WipProject project)
+        {
+            RunnableProject runnableProject = ProjectBuilder.Build(project);
+            Projects[runnableProject.Name!] = runnableProject;
+            return runnableProject;
         }
 
         /// <summary>
@@ -254,10 +276,11 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Unloads the project.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S1215:\"GC.Collect\" should not be called", Justification = "This call is used to unload the project assembly")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S1215:\"GC.Collect\" should not be called", Justification = "<Pending>")]
         public virtual void Unload()
         {
             Classes.Clear();
+            Projects.Remove(Name!, out _);
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }

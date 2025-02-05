@@ -61,7 +61,7 @@ public class HistoryRepositoryTests
         // WHEN
         HistoryRepository historyRepository = new(ProjectHelpers.HistoryRepositoryName);
         wipProject.AddHistoryRepository(historyRepository);
-        _ = ProjectBuilder.Build(wipProject);
+        _ = Project.Build(wipProject);
 
         // THEN
         historyStorageEngineMock.Received(1).UpsertRepository(wipProject.Name!, historyRepository);
@@ -76,6 +76,6 @@ public class HistoryRepositoryTests
         // WHEN/THEN
         HistoryRepository historyRepository = new(ProjectHelpers.HistoryRepositoryName);
         wipProject.AddHistoryRepository(historyRepository);
-        Assert.Throws<NoHistoryStorageEngineException>(() => _ = ProjectBuilder.Build(wipProject));
+        Assert.Throws<NoHistoryStorageEngineException>(() => _ = Project.Build(wipProject));
     }
 }

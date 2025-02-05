@@ -11,7 +11,7 @@ namespace pva.SuperV.EngineTests
         public void GivenProjectWithClassInstance_WhenSettingFieldValue_ThenValueIsHistorized()
         {
             // GIVEN
-            RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject(HistoryStorageEngineFactory.TdEngineHistoryStorage);
+            RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject(TDengineHistoryStorage.Prefix);
             dynamic? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
             DateTime testStart = DateTime.UtcNow;
             // WHEN

@@ -12,7 +12,7 @@ namespace pva.SuperV.Engine
     public class WipProject : Project
     {
         /// <summary>
-        /// To be loaded instances when the project is converted to a <see cref="RunnableProject"/> through <see cref="ProjectBuilder.Build(WipProject)"/>.
+        /// To be loaded instances when the project is converted to a <see cref="RunnableProject"/> through <see cref="Project.Build(WipProject)"/>.
         /// </summary>
         public Dictionary<string, dynamic> ToLoadInstances { get; } = new(StringComparer.OrdinalIgnoreCase);
 
@@ -173,7 +173,7 @@ namespace pva.SuperV.Engine
         }
 
         /// <summary>
-        /// Gets the C# code for generating the project's assembly with <see cref="ProjectBuilder.Build(WipProject)"/>.
+        /// Gets the C# code for generating the project's assembly with <see cref="Project.Build(WipProject)"/>.
         /// </summary>
         /// <returns>C# code.</returns>
         public string GetCode()

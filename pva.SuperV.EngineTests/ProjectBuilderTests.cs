@@ -124,7 +124,7 @@ namespace pva.SuperV.EngineTests
             WipProject wipProject = Project.CreateProject(runnableProject);
 
             // WHEN
-            runnableProject = ProjectBuilder.Build(wipProject);
+            runnableProject = Project.Build(wipProject);
 
             // THEN
             runnableProject.Instances.Count.ShouldBe(1);

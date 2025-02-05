@@ -7,6 +7,7 @@ namespace pva.SuperV.Benchmarks
     public class ListExtensionsBenchmarks
     {
         private readonly List<string> strings = [];
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "Used to avoid optimizer impacting the benchmark.")]
         private string temp = "";
 
         public ListExtensionsBenchmarks()

@@ -39,8 +39,8 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="projectName">Name of project.</param>
         /// <param name="historyStorageEngine">History storage engine.</param>
-        internal void UpsertRepository(string projectName, IHistoryStorageEngine historyStorageEngine)
-            => HistoryStorageId = historyStorageEngine.UpsertRepository(projectName, this);
+        internal void UpsertRepository(string projectName, IHistoryStorageEngine historyStorageEngine) =>
+            HistoryStorageId = historyStorageEngine.UpsertRepository(projectName, this);
 
         /// <summary>
         /// Upserts a time series in storage engine.

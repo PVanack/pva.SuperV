@@ -95,7 +95,7 @@ namespace pva.SuperV.EngineTests
             WipProject wipProject = Project.CreateProject(ProjectHelpers.ProjectName);
             _ = wipProject.AddClass(ProjectHelpers.ClassName);
             wipProject.AddField<T>(ProjectHelpers.ClassName, new FieldDefinition<T>(ProjectHelpers.ValueFieldName));
-            RunnableProject runnableProject = ProjectBuilder.Build(wipProject);
+            RunnableProject runnableProject = Project.Build(wipProject);
 
             dynamic? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
 

@@ -45,7 +45,7 @@ namespace pva.SuperV.Engine
         /// The value.
         /// </value>
         [JsonIgnore]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Bug", "S4275:Getters and setters should access the expected fields", Justification = "<Pending>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Bug", "S4275:Getters and setters should access the expected fields", Justification = "It sets the _value in SetValueInternal()")]
         public virtual T Value
         {
             get => _value;

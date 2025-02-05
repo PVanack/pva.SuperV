@@ -106,10 +106,10 @@ namespace pva.SuperV.Engine.JsonConverters
             Type? fieldType = Type.GetType(fieldTypeString!);
             dynamic? fieldValue = JsonSerializer.Deserialize(ref reader, fieldType!, options);
             string? valueTimestampStr = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Timestamp");
-            DateTime.TryParseExact(valueTimestampStr, Iso8601UtcDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal,
+            _ = DateTime.TryParseExact(valueTimestampStr, Iso8601UtcDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal,
                 out DateTime valueTimestamp);
             string? valueQualityStr = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Quality");
-            Enum.TryParse(valueQualityStr, out QualityLevel valueQuality);
+            _ = Enum.TryParse(valueQualityStr, out QualityLevel valueQuality);
 
             IField? field = (instance as Instance)?.GetField(fieldName!);
             dynamic? dynamicField = field;
@@ -151,7 +151,7 @@ namespace pva.SuperV.Engine.JsonConverters
                 writer.WriteString("Type", fieldType.ToString());
                 writer.WriteString("Name", k);
                 writer.WritePropertyName("Value");
-                if (!FieldConverters.TryGetValue(fieldType!, out dynamic fieldConverter))
+                if (!FieldConverters.TryGetValue(fieldType!, out dynamic? fieldConverter))
                 {
                     fieldConverter =
                         JsonSerializerOptions.Default.GetConverter(fieldType);
