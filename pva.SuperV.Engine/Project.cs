@@ -136,12 +136,12 @@ namespace pva.SuperV.Engine
         public static WipProject CreateProject(string projectName, string? historyStorageEngineConnectionString)
         {
             WipProject project = new(projectName);
-            Projects[project.Name!] = project;
+            Projects[project.GetId()] = project;
             if (string.IsNullOrEmpty(historyStorageEngineConnectionString))
             {
                 return project;
             }
-            
+
             project.HistoryStorageEngineConnectionString = historyStorageEngineConnectionString;
             project.HistoryStorageEngine = HistoryStorageEngineFactory.CreateHistoryStorageEngine(historyStorageEngineConnectionString);
             return project;
@@ -155,19 +155,19 @@ namespace pva.SuperV.Engine
         public static WipProject CreateProject(RunnableProject runnableProject)
         {
             WipProject wipProject = new(runnableProject);
-            Projects[wipProject.Name!] = wipProject;
+            Projects[wipProject.GetId()] = wipProject;
             return wipProject;
         }
 
         /// <summary>
         /// Builds the specified <see cref="WipProject"/>.
         /// </summary>
-        /// <param name="project">The WIP project.</param>
+        /// <param name="wipProject">The WIP project.</param>
         /// <returns>a <see cref="RunnableProject"/></returns>
-        public static RunnableProject Build(WipProject project)
+        public static RunnableProject Build(WipProject wipProject)
         {
-            RunnableProject runnableProject = ProjectBuilder.Build(project);
-            Projects[runnableProject.Name!] = runnableProject;
+            RunnableProject runnableProject = ProjectBuilder.Build(wipProject);
+            Projects[runnableProject.GetId()] = runnableProject;
             return runnableProject;
         }
 
@@ -276,13 +276,38 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Unloads the project.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S1215:\"GC.Collect\" should not be called", Justification = "<Pending>")]
+        public static void Unload(Project project)
+        {
+            WeakReference? projectAssemblyLoaderWeakRef = null;
+            if (project is RunnableProject runnableProject)
+            {
+                projectAssemblyLoaderWeakRef = runnableProject.ProjectAssemblyLoaderWeakRef;
+            }
+            project.Dispose();
+            if (projectAssemblyLoaderWeakRef is not null)
+            {
+                CallGcCleanup(projectAssemblyLoaderWeakRef);
+            }
+        }
+
+        /// <summary>
+        /// Unloads the project.
+        /// </summary>
         public virtual void Unload()
         {
+            FieldFormatters.Clear();
             Classes.Clear();
-            Projects.Remove(Name!, out _);
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+            Projects.Remove(GetId(), out _);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S1215:\"GC.Collect\" should not be called", Justification = "<Pending>")]
+        public static void CallGcCleanup(WeakReference palWeakRef)
+        {
+            for (int i = 0; palWeakRef.IsAlive && i < 10; i++)
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
         }
 
         /// <summary>
@@ -301,6 +326,11 @@ namespace pva.SuperV.Engine
         protected virtual void Dispose(bool disposing)
         {
             Unload();
+        }
+
+        public string GetId()
+        {
+            return $"{Name!}-{Version}";
         }
     }
 }

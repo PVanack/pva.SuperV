@@ -4,9 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
-    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,14 +12,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="NSubstitute" Version="5.3.0" />
-    <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.17">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Shouldly" Version="4.3.0" />
-    <PackageReference Include="Testcontainers" Version="4.2.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">
       <PrivateAssets>all</PrivateAssets>
@@ -29,17 +23,10 @@
     </PackageReference>
   </ItemGroup>
 
-  <Target Name="copyDLLDependency" BeforeTargets="BeforeBuild">
-    <ItemGroup>
-      <DepDLLFiles Include="$(PkgTDengine_Connector)\runtimes\**\*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(DepDLLFiles)" DestinationFolder="$(OutDir)" />
-  </Target>
-
-
   <ItemGroup>
-    <ProjectReference Include="..\pva.Helpers\pva.Helpers.csproj" />
-    <ProjectReference Include="..\pva.SuperV.Engine\pva.SuperV.Engine.csproj" />
+    <ProjectReference Include="..\pva.SuperV.Api\pva.SuperV.Api.csproj" />
+    <ProjectReference Include="..\pva.SuperV.EngineTests\pva.SuperV.EngineTests.csproj" />
+    <ProjectReference Include="..\pva.SuperV.Model\pva.SuperV.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>

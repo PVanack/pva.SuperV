@@ -1,4 +1,5 @@
-﻿using DotNet.Testcontainers.Builders;
+﻿//#define DELETE_PROJECT_ASSEMBLY
+using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using NSubstitute;
 using pva.SuperV.Engine;
@@ -7,7 +8,7 @@ using pva.SuperV.Engine.Processing;
 
 namespace pva.SuperV.EngineTests
 {
-    internal static class ProjectHelpers
+    public static class ProjectHelpers
     {
         public const string ProjectName = "TestProject";
         public const string ClassName = "TestClass";
@@ -69,7 +70,6 @@ namespace pva.SuperV.EngineTests
         {
             WipProject wipProject = CreateWipProject(historyEngineType);
             RunnableProject project = Project.Build(wipProject);
-            wipProject.Dispose();
             return project;
         }
 
@@ -123,15 +123,19 @@ namespace pva.SuperV.EngineTests
         public static void DeleteProject(Project project)
         {
             Task.Run(async () => await StopTDengineContainer());
-
-            project.Dispose();
-#if DELETE_PROJECT_FILE
+#if DELETE_PROJECT_ASSEMBLY
+            string projectAssemblyPath = project.GetAssemblyFileName();
+            String projectName = project.Name;
+#endif
+            Project.Unload(project);
+            project = null;
+#if DELETE_PROJECT_ASSEMBLY
             bool deleted = false;
             for (int i = 0; !deleted && i < 10; i++)
             {
                 try
                 {
-                    File.Delete(project.GetAssemblyFileName());
+                    File.Delete(projectAssemblyPath);
                     deleted = true;
                 }
                 catch (Exception ex)
@@ -141,7 +145,7 @@ namespace pva.SuperV.EngineTests
             }
             if (!deleted)
             {
-                Console.WriteLine($"Project {project.Name} not deleted");
+                Console.WriteLine($"Project {projectName} not deleted");
             }
 #endif
         }

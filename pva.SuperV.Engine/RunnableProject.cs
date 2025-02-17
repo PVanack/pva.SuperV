@@ -2,6 +2,7 @@
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Engine
@@ -15,7 +16,14 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// The project assembly loader.
         /// </summary>
-        [JsonIgnore] private ProjectAssemblyLoader? _projectAssemblyLoader;
+        [JsonIgnore]
+        private ProjectAssemblyLoader? _projectAssemblyLoader;
+
+        [JsonIgnore]
+        public WeakReference? ProjectAssemblyLoaderWeakRef { get => _projectAssemblyLoader == null
+                ? null
+                : new WeakReference(_projectAssemblyLoader, trackResurrection: true);
+        }
 
         /// <summary>
         /// Gets the instances.
@@ -199,12 +207,14 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Unloads the project. Clears all instances.
         /// </summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public override void Unload()
         {
             Instances.Values.ForEach(instance =>
                 instance.Dispose());
             Instances.Clear();
             base.Unload();
+            Projects.Remove(GetId(), out _);
             _projectAssemblyLoader?.Unload();
             _projectAssemblyLoader = null;
         }

@@ -1,0 +1,11 @@
+@pva.SuperV.Api_HostAddress = http://localhost:5153
+
+GET {{pva.SuperV.Api_HostAddress}}/projects/
+Accept: application/json
+
+###
+
+GET {{pva.SuperV.Api_HostAddress}}/projects/1
+Accept: application/json
+
+###

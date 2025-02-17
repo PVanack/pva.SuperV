@@ -107,10 +107,10 @@ namespace pva.SuperV.Engine
                 switch (defaultValue)
                 {
                     case bool boolean:
-                    {
-                        string booleanValue = boolean ? "true" : "false";
-                        return $"{booleanValue}";
-                    }
+                        {
+                            string booleanValue = boolean ? "true" : "false";
+                            return $"{booleanValue}";
+                        }
                     case DateTime dateTime:
                         return $"new {typeof(T)}({dateTime.Ticks.ToString(CultureInfo.InvariantCulture)}L)";
                     case TimeSpan timespan:
