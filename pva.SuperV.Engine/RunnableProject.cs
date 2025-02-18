@@ -2,6 +2,7 @@
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
@@ -20,7 +21,9 @@ namespace pva.SuperV.Engine
         private ProjectAssemblyLoader? _projectAssemblyLoader;
 
         [JsonIgnore]
-        public WeakReference? ProjectAssemblyLoaderWeakRef { get => _projectAssemblyLoader == null
+        public WeakReference? ProjectAssemblyLoaderWeakRef
+        {
+            get => _projectAssemblyLoader == null
                 ? null
                 : new WeakReference(_projectAssemblyLoader, trackResurrection: true);
         }
@@ -32,7 +35,7 @@ namespace pva.SuperV.Engine
         /// The instances.
         /// </value>
         [JsonIgnore]
-        public Dictionary<string, dynamic> Instances { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, Instance> Instances { get; } = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RunnableProject"/> class.
@@ -56,9 +59,14 @@ namespace pva.SuperV.Engine
             HistoryRepositories = new(wipProject.HistoryRepositories);
             CreateHistoryRepositories(wipProject.HistoryStorageEngine);
             CreateHistoryClassTimeSeries();
-            _projectAssemblyLoader = new();
-            _projectAssemblyLoader.LoadFromAssemblyPath(GetAssemblyFileName());
+            SetupProjectAssemblyLoader();
             RecreateInstances(wipProject);
+        }
+
+        private void SetupProjectAssemblyLoader()
+        {
+            _projectAssemblyLoader ??= new();
+            _projectAssemblyLoader.LoadFromAssemblyPath(GetAssemblyFileName());
         }
 
         private void CreateHistoryClassTimeSeries()
@@ -127,8 +135,9 @@ namespace pva.SuperV.Engine
         /// <param name="instanceName">Name of the instance.</param>
         /// <returns>The newly created instance.</returns>
         /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
-        public dynamic? CreateInstance(string className, string instanceName)
+        public Instance? CreateInstance(string className, string instanceName)
         {
+            SetupProjectAssemblyLoader();
             if (Instances.ContainsKey(instanceName))
             {
                 throw new EntityAlreadyExistException("Instance", instanceName);
@@ -136,23 +145,46 @@ namespace pva.SuperV.Engine
 
             Class clazz = GetClass(className);
             string classFullName = $"{Name}.V{Version}.{clazz.Name}";
-            dynamic? dynamicInstance = Activator.CreateInstanceFrom(GetAssemblyFileName(), classFullName)
-                ?.Unwrap();
-            if (dynamicInstance is null)
+            Type? classType = _projectAssemblyLoader?.Assemblies.First()?.GetType(classFullName!);
+
+            Instance? instance = CreateInstance(classType);
+            if (instance is null)
             {
-                return dynamicInstance;
+                return instance;
             }
-            dynamicInstance.Name = instanceName;
-            dynamicInstance.Class = clazz;
-            IInstance? instance = dynamicInstance as IInstance;
+            instance.Name = instanceName;
+            instance.Class = clazz;
             clazz.FieldDefinitions.ForEach((k, v) =>
             {
                 instance!.Fields.TryGetValue(k, out IField? field);
                 field!.FieldDefinition = v;
             });
-            Instances.Add(instanceName, dynamicInstance);
+            Instances.Add(instanceName, instance);
+            return instance;
+        }
 
-            return dynamicInstance;
+        /// <summary>
+        /// Creates an instance for targetType's <see cref="FieldDefinition{T}"/>.
+        /// </summary>
+        /// <param name="targetType">Type of the target.</param>
+        /// <returns><see cref="IFieldDefinition"/> created instance.</returns>
+        private static Instance CreateInstance(Type targetType)
+        {
+            var ctor = GetConstructor(targetType);
+            return (Instance)ctor.Invoke([]);
+        }
+
+        /// <summary>
+        /// Gets the constructor for targetType's <see cref="FieldDefinition{T}"/>.
+        /// </summary>
+        /// <param name="targetType">Type of the target.</param>
+        /// <param name="argumentType">Type of the argument.</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">No constructor found for FieldDefinition{targetType.Name}.</exception>
+        private static ConstructorInfo GetConstructor(Type targetType)
+        {
+            return targetType.GetConstructor(Type.EmptyTypes)
+                ?? throw new InvalidOperationException($"No constructor found for {targetType.Name}.");
         }
 
         /// <summary>

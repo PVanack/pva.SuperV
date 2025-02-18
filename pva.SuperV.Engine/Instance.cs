@@ -75,14 +75,9 @@ namespace pva.SuperV.Engine
         /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownEntityException"></exception>
         public IField GetField(string fieldName)
         {
-            Class? actualClass = Class;
-            while (actualClass is not null)
+            if (Fields.TryGetValue(fieldName, out var field))
             {
-                if (actualClass.FieldDefinitions.ContainsKey(fieldName))
-                {
-                    return Fields[fieldName];
-                }
-                actualClass = actualClass.BaseClass;
+                return field;
             }
             throw new UnknownEntityException(fieldName, Class.Name);
         }

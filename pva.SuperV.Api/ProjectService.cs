@@ -4,7 +4,7 @@ using pva.SuperV.Model;
 
 namespace pva.SuperV.Api
 {
-    public class ProjectService : IProjectService
+    public class ProjectService : BaseService, IProjectService
     {
         public List<ProjectModel> GetProjects()
             => Project.Projects.Values
@@ -13,8 +13,7 @@ namespace pva.SuperV.Api
 
         public ProjectModel GetProject(string projectId)
         {
-            Project? project = AccessHelpers.GetProject(projectId)
-                ?? throw new UnknownEntityException("Project", projectId);
+            Project project = GetProjectEntity(projectId);
             return ProjectMapper.ToDto(project);
 
         }
@@ -28,34 +27,13 @@ namespace pva.SuperV.Api
 
         public ProjectModel BuildProject(string projectId)
         {
-            Project? project = AccessHelpers.GetProject(projectId)
-                ?? throw new UnknownEntityException("Project", projectId);
+            Project project = GetProjectEntity(projectId);
             if (project is WipProject wipProject)
             {
                 RunnableProject runnableProject = Project.Build(wipProject);
                 return ProjectMapper.ToDto(runnableProject);
             }
             throw new NonWipProjectException(projectId);
-        }
-
-        public List<ClassModel> GetClasses(string projectId)
-        {
-            Project? project = AccessHelpers.GetProject(projectId)
-                ?? throw new UnknownEntityException("Project", projectId);
-            return project.Classes.Values
-                .Select(clazz => ClassMapper.ToDto(clazz))
-                .ToList();
-        }
-
-        public ClassModel GetClass(string projectId, string className)
-        {
-            Project? project = AccessHelpers.GetProject(projectId)
-                ?? throw new UnknownEntityException("Project", projectId);
-            if (!project.Classes.TryGetValue(className, out Class? clazz))
-            {
-                throw new UnknownEntityException("Class", className);
-            }
-            return ClassMapper.ToDto(clazz);
         }
     }
 }

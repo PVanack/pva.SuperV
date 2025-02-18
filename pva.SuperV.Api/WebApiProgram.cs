@@ -24,7 +24,8 @@ namespace pva.SuperV.Api
                     options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
 
                 })
-                .AddSingleton<IProjectService, ProjectService>();
+                .AddSingleton<IProjectService, ProjectService>()
+                .AddSingleton<IClassService, ClassService>();
             builder.Services.AddOpenApi(options =>
             {
                 options.AddDocumentTransformer((document, context, cancellationToken) =>

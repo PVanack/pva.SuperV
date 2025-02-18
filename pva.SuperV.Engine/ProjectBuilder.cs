@@ -14,14 +14,14 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Builds the specified <see cref="WipProject"/>.
         /// </summary>
-        /// <param name="project">The WIP project.</param>
+        /// <param name="wipProject">The WIP project.</param>
         /// <returns>a <see cref="RunnableProject"/></returns>
         /// <exception cref="pva.SuperV.Engine.Exceptions.ProjectBuildException"></exception>
-        public static RunnableProject Build(WipProject project)
+        public static RunnableProject Build(WipProject wipProject)
         {
-            string projectAssemblyFileName = project.GetAssemblyFileName();
-            string projectCode = project.GetCode();
-            var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(projectCode), $"{project.Name}-V{project.Version}");
+            string projectAssemblyFileName = wipProject.GetAssemblyFileName();
+            string projectCode = wipProject.GetCode();
+            var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(projectCode), $"{wipProject.Name}-V{wipProject.Version}");
             using (MemoryStream dllStream = new())
             using (MemoryStream pdbStream = new())
             using (Stream win32ResStream = compilation.CreateDefaultWin32Resources(
@@ -40,11 +40,13 @@ namespace pva.SuperV.Engine
                     StringBuilder diagnostics = new();
                     compilationResult.Diagnostics
                         .ForEach(diagnostic => diagnostics.AppendLine(diagnostic.ToString()));
-                    throw new ProjectBuildException(project, diagnostics.ToString());
+                    throw new ProjectBuildException(wipProject, diagnostics.ToString());
                 }
                 File.WriteAllBytes(projectAssemblyFileName, dllStream.ToArray());
             }
-            return project.CloneAsRunnable();
+            RunnableProject runnableProject = wipProject.CloneAsRunnable();
+            wipProject.Dispose();
+            return runnableProject;
         }
 
         /// <summary>

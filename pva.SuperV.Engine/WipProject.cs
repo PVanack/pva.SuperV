@@ -14,7 +14,7 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// To be loaded instances when the project is converted to a <see cref="RunnableProject"/> through <see cref="Project.Build(WipProject)"/>.
         /// </summary>
-        public Dictionary<string, dynamic> ToLoadInstances { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, Instance> ToLoadInstances { get; } = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WipProject"/> class.

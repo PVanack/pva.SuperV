@@ -284,11 +284,13 @@ namespace pva.SuperV.Engine
                 projectAssemblyLoaderWeakRef = runnableProject.ProjectAssemblyLoaderWeakRef;
             }
             project.Dispose();
+            project = null;
             if (projectAssemblyLoaderWeakRef is not null)
             {
                 CallGcCleanup(projectAssemblyLoaderWeakRef);
             }
         }
+
 
         /// <summary>
         /// Unloads the project.
@@ -300,7 +302,8 @@ namespace pva.SuperV.Engine
             Projects.Remove(GetId(), out _);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S1215:\"GC.Collect\" should not be called", Justification = "<Pending>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S1215:\"GC.Collect\" should not be called",
+            Justification = "Need to call GC to remove references to assembly")]
         public static void CallGcCleanup(WeakReference palWeakRef)
         {
             for (int i = 0; palWeakRef.IsAlive && i < 10; i++)

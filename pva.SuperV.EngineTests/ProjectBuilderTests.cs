@@ -14,7 +14,7 @@ namespace pva.SuperV.EngineTests
             RunnableProject project = ProjectHelpers.CreateRunnableProject();
 
             // WHEN
-            var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName) as dynamic;
             var retrievedInstance = project.GetInstance(ProjectHelpers.InstanceName);
 
             // THEN

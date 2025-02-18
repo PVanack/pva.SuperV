@@ -1,16 +1,13 @@
-﻿using NSubstitute;
-using pva.SuperV.Api;
+﻿using pva.SuperV.Api;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.EngineTests;
 using pva.SuperV.Model;
 using Shouldly;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
 
 namespace pva.SuperV.ApiTests
 {
+    [Collection("Project building")]
     public class ProjectServiceTests
     {
         private readonly ProjectService _projectService;
@@ -92,37 +89,6 @@ namespace pva.SuperV.ApiTests
             // Act & Assert
             Assert.Throws<NonWipProjectException>(()
                 => _projectService.BuildProject(runProject.GetId()));
-        }
-
-        [Fact]
-        public void GetClasses_ShouldReturnListOfClasses()
-        {
-            // Act
-            var result = _projectService.GetClasses(runnableProject.GetId());
-
-            // Assert
-            result.Count.ShouldBe(2);
-            result.ShouldContain(c => c.Name == ProjectHelpers.ClassName);
-            result.ShouldContain(c => c.Name == ProjectHelpers.BaseClassName);
-        }
-
-        [Fact]
-        public void GetClass_ShouldReturnClass_WhenClassExists()
-        {
-            // Act
-            var result = _projectService.GetClass(runnableProject.GetId(), ProjectHelpers.ClassName);
-
-            // Assert
-            result.ShouldNotBeNull();
-            result.Name.ShouldBe(ProjectHelpers.ClassName);
-        }
-
-        [Fact]
-        public void GetClass_ShouldThrowUnknownEntityException_WhenClassDoesNotExist()
-        {
-            // Act & Assert
-            Assert.Throws<UnknownEntityException>(()
-                => _projectService.GetClass(runnableProject.GetId(), "UnknownClass"));
         }
     }
 }

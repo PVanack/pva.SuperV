@@ -6,11 +6,11 @@ namespace pva.SuperV.Api.Routes.Classes
 {
     public static class GetClasses
     {
-        public static Results<Ok<List<ClassModel>>, NotFound<string>, InternalServerError<string>> Handle(IProjectService projectService, string projectName)
+        public static Results<Ok<List<ClassModel>>, NotFound<string>, InternalServerError<string>> Handle(IClassService classService, string projectName)
         {
             try
             {
-                return TypedResults.Ok(projectService.GetClasses(projectName));
+                return TypedResults.Ok(classService.GetClasses(projectName));
             }
             catch (UnknownEntityException e)
             {

@@ -125,10 +125,9 @@ namespace pva.SuperV.EngineTests
             Task.Run(async () => await StopTDengineContainer());
 #if DELETE_PROJECT_ASSEMBLY
             string projectAssemblyPath = project.GetAssemblyFileName();
-            String projectName = project.Name;
+            String projectName = project.Name!;
 #endif
             Project.Unload(project);
-            project = null;
 #if DELETE_PROJECT_ASSEMBLY
             bool deleted = false;
             for (int i = 0; !deleted && i < 10; i++)
