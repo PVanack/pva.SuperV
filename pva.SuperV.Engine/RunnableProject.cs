@@ -4,6 +4,7 @@ using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Engine
@@ -63,8 +64,14 @@ namespace pva.SuperV.Engine
             RecreateInstances(wipProject);
         }
 
+        public override string GetId()
+        {
+            return $"{Name!}";
+        }
+
         private void SetupProjectAssemblyLoader()
         {
+            ProjectBuilder.Build(this);
             _projectAssemblyLoader ??= new();
             _projectAssemblyLoader.LoadFromAssemblyPath(GetAssemblyFileName());
         }
@@ -249,6 +256,28 @@ namespace pva.SuperV.Engine
             Projects.Remove(GetId(), out _);
             _projectAssemblyLoader?.Unload();
             _projectAssemblyLoader = null;
+        }
+
+        /// <summary>
+        /// Gets the C# code for generating the project's assembly with <see cref="Project.Build(WipProject)"/>.
+        /// </summary>
+        /// <returns>C# code.</returns>
+        public string GetCode()
+        {
+            StringBuilder codeBuilder = new();
+            codeBuilder.AppendLine($"using {GetType().Namespace};");
+            codeBuilder.AppendLine("using System.Collections.Generic;");
+            codeBuilder.AppendLine("using System.Reflection;");
+            codeBuilder.AppendLine($"[assembly: AssemblyProduct(\"{Name}\")]");
+            codeBuilder.AppendLine($"[assembly: AssemblyTitle(\"{Description}\")]");
+            codeBuilder.AppendLine($"[assembly: AssemblyVersion(\"{Version}\")]");
+            codeBuilder.AppendLine($"[assembly: AssemblyFileVersion(\"{Version}\")]");
+            codeBuilder.AppendLine($"[assembly: AssemblyInformationalVersion(\"{Version}\")]");
+            codeBuilder.AppendLine($"namespace {Name}.V{Version} {{");
+            Classes
+                .ForEach((_, v) => codeBuilder.AppendLine(v.GetCode()));
+            codeBuilder.AppendLine("}");
+            return codeBuilder.ToString();
         }
 
         public void SetInstanceValue<T>(string instanceName, string fieldName, T fieldValue)

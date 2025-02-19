@@ -172,26 +172,9 @@ namespace pva.SuperV.Engine
             clazz.AddFieldChangePostProcessing(fieldName, fieldValueProcessing);
         }
 
-        /// <summary>
-        /// Gets the C# code for generating the project's assembly with <see cref="Project.Build(WipProject)"/>.
-        /// </summary>
-        /// <returns>C# code.</returns>
-        public string GetCode()
+        public override string GetId()
         {
-            StringBuilder codeBuilder = new();
-            codeBuilder.AppendLine($"using {GetType().Namespace};");
-            codeBuilder.AppendLine("using System.Collections.Generic;");
-            codeBuilder.AppendLine("using System.Reflection;");
-            codeBuilder.AppendLine($"[assembly: AssemblyProduct(\"{Name}\")]");
-            codeBuilder.AppendLine($"[assembly: AssemblyTitle(\"{Description}\")]");
-            codeBuilder.AppendLine($"[assembly: AssemblyVersion(\"{Version}\")]");
-            codeBuilder.AppendLine($"[assembly: AssemblyFileVersion(\"{Version}\")]");
-            codeBuilder.AppendLine($"[assembly: AssemblyInformationalVersion(\"{Version}\")]");
-            codeBuilder.AppendLine($"namespace {Name}.V{Version} {{");
-            Classes
-                .ForEach((_, v) => codeBuilder.AppendLine(v.GetCode()));
-            codeBuilder.AppendLine("}");
-            return codeBuilder.ToString();
+            return $"{Name!}-WIP";
         }
 
         /// <summary>

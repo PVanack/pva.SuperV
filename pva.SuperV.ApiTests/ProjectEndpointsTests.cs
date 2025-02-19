@@ -31,7 +31,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenExistingProjects_WhenGettingProjects_ThenProjectsAreReturned()
         {
             // GIVEN
-            List<ProjectModel> expectedProjects = [new ProjectModel("a-1", "a", 1, "Descr", false)];
+            List<ProjectModel> expectedProjects = [new ProjectModel("Project1", "a", 1, "Descr", false)];
             MockedProjectService.GetProjects()
                 .Returns(expectedProjects);
 
@@ -48,12 +48,12 @@ namespace pva.SuperV.ApiTests
         public async Task GivenExistingProjects_WhenGettingExistingProject_ThenProjectIsReturned()
         {
             // GIVEN
-            ProjectModel expectedProject = new("a-1", "a", 1, "Descr", false);
-            MockedProjectService.GetProject("a")
+            ProjectModel expectedProject = new("Project1", "Project1", 1, "Descr", false);
+            MockedProjectService.GetProject("Project1")
                 .Returns(expectedProject);
 
             // WHEN
-            var response = await client.GetAsync("/projects/a");
+            var response = await client.GetAsync("/projects/Project1");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
@@ -65,24 +65,24 @@ namespace pva.SuperV.ApiTests
         public async Task GivenExistingProjects_WhenGettingNonExistingProject_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedProjectService.GetProject("a")
-                .Throws(new UnknownEntityException("Project", "a"));
+            MockedProjectService.GetProject("UnknownProject")
+                .Throws(new UnknownEntityException("Project", "UnknownProject"));
 
             // WHEN
-            var response = await client.GetAsync("/projects/a");
+            var response = await client.GetAsync("/projects/UnknownProject");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
             var message = await response.Content.ReadAsStringAsync();
-            message.ShouldBe("\"Project a doesn't exist\"");
+            message.ShouldBe("\"Project UnknownProject doesn't exist\"");
         }
 
         [Fact]
         public async Task GivenNoProjects_WhenCreatingNewProject_ThenProjectIsCreated()
         {
             // GIVEN
-            CreateProjectRequest createProjectRequest = new("a", "Description");
-            ProjectModel expectedCreatedProject = new("1", "a", 1, "descriptioon", false);
+            CreateProjectRequest createProjectRequest = new("NewProject", "Description");
+            ProjectModel expectedCreatedProject = new("1", "NewProject", 1, "descriptioon", false);
             MockedProjectService.CreateProject(createProjectRequest)
                 .Returns(expectedCreatedProject);
 
@@ -99,12 +99,12 @@ namespace pva.SuperV.ApiTests
         public async Task GivenWipProject_WhenBuildigProjectFromIt_ThenRunnableProjectIsBuilt()
         {
             // GIVEN
-            ProjectModel expectedRunnableProject = new("a-2", "a", 2, "descriptioon", true);
-            MockedProjectService.BuildProject("a-1")
+            ProjectModel expectedRunnableProject = new("Project-Wip", "a", 2, "description", true);
+            MockedProjectService.BuildProject("Project-Wip")
                 .Returns(expectedRunnableProject);
 
             // WHEN
-            var response = await client.PostAsync("/projects/build/a-1", null);
+            var response = await client.PostAsync("/projects/build/Project-Wip", null);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
@@ -116,16 +116,16 @@ namespace pva.SuperV.ApiTests
         public async Task GivenRunnableProject_WhenBuildigProjectFromIt_ThenExceptionIsThrown()
         {
             // GIVEN
-            MockedProjectService.BuildProject("a-1")
-                .Throws(new NonWipProjectException("a-1"));
+            MockedProjectService.BuildProject("Project")
+                .Throws(new NonWipProjectException("Project"));
 
             // WHEN
-            var response = await client.PostAsync("/projects/build/a-1", null);
+            var response = await client.PostAsync("/projects/build/Project", null);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
             var message = await response.Content.ReadAsStringAsync();
-            message.ShouldBe("\"Project with ID a-1 is not a WIP project\"");
+            message.ShouldBe("\"Project with ID Project is not a WIP project\"");
         }
     }
 }

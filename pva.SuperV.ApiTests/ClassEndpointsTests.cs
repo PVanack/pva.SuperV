@@ -31,11 +31,11 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             List<ClassModel> expectedClasses = [new ClassModel("Class1", null)];
-            MockedClassService.GetClasses("a-1")
+            MockedClassService.GetClasses("Project1")
                 .Returns(expectedClasses);
 
             // WHEN
-            var response = await client.GetAsync("/classes/a-1");
+            var response = await client.GetAsync("/classes/Project1");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
@@ -48,11 +48,11 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ClassModel expectedClass = new("Class1", null);
-            MockedClassService.GetClass("a-1", expectedClass.Name)
+            MockedClassService.GetClass("Project1", expectedClass.Name)
                 .Returns(expectedClass);
 
             // WHEN
-            var response = await client.GetAsync($"/classes/a-1/{expectedClass.Name}");
+            var response = await client.GetAsync($"/classes/Project1/{expectedClass.Name}");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);

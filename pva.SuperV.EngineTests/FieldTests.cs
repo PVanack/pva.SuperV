@@ -5,7 +5,6 @@ using Shouldly;
 namespace pva.SuperV.EngineTests
 {
     [Collection("Project building")]
-
     public class FieldTests
     {
         [Theory]

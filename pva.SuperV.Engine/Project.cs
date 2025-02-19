@@ -2,6 +2,7 @@
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
 using System.Collections.Concurrent;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Engine
@@ -136,7 +137,7 @@ namespace pva.SuperV.Engine
         public static WipProject CreateProject(string projectName, string? historyStorageEngineConnectionString)
         {
             WipProject project = new(projectName);
-            Projects[project.GetId()] = project;
+            AddProjectToCollection(project);
             if (string.IsNullOrEmpty(historyStorageEngineConnectionString))
             {
                 return project;
@@ -147,6 +148,15 @@ namespace pva.SuperV.Engine
             return project;
         }
 
+        private static void AddProjectToCollection(Project project)
+        {
+            if (Projects.TryGetValue(project.GetId(), out Project previousProject))
+            {
+                previousProject.Unload();
+            }
+            Projects[project.GetId()] = project;
+        }
+
         /// <summary>
         /// Creates a <see cref="WipProject"/> from a <see cref="RunnableProject"/> for modification.
         /// </summary>
@@ -155,7 +165,7 @@ namespace pva.SuperV.Engine
         public static WipProject CreateProject(RunnableProject runnableProject)
         {
             WipProject wipProject = new(runnableProject);
-            Projects[wipProject.GetId()] = wipProject;
+            AddProjectToCollection(wipProject);
             return wipProject;
         }
 
@@ -167,7 +177,7 @@ namespace pva.SuperV.Engine
         public static RunnableProject Build(WipProject wipProject)
         {
             RunnableProject runnableProject = ProjectBuilder.Build(wipProject);
-            Projects[runnableProject.GetId()] = runnableProject;
+            AddProjectToCollection(runnableProject);
             return runnableProject;
         }
 
@@ -331,9 +341,6 @@ namespace pva.SuperV.Engine
             Unload();
         }
 
-        public string GetId()
-        {
-            return $"{Name!}-{Version}";
-        }
+        public abstract string GetId();
     }
 }

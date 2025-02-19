@@ -19,34 +19,42 @@ namespace pva.SuperV.Engine
         /// <exception cref="pva.SuperV.Engine.Exceptions.ProjectBuildException"></exception>
         public static RunnableProject Build(WipProject wipProject)
         {
-            string projectAssemblyFileName = wipProject.GetAssemblyFileName();
-            string projectCode = wipProject.GetCode();
-            var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(projectCode), $"{wipProject.Name}-V{wipProject.Version}");
-            using (MemoryStream dllStream = new())
-            using (MemoryStream pdbStream = new())
-            using (Stream win32ResStream = compilation.CreateDefaultWin32Resources(
-                versionResource: true, // Important!
-                noManifest: false,
-                manifestContents: null,
-                iconInIcoFormat: null))
-            {
-                var compilationResult = compilation.Emit(
-                    peStream: dllStream,
-                    pdbStream: pdbStream,
-                    win32Resources: win32ResStream);
-
-                if (!compilationResult.Success)
-                {
-                    StringBuilder diagnostics = new();
-                    compilationResult.Diagnostics
-                        .ForEach(diagnostic => diagnostics.AppendLine(diagnostic.ToString()));
-                    throw new ProjectBuildException(wipProject, diagnostics.ToString());
-                }
-                File.WriteAllBytes(projectAssemblyFileName, dllStream.ToArray());
-            }
             RunnableProject runnableProject = wipProject.CloneAsRunnable();
             wipProject.Dispose();
+            Build(runnableProject);
             return runnableProject;
+        }
+
+        public static void Build(RunnableProject runnableProject)
+        {
+            if (!File.Exists(runnableProject.GetAssemblyFileName()))
+            {
+                string projectAssemblyFileName = runnableProject.GetAssemblyFileName();
+                string projectCode = runnableProject.GetCode();
+                var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(projectCode), $"{runnableProject.Name}-V{runnableProject.Version}");
+                using (MemoryStream dllStream = new())
+                using (MemoryStream pdbStream = new())
+                using (Stream win32ResStream = compilation.CreateDefaultWin32Resources(
+                    versionResource: true, // Important!
+                    noManifest: false,
+                    manifestContents: null,
+                    iconInIcoFormat: null))
+                {
+                    var compilationResult = compilation.Emit(
+                        peStream: dllStream,
+                        pdbStream: pdbStream,
+                        win32Resources: win32ResStream);
+
+                    if (!compilationResult.Success)
+                    {
+                        StringBuilder diagnostics = new();
+                        compilationResult.Diagnostics
+                            .ForEach(diagnostic => diagnostics.AppendLine(diagnostic.ToString()));
+                        throw new ProjectBuildException(runnableProject, diagnostics.ToString());
+                    }
+                    File.WriteAllBytes(projectAssemblyFileName, dllStream.ToArray());
+                }
+            }
         }
 
         /// <summary>
