@@ -8,5 +8,6 @@ namespace pva.SuperV.Api
         ProjectModel GetProject(string projectId);
         ProjectModel CreateProject(CreateProjectRequest createProjectRequest);
         ProjectModel BuildProject(string projectId);
+        void UnloadProject(string projectId);
     }
 }

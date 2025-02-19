@@ -127,5 +127,18 @@ namespace pva.SuperV.ApiTests
             var message = await response.Content.ReadAsStringAsync();
             message.ShouldBe("\"Project with ID Project is not a WIP project\"");
         }
+
+
+        [Fact]
+        public async Task GivenProject_WhenUnloadingProject_ThenProjectIsUnloaded()
+        {
+            // GIVEN
+
+            // WHEN
+            var response = await client.DeleteAsync("/projects/build/Project-Wip");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+        }
     }
 }

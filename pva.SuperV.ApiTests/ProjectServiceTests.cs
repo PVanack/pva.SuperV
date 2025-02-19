@@ -90,5 +90,18 @@ namespace pva.SuperV.ApiTests
             Assert.Throws<NonWipProjectException>(()
                 => _projectService.BuildProject(runProject.GetId()));
         }
+
+        [Fact]
+        public void UnloadProject_ShouldRemoveProject()
+        {
+            // Act
+            WipProject wipProject = Project.CreateProject("WipProject1");
+            _projectService.UnloadProject(wipProject.GetId());
+
+            // Assert
+            Assert.Throws<UnknownEntityException>(()
+                => _projectService.GetProject(wipProject.GetId()));
+        }
+
     }
 }

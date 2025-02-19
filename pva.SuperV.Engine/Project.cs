@@ -148,15 +148,6 @@ namespace pva.SuperV.Engine
             return project;
         }
 
-        private static void AddProjectToCollection(Project project)
-        {
-            if (Projects.TryGetValue(project.GetId(), out Project previousProject))
-            {
-                previousProject.Unload();
-            }
-            Projects[project.GetId()] = project;
-        }
-
         /// <summary>
         /// Creates a <see cref="WipProject"/> from a <see cref="RunnableProject"/> for modification.
         /// </summary>
@@ -167,6 +158,15 @@ namespace pva.SuperV.Engine
             WipProject wipProject = new(runnableProject);
             AddProjectToCollection(wipProject);
             return wipProject;
+        }
+
+        private static void AddProjectToCollection(Project project)
+        {
+            if (Projects.TryGetValue(project.GetId(), out Project previousProject))
+            {
+                previousProject.Unload();
+            }
+            Projects[project.GetId()] = project;
         }
 
         /// <summary>

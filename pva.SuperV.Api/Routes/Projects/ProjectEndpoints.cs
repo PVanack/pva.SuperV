@@ -47,6 +47,16 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<ProjectModel>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
+
+            projectsApi.MapDelete("/build/{projectId}",
+                (IProjectService projectService, [Description("ID of project")] string projectId) =>
+                    UnloadProject.Handle(projectService, projectId))
+                .WithName("UnloadProject")
+                .WithSummary("Unloads a project")
+                .WithDescription("Unloads a project")
+                .Produces(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
             return app;
         }
     }

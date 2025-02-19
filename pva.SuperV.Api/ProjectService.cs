@@ -35,5 +35,11 @@ namespace pva.SuperV.Api
             }
             throw new NonWipProjectException(projectId);
         }
+
+        public void UnloadProject(string projectId)
+        {
+            Project project = GetProjectEntity(projectId);
+            project.Unload();
+        }
     }
 }
