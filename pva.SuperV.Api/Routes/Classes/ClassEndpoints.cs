@@ -7,8 +7,8 @@ namespace pva.SuperV.Api.Routes.Classes
     {
         public static WebApplication MapClassEndpoints(this WebApplication app)
         {
-            RouteGroupBuilder projectsApi = app.MapGroup("/projects");
-            projectsApi.MapGet("/{projectId}/classes",
+            RouteGroupBuilder projectsApi = app.MapGroup("/classes");
+            projectsApi.MapGet("/{projectId}",
                 (IClassService classService, [Description("ID of project")] string projectId) =>
                     GetClasses.Handle(classService, projectId))
                 .WithName("GetClasses")
@@ -18,7 +18,7 @@ namespace pva.SuperV.Api.Routes.Classes
                 .Produces<List<ClassModel>>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound);
 
-            projectsApi.MapGet("/{projectId}/classes/{className}",
+            projectsApi.MapGet("/{projectId}/{className}",
                 (IClassService classService, [Description("ID of project")] string projectId, [Description("Name of class")] string className) =>
                     GetClass.Handle(classService, projectId, className))
                 .WithName("GetClass")

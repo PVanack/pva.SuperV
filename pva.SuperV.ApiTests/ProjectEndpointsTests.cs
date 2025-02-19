@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace pva.SuperV.ApiTests
 {
-    public class ProjectTests
+    public class ProjectEndpointsTests
     {
         public class ConsoleWriter(ITestOutputHelper output) : StringWriter
         {
@@ -20,7 +20,7 @@ namespace pva.SuperV.ApiTests
         private readonly HttpClient client;
         private IProjectService MockedProjectService { get => application.MockedProjectService!; }
 
-        public ProjectTests(ITestOutputHelper output)
+        public ProjectEndpointsTests(ITestOutputHelper output)
         {
             application = new();
             client = application.CreateClient();

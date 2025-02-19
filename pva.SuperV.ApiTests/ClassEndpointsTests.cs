@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace pva.SuperV.ApiTests
 {
-    public class ClassTests
+    public class ClassEndpointsTests
     {
         public class ConsoleWriter(ITestOutputHelper output) : StringWriter
         {
@@ -19,7 +19,7 @@ namespace pva.SuperV.ApiTests
         private readonly HttpClient client;
         private IClassService MockedClassService { get => application.MockedClassService!; }
 
-        public ClassTests(ITestOutputHelper output)
+        public ClassEndpointsTests(ITestOutputHelper output)
         {
             application = new();
             client = application.CreateClient();
@@ -35,7 +35,7 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedClasses);
 
             // WHEN
-            var response = await client.GetAsync("/projects/a-1/classes");
+            var response = await client.GetAsync("/classes/a-1");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
@@ -52,7 +52,7 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedClass);
 
             // WHEN
-            var response = await client.GetAsync($"/projects/a-1/classes/{expectedClass.Name}");
+            var response = await client.GetAsync($"/classes/a-1/{expectedClass.Name}");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
