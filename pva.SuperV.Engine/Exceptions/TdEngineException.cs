@@ -6,6 +6,7 @@ namespace pva.SuperV.Engine.Exceptions
     [Serializable]
     public class TdEngineException : SuperVException
     {
+        [ExcludeFromCodeCoverage]
         public TdEngineException(string operation, Exception innerException)
             : base($"TDengine {operation} failure: {innerException.Message}", innerException)
         {

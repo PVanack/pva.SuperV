@@ -24,7 +24,13 @@ namespace pva.SuperV.EngineTests
         public const string BaseClassName = "TestBaseClass";
         public const string BaseClassFieldName = "InheritedField";
         public const string HistoryRepositoryName = "HistoryRepository";
-
+        public static readonly Dictionary<int, string> AlarmStatesFormatterValues = new() {
+                { -2, "LowLow" },
+                { -1, "Low" },
+                { 0, "OK" },
+                { 1, "High" },
+                { 2, "HighHigh" }
+            };
         private static IContainer? tdEngineContainer;
 
         public static async Task<string> StartTDengineContainer()
@@ -94,13 +100,7 @@ namespace pva.SuperV.EngineTests
             _ = wipProject.AddClass(BaseClassName);
             wipProject.AddField(BaseClassName, new FieldDefinition<string>(BaseClassFieldName, "InheritedField"));
 
-            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, new Dictionary<int, string>{
-                { -2, "LowLow" },
-                { -1, "Low" },
-                { 0, "OK" },
-                { 1, "High" },
-                { 2, "HighHigh" }
-            });
+            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, AlarmStatesFormatterValues);
             wipProject.AddFieldFormatter(formatter);
             Class clazz = wipProject.AddClass(ClassName, BaseClassName);
             wipProject.AddField(ClassName, new FieldDefinition<int>(ValueFieldName, 10));

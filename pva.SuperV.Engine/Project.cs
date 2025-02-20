@@ -2,7 +2,6 @@
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
 using System.Collections.Concurrent;
-using System.Text;
 using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Engine
@@ -162,9 +161,9 @@ namespace pva.SuperV.Engine
 
         private static void AddProjectToCollection(Project project)
         {
-            if (Projects.TryGetValue(project.GetId(), out Project previousProject))
+            if (Projects.TryGetValue(project.GetId(), out Project? previousProject))
             {
-                previousProject.Unload();
+                previousProject?.Unload();
             }
             Projects[project.GetId()] = project;
         }

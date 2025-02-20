@@ -26,7 +26,7 @@ namespace pva.SuperV.ApiTests
             List<ProjectModel> result = _projectService.GetProjects();
 
             // Assert
-            result.ShouldContain(p 
+            result.ShouldContain(p
                 => p.Id == runnableProject.GetId() &&
                 p.Runnable &&
                 p.Name == ProjectHelpers.ProjectName);

@@ -9,8 +9,9 @@ namespace pva.SuperV.Api.Routes.Classes
         {
             RouteGroupBuilder projectsApi = app.MapGroup("/classes");
             projectsApi.MapGet("/{projectId}",
-                (IClassService classService, [Description("ID of project")] string projectId) =>
-                    GetClasses.Handle(classService, projectId))
+                (IClassService classService,
+                [Description("ID of project")] string projectId)
+                    => GetClasses.Handle(classService, projectId))
                 .WithName("GetClasses")
                 .WithDisplayName("GetClasses")
                 .WithSummary("Gets the list of available classes in a project")
@@ -19,8 +20,10 @@ namespace pva.SuperV.Api.Routes.Classes
                 .Produces<string>(StatusCodes.Status404NotFound);
 
             projectsApi.MapGet("/{projectId}/{className}",
-                (IClassService classService, [Description("ID of project")] string projectId, [Description("Name of class")] string className) =>
-                    GetClass.Handle(classService, projectId, className))
+                (IClassService classService,
+                [Description("ID of project")] string projectId,
+                [Description("Name of class")] string className)
+                    => GetClass.Handle(classService, projectId, className))
                 .WithName("GetClass")
                 .WithDisplayName("GeClass")
                 .WithSummary("Gets a class of a project by its name")

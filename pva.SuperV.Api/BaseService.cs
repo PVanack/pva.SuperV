@@ -7,13 +7,14 @@ namespace pva.SuperV.Api
     {
         protected Project GetProjectEntity(string projectId)
         {
-            if (Project.Projects.TryGetValue(projectId, out Project? project)) {
+            if (Project.Projects.TryGetValue(projectId, out Project? project))
+            {
                 return project;
             }
             throw new UnknownEntityException("Project", projectId);
-    }
+        }
 
-    protected Class GetClassEntity(string projectId, string className)
+        protected Class GetClassEntity(string projectId, string className)
         {
             Project project = GetProjectEntity(projectId);
             if (project.Classes.TryGetValue(className, out Class? clazz))

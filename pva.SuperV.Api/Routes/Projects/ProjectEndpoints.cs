@@ -19,8 +19,9 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<List<ProjectModel>>(StatusCodes.Status200OK);
 
             projectsApi.MapGet("/{projectId}",
-                (IProjectService projectService, [Description("ID of project")] string projectId) =>
-                    GetProject.Handle(projectService, projectId))
+                (IProjectService projectService,
+                [Description("ID of project")] string projectId)
+                    => GetProject.Handle(projectService, projectId))
                 .WithName("GetProject")
                 .WithDisplayName("GetProject")
                 .WithSummary("Gets a project by its ID")
@@ -29,8 +30,9 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status404NotFound);
 
             projectsApi.MapPost("/create",
-                (IProjectService projectService, [Description("Project creation request")][FromBody] CreateProjectRequest createProjectRequest) =>
-                    CreateProject.Handle(projectService, createProjectRequest))
+                (IProjectService projectService,
+                [Description("Project creation request")][FromBody] CreateProjectRequest createProjectRequest)
+                    => CreateProject.Handle(projectService, createProjectRequest))
                 .WithName("CreateProject")
                 .WithDisplayName("CreateProject")
                 .WithSummary("Creates a blank WIP project")
@@ -39,8 +41,9 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status404NotFound);
 
             projectsApi.MapPost("/build/{projectId}",
-                (IProjectService projectService, [Description("ID of project")] string projectId) =>
-                    BuildProject.Handle(projectService, projectId))
+                (IProjectService projectService,
+                [Description("ID of project")] string projectId)
+                    => BuildProject.Handle(projectService, projectId))
                 .WithName("BuildProject")
                 .WithSummary("Build a runnable project from a WIP project")
                 .WithDescription("Build a runnable project from a WIP project")
@@ -49,8 +52,9 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             projectsApi.MapDelete("/build/{projectId}",
-                (IProjectService projectService, [Description("ID of project")] string projectId) =>
-                    UnloadProject.Handle(projectService, projectId))
+                (IProjectService projectService,
+                [Description("ID of project")] string projectId)
+                    => UnloadProject.Handle(projectService, projectId))
                 .WithName("UnloadProject")
                 .WithSummary("Unloads a project")
                 .WithDescription("Unloads a project")

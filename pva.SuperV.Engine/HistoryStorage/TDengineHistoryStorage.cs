@@ -22,17 +22,17 @@ namespace pva.SuperV.Engine.HistoryStorage
         {
             { typeof(DateTime), "TIMESTAMP" },
             { typeof(short), "SMALLINT"},
-            {typeof(int), "INT" },
-            {typeof(long), "BIGINT" },
-            {typeof(uint), "INT UNSIGNED" },
-            {typeof(ulong), "BIGINT UNSIGNED" },
-            {typeof(float), "FLOAT" },
-            {typeof(double),  "DOUBLE" },
-            {typeof(bool), "BOOL" },
-            {typeof(string), "NCHAR" },
-            {typeof(sbyte),  "TINYINT" },
-            {typeof(byte), "TINYINT UNSIGNED" },
-            {typeof(ushort), "SMALLINT UNSIGNED" }
+            { typeof(int), "INT" },
+            { typeof(long), "BIGINT" },
+            { typeof(uint), "INT UNSIGNED" },
+            { typeof(ulong), "BIGINT UNSIGNED" },
+            { typeof(float), "FLOAT" },
+            { typeof(double),  "DOUBLE" },
+            { typeof(bool), "BOOL" },
+            { typeof(string), "NCHAR" },
+            { typeof(sbyte),  "TINYINT" },
+            { typeof(byte), "TINYINT UNSIGNED" },
+            { typeof(ushort), "SMALLINT UNSIGNED" }
             /*
             BINARY  byte[]
             JSON    byte[]

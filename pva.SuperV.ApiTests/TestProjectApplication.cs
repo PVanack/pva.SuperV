@@ -10,6 +10,7 @@ namespace pva.SuperV.ApiTests
     {
         public IProjectService? MockedProjectService { get; private set; }
         public IClassService? MockedClassService { get; private set; }
+        public IFieldFormatterService? MockFieldFormatterService { get; private set; }
 
         protected override IHost CreateHost(IHostBuilder builder)
         {
@@ -30,6 +31,14 @@ namespace pva.SuperV.ApiTests
                 }
                 MockedClassService = Substitute.For<IClassService>();
                 services.AddSingleton<IClassService>(provider => MockedClassService!);
+
+                item = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(IFieldFormatterService));
+                if (item is not null)
+                {
+                    services.Remove(item);
+                }
+                MockFieldFormatterService = Substitute.For<IFieldFormatterService>();
+                services.AddSingleton<IFieldFormatterService>(provider => MockFieldFormatterService!);
             });
             return base.CreateHost(builder);
         }
