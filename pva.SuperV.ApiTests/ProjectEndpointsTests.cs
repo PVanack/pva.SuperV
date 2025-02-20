@@ -2,7 +2,7 @@
 using NSubstitute.ExceptionExtensions;
 using pva.SuperV.Api;
 using pva.SuperV.Engine.Exceptions;
-using pva.SuperV.Model;
+using pva.SuperV.Model.Projects;
 using Shouldly;
 using System.Net.Http.Json;
 using Xunit.Abstractions;

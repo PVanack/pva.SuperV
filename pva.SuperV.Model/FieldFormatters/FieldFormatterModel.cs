@@ -1,8 +1,7 @@
-﻿using pva.SuperV.Api;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Text.Json.Serialization;
 
-namespace pva.SuperV.Model
+namespace pva.SuperV.Model.FieldFormatters
 {
     [Description("Field formatter")]
     [JsonDerivedType(typeof(EnumFormatterModel), typeDiscriminator: nameof(EnumFormatterModel))]

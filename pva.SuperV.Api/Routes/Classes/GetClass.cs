@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using pva.SuperV.Engine.Exceptions;
-using pva.SuperV.Model;
+using pva.SuperV.Model.Classes;
 
 namespace pva.SuperV.Api.Routes.Classes
 {

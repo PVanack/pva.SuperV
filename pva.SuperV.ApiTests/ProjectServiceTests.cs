@@ -2,7 +2,7 @@
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.EngineTests;
-using pva.SuperV.Model;
+using pva.SuperV.Model.Projects;
 using Shouldly;
 
 namespace pva.SuperV.ApiTests

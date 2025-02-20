@@ -1,6 +1,6 @@
 ﻿using NSubstitute;
 using pva.SuperV.Api;
-using pva.SuperV.Model;
+using pva.SuperV.Model.Classes;
 using Shouldly;
 using System.Net.Http.Json;
 using Xunit.Abstractions;

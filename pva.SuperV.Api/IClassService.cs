@@ -1,4 +1,4 @@
-﻿using pva.SuperV.Model;
+﻿using pva.SuperV.Model.Classes;
 
 namespace pva.SuperV.Api
 {

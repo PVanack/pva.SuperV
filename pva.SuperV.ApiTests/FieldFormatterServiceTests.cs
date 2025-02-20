@@ -1,7 +1,7 @@
 ﻿using pva.SuperV.Api;
 using pva.SuperV.Engine;
 using pva.SuperV.EngineTests;
-using pva.SuperV.Model;
+using pva.SuperV.Model.FieldFormatters;
 using Shouldly;
 
 namespace pva.SuperV.ApiTests

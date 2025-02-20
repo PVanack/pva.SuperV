@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace pva.SuperV.Model
+namespace pva.SuperV.Model.Projects
 {
     /// <summary>
     /// Project exchanged through the APIs.

@@ -1,8 +1,7 @@
 ﻿using pva.SuperV.Engine;
-using pva.SuperV.Model;
 using System.ComponentModel;
 
-namespace pva.SuperV.Api
+namespace pva.SuperV.Model.FieldFormatters
 {
     [Description("Enum Field formatter")]
     public record EnumFormatterModel(

@@ -1,7 +1,6 @@
-﻿using pva.SuperV.Api;
-using pva.SuperV.Engine;
+﻿using pva.SuperV.Engine;
 
-namespace pva.SuperV.Model
+namespace pva.SuperV.Model.FieldFormatters
 {
     public static class FieldFormatterMapper
     {

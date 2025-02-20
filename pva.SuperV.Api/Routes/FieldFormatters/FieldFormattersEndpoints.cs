@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using pva.SuperV.Model;
+using pva.SuperV.Model.FieldFormatters;
 using System.ComponentModel;
 
 namespace pva.SuperV.Api.Routes.FieldFormatters

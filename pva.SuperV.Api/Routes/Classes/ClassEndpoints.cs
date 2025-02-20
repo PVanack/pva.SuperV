@@ -1,4 +1,4 @@
-﻿using pva.SuperV.Model;
+﻿using pva.SuperV.Model.Classes;
 using System.ComponentModel;
 
 namespace pva.SuperV.Api.Routes.Classes

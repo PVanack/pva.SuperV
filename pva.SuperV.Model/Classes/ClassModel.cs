@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace pva.SuperV.Model
+namespace pva.SuperV.Model.Classes
 {
     [Description("Class")]
     public record ClassModel(
