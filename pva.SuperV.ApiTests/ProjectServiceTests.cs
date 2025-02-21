@@ -4,12 +4,37 @@ using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.EngineTests;
 using pva.SuperV.Model.Projects;
 using Shouldly;
+using System.Text;
 
 namespace pva.SuperV.ApiTests
 {
     [Collection("Project building")]
     public class ProjectServiceTests
     {
+        private const string projectDefinitionsJson = """
+                 {
+                    "Name": "TestProject",
+                    "Description": null,
+                    "Version": 11,
+                    "Classes": {
+                        "TestClass": {
+                            "Name": "TestClass",
+                            "BaseClassName": null,
+                            "FieldDefinitions": {
+                                "Value": {
+                                    "Type": "System.DateTime",
+                                    "Name": "Value",
+                                    "DefaultValue": "0001-01-01T00:00:00",
+                                    "ValuePostChangeProcessings": []
+                                }
+                            }
+                        }
+                    },
+                    "FieldFormatters": {},
+                    "HistoryStorageEngineConnectionString": null,
+                    "HistoryRepositories": {}
+                }
+                """;
         private readonly ProjectService _projectService;
         private readonly RunnableProject runnableProject;
 
@@ -89,6 +114,31 @@ namespace pva.SuperV.ApiTests
             // Act & Assert
             Assert.Throws<NonWipProjectException>(()
                 => _projectService.BuildProject(runProject.GetId()));
+        }
+
+        [Fact]
+        public void SaveProjectDefinitionToJson_ShouldReturnProjectDefinitionsAsJson()
+        {
+            // Act
+            var result = _projectService.GetProjectDefinitions(runnableProject.GetId());
+
+            // Assert
+            result.ShouldNotBeNull();
+         }
+
+
+        [Fact]
+        public void CreateProjectFromDefinitionJson_ShouldReturnRunnableProject()
+        {
+            // Act
+            using StreamReader definitionsStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(projectDefinitionsJson)));
+            var result = _projectService.CreateProjectFromJsonDefinition(definitionsStream);
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Id.ShouldNotBeNull();
+            result.Name.ShouldBe("TestProject");
+            result.Runnable.ShouldBeTrue();
         }
 
         [Fact]

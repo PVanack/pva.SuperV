@@ -13,7 +13,7 @@ namespace pva.SuperV.Api.Routes.Projects
             try
             {
                 using StreamReader reader = new(request.Body, System.Text.Encoding.UTF8);
-                ProjectModel projectModel = projectService.LoadProjectDefinitions(reader);
+                ProjectModel projectModel = projectService.CreateProjectFromJsonDefinition(reader);
                 return TypedResults.Created($"/projects/{projectModel.Id}", projectModel);
             }
             catch (UnknownEntityException e)

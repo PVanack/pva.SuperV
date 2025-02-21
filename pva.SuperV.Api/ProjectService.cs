@@ -41,9 +41,9 @@ namespace pva.SuperV.Api
             return ProjectStorage.GetProjectDefinition(project);
         }
 
-        public ProjectModel LoadProjectDefinitions(StreamReader streamReader)
+        public ProjectModel CreateProjectFromJsonDefinition(StreamReader streamReader)
         {
-            return ProjectMapper.ToDto(ProjectStorage.LoadProjectDefinition<Project>(streamReader));
+            return ProjectMapper.ToDto(ProjectStorage.CreateProjectFromJsonDefinition<RunnableProject>(streamReader));
         }
 
         public void UnloadProject(string projectId)

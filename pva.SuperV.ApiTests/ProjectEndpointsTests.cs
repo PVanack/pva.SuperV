@@ -181,7 +181,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ProjectModel expectedProject = new("TestProject", "TestProject", 11, null, true);
-            MockedProjectService.LoadProjectDefinitions(Arg.Any<StreamReader>())
+            MockedProjectService.CreateProjectFromJsonDefinition(Arg.Any<StreamReader>())
                 .Returns(expectedProject);
 
             // WHEN

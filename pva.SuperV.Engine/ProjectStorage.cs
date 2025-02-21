@@ -55,7 +55,7 @@ namespace pva.SuperV.Engine
         public static T LoadProjectDefinition<T>(string filename) where T : Project
         {
             using StreamReader fileReder = new(filename);
-            return LoadProjectDefinition<T>(fileReder);
+            return CreateProjectFromJsonDefinition<T>(fileReder);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace pva.SuperV.Engine
         /// <typeparam name="T"></typeparam>
         /// <param name="filename">The filename.</param>
         /// <returns></returns>
-        public static T LoadProjectDefinition<T>(StreamReader streamReader) where T : Project
+        public static T CreateProjectFromJsonDefinition<T>(StreamReader streamReader) where T : Project
         {
             string json = streamReader.ReadToEnd();
             T? projectInstance = JsonSerializer.Deserialize<T>(json);

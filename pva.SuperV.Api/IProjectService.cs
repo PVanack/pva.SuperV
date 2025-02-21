@@ -11,6 +11,6 @@ namespace pva.SuperV.Api
         ProjectModel BuildProject(string projectId);
         string GetProjectDefinitions(string projectId);
         void UnloadProject(string projectId);
-        ProjectModel LoadProjectDefinitions(StreamReader streamReader);
+        ProjectModel CreateProjectFromJsonDefinition(StreamReader streamReader);
     }
 }
