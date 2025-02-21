@@ -2,6 +2,7 @@
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.EngineTests;
+using pva.SuperV.Model.Classes;
 using Shouldly;
 
 namespace pva.SuperV.ApiTests
@@ -11,11 +12,13 @@ namespace pva.SuperV.ApiTests
     {
         private readonly ClassService _classService;
         private readonly RunnableProject runnableProject;
+        private readonly WipProject wipProject;
 
         public ClassServiceTests()
         {
             _classService = new();
             runnableProject = ProjectHelpers.CreateRunnableProject();
+            wipProject = ProjectHelpers.CreateWipProject(null);
         }
 
         [Fact]
@@ -47,6 +50,17 @@ namespace pva.SuperV.ApiTests
             // Act & Assert
             Assert.Throws<UnknownEntityException>(()
                 => _classService.GetClass(runnableProject.GetId(), "UnknownClass"));
+        }
+
+        [Fact]
+        public void CreateClassInWipProject_ShouldCreateClass()
+        {
+            ClassModel expectedClass = new("NewClass", null);
+            // Act & Assert
+            ClassModel createClassModel =_classService.CreateClass(wipProject.GetId(), expectedClass);
+
+            createClassModel.ShouldNotBeNull()
+                .ShouldBeEquivalentTo(expectedClass);
         }
     }
 }

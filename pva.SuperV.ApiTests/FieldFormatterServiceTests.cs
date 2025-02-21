@@ -80,7 +80,7 @@ namespace pva.SuperV.ApiTests
         public void DeleteWipProjectFieldFormatter_ShouldDeleteFieldFormatter()
         {
             // GIVEN
-            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{ProjectHelpers.AlarmStatesFormatterName}New", ProjectHelpers.AlarmStatesFormatterValues);
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{ProjectHelpers.AlarmStatesFormatterName}", ProjectHelpers.AlarmStatesFormatterValues);
             // WHEN
             _fieldFormatterService.DeleteFieldFormatter(wipProject.GetId(), expectedFieldFormatter.Name);
 

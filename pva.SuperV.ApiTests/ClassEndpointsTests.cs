@@ -1,4 +1,5 @@
 ﻿using NSubstitute;
+using NSubstitute.Core.Arguments;
 using pva.SuperV.Api;
 using pva.SuperV.Model.Classes;
 using Shouldly;
@@ -57,6 +58,23 @@ namespace pva.SuperV.ApiTests
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
             ClassModel? retrievedClass = await response.Content.ReadFromJsonAsync<ClassModel>();
             retrievedClass.ShouldBeEquivalentTo(expectedClass);
+        }
+
+        [Fact]
+        public async Task GivenWipProject_WhenCreatingProjectClass_ThenClassIsCreated()
+        {
+            // GIVEN
+            ClassModel expectedClass = new ClassModel("Class1", null);
+            MockedClassService.CreateClass("Project1", Arg.Any<ClassModel>())
+                .Returns(expectedClass);
+
+            // WHEN
+            var response = await client.PostAsJsonAsync("/classes/Project1/", expectedClass);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode. Created);
+            ClassModel? createdClass = await response.Content.ReadFromJsonAsync<ClassModel>();
+            createdClass.ShouldBeEquivalentTo(expectedClass);
         }
     }
 }

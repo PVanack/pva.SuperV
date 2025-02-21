@@ -1,4 +1,6 @@
-﻿using pva.SuperV.Model.Classes;
+﻿using Microsoft.AspNetCore.Mvc;
+using pva.SuperV.Engine;
+using pva.SuperV.Model.Classes;
 using System.ComponentModel;
 
 namespace pva.SuperV.Api.Routes.Classes
@@ -25,11 +27,24 @@ namespace pva.SuperV.Api.Routes.Classes
                 [Description("Name of class")] string className)
                     => GetClass.Handle(classService, projectId, className))
                 .WithName("GetClass")
-                .WithDisplayName("GeClass")
+                .WithDisplayName("GetClass")
                 .WithSummary("Gets a class of a project by its name")
                 .WithDescription("Gets a class of a project by its name")
                 .Produces<ClassModel>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound);
+
+            projectsApi.MapPost("/{projectId}",
+                (IClassService classService,
+                [Description("ID of project")] string projectId,
+                [Description("Class creation request")][FromBody] ClassModel createRequest)
+                    => CreateClass.Handle(classService, projectId, createRequest))
+                .WithName("CreateClass")
+                .WithDisplayName("CreateClass")
+                .WithSummary("Creates a class in a project")
+                .WithDescription("Creates a class in a project")
+                .Produces<ClassModel>(StatusCodes.Status201Created)
+                .Produces<string>(StatusCodes.Status404NotFound);
+
             return app;
         }
     }

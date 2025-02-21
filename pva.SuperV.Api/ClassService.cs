@@ -1,5 +1,6 @@
 ﻿using pva.SuperV.Engine;
 using pva.SuperV.Model.Classes;
+using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Api
 {
@@ -17,6 +18,17 @@ namespace pva.SuperV.Api
         {
             Class clazz = GetClassEntity(projectId, className);
             return ClassMapper.ToDto(clazz);
+        }
+
+        public ClassModel CreateClass(string projectId, ClassModel createRequest)
+        {
+            Project project = GetProjectEntity(projectId);
+            if (project is WipProject wipProject)
+            {
+                return ClassMapper.ToDto(wipProject.AddClass(createRequest!.Name, createRequest!.BaseclassName));
+            }
+            throw new NonWipProjectException(projectId);
+
         }
     }
 }

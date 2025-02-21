@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Model.Classes;
+﻿using pva.SuperV.Engine;
+using pva.SuperV.Model.Classes;
 
 namespace pva.SuperV.Api
 {
@@ -6,5 +7,6 @@ namespace pva.SuperV.Api
     {
         List<ClassModel> GetClasses(string projectId);
         ClassModel GetClass(string projectId, string className);
+        ClassModel CreateClass(string projectId, ClassModel createRequest);
     }
 }
