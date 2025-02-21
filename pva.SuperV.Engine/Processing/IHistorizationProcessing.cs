@@ -1,4 +1,6 @@
-﻿namespace pva.SuperV.Engine.Processing
+﻿using pva.SuperV.Engine.HistoryStorage;
+
+namespace pva.SuperV.Engine.Processing
 {
     /// <summary>
     /// Historization processing. Used only to filter in value change processings instances historizing values for upserting the time series in history storage.

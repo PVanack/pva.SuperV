@@ -40,7 +40,7 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<ProjectModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound);
 
-            projectsApi.MapPost("/build/{projectId}",
+            projectsApi.MapPost("/{projectId}/build",
                 (IProjectService projectService,
                 [Description("ID of project")] string projectId)
                     => BuildProject.Handle(projectService, projectId))
@@ -51,7 +51,30 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            projectsApi.MapDelete("/build/{projectId}",
+            projectsApi.MapGet("/{projectId}/definitions",
+                (IProjectService projectService,
+                [Description("ID of project")] string projectId)
+                    => SaveProjectDefinitions.Handle(projectService, projectId))
+                .WithName("SaveProjectDefinitions")
+                .WithSummary("Saves the definitions of project to a stream writer")
+                .WithDescription("Saves the definitions of project to a stream writer")
+                .Produces<string>(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
+
+            projectsApi.MapPost("/load-from-definitions",
+                (IProjectService projectService,
+                HttpRequest request)
+                    => LoadProjectFromDefinitions.Handle(projectService, request))
+                .WithName("LoadProjectFromDefinitions")
+                .WithSummary("Loads a project from a definition JSON")
+                .WithDescription("Loads a project from a definition JSON")
+                .Accepts<IFormFile>("multipart/form-data")
+                .Produces<ProjectModel>(StatusCodes.Status201Created)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
+
+            projectsApi.MapDelete("/{projectId}",
                 (IProjectService projectService,
                 [Description("ID of project")] string projectId)
                     => UnloadProject.Handle(projectService, projectId))

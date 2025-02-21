@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -8,10 +9,7 @@ using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.FieldFormatters;
 using pva.SuperV.Model.Projects;
 using Scalar.AspNetCore;
-using System.ComponentModel;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
 
 namespace pva.SuperV.Api
 {
@@ -43,7 +41,6 @@ namespace pva.SuperV.Api
             builder.Services
                 .ConfigureHttpJsonOptions(options =>
                 {
-                    options.SerializerOptions.TypeInfoResolver = new PolymorphicTypeResolver();
                     options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
 
                 })
@@ -51,6 +48,7 @@ namespace pva.SuperV.Api
                 {
                     logging.LoggingFields = HttpLoggingFields.All;
                 })
+                .AddProblemDetails()
                 .AddSingleton<IProjectService, ProjectService>()
                 .AddSingleton<IClassService, ClassService>()
                 .AddSingleton<IFieldFormatterService, FieldFormatterService>();
@@ -74,10 +72,22 @@ namespace pva.SuperV.Api
             var app = builder.Build();
 
             app.UseHttpLogging();
-            app.UseExceptionHandler(exceptionHandlerApp
-                => exceptionHandlerApp.Run(async context
-                    => await Results.Problem()
-                                .ExecuteAsync(context)));
+            app.UseExceptionHandler(exceptionHandlerApp =>
+            {
+                exceptionHandlerApp.Run(async httpContext =>
+                {
+                    var pds = httpContext.RequestServices.GetService<IProblemDetailsService>();
+                    if (pds == null
+                        || !await pds.TryWriteAsync(new() { HttpContext = httpContext }))
+                    {
+                        // Fallback behavior
+                        await httpContext.Response.WriteAsync("Fallback: An error occurred.");
+                    }
+                });
+            });
+            app.UseStatusCodePages();
+            app.UseDeveloperExceptionPage();
+
             app.MapOpenApi();
             app.MapScalarApiReference();
 
@@ -89,30 +99,6 @@ namespace pva.SuperV.Api
         }
     }
 
-    public class PolymorphicTypeResolver : DefaultJsonTypeInfoResolver
-    {
-        public override JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
-        {
-            JsonTypeInfo jsonTypeInfo = base.GetTypeInfo(type, options);
-
-            Type baseType = typeof(Component);
-            if (jsonTypeInfo.Type == baseType)
-            {
-                jsonTypeInfo.PolymorphismOptions = new JsonPolymorphismOptions
-                {
-                    TypeDiscriminatorPropertyName = "$type",
-                    IgnoreUnrecognizedTypeDiscriminators = true,
-                    UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FailSerialization,
-                    DerivedTypes =
-                    {
-                    new JsonDerivedType(typeof(EnumFormatterModel), nameof(EnumFormatterModel)),
-                }
-                };
-            }
-
-            return jsonTypeInfo;
-        }
-    }
     [JsonSerializable(typeof(List<ProjectModel>))]
     [JsonSerializable(typeof(ProjectModel))]
     [JsonSerializable(typeof(CreateProjectRequest))]

@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Model.Projects;
+﻿using pva.SuperV.Engine;
+using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Api
 {
@@ -8,6 +9,8 @@ namespace pva.SuperV.Api
         ProjectModel GetProject(string projectId);
         ProjectModel CreateProject(CreateProjectRequest createProjectRequest);
         ProjectModel BuildProject(string projectId);
+        string GetProjectDefinitions(string projectId);
         void UnloadProject(string projectId);
+        ProjectModel LoadProjectDefinitions(StreamReader streamReader);
     }
 }

@@ -1,17 +1,16 @@
 ﻿
 using Microsoft.AspNetCore.Http.HttpResults;
 using pva.SuperV.Engine.Exceptions;
-using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Api.Routes.Projects
 {
-    public static class GetProject
+    internal static class SaveProjectDefinitions
     {
-        public static Results<Ok<ProjectModel>, NotFound<string>, InternalServerError<string>> Handle(IProjectService projectService, string projectId)
+        internal static Results<ContentHttpResult, NotFound<string>, InternalServerError<string>> Handle(IProjectService projectService, string projectId)
         {
             try
             {
-                return TypedResults.Ok(projectService.GetProject(projectId));
+                return TypedResults.Text(projectService.GetProjectDefinitions(projectId));
             }
             catch (UnknownEntityException e)
             {

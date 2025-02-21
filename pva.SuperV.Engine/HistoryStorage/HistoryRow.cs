@@ -1,6 +1,6 @@
 ﻿using TDengine.Driver;
 
-namespace pva.SuperV.Engine
+namespace pva.SuperV.Engine.HistoryStorage
 {
     /// <summary>
     /// Row of history for a specific timestamp.

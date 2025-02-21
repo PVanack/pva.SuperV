@@ -1,6 +1,7 @@
 ﻿using pva.Helpers.Extensions;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.JsonConverters;
+using System.Text;
 using System.Text.Json;
 
 namespace pva.SuperV.Engine
@@ -32,8 +33,18 @@ namespace pva.SuperV.Engine
         public static void SaveProjectDefinition<T>(T project, string filename) where T : Project
         {
             using StreamWriter outputFile = new(filename);
-            outputFile.WriteLine(JsonSerializer.Serialize(project));
+            outputFile.Write(GetProjectDefinition(project));
         }
+
+        /// <summary>
+        /// Saves a project definition.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="project">The project.</param>
+        /// <param name="filename">The filename.</param>
+        public static string GetProjectDefinition<T>(T project) where T : Project
+            => JsonSerializer.Serialize(project);
+
 
         /// <summary>
         /// Loads a project definition from a file.
@@ -43,7 +54,19 @@ namespace pva.SuperV.Engine
         /// <returns></returns>
         public static T LoadProjectDefinition<T>(string filename) where T : Project
         {
-            string json = File.ReadAllText(filename);
+            using StreamReader fileReder = new(filename);
+            return LoadProjectDefinition<T>(fileReder);
+        }
+
+        /// <summary>
+        /// Loads a project definition from a file.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="filename">The filename.</param>
+        /// <returns></returns>
+        public static T LoadProjectDefinition<T>(StreamReader streamReader) where T : Project
+        {
+            string json = streamReader.ReadToEnd();
             T? projectInstance = JsonSerializer.Deserialize<T>(json);
             projectInstance!.HistoryStorageEngine = HistoryStorageEngineFactory.CreateHistoryStorageEngine(projectInstance.HistoryStorageEngineConnectionString);
             projectInstance.Classes.Values.ForEach(clazz =>
@@ -58,6 +81,7 @@ namespace pva.SuperV.Engine
                         postProcessing.BuildAfterDeserialization(projectInstance, clazz));
                 });
             });
+            Project.AddProjectToCollection(projectInstance);
             return projectInstance;
         }
 

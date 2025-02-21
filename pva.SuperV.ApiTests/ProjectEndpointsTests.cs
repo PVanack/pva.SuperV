@@ -1,10 +1,16 @@
-﻿using NSubstitute;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using pva.SuperV.Api;
+using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Projects;
 using Shouldly;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
+using System.Xml.Linq;
+using TDengine.Driver.Client.Websocket;
 using Xunit.Abstractions;
 
 namespace pva.SuperV.ApiTests
@@ -16,6 +22,30 @@ namespace pva.SuperV.ApiTests
             public override void WriteLine(string? value) => output.WriteLine(value);
         }
 
+        private const string projectDefinitionsJson = """
+                 {
+                    "Name": "TestProject",
+                    "Description": null,
+                    "Version": 11,
+                    "Classes": {
+                        "TestClass": {
+                            "Name": "TestClass",
+                            "BaseClassName": null,
+                            "FieldDefinitions": {
+                                "Value": {
+                                    "Type": "System.DateTime",
+                                    "Name": "Value",
+                                    "DefaultValue": "0001-01-01T00:00:00",
+                                    "ValuePostChangeProcessings": []
+                                }
+                            }
+                        }
+                    },
+                    "FieldFormatters": {},
+                    "HistoryStorageEngineConnectionString": null,
+                    "HistoryRepositories": {}
+                }
+                """;
         private readonly TestProjectApplication application;
         private readonly HttpClient client;
         private IProjectService MockedProjectService { get => application.MockedProjectService!; }
@@ -104,7 +134,7 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedRunnableProject);
 
             // WHEN
-            var response = await client.PostAsync("/projects/build/Project-Wip", null);
+            var response = await client.PostAsync("/projects/Project-Wip/build", null);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
@@ -120,7 +150,7 @@ namespace pva.SuperV.ApiTests
                 .Throws(new NonWipProjectException("Project"));
 
             // WHEN
-            var response = await client.PostAsync("/projects/build/Project", null);
+            var response = await client.PostAsync("/projects/Project/build", null);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -128,6 +158,45 @@ namespace pva.SuperV.ApiTests
             message.ShouldBe("\"Project with ID Project is not a WIP project\"");
         }
 
+        [Fact]
+        public async Task GivenProject_WhenSavingProjectDefinitions_ThenJsonDefinitionsAreReturned()
+        {
+            // GIVEN
+            ProjectModel projectToSave = new("Project", "Project", 1, "Description", true);
+            MockedProjectService.GetProjectDefinitions(projectToSave.Id)
+                .Returns(projectDefinitionsJson);
+            // WHEN
+            var response = await client.GetAsync($"/projects/{projectToSave.Id}/definitions");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            string definitionsJson = await response.Content.ReadAsStringAsync();
+            definitionsJson.ShouldNotBeNull()
+                .ShouldBe(projectDefinitionsJson);
+        }
+
+
+        [Fact]
+        public async Task GivenProjectDefinitionJson_WhenCreatingProjectFromDefinitions_ThenProjectIsCreated()
+        {
+            // GIVEN
+            ProjectModel expectedProject = new("TestProject", "TestProject", 11, null, true);
+            MockedProjectService.LoadProjectDefinitions(Arg.Any<StreamReader>())
+                .Returns(expectedProject);
+
+            // WHEN
+            using var form = new MultipartFormDataContent();
+            var jsonContent = new ByteArrayContent(Encoding.UTF8.GetBytes(projectDefinitionsJson));
+            jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("text/plain");
+            form.Add(jsonContent);
+
+            var response = await client.PostAsync("/projects/load-from-definitions", form);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
+            var createdProject = await response.Content.ReadFromJsonAsync<ProjectModel>();
+            createdProject.ShouldBeEquivalentTo(expectedProject);
+        }
 
         [Fact]
         public async Task GivenProject_WhenUnloadingProject_ThenProjectIsUnloaded()
@@ -135,7 +204,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
 
             // WHEN
-            var response = await client.DeleteAsync("/projects/build/Project-Wip");
+            var response = await client.DeleteAsync("/projects/Project-Wip");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);

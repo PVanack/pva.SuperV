@@ -35,6 +35,17 @@ namespace pva.SuperV.Api
             throw new NonWipProjectException(projectId);
         }
 
+        public string GetProjectDefinitions(string projectId)
+        {
+            Project project = GetProjectEntity(projectId);
+            return ProjectStorage.GetProjectDefinition(project);
+        }
+
+        public ProjectModel LoadProjectDefinitions(StreamReader streamReader)
+        {
+            return ProjectMapper.ToDto(ProjectStorage.LoadProjectDefinition<Project>(streamReader));
+        }
+
         public void UnloadProject(string projectId)
         {
             Project project = GetProjectEntity(projectId);

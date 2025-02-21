@@ -1,5 +1,6 @@
 ﻿using pva.Helpers.Extensions;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
 
 namespace pva.SuperV.Engine
@@ -14,6 +15,13 @@ namespace pva.SuperV.Engine
         /// To be loaded instances when the project is converted to a <see cref="RunnableProject"/> through <see cref="Project.Build(WipProject)"/>.
         /// </summary>
         public Dictionary<string, Instance> ToLoadInstances { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WipProject"/> class. Only used for deserialization.
+        /// </summary>
+        public WipProject()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WipProject"/> class.

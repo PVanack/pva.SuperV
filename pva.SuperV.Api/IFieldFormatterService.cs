@@ -7,6 +7,6 @@ namespace pva.SuperV.Api
         List<string> GetFieldFormatterTypes();
         List<FieldFormatterModel> GetFieldFormatters(string projectId);
         FieldFormatterModel GetFieldFormatter(string projectId, string fieldFormatterName);
-        FieldFormatterModel CreateFieldFormatter(string projectId, FieldFormatterModel fieldFormatter);
+        FieldFormatterModel CreateFieldFormatter(string projectId, FieldFormatterModel fieldFormatterModel);
     }
 }

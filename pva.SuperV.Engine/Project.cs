@@ -159,7 +159,7 @@ namespace pva.SuperV.Engine
             return wipProject;
         }
 
-        private static void AddProjectToCollection(Project project)
+        internal static void AddProjectToCollection(Project project)
         {
             if (Projects.TryGetValue(project.GetId(), out Project? previousProject))
             {

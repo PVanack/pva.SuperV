@@ -6,12 +6,16 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
 {
     public static class GetFieldFormatter
     {
-        internal static Results<Ok<FieldFormatterModel>, InternalServerError<string>> Handle(IFieldFormatterService fieldFormatterService, string projectId, string fieldFormatterName)
+        internal static Results<Ok<FieldFormatterModel>, NotFound<string>, InternalServerError<string>> Handle(IFieldFormatterService fieldFormatterService, string projectId, string fieldFormatterName)
         {
             try
             {
                 FieldFormatterModel fieldFormatter = fieldFormatterService.GetFieldFormatter(projectId, fieldFormatterName);
                 return TypedResults.Ok<FieldFormatterModel>(fieldFormatter);
+            }
+            catch (UnknownEntityException e)
+            {
+                return TypedResults.NotFound(e.Message);
             }
             catch (SuperVException e)
             {

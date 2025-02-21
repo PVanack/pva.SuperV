@@ -1,10 +1,8 @@
-﻿
-using pva.SuperV.Engine.Exceptions;
-using pva.SuperV.Engine.HistoryStorage;
+﻿using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.Processing;
 using System.Text.Json.Serialization;
 
-namespace pva.SuperV.Engine
+namespace pva.SuperV.Engine.HistoryStorage
 {
     /// <summary>
     /// History repository to store history of instance values.

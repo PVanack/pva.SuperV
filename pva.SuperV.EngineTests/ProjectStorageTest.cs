@@ -15,19 +15,19 @@ namespace pva.SuperV.EngineTests
             // GIVEN
 
             // WHEN
-            RunnableProject project = ProjectHelpers.CreateRunnableProject(NullHistoryStorageEngine.Prefix);
-            var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
-            string filename = ProjectStorage.SaveProjectDefinition(project);
-
-            RunnableProject? loadedProject = ProjectStorage.LoadProjectDefinition<RunnableProject>(filename);
+            RunnableProject expectedProject = ProjectHelpers.CreateRunnableProject(NullHistoryStorageEngine.Prefix);
+            var instance = expectedProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            string filename = ProjectStorage.SaveProjectDefinition(expectedProject);
+            // Tweak to keep the expected project and avoid it being unloaded!
+            WipProject? loadedProject = ProjectStorage.LoadProjectDefinition<WipProject>(filename);
 
             // THEN
-            CheckProjectProperties(project, loadedProject!);
-            CheckProjectClasses(project, loadedProject!);
-            CheckProjectFieldFormatters(project, loadedProject!);
+            CheckProjectProperties(expectedProject, loadedProject!);
+            CheckProjectClasses(expectedProject, loadedProject!);
+            CheckProjectFieldFormatters(expectedProject, loadedProject!);
 
             instance!.Dispose();
-            ProjectHelpers.DeleteProject(project);
+            ProjectHelpers.DeleteProject(expectedProject);
         }
 
         [Fact]
@@ -62,17 +62,17 @@ namespace pva.SuperV.EngineTests
             ProjectHelpers.DeleteProject(project);
         }
 
-        private static void CheckProjectProperties(RunnableProject project, RunnableProject loadedProject)
+        private static void CheckProjectProperties(Project expectedProject, Project loadedProject)
         {
             loadedProject.ShouldNotBeNull();
-            loadedProject.Name.ShouldBe(project.Name);
-            loadedProject.Description.ShouldBe(project.Description);
-            loadedProject.Classes.Count.ShouldBe(project.Classes.Count);
+            loadedProject.Name.ShouldBe(expectedProject.Name);
+            loadedProject.Description.ShouldBe(expectedProject.Description);
+            loadedProject.Classes.Count.ShouldBe(expectedProject.Classes.Count);
         }
 
-        private static void CheckProjectClasses(RunnableProject project, RunnableProject loadedProject)
+        private static void CheckProjectClasses(Project expectedProject, Project loadedProject)
         {
-            project.Classes
+            expectedProject.Classes
                 .ForEach((k, v) =>
                 {
                     loadedProject.Classes.ShouldContainKey(k);
@@ -83,9 +83,9 @@ namespace pva.SuperV.EngineTests
                 });
         }
 
-        private static void CheckClassFieldDefinitions(Class savedClass, Class loadedClass)
+        private static void CheckClassFieldDefinitions(Class expectedClass, Class loadedClass)
         {
-            savedClass.FieldDefinitions.ForEach((k, v) =>
+            expectedClass.FieldDefinitions.ForEach((k, v) =>
             {
                 loadedClass.FieldDefinitions.ShouldContainKey(k);
                 IFieldDefinition? loadedFieldDefinition = loadedClass.FieldDefinitions.GetValueOrDefault(k);
@@ -107,9 +107,9 @@ namespace pva.SuperV.EngineTests
             });
         }
 
-        private static void CheckProjectFieldFormatters(RunnableProject project, RunnableProject loadedProject)
+        private static void CheckProjectFieldFormatters(Project expectedProject, Project loadedProject)
         {
-            project.FieldFormatters
+            expectedProject.FieldFormatters
                 .ForEach((k, v) =>
                 {
                     loadedProject.FieldFormatters.ShouldContainKey(k);

@@ -6,6 +6,7 @@ namespace pva.SuperV.Engine.Exceptions
     [Serializable]
     public class UnknownHistoryStorageEngineException : SuperVException
     {
+        [ExcludeFromCodeCoverage]
         public UnknownHistoryStorageEngineException(string? connectionString)
             : base($"Unknown history storage engine connection string: {connectionString}")
         {

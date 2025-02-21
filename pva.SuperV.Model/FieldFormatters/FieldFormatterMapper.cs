@@ -21,10 +21,5 @@ namespace pva.SuperV.Model.FieldFormatters
             }
             return null;
         }
-
-        public static FieldFormatter ToEnumFormatter(EnumFormatterModel? enumFormatterModel)
-        {
-            return new EnumFormatter(enumFormatterModel!.Name, enumFormatterModel!.Values);
-        }
     }
 }
