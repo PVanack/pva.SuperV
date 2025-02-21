@@ -15,19 +15,6 @@ namespace pva.SuperV.Api
 {
     public class WebApiProgram
     {
-        public class GlobalExceptionHandler : IExceptionFilter
-        {
-            public void OnException(ExceptionContext context)
-            {
-                // Log the exception or perform additional actions
-                context.Result = new ObjectResult($"Global error: {context.Exception.Message}")
-                {
-                    StatusCode = 500,
-                };
-                context.ExceptionHandled = true;
-            }
-        }
-
         public static void Main(string[] args)
         {
             new WebApiProgram()
