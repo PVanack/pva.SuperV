@@ -50,6 +50,17 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
                 .WithDescription("Creates a field formatter of project")
                 .Produces<FieldFormatterModel>(StatusCodes.Status201Created);
 
+            projectsApi.MapDelete("/{projectId}/{fieldFormatterName}",
+                (IFieldFormatterService fieldFormatterService,
+                [Description("ID of project")] string projectId,
+                [Description("Name of field formatter")] string fieldFormatterName)
+                    => DeleteFieldFormatter.Handle(fieldFormatterService, projectId, fieldFormatterName))
+                .WithName("DeleteFieldFormatter")
+                .WithDisplayName("DeleteFieldFormatter")
+                .WithSummary("Deletes a field formatter of project")
+                .WithDescription("Deletes a field formatter of project")
+                .Produces(StatusCodes.Status200OK);
+
             return app;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using pva.SuperV.Api;
 using pva.SuperV.Engine;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.EngineTests;
 using pva.SuperV.Model.FieldFormatters;
 using Shouldly;
@@ -73,6 +74,41 @@ namespace pva.SuperV.ApiTests
             fieldFormatter
                 .ShouldNotBeNull()
                 .ShouldBeEquivalentTo(expectedFieldFormatter);
+        }
+
+        [Fact]
+        public void DeleteWipProjectFieldFormatter_ShouldDeleteFieldFormatter()
+        {
+            // GIVEN
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{ProjectHelpers.AlarmStatesFormatterName}New", ProjectHelpers.AlarmStatesFormatterValues);
+            // WHEN
+            _fieldFormatterService.DeleteFieldFormatter(wipProject.GetId(), expectedFieldFormatter.Name);
+
+            // THEN
+            Assert.Throws<UnknownEntityException>(() => wipProject.GetFormatter(expectedFieldFormatter.Name));
+        }
+
+        [Fact]
+        public void DeleteRunnableProjectFieldFormatter_ShouldThrowException()
+        {
+            // GIVEN
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{ProjectHelpers.AlarmStatesFormatterName}New", ProjectHelpers.AlarmStatesFormatterValues);
+            // WHEN
+            Assert.Throws<NonWipProjectException>(() =>
+                _fieldFormatterService.DeleteFieldFormatter(runnableProject.GetId(), expectedFieldFormatter.Name));
+
+            // THEN
+        }
+
+        [Fact]
+        public void DeleteNonExistentFieldFormatter_ShouldThrowException()
+        {
+            // GIVEN
+            // WHEN
+            Assert.Throws<UnknownEntityException>(() =>
+                _fieldFormatterService.DeleteFieldFormatter(wipProject.GetId(), "UnknownFormatter"));
+
+            // THEN
         }
     }
 }

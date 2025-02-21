@@ -161,9 +161,10 @@ namespace pva.SuperV.Engine
         /// Removes a field formatter.
         /// </summary>
         /// <param name="fieldFormatterName">Name of the field formatter.</param>
-        public void RemoveFieldFormatter(string fieldFormatterName)
+        public bool RemoveFieldFormatter(string fieldFormatterName)
         {
-            FieldFormatters.Remove(fieldFormatterName);
+            // TODO: Remove field formatter from field Definitions referencing it.
+            return FieldFormatters.Remove(fieldFormatterName);
         }
 
         /// <summary>

@@ -49,5 +49,19 @@ namespace pva.SuperV.Api
             throw new NonWipProjectException(projectId);
         }
 
+        public void DeleteFieldFormatter(string projectId, string fieldFormatterName)
+        {
+            Project project = GetProjectEntity(projectId);
+            if (project is WipProject wipProject)
+            {
+                if (wipProject.RemoveFieldFormatter(fieldFormatterName))
+                {
+                    return;
+                }
+                throw new UnknownEntityException("Field formatter", fieldFormatterName);
+            }
+            throw new NonWipProjectException(projectId);
+        }
+
     }
 }

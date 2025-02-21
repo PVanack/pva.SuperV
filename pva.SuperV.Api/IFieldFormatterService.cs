@@ -8,5 +8,6 @@ namespace pva.SuperV.Api
         List<FieldFormatterModel> GetFieldFormatters(string projectId);
         FieldFormatterModel GetFieldFormatter(string projectId, string fieldFormatterName);
         FieldFormatterModel CreateFieldFormatter(string projectId, FieldFormatterModel fieldFormatterModel);
+        void DeleteFieldFormatter(string projectId, string fieldFormatterName);
     }
 }

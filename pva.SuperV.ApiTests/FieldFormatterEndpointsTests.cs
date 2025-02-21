@@ -77,7 +77,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task GivenWipProject_WhenCreaingEnumFieldFormatter_ThenFieldFormatterIsCreated()
+        public async Task GivenWipProject_WhenCreatingEnumFieldFormatter_ThenFieldFormatterIsCreated()
         {
             // GIVEN
             Dictionary<int, string> values = new() { { 0, "Off" }, { 1, "ON" } };
@@ -93,6 +93,18 @@ namespace pva.SuperV.ApiTests
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
             FieldFormatterModel? fieldFormatter = await response.Content.ReadFromJsonAsync<FieldFormatterModel>();
             fieldFormatter.ShouldBeEquivalentTo(expectedFieldFormatter);
+        }
+
+        [Fact]
+        public async Task GivenWipProject_WhenRemovingEnumFieldFormatter_ThenFieldFormatterIsRemoved()
+        {
+            // GIVEN
+
+            // WHEN
+            var response = await client.DeleteAsync($"/field-formatters/Project/FieldFormatter");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
         }
     }
 }
