@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using pva.SuperV.Engine;
 using pva.SuperV.Model.Projects;
 using System.ComponentModel;
 
@@ -40,8 +41,8 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<ProjectModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound);
 
-            projectsApi.MapPost("/{projectId}/build", async
-                (IProjectService projectService,
+            projectsApi.MapPost("/{projectId}/build",
+                async (IProjectService projectService,
                 [Description("ID of project")] string projectId)
                     => await BuildProject.Handle(projectService, projectId))
                 .WithName("BuildProject")
@@ -51,8 +52,8 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            projectsApi.MapGet("/{projectId}/definitions", async
-                (IProjectService projectService,
+            projectsApi.MapGet("/{projectId}/definitions",
+                 async (IProjectService projectService,
                 [Description("ID of project")] string projectId)
                     => await SaveProjectDefinitions.Handle(projectService, projectId))
                 .WithName("SaveProjectDefinitions")
@@ -64,13 +65,37 @@ namespace pva.SuperV.Api.Routes.Projects
 
             projectsApi.MapPost("/load-from-definitions",
                 (IProjectService projectService,
-                HttpRequest request)
+                [Description("HTTP reaqest")] HttpRequest request)
                     => LoadProjectFromDefinitions.Handle(projectService, request))
                 .WithName("LoadProjectFromDefinitions")
                 .WithSummary("Loads a project from a definition JSON")
                 .WithDescription("Loads a project from a definition JSON")
                 .Accepts<IFormFile>("multipart/form-data")
                 .Produces<ProjectModel>(StatusCodes.Status201Created)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
+
+            projectsApi.MapGet("/{projectId}/instances",
+                 async (IProjectService projectService,
+                [Description("ID of project")] string projectId)
+                    => await SaveProjectInstances.Handle(projectService, projectId))
+                .WithName("SaveProjectInstances")
+                .WithSummary("Saves the instances of project to a stream writer")
+                .WithDescription("Saves the instances of project to a stream writer")
+                .Produces<string>(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
+
+            projectsApi.MapPost("\"/{projectId}/instances",
+                (IProjectService projectService,
+                [Description("ID of project")] string projectId,
+                [Description(" HTTP Request")] HttpRequest request)
+                    => LoadProjectInstances.Handle(projectService, projectId, request))
+                .WithName("LoadProjectInstances")
+                .WithSummary("Loads project instances from a JSON file")
+                .WithDescription("Loads project instances from a JSON file")
+                .Accepts<IFormFile>("multipart/form-data")
+                .Produces<ProjectModel>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 

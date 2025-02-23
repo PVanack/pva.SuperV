@@ -47,6 +47,28 @@ namespace pva.SuperV.Api
             return ProjectMapper.ToDto(ProjectStorage.CreateProjectFromJsonDefinition<RunnableProject>(streamReader));
         }
 
+        public async Task<StreamReader?> GetProjectInstancesAsync(string projectId)
+        {
+            Project project = GetProjectEntity(projectId);
+            if (project is RunnableProject runnableProject)
+            {
+                StreamWriter stream = new(new MemoryStream());
+                return await ProjectStorage.StreamProjectInstances(runnableProject, stream);
+            }
+            throw new NonRunnableProjectException(projectId);
+        }
+
+        public void LoadProjectInstances(string projectId, StreamReader reader)
+        {
+            Project project = GetProjectEntity(projectId);
+            if (project is RunnableProject runnableProject)
+            {
+                ProjectStorage.LoadProjectInstances(runnableProject, reader);
+                return;
+            }
+            throw new NonRunnableProjectException(projectId);
+        }
+
         public void UnloadProject(string projectId)
         {
             Project project = GetProjectEntity(projectId);

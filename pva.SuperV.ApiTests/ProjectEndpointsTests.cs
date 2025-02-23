@@ -23,7 +23,7 @@ namespace pva.SuperV.ApiTests
         }
 
         private const string projectDefinitionsJson = """
-                 {
+                {
                     "Name": "TestProject",
                     "Description": null,
                     "Version": 11,
@@ -46,8 +46,26 @@ namespace pva.SuperV.ApiTests
                     "HistoryRepositories": {}
                 }
                 """;
+        private const string projectInstancesJson = """
+            {
+                "Instance": {
+                    "Class": "TestClass",
+                    "Name": "Instance",
+                    "Fields": [
+                        {
+                            "Type": "System.Int32",
+                            "Name": "Value",
+                            "Value": 12,
+                            "Timestamp": "2025-02-22T12:52:19.19Z",
+                            "Quality": "Good"
+                        }
+                    ]
+                }
+            }
+            """;
         private readonly TestProjectApplication application;
         private readonly HttpClient client;
+
         private IProjectService MockedProjectService { get => application.MockedProjectService!; }
 
         public ProjectEndpointsTests(ITestOutputHelper output)
@@ -168,7 +186,7 @@ namespace pva.SuperV.ApiTests
             await stream.FlushAsync();
             stream.BaseStream.Position = 0;
             MockedProjectService.GetProjectDefinitionsAsync(projectToSave.Id)
-                .Returns(Task.FromResult(new StreamReader(stream.BaseStream)));
+                .Returns(Task.FromResult<StreamReader?>(new StreamReader(stream.BaseStream)));
             // WHEN
             var response = await client.GetAsync($"/projects/{projectToSave.Id}/definitions");
 
@@ -179,7 +197,6 @@ namespace pva.SuperV.ApiTests
                 .ShouldBe(projectDefinitionsJson);
             await stream.DisposeAsync();
         }
-
 
         [Fact]
         public async Task GivenProjectDefinitionJson_WhenCreatingProjectFromDefinitions_ThenProjectIsCreated()
@@ -201,6 +218,28 @@ namespace pva.SuperV.ApiTests
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
             var createdProject = await response.Content.ReadFromJsonAsync<ProjectModel>();
             createdProject.ShouldBeEquivalentTo(expectedProject);
+        }
+
+        [Fact]
+        public async Task GivenRunnableProject_WhenSavingProjectInstances_ThenJsonInstancesAreReturned()
+        {
+            // GIVEN
+            ProjectModel projectToSave = new("Project", "Project", 1, "Description", true);
+            StreamWriter stream = new(new MemoryStream());
+            await stream.WriteAsync(projectInstancesJson);
+            await stream.FlushAsync();
+            stream.BaseStream.Position = 0;
+            MockedProjectService.GetProjectInstancesAsync(projectToSave.Id)
+                .Returns(Task.FromResult<StreamReader?>(new StreamReader(stream.BaseStream)));
+            // WHEN
+            var response = await client.GetAsync($"/projects/{projectToSave.Id}/instances");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            string definitionsJson = await response.Content.ReadAsStringAsync();
+            definitionsJson.ShouldNotBeNull()
+                .ShouldBe(projectInstancesJson);
+            await stream.DisposeAsync();
         }
 
         [Fact]

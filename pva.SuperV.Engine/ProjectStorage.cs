@@ -149,7 +149,14 @@ namespace pva.SuperV.Engine
         {
             InstanceJsonConverter.LoadedProject = project;
             // Instances are already added to project as deserialization uses project.CreateInstance()
-            JsonSerializer.Deserialize<Dictionary<string, IInstance>>(File.ReadAllText(filename));
+            LoadProjectInstances(project, new StreamReader(filename));
+        }
+
+        public static void LoadProjectInstances(RunnableProject project, StreamReader streamReader)
+        {
+            InstanceJsonConverter.LoadedProject = project;
+            // Instances are already added to project as deserialization uses project.CreateInstance()
+            JsonSerializer.Deserialize<Dictionary<string, IInstance>>(streamReader.ReadToEnd());
         }
     }
 }

@@ -35,6 +35,23 @@ namespace pva.SuperV.ApiTests
                     "HistoryRepositories": {}
                 }
                 """;
+        private const string projectInstancesJson = """
+                {
+                    "Instance": {
+                        "Class": "TestClass",
+                        "Name": "Instance",
+                        "Fields": [
+                            {
+                                "Type": "System.Int32",
+                                "Name": "Value",
+                                "Value": 12,
+                                "Timestamp": "2025-02-22T12:52:19.19Z",
+                                "Quality": "Good"
+                            }
+                        ]
+                    }
+                }
+                """;
         private readonly ProjectService _projectService;
         private readonly RunnableProject runnableProject;
 
@@ -126,7 +143,7 @@ namespace pva.SuperV.ApiTests
             result.ShouldNotBeNull();
             string projectDefinitions = await result.ReadToEndAsync();
             projectDefinitions.ShouldNotBeNullOrEmpty();
-         }
+        }
 
 
         [Fact]
@@ -141,6 +158,29 @@ namespace pva.SuperV.ApiTests
             result.Id.ShouldNotBeNull();
             result.Name.ShouldBe("TestProject");
             result.Runnable.ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task SaveProjectInstancesToJson_ShouldReturnProjectInstancesAsJsonAsync()
+        {
+            // Act
+            var result = await _projectService.GetProjectInstancesAsync(runnableProject.GetId());
+
+            // Assert
+            result.ShouldNotBeNull();
+            string projectInstances = await result.ReadToEndAsync();
+            projectInstances.ShouldNotBeNullOrEmpty();
+        }
+
+
+        [Fact]
+        public void LoadProjectInstancesFromJson_ShouldCreateInstances()
+        {
+            // Act
+            using StreamReader definitionsStream = new(new MemoryStream(Encoding.UTF8.GetBytes(projectInstancesJson)));
+            _projectService.LoadProjectInstances(runnableProject.GetId(), definitionsStream);
+
+            // Assert
         }
 
         [Fact]

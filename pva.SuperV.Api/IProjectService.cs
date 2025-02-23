@@ -12,5 +12,7 @@ namespace pva.SuperV.Api
         Task<StreamReader?> GetProjectDefinitionsAsync(string projectId);
         void UnloadProject(string projectId);
         ProjectModel CreateProjectFromJsonDefinition(StreamReader streamReader);
+        Task<StreamReader?> GetProjectInstancesAsync(string projectId);
+        void LoadProjectInstances(string projectId, StreamReader reader);
     }
 }
