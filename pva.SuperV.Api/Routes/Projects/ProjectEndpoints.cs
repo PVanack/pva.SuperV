@@ -11,8 +11,8 @@ namespace pva.SuperV.Api.Routes.Projects
         {
             RouteGroupBuilder projectsApi = app.MapGroup("/projects");
             projectsApi.MapGet("/",
-                (IProjectService projectService) =>
-                    GetProjects.Handle(projectService))
+                (IProjectService projectService)
+                    => GetProjects.Handle(projectService))
                 .WithName("GetProjects")
                 .WithDisplayName("GetProjects")
                 .WithSummary("Gets the list of available projects")
@@ -43,7 +43,7 @@ namespace pva.SuperV.Api.Routes.Projects
 
             projectsApi.MapPost("/{projectId}/build",
                 async (IProjectService projectService,
-                [Description("ID of project")] string projectId)
+                        [Description("ID of project")] string projectId)
                     => await BuildProject.Handle(projectService, projectId))
                 .WithName("BuildProject")
                 .WithSummary("Build a runnable project from a WIP project")
@@ -53,8 +53,8 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             projectsApi.MapGet("/{projectId}/definitions",
-                 async (IProjectService projectService,
-                [Description("ID of project")] string projectId)
+                async (IProjectService projectService,
+                        [Description("ID of project")] string projectId)
                     => await SaveProjectDefinitions.Handle(projectService, projectId))
                 .WithName("SaveProjectDefinitions")
                 .WithSummary("Saves the definitions of project to a stream writer")
@@ -77,7 +77,7 @@ namespace pva.SuperV.Api.Routes.Projects
 
             projectsApi.MapGet("/{projectId}/instances",
                  async (IProjectService projectService,
-                [Description("ID of project")] string projectId)
+                        [Description("ID of project")] string projectId)
                     => await SaveProjectInstances.Handle(projectService, projectId))
                 .WithName("SaveProjectInstances")
                 .WithSummary("Saves the instances of project to a stream writer")

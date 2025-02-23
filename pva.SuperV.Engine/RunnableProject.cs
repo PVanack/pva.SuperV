@@ -154,7 +154,7 @@ namespace pva.SuperV.Engine
             string classFullName = $"{Name}.V{Version}.{clazz.Name}";
             Type? classType = _projectAssemblyLoader?.Assemblies.First()?.GetType(classFullName!);
 
-            Instance? instance = CreateInstance(classType);
+            Instance? instance = CreateInstance(classType!);
             if (instance is null)
             {
                 return instance;

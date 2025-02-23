@@ -96,7 +96,7 @@ namespace pva.SuperV.Engine
             if (Classes.Remove(className, out var clazz))
             {
                 ToLoadInstances.Values
-                    .Where(instance => instance.Class.Name.Equals(clazz.Name))
+                    .Where(instance => instance.Class.Name!.Equals(clazz.Name))
                     .ToList()
                     .ForEach(instance => ToLoadInstances.Remove(instance.Name));
             }

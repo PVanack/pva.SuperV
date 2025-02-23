@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using pva.SuperV.Api.Routes.Classes;
 using pva.SuperV.Api.Routes.FieldFormatters;
+using pva.SuperV.Api.Routes.HistoryRepositories;
 using pva.SuperV.Api.Routes.Projects;
 using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.FieldFormatters;
+using pva.SuperV.Model.HistoryRepositories;
 using pva.SuperV.Model.Projects;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
@@ -38,7 +40,8 @@ namespace pva.SuperV.Api
                 .AddProblemDetails()
                 .AddSingleton<IProjectService, ProjectService>()
                 .AddSingleton<IClassService, ClassService>()
-                .AddSingleton<IFieldFormatterService, FieldFormatterService>();
+                .AddSingleton<IFieldFormatterService, FieldFormatterService>()
+                .AddSingleton<IHistoryRepositoryService, HistoryRepositoryService>();
             builder.Services.AddOpenApi(options =>
             {
                 options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -80,7 +83,8 @@ namespace pva.SuperV.Api
 
             app.MapProjectEndpoints()
                .MapClassEndpoints()
-               .MapFieldFormatterEndpoints();
+               .MapFieldFormatterEndpoints()
+               .MapHistoryRepositoryEndpoints();
 
             app.Run();
         }
@@ -94,6 +98,8 @@ namespace pva.SuperV.Api
     [JsonSerializable(typeof(List<FieldFormatterModel>))]
     [JsonSerializable(typeof(List<ClassModel>))]
     [JsonSerializable(typeof(ClassModel))]
+    [JsonSerializable(typeof(List<HistoryRepositoryModel>))]
+    [JsonSerializable(typeof(HistoryRepositoryModel))]
     internal partial class AppJsonSerializerContext : JsonSerializerContext
     {
     }
