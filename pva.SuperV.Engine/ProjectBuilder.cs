@@ -17,43 +17,41 @@ namespace pva.SuperV.Engine
         /// <param name="wipProject">The WIP project.</param>
         /// <returns>a <see cref="RunnableProject"/></returns>
         /// <exception cref="pva.SuperV.Engine.Exceptions.ProjectBuildException"></exception>
-        public static RunnableProject Build(WipProject wipProject)
+        public static async Task<RunnableProject> BuildAsync(WipProject wipProject)
         {
             RunnableProject runnableProject = wipProject.CloneAsRunnable();
             wipProject.Dispose();
-            Build(runnableProject);
+            await BuildAsync(runnableProject);
             return runnableProject;
         }
 
-        public static void Build(RunnableProject runnableProject)
+        public static async ValueTask BuildAsync(RunnableProject runnableProject)
         {
             if (!File.Exists(runnableProject.GetAssemblyFileName()))
             {
                 string projectAssemblyFileName = runnableProject.GetAssemblyFileName();
                 string projectCode = runnableProject.GetCode();
                 var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(projectCode), $"{runnableProject.Name}-V{runnableProject.Version}");
-                using (MemoryStream dllStream = new())
-                using (MemoryStream pdbStream = new())
-                using (Stream win32ResStream = compilation.CreateDefaultWin32Resources(
+                using MemoryStream dllStream = new();
+                using MemoryStream pdbStream = new();
+                using Stream win32ResStream = compilation.CreateDefaultWin32Resources(
                     versionResource: true, // Important!
                     noManifest: false,
                     manifestContents: null,
-                    iconInIcoFormat: null))
-                {
-                    var compilationResult = compilation.Emit(
-                        peStream: dllStream,
-                        pdbStream: pdbStream,
-                        win32Resources: win32ResStream);
+                    iconInIcoFormat: null);
+                var compilationResult = compilation.Emit(
+                    peStream: dllStream,
+                    pdbStream: pdbStream,
+                    win32Resources: win32ResStream);
 
-                    if (!compilationResult.Success)
-                    {
-                        StringBuilder diagnostics = new();
-                        compilationResult.Diagnostics
-                            .ForEach(diagnostic => diagnostics.AppendLine(diagnostic.ToString()));
-                        throw new ProjectBuildException(runnableProject, diagnostics.ToString());
-                    }
-                    File.WriteAllBytes(projectAssemblyFileName, dllStream.ToArray());
+                if (!compilationResult.Success)
+                {
+                    StringBuilder diagnostics = new();
+                    compilationResult.Diagnostics
+                        .ForEach(diagnostic => diagnostics.AppendLine(diagnostic.ToString()));
+                    throw new ProjectBuildException(runnableProject, diagnostics.ToString());
                 }
+                await File.WriteAllBytesAsync(projectAssemblyFileName, dllStream.ToArray());
             }
         }
 

@@ -130,7 +130,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ProjectModel expectedRunnableProject = new("Project-Wip", "a", 2, "description", true);
-            MockedProjectService.BuildProject("Project-Wip")
+            MockedProjectService.BuildProjectAsync("Project-Wip")
                 .Returns(expectedRunnableProject);
 
             // WHEN
@@ -146,7 +146,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenRunnableProject_WhenBuildigProjectFromIt_ThenExceptionIsThrown()
         {
             // GIVEN
-            MockedProjectService.BuildProject("Project")
+            MockedProjectService.BuildProjectAsync("Project")
                 .Throws(new NonWipProjectException("Project"));
 
             // WHEN
@@ -163,8 +163,12 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ProjectModel projectToSave = new("Project", "Project", 1, "Description", true);
-            MockedProjectService.GetProjectDefinitions(projectToSave.Id)
-                .Returns(projectDefinitionsJson);
+            StreamWriter stream = new(new MemoryStream());
+            await stream.WriteAsync(projectDefinitionsJson);
+            await stream.FlushAsync();
+            stream.BaseStream.Position = 0;
+            MockedProjectService.GetProjectDefinitionsAsync(projectToSave.Id)
+                .Returns(Task.FromResult(new StreamReader(stream.BaseStream)));
             // WHEN
             var response = await client.GetAsync($"/projects/{projectToSave.Id}/definitions");
 
@@ -173,6 +177,7 @@ namespace pva.SuperV.ApiTests
             string definitionsJson = await response.Content.ReadAsStringAsync();
             definitionsJson.ShouldNotBeNull()
                 .ShouldBe(projectDefinitionsJson);
+            await stream.DisposeAsync();
         }
 
 
@@ -187,7 +192,7 @@ namespace pva.SuperV.ApiTests
             // WHEN
             using var form = new MultipartFormDataContent();
             var jsonContent = new ByteArrayContent(Encoding.UTF8.GetBytes(projectDefinitionsJson));
-            jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("text/plain");
+            jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
             form.Add(jsonContent);
 
             var response = await client.PostAsync("/projects/load-from-definitions", form);

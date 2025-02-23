@@ -54,7 +54,7 @@ namespace pva.SuperV.EngineTests
             await tdEngineContainer.StartAsync()
               .ConfigureAwait(false);
             // Wait to make sure the processes in container are ready and running.
-            Thread.Sleep(100);
+            Thread.Sleep(200);
             return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
         }
 
@@ -75,7 +75,7 @@ namespace pva.SuperV.EngineTests
         public static RunnableProject CreateRunnableProject(string? historyEngineType)
         {
             WipProject wipProject = CreateWipProject(historyEngineType);
-            RunnableProject project = Project.Build(wipProject);
+            RunnableProject project = Task.Run(async () => await Project.BuildAsync(wipProject)).Result;
             return project;
         }
 

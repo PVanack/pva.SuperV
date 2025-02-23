@@ -71,7 +71,7 @@ namespace pva.SuperV.Engine
 
         private void SetupProjectAssemblyLoader()
         {
-            ProjectBuilder.Build(this);
+            Task.Run(async () => await ProjectBuilder.BuildAsync(this)).Wait();
             _projectAssemblyLoader ??= new();
             _projectAssemblyLoader.LoadFromAssemblyPath(GetAssemblyFileName());
         }
@@ -259,7 +259,7 @@ namespace pva.SuperV.Engine
         }
 
         /// <summary>
-        /// Gets the C# code for generating the project's assembly with <see cref="Project.Build(WipProject)"/>.
+        /// Gets the C# code for generating the project's assembly with <see cref="Project.BuildAsync(WipProject)"/>.
         /// </summary>
         /// <returns>C# code.</returns>
         public string GetCode()

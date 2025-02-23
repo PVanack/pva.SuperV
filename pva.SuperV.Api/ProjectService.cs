@@ -24,21 +24,22 @@ namespace pva.SuperV.Api
             return ProjectMapper.ToDto(wipProject);
         }
 
-        public ProjectModel BuildProject(string projectId)
+        public async Task<ProjectModel> BuildProjectAsync(string projectId)
         {
             Project project = GetProjectEntity(projectId);
             if (project is WipProject wipProject)
             {
-                RunnableProject runnableProject = Project.Build(wipProject);
+                RunnableProject runnableProject = await Project.BuildAsync(wipProject);
                 return ProjectMapper.ToDto(runnableProject);
             }
             throw new NonWipProjectException(projectId);
         }
 
-        public string GetProjectDefinitions(string projectId)
+        public async Task<StreamReader?> GetProjectDefinitionsAsync(string projectId)
         {
             Project project = GetProjectEntity(projectId);
-            return ProjectStorage.GetProjectDefinition(project);
+            StreamWriter stream = new(new MemoryStream());
+            return await ProjectStorage.StreamProjectDefinition(project, stream);
         }
 
         public ProjectModel CreateProjectFromJsonDefinition(StreamReader streamReader)

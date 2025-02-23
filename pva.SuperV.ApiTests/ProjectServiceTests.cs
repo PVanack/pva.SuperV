@@ -93,11 +93,11 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void BuildProject_ShouldReturnRunnableProject_WhenProjectIsWip()
+        public async Task BuildProject_ShouldReturnRunnableProject_WhenProjectIsWip()
         {
             // Act
             WipProject wipProject = Project.CreateProject("WipProject1");
-            var result = _projectService.BuildProject(wipProject.GetId());
+            var result = await _projectService.BuildProjectAsync(wipProject.GetId());
 
             // Assert
             result.ShouldNotBeNull();
@@ -107,23 +107,25 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void BuildProject_ShouldThrowNonWipProjectException_WhenProjectIsNotWip()
+        public async Task BuildProject_ShouldThrowNonWipProjectException_WhenProjectIsNotWip()
         {
             WipProject wipProject = Project.CreateProject("WipProject2");
-            RunnableProject runProject = Project.Build(wipProject);
+            RunnableProject runProject = await Project.BuildAsync(wipProject);
             // Act & Assert
-            Assert.Throws<NonWipProjectException>(()
-                => _projectService.BuildProject(runProject.GetId()));
+            await Assert.ThrowsAsync<NonWipProjectException>(async ()
+                => await _projectService.BuildProjectAsync(runProject.GetId()));
         }
 
         [Fact]
-        public void SaveProjectDefinitionToJson_ShouldReturnProjectDefinitionsAsJson()
+        public async Task SaveProjectDefinitionToJson_ShouldReturnProjectDefinitionsAsJsonAsync()
         {
             // Act
-            var result = _projectService.GetProjectDefinitions(runnableProject.GetId());
+            var result = await _projectService.GetProjectDefinitionsAsync(runnableProject.GetId());
 
             // Assert
             result.ShouldNotBeNull();
+            string projectDefinitions = await result.ReadToEndAsync();
+            projectDefinitions.ShouldNotBeNullOrEmpty();
          }
 
 
@@ -131,7 +133,7 @@ namespace pva.SuperV.ApiTests
         public void CreateProjectFromDefinitionJson_ShouldReturnRunnableProject()
         {
             // Act
-            using StreamReader definitionsStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(projectDefinitionsJson)));
+            using StreamReader definitionsStream = new(new MemoryStream(Encoding.UTF8.GetBytes(projectDefinitionsJson)));
             var result = _projectService.CreateProjectFromJsonDefinition(definitionsStream);
 
             // Assert

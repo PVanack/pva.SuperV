@@ -114,7 +114,7 @@ namespace pva.SuperV.EngineTests
         }
 
         [Fact]
-        public void GivenWipProjectWithClassInstance_WhenBuildingRunnableProject_ThenInstancesAreRecreated()
+        public async Task GivenWipProjectWithClassInstance_WhenBuildingRunnableProject_ThenInstancesAreRecreated()
         {
             // GIVEN
             RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
@@ -124,7 +124,7 @@ namespace pva.SuperV.EngineTests
             WipProject wipProject = Project.CreateProject(runnableProject);
 
             // WHEN
-            runnableProject = Project.Build(wipProject);
+            runnableProject = await Project.BuildAsync(wipProject);
 
             // THEN
             runnableProject.Instances.Count.ShouldBe(1);

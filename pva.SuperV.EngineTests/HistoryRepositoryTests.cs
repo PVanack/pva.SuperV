@@ -61,14 +61,14 @@ public class HistoryRepositoryTests
         // WHEN
         HistoryRepository historyRepository = new(ProjectHelpers.HistoryRepositoryName);
         wipProject.AddHistoryRepository(historyRepository);
-        _ = Project.Build(wipProject);
+        _ = Project.BuildAsync(wipProject);
 
         // THEN
         historyStorageEngineMock.Received(1).UpsertRepository(wipProject.Name!, historyRepository);
     }
 
     [Fact]
-    public void GivenProjectWithoutHistoryStorageEngine_WhenAddingRepositoryAndBuldingProject_ThenExceptionIsThrown()
+    public async Task GivenProjectWithoutHistoryStorageEngine_WhenAddingRepositoryAndBuldingProject_ThenExceptionIsThrown()
     {
         // GIVEN
         WipProject wipProject = Project.CreateProject(ProjectHelpers.ProjectName);
@@ -76,6 +76,6 @@ public class HistoryRepositoryTests
         // WHEN/THEN
         HistoryRepository historyRepository = new(ProjectHelpers.HistoryRepositoryName);
         wipProject.AddHistoryRepository(historyRepository);
-        Assert.Throws<NoHistoryStorageEngineException>(() => _ = Project.Build(wipProject));
+        await Assert.ThrowsAsync<NoHistoryStorageEngineException>(async () => _ = await Project.BuildAsync(wipProject));
     }
 }

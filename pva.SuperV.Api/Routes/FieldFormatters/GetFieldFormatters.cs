@@ -15,7 +15,7 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError<string>(e.Message);
+                return TypedResults.InternalServerError(e.Message);
             }
         }
 

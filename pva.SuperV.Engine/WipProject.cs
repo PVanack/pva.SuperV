@@ -12,7 +12,7 @@ namespace pva.SuperV.Engine
     public class WipProject : Project
     {
         /// <summary>
-        /// To be loaded instances when the project is converted to a <see cref="RunnableProject"/> through <see cref="Project.Build(WipProject)"/>.
+        /// To be loaded instances when the project is converted to a <see cref="RunnableProject"/> through <see cref="Project.BuildAsync(WipProject)"/>.
         /// </summary>
         public Dictionary<string, Instance> ToLoadInstances { get; } = new(StringComparer.OrdinalIgnoreCase);
 

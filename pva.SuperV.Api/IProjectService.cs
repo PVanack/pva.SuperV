@@ -8,8 +8,8 @@ namespace pva.SuperV.Api
         List<ProjectModel> GetProjects();
         ProjectModel GetProject(string projectId);
         ProjectModel CreateProject(CreateProjectRequest createProjectRequest);
-        ProjectModel BuildProject(string projectId);
-        string GetProjectDefinitions(string projectId);
+        Task<ProjectModel> BuildProjectAsync(string projectId);
+        Task<StreamReader?> GetProjectDefinitionsAsync(string projectId);
         void UnloadProject(string projectId);
         ProjectModel CreateProjectFromJsonDefinition(StreamReader streamReader);
     }

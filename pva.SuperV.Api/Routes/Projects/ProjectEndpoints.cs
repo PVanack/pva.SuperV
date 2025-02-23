@@ -40,10 +40,10 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<ProjectModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound);
 
-            projectsApi.MapPost("/{projectId}/build",
+            projectsApi.MapPost("/{projectId}/build", async
                 (IProjectService projectService,
                 [Description("ID of project")] string projectId)
-                    => BuildProject.Handle(projectService, projectId))
+                    => await BuildProject.Handle(projectService, projectId))
                 .WithName("BuildProject")
                 .WithSummary("Build a runnable project from a WIP project")
                 .WithDescription("Build a runnable project from a WIP project")
@@ -51,10 +51,10 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            projectsApi.MapGet("/{projectId}/definitions",
+            projectsApi.MapGet("/{projectId}/definitions", async
                 (IProjectService projectService,
                 [Description("ID of project")] string projectId)
-                    => SaveProjectDefinitions.Handle(projectService, projectId))
+                    => await SaveProjectDefinitions.Handle(projectService, projectId))
                 .WithName("SaveProjectDefinitions")
                 .WithSummary("Saves the definitions of project to a stream writer")
                 .WithDescription("Saves the definitions of project to a stream writer")

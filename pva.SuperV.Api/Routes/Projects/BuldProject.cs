@@ -6,11 +6,11 @@ namespace pva.SuperV.Api.Routes.Projects
 {
     public static class BuildProject
     {
-        internal static Results<Ok<ProjectModel>, NotFound<string>, BadRequest<string>, InternalServerError<string>> Handle(IProjectService projectService, string projectId)
+        internal static async Task<Results<Ok<ProjectModel>, NotFound<string>, BadRequest<string>, InternalServerError<string>>> Handle(IProjectService projectService, string projectId)
         {
             try
             {
-                ProjectModel createdProject = projectService.BuildProject(projectId);
+                ProjectModel createdProject = await projectService.BuildProjectAsync(projectId);
                 return TypedResults.Ok<ProjectModel>(createdProject);
             }
             catch (UnknownEntityException e)
@@ -23,7 +23,7 @@ namespace pva.SuperV.Api.Routes.Projects
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError<string>(e.Message);
+                return TypedResults.InternalServerError(e.Message);
             }
         }
     }

@@ -173,9 +173,9 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="wipProject">The WIP project.</param>
         /// <returns>a <see cref="RunnableProject"/></returns>
-        public static RunnableProject Build(WipProject wipProject)
+        public static async Task<RunnableProject> BuildAsync(WipProject wipProject)
         {
-            RunnableProject runnableProject = ProjectBuilder.Build(wipProject);
+            RunnableProject runnableProject = await ProjectBuilder.BuildAsync(wipProject);
             AddProjectToCollection(runnableProject);
             return runnableProject;
         }

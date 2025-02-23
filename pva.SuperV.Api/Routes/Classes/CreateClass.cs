@@ -20,7 +20,7 @@ namespace pva.SuperV.Api.Routes.Classes
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError<string>(e.Message);
+                return TypedResults.InternalServerError(e.Message);
             }
         }
     }
