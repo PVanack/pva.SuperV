@@ -19,7 +19,7 @@ namespace pva.SuperV.Api
 
         public ProjectModel CreateProject(CreateProjectRequest createProjectRequest)
         {
-            WipProject wipProject = Project.CreateProject(createProjectRequest.Name);
+            WipProject wipProject = Project.CreateProject(createProjectRequest.Name, createProjectRequest.HistoryStorageConnectionString);
             wipProject.Description = createProjectRequest.Description;
             return ProjectMapper.ToDto(wipProject);
         }
