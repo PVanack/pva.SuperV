@@ -6,12 +6,12 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
 {
     internal static class DeleteFieldFormatter
     {
-        internal static Results<Ok, NotFound<string>, BadRequest<string>, InternalServerError<string>> Handle(IFieldFormatterService fieldFormatterService, string projectId, string fieldFormatterName)
+        internal static Results<NoContent, NotFound<string>, BadRequest<string>, InternalServerError<string>> Handle(IFieldFormatterService fieldFormatterService, string projectId, string fieldFormatterName)
         {
             try
             {
                 fieldFormatterService.DeleteFieldFormatter(projectId, fieldFormatterName);
-                return TypedResults.Ok();
+                return TypedResults.NoContent();
             }
             catch (UnknownEntityException e)
             {

@@ -59,5 +59,16 @@ namespace pva.SuperV.ApiTests
             result.ShouldBeEquivalentTo(expectedHistoryRepository);
             wipProject.HistoryRepositories.ShouldContainKey(expectedHistoryRepository.Name);
         }
+
+        [Fact]
+        public void DeleteHistoryRepository_ShouldDeleteHistoryRepository()
+        {
+            HistoryRepositoryModel expectedHistoryRepository = new($"{ProjectHelpers.HistoryRepositoryName}");
+            // Act
+            historyRepositoryService.DeleteHistoryRepository(wipProject.GetId(), expectedHistoryRepository.Name);
+
+            // Assert
+            wipProject.HistoryRepositories.ShouldNotContainKey(expectedHistoryRepository.Name);
+        }
     }
 }

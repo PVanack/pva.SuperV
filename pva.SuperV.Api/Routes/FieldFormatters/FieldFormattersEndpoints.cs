@@ -59,7 +59,9 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
                 .WithDisplayName("DeleteFieldFormatter")
                 .WithSummary("Deletes a field formatter of project")
                 .WithDescription("Deletes a field formatter of project")
-                .Produces(StatusCodes.Status200OK);
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             return app;
         }

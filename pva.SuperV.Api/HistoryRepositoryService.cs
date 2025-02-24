@@ -35,5 +35,17 @@ namespace pva.SuperV.Api
             }
             throw new NonWipProjectException(projectId);
         }
+
+        public void DeleteHistoryRepository(string projectId, string historyRepositoryName)
+        {
+            Project project = GetProjectEntity(projectId);
+            if (project is WipProject wipProject)
+            {
+                wipProject.RemoveHistoryRepository(historyRepositoryName);
+                return;
+            }
+            throw new NonWipProjectException(projectId);
+        }
+
     }
 }

@@ -104,7 +104,7 @@ namespace pva.SuperV.ApiTests
             var response = await client.DeleteAsync($"/field-formatters/Project/FieldFormatter");
 
             // THEN
-            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
         }
     }
 }

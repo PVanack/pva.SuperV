@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿
+using Microsoft.AspNetCore.Http.HttpResults;
 using pva.SuperV.Engine.Exceptions;
 
-namespace pva.SuperV.Api.Routes.Projects
+namespace pva.SuperV.Api.Routes.HistoryRepositories
 {
-    public static class UnloadProject
+    internal static class DeleteHistoryRepository
     {
-        internal static Results<NoContent, NotFound<string>, BadRequest<string>, InternalServerError<string>> Handle(IProjectService projectService, string projectId)
+        internal static Results<NoContent, NotFound<string>, BadRequest<string>, InternalServerError<string>> Handle(IHistoryRepositoryService historyRepositoryService, string projectId, string historyRepositoryName)
         {
             try
             {
-                projectService.UnloadProject(projectId);
+                historyRepositoryService.DeleteHistoryRepository(projectId, historyRepositoryName);
                 return TypedResults.NoContent();
             }
             catch (UnknownEntityException e)

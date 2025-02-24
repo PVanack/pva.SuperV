@@ -78,5 +78,18 @@ namespace pva.SuperV.ApiTests
             HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>();
             historyRepository.ShouldBeEquivalentTo(expectedHistoryRepository);
         }
+
+        [Fact]
+        public async Task GivenProjectWithHistoryRepository_WhenDeletingHistoryRepository_ThenHistoryRepositoryIsDeleted()
+        {
+            // GIVEN
+            HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
+
+            // WHEN
+            var result = await client.DeleteAsync($"/history-repositories/Project/{expectedHistoryRepository.Name}");
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
+        }
     }
 }
