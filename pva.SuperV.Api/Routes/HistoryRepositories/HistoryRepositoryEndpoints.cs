@@ -31,6 +31,19 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
                 .WithDescription("Gets a project's history repository by its name")
                 .Produces<HistoryRepositoryModel>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound);
+
+            projectsApi.MapPost("/{projectId}",
+                (IHistoryRepositoryService historyRepositoryService,
+                [Description("ID of project")] string projectId,
+                [Description("History repository create request")] HistoryRepositoryModel historyRepositoryCreateRequest)
+                    => CreateHistoryRepository.Handle(historyRepositoryService, projectId, historyRepositoryCreateRequest))
+                .WithName("CreateHistoryRepository")
+                .WithDisplayName("CreateHistoryRepository")
+                .WithSummary("Creates a project's history repository")
+                .WithDescription("Creates a project's history repository")
+                .Produces<HistoryRepositoryModel>(StatusCodes.Status201Created)
+                .Produces<string>(StatusCodes.Status404NotFound);
+
             return app;
         }
     }

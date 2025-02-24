@@ -23,5 +23,17 @@ namespace pva.SuperV.Api
             }
             throw new UnknownEntityException("History repository", historyRepositoryName);
         }
+
+        public HistoryRepositoryModel CreateHistoryRepository(string projectId, HistoryRepositoryModel historyRepositoryCreateRequest)
+        {
+            Project project = GetProjectEntity(projectId);
+            if (project is WipProject wipProject)
+            {
+                HistoryRepository historyRepository = new(historyRepositoryCreateRequest.Name);
+                wipProject.AddHistoryRepository(historyRepository);
+                return HistoryRepositoryMapper.ToDto(historyRepository);
+            }
+            throw new NonWipProjectException(projectId);
+        }
     }
 }

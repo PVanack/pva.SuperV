@@ -61,5 +61,22 @@ namespace pva.SuperV.ApiTests
             HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>();
             historyRepository.ShouldBeEquivalentTo(expectedHistoryRepository);
         }
+
+        [Fact]
+        public async Task GivenProject_WhenCreatingHistoryRepository_ThenHistoryRepositoryIsCreated()
+        {
+            // GIVEN
+            HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
+            MockHistoryRepositoryService.CreateHistoryRepository("Project", expectedHistoryRepository)
+                .Returns(expectedHistoryRepository);
+
+            // WHEN
+            var result = await client.PostAsJsonAsync($"/history-repositories/Project", expectedHistoryRepository);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
+            HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>();
+            historyRepository.ShouldBeEquivalentTo(expectedHistoryRepository);
+        }
     }
 }

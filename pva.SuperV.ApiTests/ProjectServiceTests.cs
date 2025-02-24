@@ -39,7 +39,7 @@ namespace pva.SuperV.ApiTests
                 {
                     "Instance": {
                         "Class": "TestClass",
-                        "Name": "Instance",
+                        "Name": "InstanceToCreate",
                         "Fields": [
                             {
                                 "Type": "System.Int32",
@@ -181,6 +181,7 @@ namespace pva.SuperV.ApiTests
             _projectService.LoadProjectInstances(runnableProject.GetId(), definitionsStream);
 
             // Assert
+            runnableProject.Instances.ShouldContainKey("InstanceToCreate");
         }
 
         [Fact]

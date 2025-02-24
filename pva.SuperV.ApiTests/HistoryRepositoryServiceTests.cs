@@ -1,5 +1,6 @@
 ﻿using pva.SuperV.Api;
 using pva.SuperV.Engine;
+using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.EngineTests;
 using pva.SuperV.Model.HistoryRepositories;
 using pva.SuperV.Model.Projects;
@@ -17,11 +18,13 @@ namespace pva.SuperV.ApiTests
     {
         private readonly HistoryRepositoryService historyRepositoryService;
         private readonly RunnableProject runnableProject;
+        private readonly WipProject wipProject;
 
         public HistoryRepositoryServiceTests()
         {
             historyRepositoryService = new();
             runnableProject = ProjectHelpers.CreateRunnableProject();
+            wipProject = ProjectHelpers.CreateWipProject(NullHistoryStorageEngine.Prefix);
         }
 
         [Fact]
@@ -32,7 +35,6 @@ namespace pva.SuperV.ApiTests
 
             // Assert
             result.Count.ShouldBe(runnableProject.HistoryRepositories.Count);
-
         }
 
         [Fact]
@@ -44,7 +46,18 @@ namespace pva.SuperV.ApiTests
 
             // Assert
             result.ShouldBeEquivalentTo(expectedHistoryRepository);
+        }
 
+        [Fact]
+        public void CreateHistoryRepository_ShouldCreateHistoryRepository()
+        {
+            HistoryRepositoryModel expectedHistoryRepository = new($"{ProjectHelpers.HistoryRepositoryName}Test");
+            // Act
+            HistoryRepositoryModel result = historyRepositoryService.CreateHistoryRepository(wipProject.GetId(), expectedHistoryRepository);
+
+            // Assert
+            result.ShouldBeEquivalentTo(expectedHistoryRepository);
+            wipProject.HistoryRepositories.ShouldContainKey(expectedHistoryRepository.Name);
         }
     }
 }
