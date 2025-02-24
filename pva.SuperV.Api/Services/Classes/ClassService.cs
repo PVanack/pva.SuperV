@@ -3,7 +3,7 @@ using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.Projects;
 
-namespace pva.SuperV.Api
+namespace pva.SuperV.Api.Services.Classes
 {
     public class ClassService : BaseService, IClassService
     {

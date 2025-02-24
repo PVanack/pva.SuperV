@@ -18,4 +18,9 @@
     <ProjectReference Include="..\pva.SuperV.Model\pva.SuperV.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Routes\FieldDefinitions\" />
+    <Folder Include="Services\FieldDefinitions\" />
+  </ItemGroup>
+
 </Project>

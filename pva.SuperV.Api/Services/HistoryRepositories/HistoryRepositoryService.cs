@@ -3,7 +3,7 @@ using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Model.HistoryRepositories;
 
-namespace pva.SuperV.Api
+namespace pva.SuperV.Api.Services.HistoryRepositories
 {
     public class HistoryRepositoryService: BaseService, IHistoryRepositoryService
     {

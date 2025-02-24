@@ -1,5 +1,5 @@
 ﻿using NSubstitute;
-using pva.SuperV.Api;
+using pva.SuperV.Api.Services.FieldFormatters;
 using pva.SuperV.Model.FieldFormatters;
 using Shouldly;
 using System.Net.Http.Json;

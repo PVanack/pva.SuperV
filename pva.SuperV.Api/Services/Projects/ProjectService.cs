@@ -1,7 +1,7 @@
 ﻿using pva.SuperV.Engine;
 using pva.SuperV.Model.Projects;
 
-namespace pva.SuperV.Api
+namespace pva.SuperV.Api.Services.Projects
 {
     public class ProjectService : BaseService, IProjectService
     {

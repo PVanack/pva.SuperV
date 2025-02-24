@@ -1,7 +1,7 @@
 ﻿using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 
-namespace pva.SuperV.Api
+namespace pva.SuperV.Api.Services
 {
     public abstract class BaseService
     {

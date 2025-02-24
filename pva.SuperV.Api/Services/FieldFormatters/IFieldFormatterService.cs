@@ -1,6 +1,6 @@
 ﻿using pva.SuperV.Model.FieldFormatters;
 
-namespace pva.SuperV.Api
+namespace pva.SuperV.Api.Services.FieldFormatters
 {
     public interface IFieldFormatterService
     {

@@ -1,6 +1,6 @@
 ﻿using NSubstitute;
 using NSubstitute.Core.Arguments;
-using pva.SuperV.Api;
+using pva.SuperV.Api.Services.Classes;
 using pva.SuperV.Model.Classes;
 using Shouldly;
 using System.Net.Http.Json;

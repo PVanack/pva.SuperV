@@ -1,5 +1,5 @@
 ﻿using NSubstitute;
-using pva.SuperV.Api;
+using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Model.HistoryRepositories;
 using Shouldly;
 using System;

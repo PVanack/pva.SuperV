@@ -1,7 +1,7 @@
 ﻿using pva.SuperV.Engine;
 using pva.SuperV.Model.HistoryRepositories;
 
-namespace pva.SuperV.Api
+namespace pva.SuperV.Api.Services.HistoryRepositories
 {
     public interface IHistoryRepositoryService
     {
