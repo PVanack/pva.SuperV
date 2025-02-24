@@ -8,5 +8,6 @@ namespace pva.SuperV.Api
         List<ClassModel> GetClasses(string projectId);
         ClassModel GetClass(string projectId, string className);
         ClassModel CreateClass(string projectId, ClassModel createRequest);
+        void DeleteClass(string projectId, string className);
     }
 }

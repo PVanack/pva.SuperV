@@ -72,9 +72,22 @@ namespace pva.SuperV.ApiTests
             var response = await client.PostAsJsonAsync("/classes/Project1/", expectedClass);
 
             // THEN
-            response.StatusCode.ShouldBe(System.Net.HttpStatusCode. Created);
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
             ClassModel? createdClass = await response.Content.ReadFromJsonAsync<ClassModel>();
             createdClass.ShouldBeEquivalentTo(expectedClass);
+        }
+
+        [Fact]
+        public async Task GivenWipProject_WhenDeletingProjectClass_ThenClassIsDeleted()
+        {
+            // GIVEN
+            ClassModel expectedClass = new ClassModel("Class1", null);
+
+            // WHEN
+            var response = await client.DeleteAsync($"/classes/Project1/{expectedClass.Name}");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
         }
     }
 }

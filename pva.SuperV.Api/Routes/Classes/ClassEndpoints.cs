@@ -45,6 +45,18 @@ namespace pva.SuperV.Api.Routes.Classes
                 .Produces<ClassModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound);
 
+            projectsApi.MapDelete("/{projectId}/{className}",
+                (IClassService classService,
+                [Description("ID of project")] string projectId,
+                [Description("Name of class")] string className)
+                    => DeleteClass.Handle(classService, projectId, className))
+                .WithName("DeleteClass")
+                .WithDisplayName("DeleteClass")
+                .WithSummary("Deletes a class of a project by its name")
+                .WithDescription("Deletes a class of a project by its name")
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces<string>(StatusCodes.Status404NotFound);
+
             return app;
         }
     }

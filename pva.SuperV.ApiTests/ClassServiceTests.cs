@@ -57,10 +57,21 @@ namespace pva.SuperV.ApiTests
         {
             ClassModel expectedClass = new("NewClass", null);
             // Act & Assert
-            ClassModel createClassModel =_classService.CreateClass(wipProject.GetId(), expectedClass);
+            ClassModel createClassModel = _classService.CreateClass(wipProject.GetId(), expectedClass);
 
             createClassModel.ShouldNotBeNull()
                 .ShouldBeEquivalentTo(expectedClass);
+        }
+
+        [Fact]
+        public void DeleteClassInWipProject_ShouldDeleteClass()
+        {
+            ClassModel expectedClass = new("NewClass", null);
+            // Act
+            _classService.DeleteClass(wipProject.GetId(), expectedClass.Name);
+
+            // Assert
+            wipProject.Classes.ShouldNotContainKey(expectedClass.Name);
         }
     }
 }

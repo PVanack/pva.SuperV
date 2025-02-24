@@ -1,4 +1,5 @@
 ﻿using pva.SuperV.Engine;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.Projects;
 
@@ -28,7 +29,17 @@ namespace pva.SuperV.Api
                 return ClassMapper.ToDto(wipProject.AddClass(createRequest!.Name, createRequest!.BaseclassName));
             }
             throw new NonWipProjectException(projectId);
+        }
 
+        public void DeleteClass(string projectId, string className)
+        {
+            Project project = GetProjectEntity(projectId);
+            if (project is WipProject wipProject)
+            {
+                wipProject.RemoveClass(className);
+                return;
+            }
+            throw new NonWipProjectException(projectId);
         }
     }
 }
