@@ -43,19 +43,89 @@ public class FieldDefinitionEndpointsTests
     }
 
     [Fact]
-    public async Task GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned()
+    public async Task GetBoolField()
+    {
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new BoolFieldDefinitionModel("BoolField"));
+    }
+
+    [Fact]
+    public async Task GetDateTimeField()
+    {
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new DateTimeFieldDefinitionModel("DateTimeField"));
+    }
+
+    [Fact]
+    public async Task GetDoubleField()
+    {
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new DoubleFieldDefinitionModel("DoubleField"));
+    }
+
+    [Fact]
+    public async Task GetFloatField()
+    {
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new FloatFieldDefinitionModel("BoolField"));
+    }
+
+    [Fact]
+    public async Task GetIntField()
+    {
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new IntFieldDefinitionModel("IntField"));
+    }
+
+    [Fact]
+    public async Task GetLongField()
+    {
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new LongFieldDefinitionModel("LongField"));
+    }
+
+    [Fact]
+    public async Task GetShortField()
+    {
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new ShortFieldDefinitionModel("ShortField"));
+    }
+
+    [Fact]
+    public async Task GetStringField()
+    {
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new StringFieldDefinitionModel("StringField"));
+    }
+
+    [Fact]
+    public async Task GetTimeSpanField()
+    {
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new TimeSpanFieldDefinitionModel("TimeSpanField"));
+    }
+
+    [Fact]
+    public async Task GetUintField()
+    {
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new UintFieldDefinitionModel("UintField"));
+    }
+
+    [Fact]
+    public async Task GetUlongField()
+    {
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new UlongFieldDefinitionModel("UlongField"));
+    }
+
+    [Fact]
+    public async Task GetUshortField()
+    {
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new UshortFieldDefinitionModel("UshortField"));
+    }
+
+    private async Task GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned<T>(T expectedFieldDefinition) where T: FieldDefinitionModel
     {
         // GIVEN
-        IntFieldDefinitionModel expectedFieldDefinition = new IntFieldDefinitionModel("IntField");
-        MockFieldDefinitionService.GetField("Project", "Class", "IntField")
+        MockFieldDefinitionService.GetField("Project", "Class", expectedFieldDefinition.Name)
             .Returns(expectedFieldDefinition);
 
         // WHEN
-        var response = await client.GetAsync("/fields/Project/Class/IntField");
+        var response = await client.GetAsync($"/fields/Project/Class/{expectedFieldDefinition.Name}");
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-        IntFieldDefinitionModel? fieldDefinition = await response.Content.ReadFromJsonAsync<IntFieldDefinitionModel>();
+        T? fieldDefinition = await response.Content.ReadFromJsonAsync<T>();
         fieldDefinition.ShouldBeEquivalentTo(expectedFieldDefinition);
     }
 
