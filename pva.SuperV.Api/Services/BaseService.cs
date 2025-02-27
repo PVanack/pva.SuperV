@@ -5,7 +5,7 @@ namespace pva.SuperV.Api.Services
 {
     public abstract class BaseService
     {
-        protected Project GetProjectEntity(string projectId)
+        protected static Project GetProjectEntity(string projectId)
         {
             if (Project.Projects.TryGetValue(projectId, out Project? project))
             {
@@ -14,13 +14,13 @@ namespace pva.SuperV.Api.Services
             throw new UnknownEntityException("Project", projectId);
         }
 
-        protected Class GetClassEntity(string projectId, string className)
+        protected static Class GetClassEntity(string projectId, string className)
         {
             Project project = GetProjectEntity(projectId);
             return GetClassEntity(project, className);
         }
 
-        protected Class GetClassEntity(Project project, string className)
+        protected static Class GetClassEntity(Project project, string className)
         {
             if (project.Classes.TryGetValue(className, out Class? clazz))
             {

@@ -5,7 +5,7 @@ using pva.SuperV.Model.FieldDefinitions;
 
 namespace pva.SuperV.Api.Routes.FieldDefinitions
 {
-    internal class GetFieldDefinitions
+    internal static class GetFieldDefinitions
     {
         internal static Results<Ok<List<FieldDefinitionModel>>, NotFound<string>, InternalServerError<string>> Handle(IFieldDefinitionService fieldDefinitionService, string projectId, string className)
         {
