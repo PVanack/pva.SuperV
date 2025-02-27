@@ -2,7 +2,6 @@
 using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.HistoryRepositories;
-using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Api.Routes.HistoryRepositories
 {

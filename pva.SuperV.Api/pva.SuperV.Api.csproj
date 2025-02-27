@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -16,11 +16,6 @@
   <ItemGroup>
     <ProjectReference Include="..\pva.SuperV.Engine\pva.SuperV.Engine.csproj" />
     <ProjectReference Include="..\pva.SuperV.Model\pva.SuperV.Model.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Routes\FieldDefinitions\" />
-    <Folder Include="Services\FieldDefinitions\" />
   </ItemGroup>
 
 </Project>

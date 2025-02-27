@@ -17,6 +17,11 @@ namespace pva.SuperV.Api.Services
         protected Class GetClassEntity(string projectId, string className)
         {
             Project project = GetProjectEntity(projectId);
+            return GetClassEntity(project, className);
+        }
+
+        protected Class GetClassEntity(Project project, string className)
+        {
             if (project.Classes.TryGetValue(className, out Class? clazz))
             {
                 return clazz;

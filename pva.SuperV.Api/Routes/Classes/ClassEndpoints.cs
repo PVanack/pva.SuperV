@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using pva.SuperV.Api.Services.Classes;
-using pva.SuperV.Engine;
 using pva.SuperV.Model.Classes;
 using System.ComponentModel;
 
@@ -10,8 +9,8 @@ namespace pva.SuperV.Api.Routes.Classes
     {
         public static WebApplication MapClassEndpoints(this WebApplication app)
         {
-            RouteGroupBuilder projectsApi = app.MapGroup("/classes");
-            projectsApi.MapGet("/{projectId}",
+            RouteGroupBuilder classesApi = app.MapGroup("/classes");
+            classesApi.MapGet("/{projectId}",
                 (IClassService classService,
                 [Description("ID of project")] string projectId)
                     => GetClasses.Handle(classService, projectId))
@@ -22,7 +21,7 @@ namespace pva.SuperV.Api.Routes.Classes
                 .Produces<List<ClassModel>>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound);
 
-            projectsApi.MapGet("/{projectId}/{className}",
+            classesApi.MapGet("/{projectId}/{className}",
                 (IClassService classService,
                 [Description("ID of project")] string projectId,
                 [Description("Name of class")] string className)
@@ -34,7 +33,7 @@ namespace pva.SuperV.Api.Routes.Classes
                 .Produces<ClassModel>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound);
 
-            projectsApi.MapPost("/{projectId}",
+            classesApi.MapPost("/{projectId}",
                 (IClassService classService,
                 [Description("ID of project")] string projectId,
                 [Description("Class creation request")][FromBody] ClassModel createRequest)
@@ -46,7 +45,7 @@ namespace pva.SuperV.Api.Routes.Classes
                 .Produces<ClassModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound);
 
-            projectsApi.MapDelete("/{projectId}/{className}",
+            classesApi.MapDelete("/{projectId}/{className}",
                 (IClassService classService,
                 [Description("ID of project")] string projectId,
                 [Description("Name of class")] string className)

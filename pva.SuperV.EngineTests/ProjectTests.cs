@@ -192,7 +192,7 @@ namespace pva.SuperV.EngineTests
             _ = project.AddClass(ClassName);
 
             // WHEN
-            FieldDefinition<int> field = project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), ProjectHelpers.AlarmStatesFormatterName);
+            IFieldDefinition field = project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), ProjectHelpers.AlarmStatesFormatterName);
 
             // THEN
             field.Formatter.ShouldBe(formatter);

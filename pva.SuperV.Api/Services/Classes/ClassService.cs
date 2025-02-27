@@ -1,7 +1,5 @@
 ﻿using pva.SuperV.Engine;
-using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Classes;
-using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Api.Services.Classes
 {

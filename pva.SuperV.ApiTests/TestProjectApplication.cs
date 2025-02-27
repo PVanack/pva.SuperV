@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using NSubstitute;
 using pva.SuperV.Api;
 using pva.SuperV.Api.Services.Classes;
+using pva.SuperV.Api.Services.FieldDefinitions;
 using pva.SuperV.Api.Services.FieldFormatters;
 using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Api.Services.Projects;
@@ -16,6 +17,7 @@ namespace pva.SuperV.ApiTests
         public IClassService? MockedClassService { get; private set; }
         public IFieldFormatterService? MockFieldFormatterService { get; private set; }
         public IHistoryRepositoryService? MockHistoryRepositoryService { get; private set; }
+        public IFieldDefinitionService? MockFieldDefinitionService { get; private set; }
 
         protected override IHost CreateHost(IHostBuilder builder)
         {
@@ -52,6 +54,15 @@ namespace pva.SuperV.ApiTests
                 }
                 MockHistoryRepositoryService = Substitute.For<IHistoryRepositoryService>();
                 services.AddSingleton<IHistoryRepositoryService>(provider => MockHistoryRepositoryService!);
+
+                item = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(IFieldDefinitionService));
+                if (item is not null)
+                {
+                    services.Remove(item);
+                }
+                MockFieldDefinitionService = Substitute.For<IFieldDefinitionService>();
+                services.AddSingleton<IFieldDefinitionService>(provider => MockFieldDefinitionService!);
+
             });
             return base.CreateHost(builder);
         }

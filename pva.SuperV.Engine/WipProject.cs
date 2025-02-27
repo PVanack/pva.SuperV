@@ -109,7 +109,7 @@ namespace pva.SuperV.Engine
         /// <param name="className">Name of the class.</param>
         /// <param name="field">The field.</param>
         /// <returns></returns>
-        public FieldDefinition<T> AddField<T>(string className, FieldDefinition<T> field)
+        public IFieldDefinition AddField(string className, IFieldDefinition field)
         {
             Class clazz = GetClass(className);
             return clazz.AddField(field);
@@ -123,11 +123,11 @@ namespace pva.SuperV.Engine
         /// <param name="field">The field.</param>
         /// <param name="formatterName">Name of the formatter.</param>
         /// <returns></returns>
-        public FieldDefinition<T> AddField<T>(string className, FieldDefinition<T> field, string formatterName)
+        public IFieldDefinition AddField(string className, IFieldDefinition field, string formatterName)
         {
             Class clazz = GetClass(className);
             FieldFormatter formatter = GetFormatter(formatterName);
-            formatter.ValidateAllowedType(typeof(T));
+            formatter.ValidateAllowedType(field.Type);
             return clazz.AddField(field, formatter);
         }
 

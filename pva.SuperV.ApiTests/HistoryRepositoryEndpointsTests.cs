@@ -2,12 +2,7 @@
 using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Model.HistoryRepositories;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit.Abstractions;
 
 namespace pva.SuperV.ApiTests

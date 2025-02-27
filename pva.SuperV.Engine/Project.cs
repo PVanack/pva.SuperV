@@ -293,7 +293,6 @@ namespace pva.SuperV.Engine
                 projectAssemblyLoaderWeakRef = runnableProject.ProjectAssemblyLoaderWeakRef;
             }
             project.Dispose();
-            project = null;
             if (projectAssemblyLoaderWeakRef is not null)
             {
                 CallGcCleanup(projectAssemblyLoaderWeakRef);

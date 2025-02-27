@@ -78,9 +78,9 @@ namespace pva.SuperV.Engine
         /// <typeparam name="T"></typeparam>
         /// <param name="field">The field.</param>
         /// <returns>The field once it has been added.</returns>
-        internal FieldDefinition<T> AddField<T>(FieldDefinition<T> field)
+        public IFieldDefinition AddField(IFieldDefinition field)
         {
-            return AddField<T>(field, null);
+            return AddField(field, null);
         }
 
         /// <summary>
@@ -91,14 +91,14 @@ namespace pva.SuperV.Engine
         /// <param name="formatter">The formatter to be used when using ToString()."/>.</param>
         /// <returns></returns>
         /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
-        internal FieldDefinition<T> AddField<T>(FieldDefinition<T> field, FieldFormatter? formatter)
+        public IFieldDefinition AddField(IFieldDefinition field, FieldFormatter? formatter)
         {
-            if (FieldDefinitions.ContainsKey(field.Name!))
+            if (FieldDefinitions.ContainsKey(field.Name))
             {
                 throw new EntityAlreadyExistException("Field", field.Name);
             }
             field.Formatter = formatter;
-            FieldDefinitions.Add(field.Name!, field);
+            FieldDefinitions.Add(field.Name, field);
             return field;
         }
 
@@ -149,7 +149,7 @@ namespace pva.SuperV.Engine
         /// Removes a field.
         /// </summary>
         /// <param name="fieldName">Name of the field to be removed.</param>
-        internal void RemoveField(string fieldName)
+        public void RemoveField(string fieldName)
         {
             FieldDefinitions.Remove(fieldName);
         }

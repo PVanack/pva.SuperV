@@ -9,8 +9,8 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
     {
         public static WebApplication MapFieldFormatterEndpoints(this WebApplication app)
         {
-            RouteGroupBuilder projectsApi = app.MapGroup("/field-formatters");
-            projectsApi.MapGet("/",
+            RouteGroupBuilder fieldFormattersApi = app.MapGroup("/field-formatters");
+            fieldFormattersApi.MapGet("/",
                 (IFieldFormatterService fieldFormatterService) =>
                     GetFieldFormatterTypes.Handle(fieldFormatterService))
                 .WithName("GetFieldFormatterTypes")
@@ -19,7 +19,7 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
                 .WithDescription("Gets the list of available field formatter types")
                 .Produces<List<string>>(StatusCodes.Status200OK);
 
-            projectsApi.MapGet("/{projectId}",
+            fieldFormattersApi.MapGet("/{projectId}",
                 (IFieldFormatterService fieldFormatterService,
                 [Description("ID of project")] string projectId)
                     => GetFieldFormatters.Handle(fieldFormatterService, projectId))
@@ -27,9 +27,10 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
                 .WithDisplayName("GetFieldFormatters")
                 .WithSummary("Gets the list of field formatters of project")
                 .WithDescription("Gets the list of field formatters of project")
-                .Produces<List<FieldFormatterModel>>(StatusCodes.Status200OK);
+                .Produces<List<FieldFormatterModel>>(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound);
 
-            projectsApi.MapGet("/{projectId}/{fieldFormatterName}",
+            fieldFormattersApi.MapGet("/{projectId}/{fieldFormatterName}",
                 (IFieldFormatterService fieldFormatterService,
                 [Description("ID of project")] string projectId,
                 [Description("Name of field formatter")] string fieldFormatterName)
@@ -38,9 +39,10 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
                 .WithDisplayName("GetFieldFormatter")
                 .WithSummary("Gets a field formatter of project")
                 .WithDescription("Gets a field formatter of project")
-                .Produces<FieldFormatterModel>(StatusCodes.Status200OK);
+                .Produces<FieldFormatterModel>(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound);
 
-            projectsApi.MapPost("/{projectId}",
+            fieldFormattersApi.MapPost("/{projectId}",
                 (IFieldFormatterService fieldFormatterService, HttpContext context,
                 [Description("ID of project")] string projectId,
                 [Description("Field formatter creation request")][FromBody] CreateFieldFormatterRequest createRequest)
@@ -49,9 +51,10 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
                 .WithDisplayName("CreateFieldFormatter")
                 .WithSummary("Creates a field formatter of project")
                 .WithDescription("Creates a field formatter of project")
-                .Produces<FieldFormatterModel>(StatusCodes.Status201Created);
+                .Produces<FieldFormatterModel>(StatusCodes.Status201Created)
+                .Produces<string>(StatusCodes.Status404NotFound);
 
-            projectsApi.MapDelete("/{projectId}/{fieldFormatterName}",
+            fieldFormattersApi.MapDelete("/{projectId}/{fieldFormatterName}",
                 (IFieldFormatterService fieldFormatterService,
                 [Description("ID of project")] string projectId,
                 [Description("Name of field formatter")] string fieldFormatterName)

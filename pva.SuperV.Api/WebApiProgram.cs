@@ -1,16 +1,16 @@
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using pva.SuperV.Api.Routes.Classes;
+using pva.SuperV.Api.Routes.FieldDefinitions;
 using pva.SuperV.Api.Routes.FieldFormatters;
 using pva.SuperV.Api.Routes.HistoryRepositories;
 using pva.SuperV.Api.Routes.Projects;
 using pva.SuperV.Api.Services.Classes;
+using pva.SuperV.Api.Services.FieldDefinitions;
 using pva.SuperV.Api.Services.FieldFormatters;
 using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Api.Services.Projects;
 using pva.SuperV.Model.Classes;
+using pva.SuperV.Model.FieldDefinitions;
 using pva.SuperV.Model.FieldFormatters;
 using pva.SuperV.Model.HistoryRepositories;
 using pva.SuperV.Model.Projects;
@@ -45,7 +45,8 @@ namespace pva.SuperV.Api
                 .AddSingleton<IProjectService, ProjectService>()
                 .AddSingleton<IClassService, ClassService>()
                 .AddSingleton<IFieldFormatterService, FieldFormatterService>()
-                .AddSingleton<IHistoryRepositoryService, HistoryRepositoryService>();
+                .AddSingleton<IHistoryRepositoryService, HistoryRepositoryService>()
+                .AddSingleton<IFieldDefinitionService, FieldDefinitionService>();
             builder.Services.AddOpenApi(options =>
             {
                 options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -88,7 +89,8 @@ namespace pva.SuperV.Api
             app.MapProjectEndpoints()
                .MapClassEndpoints()
                .MapFieldFormatterEndpoints()
-               .MapHistoryRepositoryEndpoints();
+               .MapHistoryRepositoryEndpoints()
+               .MapFieldDefinitionEndpoints();
 
             app.Run();
         }
@@ -97,13 +99,33 @@ namespace pva.SuperV.Api
     [JsonSerializable(typeof(List<ProjectModel>))]
     [JsonSerializable(typeof(ProjectModel))]
     [JsonSerializable(typeof(CreateProjectRequest))]
+
+    [JsonSerializable(typeof(List<FieldFormatterModel>))]
     [JsonSerializable(typeof(FieldFormatterModel))]
     [JsonSerializable(typeof(EnumFormatterModel))]
-    [JsonSerializable(typeof(List<FieldFormatterModel>))]
+    [JsonSerializable(typeof(CreateFieldFormatterRequest))]
+
     [JsonSerializable(typeof(List<ClassModel>))]
     [JsonSerializable(typeof(ClassModel))]
+
     [JsonSerializable(typeof(List<HistoryRepositoryModel>))]
     [JsonSerializable(typeof(HistoryRepositoryModel))]
+
+    [JsonSerializable(typeof(List<FieldDefinitionModel>))]
+    [JsonSerializable(typeof(FieldDefinitionModel))]
+    [JsonSerializable(typeof(IntFieldDefinitionModel))]
+    [JsonSerializable(typeof(BoolFieldDefinitionModel))]
+    [JsonSerializable(typeof(ShortFieldDefinitionModel))]
+    [JsonSerializable(typeof(UshortFieldDefinitionModel))]
+    [JsonSerializable(typeof(IntFieldDefinitionModel))]
+    [JsonSerializable(typeof(UintFieldDefinitionModel))]
+    [JsonSerializable(typeof(LongFieldDefinitionModel))]
+    [JsonSerializable(typeof(UlongFieldDefinitionModel))]
+    [JsonSerializable(typeof(FloatFieldDefinitionModel))]
+    [JsonSerializable(typeof(DoubleFieldDefinitionModel))]
+    [JsonSerializable(typeof(StringFieldDefinitionModel))]
+    [JsonSerializable(typeof(DateTimeFieldDefinitionModel))]
+    [JsonSerializable(typeof(TimeSpanFieldDefinitionModel))]
     internal partial class AppJsonSerializerContext : JsonSerializerContext
     {
     }

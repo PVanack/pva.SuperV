@@ -1,7 +1,5 @@
-﻿using pva.SuperV.Api.Routes.Projects;
-using pva.SuperV.Api.Services.HistoryRepositories;
+﻿using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Model.HistoryRepositories;
-using pva.SuperV.Model.Projects;
 using System.ComponentModel;
 
 namespace pva.SuperV.Api.Routes.HistoryRepositories
@@ -10,8 +8,8 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
     {
         public static WebApplication MapHistoryRepositoryEndpoints(this WebApplication app)
         {
-            RouteGroupBuilder projectsApi = app.MapGroup("/history-repositories");
-            projectsApi.MapGet("/{projectId}",
+            RouteGroupBuilder historyRepositoriesApi = app.MapGroup("/history-repositories");
+            historyRepositoriesApi.MapGet("/{projectId}",
                 (IHistoryRepositoryService historyRepositoryService,
                 [Description("ID of project")] string projectId)
                     => GetHistoryRepositories.Handle(historyRepositoryService, projectId))
@@ -21,7 +19,7 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
                 .WithDescription("Gets the list of available history respoitories in project")
                 .Produces<List<HistoryRepositoryModel>>(StatusCodes.Status200OK);
 
-            projectsApi.MapGet("/{projectId}/{historyRepositoryName}",
+            historyRepositoriesApi.MapGet("/{projectId}/{historyRepositoryName}",
                 (IHistoryRepositoryService historyRepositoryService,
                 [Description("ID of project")] string projectId,
                 [Description("Name of history repository")] string historyRepositoryName)
@@ -33,7 +31,7 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
                 .Produces<HistoryRepositoryModel>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound);
 
-            projectsApi.MapPost("/{projectId}",
+            historyRepositoriesApi.MapPost("/{projectId}",
                 (IHistoryRepositoryService historyRepositoryService,
                 [Description("ID of project")] string projectId,
                 [Description("History repository create request")] HistoryRepositoryModel historyRepositoryCreateRequest)
@@ -45,7 +43,7 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
                 .Produces<HistoryRepositoryModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound);
 
-            projectsApi.MapDelete("/{projectId}/{historyRepositoryName}",
+            historyRepositoriesApi.MapDelete("/{projectId}/{historyRepositoryName}",
                 (IHistoryRepositoryService historyRepositoryService,
                 [Description("ID of project")] string projectId,
                 [Description("Name of history repository")] string historyRepositoryName)

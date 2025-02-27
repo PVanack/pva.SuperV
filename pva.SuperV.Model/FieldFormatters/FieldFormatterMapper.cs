@@ -1,25 +1,22 @@
 ﻿using pva.SuperV.Engine;
+using pva.SuperV.Model.FieldDefinitions;
 
 namespace pva.SuperV.Model.FieldFormatters
 {
     public static class FieldFormatterMapper
     {
-        public static FieldFormatterModel? ToDto(FieldFormatter fieldFormatter)
-        {
-            if (fieldFormatter is EnumFormatter enumFormatter)
+        public static FieldFormatterModel ToDto(FieldFormatter fieldFormatter)
+            => fieldFormatter switch
             {
-                return new EnumFormatterModel(enumFormatter.Name!, enumFormatter.Values!);
-            }
-            return null;
-        }
+                EnumFormatter enumFormatter => new EnumFormatterModel(enumFormatter.Name!, enumFormatter.Values!),
+                _ => throw new UnhandledMappingException(nameof(FieldDefinitionMapper), fieldFormatter.GetType().ToString()),
+            };
 
-        public static FieldFormatter? FromDto(FieldFormatterModel fieldFormatterModel)
-        {
-            if (fieldFormatterModel is EnumFormatterModel enumFormatterModel)
+        public static FieldFormatter FromDto(FieldFormatterModel fieldFormatterModel)
+            => fieldFormatterModel switch
             {
-                return new EnumFormatter(enumFormatterModel.Name!, enumFormatterModel.Values!);
-            }
-            return null;
-        }
+                EnumFormatterModel enumFormatterModel => new EnumFormatter(enumFormatterModel.Name!, enumFormatterModel.Values!),
+                _ => throw new UnhandledMappingException(nameof(FieldDefinitionMapper), fieldFormatterModel.GetType().ToString()),
+            };
     }
 }

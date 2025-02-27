@@ -1,5 +1,4 @@
 ﻿using NSubstitute;
-using NSubstitute.Core.Arguments;
 using pva.SuperV.Api.Services.Classes;
 using pva.SuperV.Model.Classes;
 using Shouldly;
@@ -64,7 +63,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenWipProject_WhenCreatingProjectClass_ThenClassIsCreated()
         {
             // GIVEN
-            ClassModel expectedClass = new ClassModel("Class1", null);
+            ClassModel expectedClass = new("Class1", null);
             MockedClassService.CreateClass("Project1", Arg.Any<ClassModel>())
                 .Returns(expectedClass);
 
@@ -81,7 +80,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenWipProject_WhenDeletingProjectClass_ThenClassIsDeleted()
         {
             // GIVEN
-            ClassModel expectedClass = new ClassModel("Class1", null);
+            ClassModel expectedClass = new("Class1", null);
 
             // WHEN
             var response = await client.DeleteAsync($"/classes/Project1/{expectedClass.Name}");
@@ -89,5 +88,6 @@ namespace pva.SuperV.ApiTests
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
         }
+
     }
 }

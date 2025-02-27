@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using pva.SuperV.Api.Services.Projects;
 using pva.SuperV.Engine.Exceptions;
-using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Api.Routes.Projects
 {

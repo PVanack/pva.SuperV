@@ -14,7 +14,7 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// The name of the field. Uses <see cref="Name"/> to access value.
         /// </summary>
-        private string? _name;
+        private string _name;
 
         /// <summary>
         /// Gets or sets the name of the field.
@@ -22,13 +22,13 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The name.
         /// </value>
-        public string? Name
+        public string Name
         {
             get => _name;
             set
             {
-                IdentifierValidation.ValidateIdentifier("field", value);
                 _name = value;
+                IdentifierValidation.ValidateIdentifier("field", value);
             }
         }
 
@@ -77,7 +77,9 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="name">The name of the field.</param>
         /// <param name="defaultValue">The default value for fields.</param>
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         public FieldDefinition(string name, T? defaultValue)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         {
             Name = name;
             DefaultValue = defaultValue ?? default;
@@ -127,7 +129,7 @@ namespace pva.SuperV.Engine
         /// <returns></returns>
         IFieldDefinition IFieldDefinition.Clone()
         {
-            FieldDefinition<T> fieldDefinition = new(Name!, DefaultValue)
+            FieldDefinition<T> fieldDefinition = new(Name, DefaultValue)
             {
                 Formatter = Formatter
             };

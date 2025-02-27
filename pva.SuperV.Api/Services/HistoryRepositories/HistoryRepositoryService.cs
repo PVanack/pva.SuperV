@@ -5,7 +5,7 @@ using pva.SuperV.Model.HistoryRepositories;
 
 namespace pva.SuperV.Api.Services.HistoryRepositories
 {
-    public class HistoryRepositoryService: BaseService, IHistoryRepositoryService
+    public class HistoryRepositoryService : BaseService, IHistoryRepositoryService
     {
         public List<HistoryRepositoryModel> GetHistoryRepositories(string projectId)
         {
@@ -18,7 +18,8 @@ namespace pva.SuperV.Api.Services.HistoryRepositories
         public HistoryRepositoryModel GetHistoryRepository(string projectId, string historyRepositoryName)
         {
             Project project = GetProjectEntity(projectId);
-            if (project.HistoryRepositories.TryGetValue(historyRepositoryName, out HistoryRepository? historyRepository)) {
+            if (project.HistoryRepositories.TryGetValue(historyRepositoryName, out HistoryRepository? historyRepository))
+            {
                 return HistoryRepositoryMapper.ToDto(historyRepository);
             }
             throw new UnknownEntityException("History repository", historyRepositoryName);
