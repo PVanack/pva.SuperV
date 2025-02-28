@@ -11,9 +11,7 @@ namespace pva.SuperV.Api.Services.FieldProcessings
         {
             Project project = GetProjectEntity(projectId);
             IFieldDefinition fieldDefinition = GetFieldEntity(project, className, fieldName);
-            return fieldDefinition.ValuePostChangeProcessings
-                .Select(Field => FieldProcessingMapper.ToDto(Field))
-                .ToList();
+            return [.. fieldDefinition.ValuePostChangeProcessings.Select(Field => FieldProcessingMapper.ToDto(Field))];
         }
 
         public FieldValueProcessingModel GetFieldProcessing(string projectId, string className, string fieldName, string processingName)

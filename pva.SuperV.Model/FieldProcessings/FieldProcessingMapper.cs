@@ -27,7 +27,7 @@ namespace pva.SuperV.Model.FieldProcessings
                         historizationProcessing.TrigerringFieldDefinition!.Name,
                         historizationProcessing.HistoryRepository!.Name,
                         historizationProcessing.TimestampFieldDefinition?.Name,
-                        historizationProcessing.FieldsToHistorize.Select(field => field.Name).ToList()),
+                        [.. historizationProcessing.FieldsToHistorize.Select(field => field.Name)]),
                 _ => throw new UnhandledMappingException(nameof(FieldProcessingMapper), fieldProcessing.GetType().ToString()),
             };
         }

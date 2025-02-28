@@ -6,9 +6,7 @@ namespace pva.SuperV.Api.Services.Projects
     public class ProjectService : BaseService, IProjectService
     {
         public List<ProjectModel> GetProjects()
-            => Project.Projects.Values
-                .Select(project => ProjectMapper.ToDto(project))
-                .ToList();
+            => [.. Project.Projects.Values.Select(project => ProjectMapper.ToDto(project))];
 
         public ProjectModel GetProject(string projectId)
         {

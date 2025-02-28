@@ -11,20 +11,17 @@ namespace pva.SuperV.Api.Services.FieldFormatters
         public List<string> GetFieldFormatterTypes()
         {
             Type fieldFormatterType = typeof(FieldFormatter);
-            return AppDomain.CurrentDomain.GetAssemblies()
+            return [.. AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(domainAssembly => domainAssembly.GetExportedTypes())
                 .Where(type => type.IsSubclassOf(fieldFormatterType) &&
                         type != fieldFormatterType && !type.IsAbstract)
-                .Select(type => type.ToString())
-                .ToList();
+                .Select(type => type.ToString())];
         }
 
         public List<FieldFormatterModel> GetFieldFormatters(string projectId)
         {
             Project project = GetProjectEntity(projectId);
-            return project.FieldFormatters.Values
-                .Select(fieldFormatter => FieldFormatterMapper.ToDto(fieldFormatter))
-                .ToList();
+            return [.. project.FieldFormatters.Values.Select(fieldFormatter => FieldFormatterMapper.ToDto(fieldFormatter))];
         }
 
         public FieldFormatterModel GetFieldFormatter(string projectId, string fieldFormatterName)

@@ -10,9 +10,7 @@ namespace pva.SuperV.Api.Services.HistoryRepositories
         public List<HistoryRepositoryModel> GetHistoryRepositories(string projectId)
         {
             Project project = GetProjectEntity(projectId);
-            return project.HistoryRepositories.Values
-                .Select(HistoryRepositoryMapper.ToDto)
-                .ToList();
+            return [.. project.HistoryRepositories.Values.Select(HistoryRepositoryMapper.ToDto)];
         }
 
         public HistoryRepositoryModel GetHistoryRepository(string projectId, string historyRepositoryName)

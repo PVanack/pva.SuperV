@@ -27,7 +27,7 @@ namespace pva.SuperV.Benchmarks
                     theProject.AddField(className, new FieldDefinition<int>(String.Format($"{BenchmarkHelpers.FieldName}_{fieldIndex}"), fieldIndex));
                 }
             }
-            Project.BuildAsync(theProject);
+            _ = Task.Run(async () => await Project.BuildAsync(theProject)).Result;
         }
     }
 
@@ -42,7 +42,7 @@ namespace pva.SuperV.Benchmarks
             WipProject wipProject = Project.CreateProject(BenchmarkHelpers.ProjectName);
             _ = wipProject.AddClass(BenchmarkHelpers.ClassName);
             wipProject.AddField(BenchmarkHelpers.ClassName, new FieldDefinition<int>(BenchmarkHelpers.FieldName, 10));
-            return Project.BuildAsync(wipProject);
+            return Task.Run(async () => await Project.BuildAsync(wipProject)).Result;
         }
 
         [Params(100, 200)]

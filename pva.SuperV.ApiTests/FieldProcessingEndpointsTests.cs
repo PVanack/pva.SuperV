@@ -45,7 +45,7 @@ namespace pva.SuperV.ApiTests
                         "TrigerringFieldName",
                         "HistoryRepositoryName",
                         null,
-                        new List<string>() {"Field1" })
+                        ["Field1"])
             ];
             MockedFieldProcessingService.GetFieldProcessings("Project1", "Class1", "TrigerringFieldName")
                 .Returns(expectedFieldProcessings);

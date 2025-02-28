@@ -8,9 +8,7 @@ namespace pva.SuperV.Api.Services.Classes
         public List<ClassModel> GetClasses(string projectId)
         {
             Project project = GetProjectEntity(projectId);
-            return project.Classes.Values
-                .Select(clazz => ClassMapper.ToDto(clazz))
-                .ToList();
+            return [.. project.Classes.Values.Select(clazz => ClassMapper.ToDto(clazz))];
         }
 
         public ClassModel GetClass(string projectId, string className)

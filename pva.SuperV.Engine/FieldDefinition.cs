@@ -132,7 +132,7 @@ namespace pva.SuperV.Engine
             FieldDefinition<T> fieldDefinition = new(Name, DefaultValue)
             {
                 Formatter = Formatter,
-                ValuePostChangeProcessings = new(ValuePostChangeProcessings)
+                ValuePostChangeProcessings = [.. ValuePostChangeProcessings]
             };
             return fieldDefinition;
         }
