@@ -28,5 +28,15 @@ namespace pva.SuperV.Api.Services
             }
             throw new UnknownEntityException("Class", className);
         }
+
+        protected static IFieldDefinition GetFieldEntity(Project project, string className, string fieldName)
+        {
+            Class clazz = GetClassEntity(project, className);
+            if (clazz.FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
+            {
+                return fieldDefinition;
+            }
+            throw new UnknownEntityException("Field", fieldName);
+        }
     }
 }

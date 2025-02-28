@@ -102,9 +102,9 @@ namespace pva.SuperV.Engine
             return field;
         }
 
-        internal void AddFieldChangePostProcessing<T>(string fieldName, FieldValueProcessing<T> fieldValueProcessing)
+        internal void AddFieldChangePostProcessing(string fieldName, IFieldValueProcessing fieldValueProcessing)
         {
-            FieldDefinition<T>? fieldDefinition = GetField<T>(fieldName);
+            IFieldDefinition? fieldDefinition = GetField(fieldName);
             fieldDefinition!.ValuePostChangeProcessings.Add(fieldValueProcessing!);
         }
 

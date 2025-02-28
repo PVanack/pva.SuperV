@@ -2,16 +2,19 @@ using Microsoft.AspNetCore.HttpLogging;
 using pva.SuperV.Api.Routes.Classes;
 using pva.SuperV.Api.Routes.FieldDefinitions;
 using pva.SuperV.Api.Routes.FieldFormatters;
+using pva.SuperV.Api.Routes.FieldProcessings;
 using pva.SuperV.Api.Routes.HistoryRepositories;
 using pva.SuperV.Api.Routes.Projects;
 using pva.SuperV.Api.Services.Classes;
 using pva.SuperV.Api.Services.FieldDefinitions;
 using pva.SuperV.Api.Services.FieldFormatters;
+using pva.SuperV.Api.Services.FieldProcessings;
 using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Api.Services.Projects;
 using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.FieldDefinitions;
 using pva.SuperV.Model.FieldFormatters;
+using pva.SuperV.Model.FieldProcessings;
 using pva.SuperV.Model.HistoryRepositories;
 using pva.SuperV.Model.Projects;
 using Scalar.AspNetCore;
@@ -46,7 +49,8 @@ namespace pva.SuperV.Api
                 .AddSingleton<IClassService, ClassService>()
                 .AddSingleton<IFieldFormatterService, FieldFormatterService>()
                 .AddSingleton<IHistoryRepositoryService, HistoryRepositoryService>()
-                .AddSingleton<IFieldDefinitionService, FieldDefinitionService>();
+                .AddSingleton<IFieldDefinitionService, FieldDefinitionService>()
+                .AddSingleton<IFieldProcessingService, FieldProcessingService>();
             builder.Services.AddOpenApi(options =>
             {
                 options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -90,7 +94,8 @@ namespace pva.SuperV.Api
                .MapClassEndpoints()
                .MapFieldFormatterEndpoints()
                .MapHistoryRepositoryEndpoints()
-               .MapFieldDefinitionEndpoints();
+               .MapFieldDefinitionEndpoints()
+               .MapFieldProcessingEndpoints();
 
             app.Run();
         }
@@ -126,6 +131,12 @@ namespace pva.SuperV.Api
     [JsonSerializable(typeof(StringFieldDefinitionModel))]
     [JsonSerializable(typeof(DateTimeFieldDefinitionModel))]
     [JsonSerializable(typeof(TimeSpanFieldDefinitionModel))]
+
+    [JsonSerializable(typeof(List<FieldValueProcessingModel>))]
+    [JsonSerializable(typeof(FieldValueProcessingModel))]
+    [JsonSerializable(typeof(AlarmStateProcessingModel))]
+    [JsonSerializable(typeof(HistorizationProcessingModel))]
+
     internal partial class AppJsonSerializerContext : JsonSerializerContext
     {
     }

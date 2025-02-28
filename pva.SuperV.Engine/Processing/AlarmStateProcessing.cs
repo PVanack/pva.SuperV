@@ -8,7 +8,7 @@ namespace pva.SuperV.Engine.Processing
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="FieldValueProcessing{T}" />
-    public class AlarmStateProcessing<T> : FieldValueProcessing<T> where T : INumber<T>
+    public class AlarmStateProcessing<T> : FieldValueProcessing<T>, IAlarmStateProcessing where T : INumber<T>
     {
         /// <summary>
         /// The high-high alarm state value.
@@ -51,7 +51,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The high-high limit field definition.
         /// </value>
-        private FieldDefinition<T>? HighHighLimitField { get; set; }
+        public IFieldDefinition? HighHighLimitField { get; set; }
 
         /// <summary>
         /// Gets or sets the high limit field definition.
@@ -59,7 +59,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The high limit field definition.
         /// </value>
-        private FieldDefinition<T>? HighLimitField { get; set; }
+        public IFieldDefinition? HighLimitField { get; set; }
 
         /// <summary>
         /// Gets or sets the low limit field definition.
@@ -67,7 +67,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The low limit field definition.
         /// </value>
-        private FieldDefinition<T>? LowLimitField { get; set; }
+        public IFieldDefinition? LowLimitField { get; set; }
 
         /// <summary>
         /// Gets or sets the low-low limit field definition.
@@ -75,7 +75,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The low-low limit field definition.
         /// </value>
-        private FieldDefinition<T>? LowLowLimitField { get; set; }
+        public IFieldDefinition? LowLowLimitField { get; set; }
 
         /// <summary>
         /// Gets or sets the deadband field definition.
@@ -83,7 +83,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The deadband field definition.
         /// </value>
-        private FieldDefinition<T>? DeadbandField { get; set; }
+        public IFieldDefinition? DeadbandField { get; set; }
 
         /// <summary>
         /// Gets or sets the alarm state field definition.
@@ -91,7 +91,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The alarm state field definition.
         /// </value>
-        private FieldDefinition<int>? AlarmStateField { get; set; }
+        public IFieldDefinition? AlarmStateField { get; set; }
 
         /// <summary>
         /// Gets or sets the acknowledgement state field definition.
@@ -99,7 +99,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The acknowledgement state field definition.
         /// </value>
-        private FieldDefinition<int>? AckStateField { get; set; }
+        public IFieldDefinition? AckStateField { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AlarmStateProcessing{T}"/> class. Used for deserialization.
@@ -188,11 +188,11 @@ namespace pva.SuperV.Engine.Processing
                 return;
             }
             Field<T>? highHighLimit = GetInstanceField<T>(instance, HighHighLimitField?.Name);
-            Field<T>? highLimit = GetInstanceField<T>(instance, HighLimitField?.Name);
-            Field<T>? lowLimit = GetInstanceField<T>(instance, LowLimitField?.Name);
+            Field<T>? highLimit = GetInstanceField<T>(instance, HighLimitField!.Name);
+            Field<T>? lowLimit = GetInstanceField<T>(instance, LowLimitField!.Name);
             Field<T>? lowLowLimit = GetInstanceField<T>(instance, LowLowLimitField?.Name);
             Field<T>? deadband = GetInstanceField<T>(instance, DeadbandField?.Name);
-            Field<int> alarmState = GetInstanceField<int>(instance, AlarmStateField?.Name)!;
+            Field<int> alarmState = GetInstanceField<int>(instance, AlarmStateField!.Name)!;
             Field<int>? ackState = GetInstanceField<int>(instance, AckStateField?.Name);
             int previousAlarmState = alarmState.Value;
             int newAlarmState;

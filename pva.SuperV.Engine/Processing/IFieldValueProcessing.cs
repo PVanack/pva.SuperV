@@ -15,23 +15,7 @@ namespace pva.SuperV.Engine.Processing
         /// <value>
         /// The name.
         /// </value>
-        string? Name { get; set; }
-
-        /// <summary>
-        /// Gets the type of the trigerring field.
-        /// </summary>
-        /// <value>
-        /// The type of the trigerring field.
-        /// </value>
-        Type TrigerringFieldType { get; }
-
-        /// <summary>
-        /// Gets the additional types.
-        /// </summary>
-        /// <value>
-        /// The additional types.
-        /// </value>
-        List<Type> AdditionalTypes { get; }
+        string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the constructor arguments.
@@ -40,6 +24,14 @@ namespace pva.SuperV.Engine.Processing
         /// The constructor arguments.
         /// </value>
         List<object> CtorArguments { get; set; }
+
+        /// <summary>
+        /// Gets the field definition which triggers the processing.
+        /// </summary>
+        /// <value>
+        /// The trigerring field definition.
+        /// </value>
+        public IFieldDefinition? TrigerringFieldDefinition { get; set; }
 
         /// <summary>
         /// Builds the field value processing from the <see cref="CtorArguments"/> after deserialization.

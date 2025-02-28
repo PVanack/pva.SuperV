@@ -16,10 +16,10 @@ namespace pva.SuperV.EngineTests
         public const string ValueFieldName = "Value";
         public const string AlarmStateFieldName = "AlarmState";
         public const string AlarmStatesFormatterName = "AlarmStates";
-        private const string HighHighLimitFieldName = "HighHighLimit";
-        private const string HighLimitFieldName = "HighLimit";
-        private const string LowLimitFieldName = "LowLimit";
-        private const string LowLowLimitFieldName = "LowLowlimit";
+        public const string HighHighLimitFieldName = "HighHighLimit";
+        public const string HighLimitFieldName = "HighLimit";
+        public const string LowLimitFieldName = "LowLimit";
+        public const string LowLowLimitFieldName = "LowLowlimit";
 
         public const string BaseClassName = "TestBaseClass";
         public const string BaseClassFieldName = "InheritedField";
@@ -114,8 +114,8 @@ namespace pva.SuperV.EngineTests
                 HighHighLimitFieldName, HighLimitFieldName, LowLimitFieldName, LowLowLimitFieldName, null, AlarmStateFieldName, null);
             wipProject.AddFieldChangePostProcessing(ClassName, ValueFieldName, alarmStateProcessing);
 
-            List<string> FieldsToHistorize = [ValueFieldName];
-            HistorizationProcessing<int> historizationProcessing = new("Historization", wipProject, clazz, ValueFieldName, historyRepository.Name, null, FieldsToHistorize);
+            List<string> fieldsToHistorize = [ValueFieldName];
+            HistorizationProcessing<int> historizationProcessing = new("Historization", wipProject, clazz, ValueFieldName, historyRepository.Name, null, fieldsToHistorize);
             wipProject.AddFieldChangePostProcessing(ClassName, ValueFieldName, historizationProcessing);
             return wipProject;
         }

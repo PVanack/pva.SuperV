@@ -44,7 +44,7 @@ namespace pva.SuperV.Engine.JsonConverters
                 throw new JsonException();
             }
             IFieldValueProcessing fieldValueProcessing = CreateInstance(fieldType!);
-            fieldValueProcessing.Name = fieldValueProcessingName;
+            fieldValueProcessing.Name = fieldValueProcessingName!;
             fieldValueProcessing.CtorArguments = ctorArguments;
             return fieldValueProcessing;
         }

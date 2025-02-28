@@ -131,7 +131,8 @@ namespace pva.SuperV.Engine
         {
             FieldDefinition<T> fieldDefinition = new(Name, DefaultValue)
             {
-                Formatter = Formatter
+                Formatter = Formatter,
+                ValuePostChangeProcessings = new(ValuePostChangeProcessings)
             };
             return fieldDefinition;
         }

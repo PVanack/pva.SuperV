@@ -114,7 +114,7 @@ public class FieldDefinitionEndpointsTests
         await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new UshortFieldDefinitionModel("UshortField"));
     }
 
-    private async Task GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned<T>(T expectedFieldDefinition) where T: FieldDefinitionModel
+    private async Task GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned<T>(T expectedFieldDefinition) where T : FieldDefinitionModel
     {
         // GIVEN
         MockFieldDefinitionService.GetField("Project", "Class", expectedFieldDefinition.Name)
