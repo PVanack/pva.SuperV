@@ -86,7 +86,7 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            projectsApi.MapPost("\"/{projectId}/instances",
+            projectsApi.MapPost("/{projectId}/instances",
                 (IProjectService projectService,
                 [Description("ID of project")] string projectId,
                 [Description(" HTTP Request")] HttpRequest request)

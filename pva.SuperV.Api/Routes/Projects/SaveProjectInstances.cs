@@ -20,13 +20,9 @@ namespace pva.SuperV.Api.Routes.Projects
             {
                 return TypedResults.NotFound(e.Message);
             }
-            catch (NonRunnableProjectException e)
-            {
-                return TypedResults.BadRequest(e.Message);
-            }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest(e.Message);
             }
         }
     }

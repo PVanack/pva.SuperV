@@ -8,7 +8,7 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
     public static class CreateFieldFormatter
     {
 
-        internal static Results<Created<FieldFormatterModel>, NotFound<string>, InternalServerError<string>> Handle(IFieldFormatterService fieldFormatterService, string projectId, CreateFieldFormatterRequest createRequest)
+        internal static Results<Created<FieldFormatterModel>, NotFound<string>, BadRequest<string>> Handle(IFieldFormatterService fieldFormatterService, string projectId, CreateFieldFormatterRequest createRequest)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest(e.Message);
             }
         }
     }

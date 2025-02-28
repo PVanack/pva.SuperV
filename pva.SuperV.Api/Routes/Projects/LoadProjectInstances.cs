@@ -7,7 +7,7 @@ namespace pva.SuperV.Api.Routes.Projects
 {
     internal static class LoadProjectInstances
     {
-        internal static Results<Ok, NotFound<string>, InternalServerError<string>> Handle(IProjectService projectService, string projectId, HttpRequest request)
+        internal static Results<Ok, NotFound<string>, BadRequest<string>> Handle(IProjectService projectService, string projectId, HttpRequest request)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace pva.SuperV.Api.Routes.Projects
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest(e.Message);
             }
         }
     }

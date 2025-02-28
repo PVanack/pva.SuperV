@@ -7,7 +7,7 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
 {
     internal static class GetFieldDefinition
     {
-        internal static Results<Ok<FieldDefinitionModel>, NotFound<string>, InternalServerError<string>> Handle(IFieldDefinitionService fieldDefinitionService, string projectId, string className, string fieldName)
+        internal static Results<Ok<FieldDefinitionModel>, NotFound<string>, BadRequest<string>> Handle(IFieldDefinitionService fieldDefinitionService, string projectId, string className, string fieldName)
         {
             try
             {
@@ -20,7 +20,7 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest(e.Message);
             }
         }
     }

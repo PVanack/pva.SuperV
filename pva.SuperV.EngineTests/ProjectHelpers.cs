@@ -35,26 +35,29 @@ namespace pva.SuperV.EngineTests
 
         public static async Task<string> StartTDengineContainer()
         {
-            tdEngineContainer = new ContainerBuilder()
-                .WithImage("tdengine/tdengine:latest")
-                .WithPortBinding(6030, false)
-                //.WithPortBinding(6031, false)
-                //.WithPortBinding(6032, false)
-                //.WithPortBinding(6033, false)
-                //.WithPortBinding(6034, false)
-                //.WithPortBinding(6035, false)
-                //.WithPortBinding(6036, false)
-                //.WithPortBinding(6037, false)
-                //.WithPortBinding(6038, false)
-                //.WithPortBinding(6039, false)
-                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(6030))
-                .Build();
+            if (tdEngineContainer is null)
+            {
+                tdEngineContainer = new ContainerBuilder()
+                    .WithImage("tdengine/tdengine:latest")
+                    .WithPortBinding(6030, false)
+                    //.WithPortBinding(6031, false)
+                    //.WithPortBinding(6032, false)
+                    //.WithPortBinding(6033, false)
+                    //.WithPortBinding(6034, false)
+                    //.WithPortBinding(6035, false)
+                    //.WithPortBinding(6036, false)
+                    //.WithPortBinding(6037, false)
+                    //.WithPortBinding(6038, false)
+                    //.WithPortBinding(6039, false)
+                    .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(6030))
+                    .Build();
 
-            // Start the container.
-            await tdEngineContainer.StartAsync()
-              .ConfigureAwait(false);
-            // Wait to make sure the processes in container are ready and running.
-            Thread.Sleep(200);
+                // Start the container.
+                await tdEngineContainer.StartAsync()
+                  .ConfigureAwait(false);
+                // Wait to make sure the processes in container are ready and running.
+                Thread.Sleep(200);
+            }
             return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
         }
 

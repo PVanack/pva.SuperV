@@ -60,6 +60,23 @@ namespace pva.SuperV.ApiTests
                 }
             }
             """;
+        private const string createProjectInstancesJson = """
+            {
+                "Instance": {
+                    "Class": "TestClass",
+                    "Name": "Instance2",
+                    "Fields": [
+                        {
+                            "Type": "System.Int32",
+                            "Name": "Value",
+                            "Value": 12,
+                            "Timestamp": "2025-02-22T12:52:19.19Z",
+                            "Quality": "Good"
+                        }
+                    ]
+                }
+            }
+            """;
         private readonly TestProjectApplication application;
         private readonly HttpClient client;
 
@@ -237,6 +254,45 @@ namespace pva.SuperV.ApiTests
             definitionsJson.ShouldNotBeNull()
                 .ShouldBe(projectInstancesJson);
             await stream.DisposeAsync();
+        }
+
+        [Fact]
+        public async Task GivenWipProject_WhenSavingProjectInstances_ThenBadRequestIsReturned()
+        {
+            // GIVEN
+            ProjectModel projectToSave = new("Project", "Project", 1, "Description", true);
+            StreamWriter stream = new(new MemoryStream());
+            await stream.WriteAsync(projectInstancesJson);
+            await stream.FlushAsync();
+            stream.BaseStream.Position = 0;
+            MockedProjectService.GetProjectInstancesAsync(projectToSave.Id)
+                .ThrowsAsync<NonRunnableProjectException>();
+            // WHEN
+            var response = await client.GetAsync($"/projects/{projectToSave.Id}/instances");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+            await stream.DisposeAsync();
+        }
+
+        [Fact]
+        public async Task GivenRunnableProject_WhenLoadingProjectInstances_ThenJsonInstancesAreCreated()
+        {
+            // GIVEN
+            ProjectModel expectedProject = new("TestProject", "TestProject", 11, null, true);
+            MockedProjectService.CreateProjectFromJsonDefinition(Arg.Any<StreamReader>())
+                .Returns(expectedProject);
+
+            // WHEN
+            using var form = new MultipartFormDataContent();
+            var jsonContent = new ByteArrayContent(Encoding.UTF8.GetBytes(createProjectInstancesJson));
+            jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+            form.Add(jsonContent);
+
+            var response = await client.PostAsync("/projects/TestProject/instances", form);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
         }
 
         [Fact]

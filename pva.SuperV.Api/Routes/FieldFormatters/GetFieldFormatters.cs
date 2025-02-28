@@ -7,7 +7,7 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
 {
     public static class GetFieldFormatters
     {
-        internal static Results<Ok<List<FieldFormatterModel>>, NotFound<string>, InternalServerError<string>> Handle(IFieldFormatterService fieldFormatterService, string projectId)
+        internal static Results<Ok<List<FieldFormatterModel>>, NotFound<string>, BadRequest<string>> Handle(IFieldFormatterService fieldFormatterService, string projectId)
         {
             try
             {
@@ -20,7 +20,7 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest(e.Message);
             }
         }
 

@@ -140,6 +140,10 @@ namespace pva.SuperV.Engine.HistoryStorage
                 string command = $"CREATE STABLE IF NOT EXISTS {tableName} ({fieldNames}) TAGS (instance varchar(64));";
                 _tdEngineClient?.Exec(command);
             }
+            catch (SuperVException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 throw new TdEngineException($"upsert class time series {tableName}", e);

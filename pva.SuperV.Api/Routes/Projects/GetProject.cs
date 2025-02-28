@@ -8,7 +8,7 @@ namespace pva.SuperV.Api.Routes.Projects
 {
     public static class GetProject
     {
-        public static Results<Ok<ProjectModel>, NotFound<string>, InternalServerError<string>> Handle(IProjectService projectService, string projectId)
+        public static Results<Ok<ProjectModel>, NotFound<string>, BadRequest<string>> Handle(IProjectService projectService, string projectId)
         {
             try
             {
@@ -20,7 +20,7 @@ namespace pva.SuperV.Api.Routes.Projects
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest(e.Message);
             }
         }
     }

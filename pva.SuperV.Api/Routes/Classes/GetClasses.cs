@@ -7,7 +7,7 @@ namespace pva.SuperV.Api.Routes.Classes
 {
     public static class GetClasses
     {
-        public static Results<Ok<List<ClassModel>>, NotFound<string>, InternalServerError<string>> Handle(IClassService classService, string projectId)
+        public static Results<Ok<List<ClassModel>>, NotFound<string>, BadRequest<string>> Handle(IClassService classService, string projectId)
         {
             try
             {
@@ -19,7 +19,7 @@ namespace pva.SuperV.Api.Routes.Classes
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest(e.Message);
             }
         }
     }

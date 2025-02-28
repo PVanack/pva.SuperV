@@ -55,11 +55,13 @@ namespace pva.SuperV.ApiTests
                 """;
         private readonly ProjectService _projectService;
         private readonly RunnableProject runnableProject;
+        private readonly WipProject wipProject;
 
         public ProjectServiceTests()
         {
             _projectService = new();
             runnableProject = ProjectHelpers.CreateRunnableProject();
+            wipProject = ProjectHelpers.CreateWipProject(null);
         }
 
         [Fact]
@@ -114,8 +116,8 @@ namespace pva.SuperV.ApiTests
         public async Task BuildProject_ShouldReturnRunnableProject_WhenProjectIsWip()
         {
             // Act
-            WipProject wipProject = Project.CreateProject("WipProject1");
-            var result = await _projectService.BuildProjectAsync(wipProject.GetId());
+            WipProject wipProject1 = Project.CreateProject("WipProject1");
+            var result = await _projectService.BuildProjectAsync(wipProject1.GetId());
 
             // Assert
             result.ShouldNotBeNull();
@@ -127,8 +129,8 @@ namespace pva.SuperV.ApiTests
         [Fact]
         public async Task BuildProject_ShouldThrowNonWipProjectException_WhenProjectIsNotWip()
         {
-            WipProject wipProject = Project.CreateProject("WipProject2");
-            RunnableProject runProject = await Project.BuildAsync(wipProject);
+            WipProject wipProject2 = Project.CreateProject("WipProject2");
+            RunnableProject runProject = await Project.BuildAsync(wipProject2);
             // Act & Assert
             await Assert.ThrowsAsync<NonWipProjectException>(async ()
                 => await _projectService.BuildProjectAsync(runProject.GetId()));
@@ -162,7 +164,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task SaveProjectInstancesToJson_ShouldReturnProjectInstancesAsJsonAsync()
+        public async Task SaveRunnableProjectInstancesToJson_ShouldReturnProjectInstancesAsJsonAsync()
         {
             // Act
             var result = await _projectService.GetProjectInstancesAsync(runnableProject.GetId());
@@ -173,9 +175,17 @@ namespace pva.SuperV.ApiTests
             projectInstances.ShouldNotBeNullOrEmpty();
         }
 
+        [Fact]
+        public async Task SaveWipProjectInstancesToJson_ShouldThrowException()
+        {
+            // Act
+            await Assert.ThrowsAsync<NonRunnableProjectException>(() => _projectService.GetProjectInstancesAsync(wipProject.GetId()));
+
+            // Assert    
+        }
 
         [Fact]
-        public void LoadProjectInstancesFromJson_ShouldCreateInstances()
+        public void LoadRunnableProjectInstancesFromJson_ShouldCreateInstances()
         {
             // Act
             using StreamReader definitionsStream = new(new MemoryStream(Encoding.UTF8.GetBytes(projectInstancesJson)));
@@ -186,15 +196,25 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public void LoadWipProjectInstancesFromJson_ShouldThrowException()
+        {
+            // Act
+            using StreamReader definitionsStream = new(new MemoryStream(Encoding.UTF8.GetBytes(projectInstancesJson)));
+            Assert.Throws<NonRunnableProjectException>(() => _projectService.LoadProjectInstances(wipProject.GetId(), definitionsStream));
+
+            // Assert
+        }
+
+        [Fact]
         public void UnloadProject_ShouldRemoveProject()
         {
             // Act
-            WipProject wipProject = Project.CreateProject("WipProject1");
-            _projectService.UnloadProject(wipProject.GetId());
+            WipProject wipProject1 = Project.CreateProject("WipProject1");
+            _projectService.UnloadProject(wipProject1.GetId());
 
             // Assert
             Assert.Throws<UnknownEntityException>(()
-                => _projectService.GetProject(wipProject.GetId()));
+                => _projectService.GetProject(wipProject1.GetId()));
         }
 
     }

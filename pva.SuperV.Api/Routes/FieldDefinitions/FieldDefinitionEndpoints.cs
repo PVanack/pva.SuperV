@@ -20,7 +20,8 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 .WithSummary("Gets the list of available fields in a class from a project")
                 .WithDescription("Gets the list of available fields in a class from a project")
                 .Produces<List<FieldDefinitionModel>>(StatusCodes.Status200OK)
-                .Produces<string>(StatusCodes.Status404NotFound);
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             fieldDefinitionsApi.MapGet("/{projectId}/{className}/{fieldName}",
                 (IFieldDefinitionService fieldDefinitionService,
@@ -33,7 +34,8 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 .WithSummary("Gets a field from a class of a project by its name")
                 .WithDescription("Gets a field from a class of a project by its name")
                 .Produces<FieldDefinitionModel>(StatusCodes.Status200OK)
-                .Produces<string>(StatusCodes.Status404NotFound);
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             fieldDefinitionsApi.MapPost("/{projectId}/{className}",
                 (IFieldDefinitionService fieldDefinitionService,
@@ -46,7 +48,8 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 .WithSummary("Creates a field in a class of a project")
                 .WithDescription("Creates a field in a class of a project")
                 .Produces<FieldDefinitionModel>(StatusCodes.Status201Created)
-                .Produces<string>(StatusCodes.Status404NotFound);
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             fieldDefinitionsApi.MapDelete("/{projectId}/{className}/{fieldName}",
                 (IFieldDefinitionService fieldDefinitionService,
@@ -59,7 +62,8 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 .WithSummary("Deletes a field from a class of a project by its name")
                 .WithDescription("Deletes a field from a class of a project by its name")
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces<string>(StatusCodes.Status404NotFound);
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             return app;
         }

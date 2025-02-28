@@ -22,7 +22,8 @@ namespace pva.SuperV.Api.Routes.FieldProcessings
                 .WithSummary("Gets the list of available processings of a field in a class from a project")
                 .WithDescription("Gets the list of available processings of a field in a class from a project")
                 .Produces<List<FieldDefinitionModel>>(StatusCodes.Status200OK)
-                .Produces<string>(StatusCodes.Status404NotFound);
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             fieldDefinitionsApi.MapGet("/{projectId}/{className}/{fieldName}/{processingName}",
                 (IFieldProcessingService fieldProcessingService,
@@ -36,7 +37,8 @@ namespace pva.SuperV.Api.Routes.FieldProcessings
                 .WithSummary("Gets a field processing from a class of a project by its name")
                 .WithDescription("Gets a field processing from a class of a project by its name")
                 .Produces<FieldDefinitionModel>(StatusCodes.Status200OK)
-                .Produces<string>(StatusCodes.Status404NotFound);
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             fieldDefinitionsApi.MapPost("/{projectId}/{className}/{fieldName}",
                 (IFieldProcessingService fieldProcessingService,
@@ -50,7 +52,8 @@ namespace pva.SuperV.Api.Routes.FieldProcessings
                 .WithSummary("Creates a field processing in a class of a project")
                 .WithDescription("Creates a field processing in a class of a project")
                 .Produces<FieldDefinitionModel>(StatusCodes.Status201Created)
-                .Produces<string>(StatusCodes.Status404NotFound);
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             fieldDefinitionsApi.MapDelete("/{projectId}/{className}/{fieldName}/{processingName}",
                 (IFieldProcessingService fieldProcessingService,
@@ -64,7 +67,8 @@ namespace pva.SuperV.Api.Routes.FieldProcessings
                 .WithSummary("Deletes a field processing from a class of a project by its name")
                 .WithDescription("Deletes a field processing from a class of a project by its name")
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces<string>(StatusCodes.Status404NotFound);
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             return app;
         }

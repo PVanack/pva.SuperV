@@ -7,7 +7,7 @@ namespace pva.SuperV.Api.Routes.Projects
 {
     public static class CreateProject
     {
-        internal static Results<Created<ProjectModel>, InternalServerError<string>> Handle(IProjectService projectService, CreateProjectRequest createProjectRequest)
+        internal static Results<Created<ProjectModel>, BadRequest<string>> Handle(IProjectService projectService, CreateProjectRequest createProjectRequest)
         {
             try
             {
@@ -16,7 +16,7 @@ namespace pva.SuperV.Api.Routes.Projects
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest(e.Message);
             }
         }
     }

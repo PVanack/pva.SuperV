@@ -6,7 +6,7 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
 {
     internal static class DeleteField
     {
-        internal static Results<NoContent, NotFound<string>, BadRequest<string>, InternalServerError<string>> Handle(IFieldDefinitionService fieldDefinitionService, string projectId, string className, string fieldName)
+        internal static Results<NoContent, NotFound<string>, BadRequest<string>> Handle(IFieldDefinitionService fieldDefinitionService, string projectId, string className, string fieldName)
         {
             try
             {
@@ -17,13 +17,9 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
             {
                 return TypedResults.NotFound<string>(e.Message);
             }
-            catch (NonWipProjectException e)
-            {
-                return TypedResults.BadRequest<string>(e.Message);
-            }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest<string>(e.Message);
             }
         }
     }

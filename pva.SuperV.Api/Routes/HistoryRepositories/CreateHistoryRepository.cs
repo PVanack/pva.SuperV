@@ -7,7 +7,7 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
 {
     internal static class CreateHistoryRepository
     {
-        internal static Results<Created<HistoryRepositoryModel>, NotFound<string>, BadRequest<string>, InternalServerError<string>> Handle(IHistoryRepositoryService historyRepositoryService, string projectId, HistoryRepositoryModel historyRepositoryCreateRequest)
+        internal static Results<Created<HistoryRepositoryModel>, NotFound<string>, BadRequest<string>> Handle(IHistoryRepositoryService historyRepositoryService, string projectId, HistoryRepositoryModel historyRepositoryCreateRequest)
         {
             try
             {
@@ -20,7 +20,7 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest(e.Message);
             }
         }
     }

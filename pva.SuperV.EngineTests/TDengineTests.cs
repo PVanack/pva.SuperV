@@ -1,5 +1,7 @@
 ﻿using pva.SuperV.Engine;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
+using pva.SuperV.Engine.Processing;
 using Shouldly;
 
 namespace pva.SuperV.EngineTests
@@ -7,11 +9,19 @@ namespace pva.SuperV.EngineTests
     [Collection("Project building")]
     public class TDengineTests
     {
+        private readonly WipProject wipProject;
+        private RunnableProject runnableProject;
+
+        public TDengineTests()
+        {
+            wipProject = ProjectHelpers.CreateWipProject(TDengineHistoryStorage.Prefix);
+        }
+
         [Fact]
         public void GivenProjectWithClassInstance_WhenSettingFieldValue_ThenValueIsHistorized()
         {
             // GIVEN
-            RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject(TDengineHistoryStorage.Prefix);
+            runnableProject = Task.Run(async () => await Project.BuildAsync(wipProject)).Result;
             dynamic? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
             DateTime testStart = DateTime.UtcNow;
             // WHEN
@@ -33,7 +43,17 @@ namespace pva.SuperV.EngineTests
             rows[1].GetValue<int>(0).ShouldBe(110);
 
             instance?.Dispose();
-            ProjectHelpers.DeleteProject(runnableProject);
+        }
+
+        [Fact]
+        public async Task GivenTimespanFieldUsedInHistorizationProcessing_WhenBuildingProject_ThenExceptionIsThrown()
+        {
+            // GIVEN
+            Class clazz = wipProject.GetClass(ProjectHelpers.ClassName);
+            clazz.AddField(new FieldDefinition<TimeSpan>("TimeSpanField"));
+            wipProject.AddFieldChangePostProcessing(ProjectHelpers.ClassName, ProjectHelpers.ValueFieldName,
+                new HistorizationProcessing<int>("BadHistProcessing", wipProject, clazz, ProjectHelpers.ValueFieldName, ProjectHelpers.HistoryRepositoryName, null, ["TimeSpanField"]));
+            await Assert.ThrowsAsync<UnhandledFieldTypeException>(async () => await Project.BuildAsync(wipProject));
         }
     }
 }

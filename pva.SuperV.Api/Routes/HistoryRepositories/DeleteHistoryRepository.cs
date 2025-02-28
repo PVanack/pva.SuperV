@@ -7,7 +7,7 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
 {
     internal static class DeleteHistoryRepository
     {
-        internal static Results<NoContent, NotFound<string>, BadRequest<string>, InternalServerError<string>> Handle(IHistoryRepositoryService historyRepositoryService, string projectId, string historyRepositoryName)
+        internal static Results<NoContent, NotFound<string>, BadRequest<string>> Handle(IHistoryRepositoryService historyRepositoryService, string projectId, string historyRepositoryName)
         {
             try
             {
@@ -18,13 +18,9 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
             {
                 return TypedResults.NotFound<string>(e.Message);
             }
-            catch (NonWipProjectException e)
-            {
-                return TypedResults.BadRequest<string>(e.Message);
-            }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest(e.Message);
             }
         }
     }

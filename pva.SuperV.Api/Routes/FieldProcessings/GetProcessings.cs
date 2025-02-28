@@ -7,7 +7,7 @@ namespace pva.SuperV.Api.Routes.FieldProcessings
 {
     internal static class GetProcessings
     {
-        internal static Results<Ok<List<FieldValueProcessingModel>>, NotFound<string>, InternalServerError<string>> Handle(IFieldProcessingService fieldProcessingService, string projectId, string className, string fieldName)
+        internal static Results<Ok<List<FieldValueProcessingModel>>, NotFound<string>, BadRequest<string>> Handle(IFieldProcessingService fieldProcessingService, string projectId, string className, string fieldName)
         {
             try
             {
@@ -19,7 +19,7 @@ namespace pva.SuperV.Api.Routes.FieldProcessings
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest(e.Message);
             }
         }
     }

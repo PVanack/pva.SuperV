@@ -8,7 +8,7 @@ namespace pva.SuperV.Api.Routes.Projects
 {
     internal static class LoadProjectFromDefinitions
     {
-        internal static Results<Created<ProjectModel>, NotFound<string>, InternalServerError<string>> Handle(IProjectService projectService, HttpRequest request)
+        internal static Results<Created<ProjectModel>, NotFound<string>, BadRequest<string>> Handle(IProjectService projectService, HttpRequest request)
         {
             try
             {
@@ -22,7 +22,7 @@ namespace pva.SuperV.Api.Routes.Projects
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest(e.Message);
             }
         }
     }

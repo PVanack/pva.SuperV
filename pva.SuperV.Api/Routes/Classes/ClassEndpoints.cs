@@ -19,7 +19,8 @@ namespace pva.SuperV.Api.Routes.Classes
                 .WithSummary("Gets the list of available classes in a project")
                 .WithDescription("Gets the list of available classes in a project")
                 .Produces<List<ClassModel>>(StatusCodes.Status200OK)
-                .Produces<string>(StatusCodes.Status404NotFound);
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             classesApi.MapGet("/{projectId}/{className}",
                 (IClassService classService,
@@ -31,7 +32,8 @@ namespace pva.SuperV.Api.Routes.Classes
                 .WithSummary("Gets a class of a project by its name")
                 .WithDescription("Gets a class of a project by its name")
                 .Produces<ClassModel>(StatusCodes.Status200OK)
-                .Produces<string>(StatusCodes.Status404NotFound);
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             classesApi.MapPost("/{projectId}",
                 (IClassService classService,
@@ -43,7 +45,8 @@ namespace pva.SuperV.Api.Routes.Classes
                 .WithSummary("Creates a class in a project")
                 .WithDescription("Creates a class in a project")
                 .Produces<ClassModel>(StatusCodes.Status201Created)
-                .Produces<string>(StatusCodes.Status404NotFound);
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             classesApi.MapDelete("/{projectId}/{className}",
                 (IClassService classService,
@@ -55,7 +58,8 @@ namespace pva.SuperV.Api.Routes.Classes
                 .WithSummary("Deletes a class of a project by its name")
                 .WithDescription("Deletes a class of a project by its name")
                 .Produces(StatusCodes.Status204NoContent)
-                .Produces<string>(StatusCodes.Status404NotFound);
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             return app;
         }

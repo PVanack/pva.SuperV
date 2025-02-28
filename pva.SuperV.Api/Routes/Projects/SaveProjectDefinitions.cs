@@ -7,7 +7,7 @@ namespace pva.SuperV.Api.Routes.Projects
 {
     internal static class SaveProjectDefinitions
     {
-        internal static async Task<Results<FileStreamHttpResult, NotFound<string>, InternalServerError<string>>> Handle(IProjectService projectService, string projectId)
+        internal static async Task<Results<FileStreamHttpResult, NotFound<string>, BadRequest<string>, InternalServerError<string>>> Handle(IProjectService projectService, string projectId)
         {
             try
             {
@@ -22,7 +22,7 @@ namespace pva.SuperV.Api.Routes.Projects
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest(e.Message);
             }
         }
     }

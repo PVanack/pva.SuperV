@@ -18,13 +18,13 @@ namespace pva.SuperV.Api.Routes.Projects
             {
                 return TypedResults.NotFound<string>(e.Message);
             }
-            catch (NonWipProjectException e)
+            catch (ProjectBuildException e)
             {
-                return TypedResults.BadRequest<string>(e.Message);
+                return TypedResults.InternalServerError<string>(e.Message);
             }
             catch (SuperVException e)
             {
-                return TypedResults.InternalServerError(e.Message);
+                return TypedResults.BadRequest(e.Message);
             }
         }
     }

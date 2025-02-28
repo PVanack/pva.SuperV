@@ -17,7 +17,9 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
                 .WithDisplayName("GetHistoryRepositories")
                 .WithSummary("Gets the list of available history respoitories in project")
                 .WithDescription("Gets the list of available history respoitories in project")
-                .Produces<List<HistoryRepositoryModel>>(StatusCodes.Status200OK);
+                .Produces<List<HistoryRepositoryModel>>(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             historyRepositoriesApi.MapGet("/{projectId}/{historyRepositoryName}",
                 (IHistoryRepositoryService historyRepositoryService,
@@ -29,7 +31,8 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
                 .WithSummary("Gets a project's history repository by its name")
                 .WithDescription("Gets a project's history repository by its name")
                 .Produces<HistoryRepositoryModel>(StatusCodes.Status200OK)
-                .Produces<string>(StatusCodes.Status404NotFound);
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             historyRepositoriesApi.MapPost("/{projectId}",
                 (IHistoryRepositoryService historyRepositoryService,
@@ -41,7 +44,8 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
                 .WithSummary("Creates a project's history repository")
                 .WithDescription("Creates a project's history repository")
                 .Produces<HistoryRepositoryModel>(StatusCodes.Status201Created)
-                .Produces<string>(StatusCodes.Status404NotFound);
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
 
             historyRepositoriesApi.MapDelete("/{projectId}/{historyRepositoryName}",
                 (IHistoryRepositoryService historyRepositoryService,
