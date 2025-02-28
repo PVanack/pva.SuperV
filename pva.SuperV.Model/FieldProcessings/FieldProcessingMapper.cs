@@ -13,7 +13,6 @@ namespace pva.SuperV.Model.FieldProcessings
                 IAlarmStateProcessing alarmStateProcessing =>
                     new AlarmStateProcessingModel(
                         alarmStateProcessing.Name,
-                        alarmStateProcessing.TrigerringFieldDefinition!.Type.ToString(),
                         alarmStateProcessing.TrigerringFieldDefinition!.Name,
                         alarmStateProcessing.HighHighLimitField?.Name,
                         alarmStateProcessing.HighLimitField!.Name,
@@ -25,7 +24,6 @@ namespace pva.SuperV.Model.FieldProcessings
                 IHistorizationProcessing historizationProcessing =>
                     new HistorizationProcessingModel(
                         historizationProcessing.Name,
-                        historizationProcessing.TrigerringFieldDefinition!.Type.ToString(),
                         historizationProcessing.TrigerringFieldDefinition!.Name,
                         historizationProcessing.HistoryRepository!.Name,
                         historizationProcessing.TimestampFieldDefinition?.Name,
@@ -34,48 +32,48 @@ namespace pva.SuperV.Model.FieldProcessings
             };
         }
 
-        public static IFieldValueProcessing FromDto(Project project, Class clazz, FieldValueProcessingModel fieldProcessingModel)
+        public static IFieldValueProcessing FromDto(Project project, Class clazz, IFieldDefinition fieldDefinition, FieldValueProcessingModel fieldProcessingModel)
         {
             if (fieldProcessingModel is AlarmStateProcessingModel alarmStateProcessingModel)
             {
-                return CreateAlarmStateProcessing(clazz, alarmStateProcessingModel);
+                return CreateAlarmStateProcessing(clazz, fieldDefinition, alarmStateProcessingModel);
             }
             else if (fieldProcessingModel is HistorizationProcessingModel historizationProcessingModel)
             {
-                return CreateHistoryProcessing(project, clazz, fieldProcessingModel, historizationProcessingModel);
+                return CreateHistoryProcessing(project, clazz, fieldDefinition, historizationProcessingModel);
             }
-            throw new UnhandledMappingException(nameof(FieldProcessingMapper), fieldProcessingModel.GetType().ToString());
+            throw new UnhandledMappingException(nameof(FieldProcessingMapper), fieldDefinition.Type.ToString());
         }
 
-        private static IHistorizationProcessing CreateHistoryProcessing(Project project, Class clazz, FieldValueProcessingModel fieldProcessingModel, HistorizationProcessingModel historizationProcessingModel)
+        private static IHistorizationProcessing CreateHistoryProcessing(Project project, Class clazz, IFieldDefinition fieldDefinition, HistorizationProcessingModel historizationProcessingModel)
         {
-            if (historizationProcessingModel.TrigerringFieldType == typeof(short).ToString())
+            if (fieldDefinition.Type == typeof(short))
             {
                 return CreateHistorizationProcessing<short>(project, clazz, historizationProcessingModel);
             }
-            else if (historizationProcessingModel.TrigerringFieldType == typeof(ushort).ToString())
+            else if (fieldDefinition.Type == typeof(ushort))
             {
                 return CreateHistorizationProcessing<ushort>(project, clazz, historizationProcessingModel);
             }
-            else if (historizationProcessingModel.TrigerringFieldType == typeof(int).ToString())
+            else if (fieldDefinition.Type == typeof(int))
             {
                 return CreateHistorizationProcessing<int>(project, clazz, historizationProcessingModel);
             }
-            else if (historizationProcessingModel.TrigerringFieldType == typeof(uint).ToString())
+            else if (fieldDefinition.Type == typeof(uint))
             {
                 return CreateHistorizationProcessing<uint>(project, clazz, historizationProcessingModel);
             }
-            else if (historizationProcessingModel.TrigerringFieldType == typeof(long).ToString())
+            else if (fieldDefinition.Type == typeof(long))
             {
                 return CreateHistorizationProcessing<long>(project, clazz, historizationProcessingModel);
             }
-            else if (historizationProcessingModel.TrigerringFieldType == typeof(ulong).ToString())
+            else if (fieldDefinition.Type == typeof(ulong))
             {
                 return CreateHistorizationProcessing<ulong>(project, clazz, historizationProcessingModel);
             }
             else
             {
-                throw new UnhandledMappingException(nameof(FieldProcessingMapper), fieldProcessingModel.GetType().ToString());
+                throw new UnhandledMappingException(nameof(FieldProcessingMapper), fieldDefinition.Type.ToString());
             }
         }
 
@@ -91,43 +89,43 @@ namespace pva.SuperV.Model.FieldProcessings
                 historizationProcessingModel.FieldsToHistorize);
         }
 
-        private static IAlarmStateProcessing CreateAlarmStateProcessing(Class clazz, AlarmStateProcessingModel alarmStateProcessingModel)
+        private static IAlarmStateProcessing CreateAlarmStateProcessing(Class clazz, IFieldDefinition fieldDefinition, AlarmStateProcessingModel alarmStateProcessingModel)
         {
-            if (alarmStateProcessingModel.TrigerringFieldType == typeof(short).ToString())
+            if (fieldDefinition.Type == typeof(short))
             {
                 return CreateAlarmState<short>(clazz, alarmStateProcessingModel);
             }
-            else if (alarmStateProcessingModel.TrigerringFieldType == typeof(ushort).ToString())
+            else if (fieldDefinition.Type == typeof(ushort))
             {
                 return CreateAlarmState<ushort>(clazz, alarmStateProcessingModel);
             }
-            else if (alarmStateProcessingModel.TrigerringFieldType == typeof(int).ToString())
+            else if (fieldDefinition.Type == typeof(int))
             {
                 return CreateAlarmState<int>(clazz, alarmStateProcessingModel);
             }
-            else if (alarmStateProcessingModel.TrigerringFieldType == typeof(uint).ToString())
+            else if (fieldDefinition.Type == typeof(uint))
             {
                 return CreateAlarmState<uint>(clazz, alarmStateProcessingModel);
             }
-            else if (alarmStateProcessingModel.TrigerringFieldType == typeof(long).ToString())
+            else if (fieldDefinition.Type == typeof(long))
             {
                 return CreateAlarmState<long>(clazz, alarmStateProcessingModel);
             }
-            else if (alarmStateProcessingModel.TrigerringFieldType == typeof(ulong).ToString())
+            else if (fieldDefinition.Type == typeof(ulong))
             {
                 return CreateAlarmState<ulong>(clazz, alarmStateProcessingModel);
             }
-            else if (alarmStateProcessingModel.TrigerringFieldType == typeof(float).ToString())
+            else if (fieldDefinition.Type == typeof(float))
             {
                 return CreateAlarmState<float>(clazz, alarmStateProcessingModel);
             }
-            else if (alarmStateProcessingModel.TrigerringFieldType == typeof(double).ToString())
+            else if (fieldDefinition.Type == typeof(double))
             {
                 return CreateAlarmState<double>(clazz, alarmStateProcessingModel);
             }
             else
             {
-                throw new UnhandledMappingException(nameof(FieldProcessingMapper), alarmStateProcessingModel.TrigerringFieldType);
+                throw new UnhandledMappingException(nameof(FieldProcessingMapper), fieldDefinition.Type.ToString());
             }
         }
 

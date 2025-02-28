@@ -1,7 +1,6 @@
 ﻿namespace pva.SuperV.Model.FieldProcessings
 {
     public record AlarmStateProcessingModel(string Name,
-            string TrigerringFieldType,
             string TrigerringFieldName,
             string? HighHighLimitFieldName,
             string HighLimitFieldName,
@@ -10,7 +9,7 @@
             string? DeadbandFieldName,
             string AlarmStateFieldName,
             string? AckStateFieldName)
-            : FieldValueProcessingModel(Name, TrigerringFieldType, TrigerringFieldName)
+            : FieldValueProcessingModel(Name, TrigerringFieldName)
     {
     }
 }

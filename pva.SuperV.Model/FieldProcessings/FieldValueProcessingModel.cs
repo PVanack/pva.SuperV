@@ -6,7 +6,6 @@ namespace pva.SuperV.Model.FieldProcessings
     [JsonDerivedType(typeof(HistorizationProcessingModel), typeDiscriminator: nameof(HistorizationProcessingModel))]
     public abstract record FieldValueProcessingModel(
         string Name,
-        string TrigerringFieldType,
         string TrigerringFieldName)
     {
     }

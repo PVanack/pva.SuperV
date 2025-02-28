@@ -33,7 +33,6 @@ namespace pva.SuperV.ApiTests
             List<FieldValueProcessingModel> expectedFieldProcessings =
                 [
                     new AlarmStateProcessingModel("AlarmStateProcessing",
-                        "System.Int32",
                         "TrigerringFieldName",
                         null,
                         "HighLimitFieldName",
@@ -43,7 +42,6 @@ namespace pva.SuperV.ApiTests
                         "AlarmStateFieldName",
                         null),
                     new HistorizationProcessingModel("HistorizationProcessing",
-                        "System.Int32",
                         "TrigerringFieldName",
                         "HistoryRepositoryName",
                         null,
@@ -66,7 +64,6 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             AlarmStateProcessingModel expectedFieldProcessing = new("AlarmStateProcessing",
-                        "System.Int32",
                         "TrigerringFieldName",
                         null,
                         "HighLimitFieldName",
@@ -93,7 +90,6 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new AlarmStateProcessingModel("AlarmStateProcessing",
-                        "System.Int32",
                         "TrigerringFieldName",
                         null,
                         "HighLimitFieldName",
@@ -119,7 +115,6 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new AlarmStateProcessingModel("AlarmStateProcessing",
-                        "System.Int32",
                         "TrigerringFieldName",
                         null,
                         "HighLimitFieldName",

@@ -28,7 +28,6 @@ namespace pva.SuperV.ApiTests
             List<FieldValueProcessingModel> expectedFieldProcessings =
             [
                 new AlarmStateProcessingModel("ValueAlarmState",
-                    typeof(int).ToString(),
                     ProjectHelpers.ValueFieldName,
                     ProjectHelpers.HighHighLimitFieldName,
                     ProjectHelpers.HighLimitFieldName,
@@ -37,7 +36,6 @@ namespace pva.SuperV.ApiTests
                     ProjectHelpers.AlarmStateFieldName,
                     null),
                 new HistorizationProcessingModel("Historization",
-                                    typeof(int).ToString(),
                     ProjectHelpers.ValueFieldName,
                      ProjectHelpers.HistoryRepositoryName,
                      null,
@@ -57,7 +55,6 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new AlarmStateProcessingModel("ValueAlarmState",
-                    typeof(int).ToString(),
                     ProjectHelpers.ValueFieldName,
                     ProjectHelpers.HighHighLimitFieldName,
                     ProjectHelpers.HighLimitFieldName,
@@ -79,7 +76,6 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new AlarmStateProcessingModel("ValueAlarmStateAdded",
-                    typeof(int).ToString(),
                     ProjectHelpers.ValueFieldName,
                     ProjectHelpers.HighHighLimitFieldName,
                     ProjectHelpers.HighLimitFieldName,

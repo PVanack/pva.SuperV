@@ -38,7 +38,8 @@ namespace pva.SuperV.Api.Services.FieldProcessings
             if (project is WipProject wipProject)
             {
                 Class clazz = GetClassEntity(wipProject, className);
-                IFieldValueProcessing fieldProcessing = FieldProcessingMapper.FromDto(project, clazz, createRequest);
+                IFieldDefinition fieldDefinition = GetFieldEntity(clazz, fieldName);
+                IFieldValueProcessing fieldProcessing = FieldProcessingMapper.FromDto(project, clazz, fieldDefinition, createRequest);
                 wipProject.AddFieldChangePostProcessing(className, fieldName, fieldProcessing);
                 return FieldProcessingMapper.ToDto(fieldProcessing);
             }
