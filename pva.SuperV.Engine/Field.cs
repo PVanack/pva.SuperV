@@ -8,7 +8,7 @@ namespace pva.SuperV.Engine
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="pva.SuperV.Engine.IField" />
-    public class Field<T>(T value) : IField
+    public class Field<T> : IField
     {
         /// <summary>
         /// Gets the type of the field.
@@ -36,7 +36,7 @@ namespace pva.SuperV.Engine
         /// </value>
         public IFieldDefinition? FieldDefinition { get; set; }
 
-        private T _value = value;
+        private T _value;
 
         /// <summary>
         /// Gets or sets the value of the field.
@@ -87,6 +87,19 @@ namespace pva.SuperV.Engine
                     _quality = QualityLevel.Good;
                 }
                 return _quality;
+            }
+        }
+
+        public Field(T value)
+        {
+            _value = value;
+            if (_timestamp is null)
+            {
+                _timestamp = DateTime.Now;
+            }
+            if (_quality is null)
+            {
+                _quality = QualityLevel.Good;
             }
         }
 
