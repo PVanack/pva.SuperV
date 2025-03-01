@@ -161,11 +161,16 @@ namespace pva.SuperV.Engine
             }
             instance.Name = instanceName;
             instance.Class = clazz;
-            clazz.FieldDefinitions.ForEach((k, v) =>
+            Class? currentClass = clazz;
+            while (currentClass is not null)
             {
-                instance!.Fields.TryGetValue(k, out IField? field);
-                field!.FieldDefinition = v;
-            });
+                currentClass.FieldDefinitions.ForEach((k, v) =>
+                {
+                    instance!.Fields.TryGetValue(k, out IField? field);
+                    field!.FieldDefinition = v;
+                });
+                currentClass = currentClass.BaseClass;
+            }
             Instances.Add(instanceName, instance);
             return instance;
         }

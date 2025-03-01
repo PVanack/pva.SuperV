@@ -59,7 +59,17 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The timestamp.
         /// </value>
-        public DateTime? Timestamp => _timestamp ?? DateTime.Now;
+        public DateTime? Timestamp
+        {
+            get
+            {
+                if (_timestamp is null)
+                {
+                    _timestamp = DateTime.Now;
+                }
+                return _timestamp;
+            }
+        }
 
         private QualityLevel? _quality;
         /// <summary>
@@ -68,7 +78,17 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The quality <see cref="QualityLevel" />.
         /// </value>
-        public QualityLevel? Quality => _quality ?? QualityLevel.Good;
+        public QualityLevel? Quality
+        {
+            get
+            {
+                if (_quality is null)
+                {
+                    _quality = QualityLevel.Good;
+                }
+                return _quality;
+            }
+        }
 
         /// <summary>
         /// Sets the value with <see cref="DateTime.UtcNow"/> timestamp and a <see cref="QualityLevel.Good"/>.

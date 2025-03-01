@@ -4,18 +4,21 @@ using pva.SuperV.Api.Routes.FieldDefinitions;
 using pva.SuperV.Api.Routes.FieldFormatters;
 using pva.SuperV.Api.Routes.FieldProcessings;
 using pva.SuperV.Api.Routes.HistoryRepositories;
+using pva.SuperV.Api.Routes.Instances;
 using pva.SuperV.Api.Routes.Projects;
 using pva.SuperV.Api.Services.Classes;
 using pva.SuperV.Api.Services.FieldDefinitions;
 using pva.SuperV.Api.Services.FieldFormatters;
 using pva.SuperV.Api.Services.FieldProcessings;
 using pva.SuperV.Api.Services.HistoryRepositories;
+using pva.SuperV.Api.Services.Instances;
 using pva.SuperV.Api.Services.Projects;
 using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.FieldDefinitions;
 using pva.SuperV.Model.FieldFormatters;
 using pva.SuperV.Model.FieldProcessings;
 using pva.SuperV.Model.HistoryRepositories;
+using pva.SuperV.Model.Instances;
 using pva.SuperV.Model.Projects;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
@@ -50,7 +53,8 @@ namespace pva.SuperV.Api
                 .AddSingleton<IFieldFormatterService, FieldFormatterService>()
                 .AddSingleton<IHistoryRepositoryService, HistoryRepositoryService>()
                 .AddSingleton<IFieldDefinitionService, FieldDefinitionService>()
-                .AddSingleton<IFieldProcessingService, FieldProcessingService>();
+                .AddSingleton<IFieldProcessingService, FieldProcessingService>()
+                .AddSingleton<IInstanceService, InstanceService>();
             builder.Services.AddOpenApi(options =>
             {
                 options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -95,7 +99,8 @@ namespace pva.SuperV.Api
                .MapFieldFormatterEndpoints()
                .MapHistoryRepositoryEndpoints()
                .MapFieldDefinitionEndpoints()
-               .MapFieldProcessingEndpoints();
+               .MapFieldProcessingEndpoints()
+               .MapInstancesEndpoints();
 
             app.Run();
         }
@@ -137,6 +142,20 @@ namespace pva.SuperV.Api
     [JsonSerializable(typeof(AlarmStateProcessingModel))]
     [JsonSerializable(typeof(HistorizationProcessingModel))]
 
+    [JsonSerializable(typeof(List<InstanceModel>))]
+    [JsonSerializable(typeof(InstanceModel))]
+    [JsonSerializable(typeof(BoolFieldValueModel))]
+    [JsonSerializable(typeof(ShortFieldValueModel))]
+    [JsonSerializable(typeof(UshortFieldValueModel))]
+    [JsonSerializable(typeof(IntFieldValueModel))]
+    [JsonSerializable(typeof(UintFieldValueModel))]
+    [JsonSerializable(typeof(LongFieldValueModel))]
+    [JsonSerializable(typeof(UlongFieldValueModel))]
+    [JsonSerializable(typeof(FloatFieldValueModel))]
+    [JsonSerializable(typeof(DoubleFieldValueModel))]
+    [JsonSerializable(typeof(StringFieldValueModel))]
+    [JsonSerializable(typeof(DateTimeFieldValueModel))]
+    [JsonSerializable(typeof(TimeSpanFieldValueModel))]
     internal partial class AppJsonSerializerContext : JsonSerializerContext
     {
     }
