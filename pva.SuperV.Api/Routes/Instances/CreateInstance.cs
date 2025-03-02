@@ -7,11 +7,11 @@ namespace pva.SuperV.Api.Routes.Instances
 {
     internal static class CreateInstance
     {
-        internal static Results<Created<InstanceModel>, NotFound<string>, BadRequest<string>> Handle(IInstanceService instanceService, string projectId, string className, string instanceName)
+        internal static Results<Created<InstanceModel>, NotFound<string>, BadRequest<string>> Handle(IInstanceService instanceService, string projectId, InstanceModel createRequest)
         {
             try
             {
-                return TypedResults.Created($"/instances/{projectId}/{instanceName}", instanceService.CreateInstance(projectId, className, instanceName));
+                return TypedResults.Created($"/instances/{projectId}/{createRequest.Name}", instanceService.CreateInstance(projectId, createRequest));
             }
             catch (UnknownEntityException e)
             {

@@ -30,12 +30,17 @@ namespace pva.SuperV.Api.Services.Instances
             throw new NonRunnableProjectException(projectId);
         }
 
-        public InstanceModel CreateInstance(string projectId, string className, string instanceName)
+        public InstanceModel CreateInstance(string projectId, InstanceModel createRequest)
         {
             Project project = GetProjectEntity(projectId);
             if (project is RunnableProject runnableProject)
             {
-                Instance? createdInstance = runnableProject.CreateInstance(className, instanceName);
+                Instance? createdInstance = runnableProject.CreateInstance(createRequest.ClassName , createRequest.Name);
+                createRequest.Fields.ForEach(fieldModel =>
+                {
+                    IField? field = createdInstance!.GetField(fieldModel.Name) ?? throw new UnknownEntityException("Field", fieldModel.Name);
+                    // TODO: Set field value
+                });
                 return InstanceMapper.ToDto(createdInstance!);
             }
             throw new NonRunnableProjectException(projectId);

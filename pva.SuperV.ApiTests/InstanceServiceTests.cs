@@ -15,14 +15,14 @@ namespace pva.SuperV.ApiTests
         private readonly InstanceService _instanceService;
         private readonly RunnableProject runnableProject;
         private readonly WipProject wipProject;
-        private InstanceModel expectedInstance;
+        private readonly InstanceModel expectedInstance;
 
         public InstanceServiceTests()
         {
             _instanceService = new();
             runnableProject = ProjectHelpers.CreateRunnableProject();
             Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
-            expectedInstance = new(instance!.Name, instance!.Class.Name,
+            expectedInstance = new(instance!.Name, instance!.Class.Name!,
             [
                 new FieldModel(ProjectHelpers.BaseClassFieldName, typeof(string).ToString(), FieldValueMapper.ToDto(instance!.GetField(ProjectHelpers.BaseClassFieldName))),
                 new FieldModel(ProjectHelpers.ValueFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(ProjectHelpers.ValueFieldName))),
@@ -70,7 +70,7 @@ namespace pva.SuperV.ApiTests
         {
             InstanceModel expectedCreatedInstance = expectedInstance with { Name = "Instance1" };
             // Act & Assert
-            InstanceModel createInstanceModel = _instanceService.CreateInstance(runnableProject.GetId(), expectedCreatedInstance.ClassName, expectedCreatedInstance.Name);
+            InstanceModel createInstanceModel = _instanceService.CreateInstance(runnableProject.GetId(), expectedCreatedInstance with { Fields = [] });
 
             createInstanceModel.Fields.Count.ShouldBe(expectedCreatedInstance.Fields.Count);
             List<FieldModel> fieldsUpdatedWithTimestampsAndQualities = [];
@@ -89,7 +89,6 @@ namespace pva.SuperV.ApiTests
                 );
             }
             expectedCreatedInstance = expectedCreatedInstance with { Fields = fieldsUpdatedWithTimestampsAndQualities };
-
             createInstanceModel.ShouldNotBeNull()
                 .ShouldBeEquivalentTo(expectedCreatedInstance);
         }

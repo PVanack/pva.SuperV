@@ -1,5 +1,7 @@
-﻿using pva.SuperV.Api.Services.Instances;
+﻿using Microsoft.AspNetCore.Mvc;
+using pva.SuperV.Api.Services.Instances;
 using pva.SuperV.Model.FieldDefinitions;
+using pva.SuperV.Model.Instances;
 using System.ComponentModel;
 
 namespace pva.SuperV.Api.Routes.Instances
@@ -34,12 +36,11 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapPost("/{projectId}/{className}/{instanceName}",
+            fieldDefinitionsApi.MapPost("/{projectId}",
                 (IInstanceService instanceService,
                 [Description("ID of project")] string projectId,
-                [Description("Class name")] string className,
-                [Description("Instance name")] string instanceName)
-                    => CreateInstance.Handle(instanceService, projectId, className, instanceName))
+                [Description("Instance creation request")][FromBody] InstanceModel createRequest)
+                    => CreateInstance.Handle(instanceService, projectId, createRequest))
                 .WithName("CreateInstance")
                 .WithDisplayName("CreateInstance")
                 .WithSummary("Creates an instance with a class of a project")

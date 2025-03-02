@@ -77,11 +77,11 @@ namespace pva.SuperV.ApiTests
             InstanceModel expectedInstance =
                 new("Instance1", "Class1",
                     [new FieldModel("Field1", typeof(int).ToString(), new ShortFieldValueModel(1, Engine.QualityLevel.Good, DateTime.Now))]);
-            MockedInstanceService.CreateInstance("Project1", expectedInstance.ClassName, expectedInstance.Name)
+            MockedInstanceService.CreateInstance("Project1", Arg.Any<InstanceModel>())
                 .Returns(expectedInstance);
 
             // WHEN
-            var response = await client.PostAsync($"/instances/Project1/{expectedInstance.ClassName}/{expectedInstance.Name}", null);
+            var response = await client.PostAsJsonAsync($"/instances/Project1/", expectedInstance);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
