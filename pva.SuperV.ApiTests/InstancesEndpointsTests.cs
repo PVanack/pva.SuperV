@@ -107,7 +107,7 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedFieldValue);
 
             // WHEN
-            var response = await client.PutAsJsonAsync($"/instances/Project1/Instance1/Field1", expectedFieldValue);
+            var response = await client.PutAsJsonAsync($"/instances/Project1/Instance1/Field1/value", expectedFieldValue);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);

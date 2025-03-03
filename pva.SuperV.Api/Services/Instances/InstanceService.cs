@@ -39,7 +39,7 @@ namespace pva.SuperV.Api.Services.Instances
                 createRequest.Fields.ForEach(fieldModel =>
                 {
                     IField? field = createdInstance!.GetField(fieldModel.Name) ?? throw new UnknownEntityException("Field", fieldModel.Name);
-                    // TODO: Set field value
+                    FieldValueMapper.SetFieldValue(field, fieldModel.FieldValue);
                 });
                 return InstanceMapper.ToDto(createdInstance!);
             }

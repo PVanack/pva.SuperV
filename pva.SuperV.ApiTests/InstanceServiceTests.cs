@@ -92,6 +92,44 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public void CreateInstanceWithInitialedFieldsInRunnableProject_ShouldCreateInstanceWithFieldsInitialized()
+        {
+            InstanceModel expectedCreatedInstance = expectedInstance with
+            {
+                Name = "Instance1",
+                Fields = expectedInstance.Fields
+                            .Select(field
+                                => field.Name.Equals(expectedInstance.Fields[0].Name)
+                                        ? field with { FieldValue = new StringFieldValueModel("ExpectedString", QualityLevel.Bad, DateTime.Now) }
+                                        : field)
+                            .ToList()
+            };
+            // Act & Assert
+            InstanceModel createInstanceModel = _instanceService.CreateInstance(runnableProject.GetId(),
+                expectedCreatedInstance with
+                {
+                    Fields = [expectedCreatedInstance.Fields[0]]
+                });
+
+            createInstanceModel.Fields.Count.ShouldBe(expectedCreatedInstance.Fields.Count);
+            List<FieldModel> fieldsUpdatedWithTimestampsAndQualities = [];
+            for (int index = 0; index < createInstanceModel.Fields.Count; index++)
+            {
+                fieldsUpdatedWithTimestampsAndQualities.Add(expectedCreatedInstance.Fields[index] with
+                {
+                    FieldValue = expectedCreatedInstance.Fields[index].FieldValue with
+                    {
+                        Quality = createInstanceModel.Fields[index].FieldValue.Quality,
+                        Timestamp = createInstanceModel.Fields[index].FieldValue.Timestamp
+                    }
+                });
+            }
+            expectedCreatedInstance = expectedCreatedInstance with { Fields = fieldsUpdatedWithTimestampsAndQualities };
+            createInstanceModel.ShouldNotBeNull()
+                .ShouldBeEquivalentTo(expectedCreatedInstance);
+        }
+
+        [Fact]
         public void DeleteInstanceInRunnableProject_ShouldDeleteInstance()
         {
             // Act
