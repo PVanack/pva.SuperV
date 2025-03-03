@@ -10,7 +10,7 @@ namespace pva.SuperV.EngineTests
     public class TDengineTests
     {
         private readonly WipProject wipProject;
-        private RunnableProject runnableProject;
+        private RunnableProject? runnableProject;
 
         public TDengineTests()
         {
@@ -18,10 +18,10 @@ namespace pva.SuperV.EngineTests
         }
 
         [Fact]
-        public void GivenProjectWithClassInstance_WhenSettingFieldValue_ThenValueIsHistorized()
+        public async Task GivenProjectWithClassInstance_WhenSettingFieldValue_ThenValueIsHistorized()
         {
             // GIVEN
-            runnableProject = Task.Run(async () => await Project.BuildAsync(wipProject)).Result;
+            runnableProject = await Project.BuildAsync(wipProject);
             dynamic? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
             DateTime testStart = DateTime.UtcNow;
             // WHEN
