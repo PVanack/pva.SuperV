@@ -99,6 +99,23 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public async Task GivenWipProject_WhenGettingProjectInstanceField_ThenFieldIsReturned()
+        {
+            // GIVEN
+            FieldModel expectedField = new("Field1", typeof(int).ToString(), new ShortFieldValueModel(1, Engine.QualityLevel.Good, DateTime.Now));
+            MockedFieldValueService.GetField("Project1", "Instance1", "Field1")
+                .Returns(expectedField);
+
+            // WHEN
+            var response = await client.GetAsync($"/instances/Project1/Instance1/Field1/value");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            FieldModel? retrievedField = await response.Content.ReadFromJsonAsync<FieldModel>();
+            retrievedField.ShouldBeEquivalentTo(expectedField);
+        }
+
+        [Fact]
         public async Task GivenWipProject_WhenUpdatingInstanceFieldValue_ThenFieldValueIsUpdated()
         {
             // GIVEN

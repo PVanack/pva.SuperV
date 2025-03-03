@@ -4,7 +4,7 @@ namespace pva.SuperV.Api.Services.Instances
 {
     public interface IFieldValueService
     {
-        FieldValueModel GetField(string projectId, string instanceName, string fieldName);
+        FieldModel GetField(string projectId, string instanceName, string fieldName);
         FieldValueModel UpdateFieldValue(string projectId, string instanceName, string fieldName, FieldValueModel value);
     }
 }

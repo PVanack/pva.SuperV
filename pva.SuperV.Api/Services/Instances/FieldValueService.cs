@@ -5,9 +5,9 @@ namespace pva.SuperV.Api.Services.Instances
 {
     public class FieldValueService : BaseService, IFieldValueService
     {
-        public FieldValueModel GetField(string projectId, string instanceName, string fieldName)
+        public FieldModel GetField(string projectId, string instanceName, string fieldName)
         {
-            return FieldValueMapper.ToDto(GetFieldEntity(projectId, instanceName, fieldName));
+            return FieldMapper.ToDto(GetFieldEntity(projectId, instanceName, fieldName));
         }
 
         public FieldValueModel UpdateFieldValue(string projectId, string instanceName, string fieldName, FieldValueModel value)

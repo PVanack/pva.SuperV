@@ -97,12 +97,11 @@ namespace pva.SuperV.ApiTests
             InstanceModel expectedCreatedInstance = expectedInstance with
             {
                 Name = "Instance1",
-                Fields = expectedInstance.Fields
+                Fields = [.. expectedInstance.Fields
                             .Select(field
                                 => field.Name.Equals(expectedInstance.Fields[0].Name)
                                         ? field with { FieldValue = new StringFieldValueModel("ExpectedString", QualityLevel.Bad, DateTime.Now) }
-                                        : field)
-                            .ToList()
+                                        : field)]
             };
             // Act & Assert
             InstanceModel createInstanceModel = _instanceService.CreateInstance(runnableProject.GetId(),
@@ -130,14 +129,16 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void DeleteInstanceInRunnableProject_ShouldDeleteInstance()
+        public void GetInstanceField_ShouldReturnField()
         {
             // Act
-            _instanceService.DeleteInstance(runnableProject.GetId(), expectedInstance.Name);
+            FieldModel expectedField = expectedInstance.Fields[0];
+            FieldModel retrievedField = _fieldValueService.GetField(runnableProject.GetId(), expectedInstance.Name, expectedField.Name);
 
             // Assert
-            runnableProject.Instances.ShouldNotContainKey(expectedInstance.Name);
+            retrievedField.ShouldBeEquivalentTo(expectedField);
         }
+
         [Fact]
         public void UpdateInstanceFieldValueInRunnableProject_ShouldUpdateInstaceFieldValue()
         {

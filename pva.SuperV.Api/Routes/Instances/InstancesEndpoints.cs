@@ -62,7 +62,7 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapGet("/{projectId}/{instanceName}/{fieldName}",
+            fieldDefinitionsApi.MapGet("/{projectId}/{instanceName}/{fieldName}/value",
                 (IFieldValueService fieldValueService,
                 [Description("ID of project")] string projectId,
                 [Description("Name of instance")] string instanceName,
