@@ -37,7 +37,7 @@ namespace pva.SuperV.EngineTests
 
             // WHEN
             RunnableProject project = ProjectHelpers.CreateRunnableProject(NullHistoryStorageEngine.Prefix);
-            Instance? instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName) as Instance;
+            Instance? instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
             Field<int>? intField = instance!.GetField<int>(ProjectHelpers.ValueFieldName);
             intField!.SetValue(314);
             string filename = ProjectStorage.SaveProjectInstances(project);

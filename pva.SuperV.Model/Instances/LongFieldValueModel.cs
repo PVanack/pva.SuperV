@@ -5,7 +5,7 @@ namespace pva.SuperV.Model.Instances
 {
     [Description("Long field value")]
     public record LongFieldValueModel(
-        [property: Description("Field value.")] 
+        [property: Description("Field value.")]
         long Value,
         QualityLevel? Quality,
         DateTime? Timestamp)

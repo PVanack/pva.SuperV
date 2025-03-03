@@ -1,8 +1,6 @@
 ﻿using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using Shouldly;
-using System.Runtime.CompilerServices;
-using static pva.SuperV.EngineTests.FieldTests;
 
 namespace pva.SuperV.EngineTests
 {

@@ -35,7 +35,7 @@ namespace pva.SuperV.Api.Services.Instances
             Project project = GetProjectEntity(projectId);
             if (project is RunnableProject runnableProject)
             {
-                Instance? createdInstance = runnableProject.CreateInstance(createRequest.ClassName , createRequest.Name);
+                Instance? createdInstance = runnableProject.CreateInstance(createRequest.ClassName, createRequest.Name);
                 createRequest.Fields.ForEach(fieldModel =>
                 {
                     IField? field = createdInstance!.GetField(fieldModel.Name) ?? throw new UnknownEntityException("Field", fieldModel.Name);

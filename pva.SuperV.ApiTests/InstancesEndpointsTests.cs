@@ -1,15 +1,8 @@
 ﻿using NSubstitute;
-using pva.SuperV.Api.Services.Classes;
 using pva.SuperV.Api.Services.Instances;
-using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.Instances;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit.Abstractions;
 
 namespace pva.SuperV.ApiTests

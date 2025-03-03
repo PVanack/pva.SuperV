@@ -1,6 +1,4 @@
-﻿using Docker.DotNet.Models;
-using pva.Helpers.Extensions;
-using pva.SuperV.Api.Services.Instances;
+﻿using pva.SuperV.Api.Services.Instances;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.EngineTests;
@@ -78,14 +76,14 @@ namespace pva.SuperV.ApiTests
             {
                 fieldsUpdatedWithTimestampsAndQualities.Add(expectedCreatedInstance.Fields[index]
                     with
-                    {
-                        FieldValue = expectedCreatedInstance.Fields[index].FieldValue
+                {
+                    FieldValue = expectedCreatedInstance.Fields[index].FieldValue
                             with
-                            {
-                                Quality = createInstanceModel.Fields[index].FieldValue.Quality,
-                                Timestamp = createInstanceModel.Fields[index].FieldValue.Timestamp
-                            }
+                    {
+                        Quality = createInstanceModel.Fields[index].FieldValue.Quality,
+                        Timestamp = createInstanceModel.Fields[index].FieldValue.Timestamp
                     }
+                }
                 );
             }
             expectedCreatedInstance = expectedCreatedInstance with { Fields = fieldsUpdatedWithTimestampsAndQualities };
