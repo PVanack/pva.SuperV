@@ -106,6 +106,9 @@ namespace pva.SuperV.Api
         }
     }
 
+    [JsonSerializable(typeof(IFormFile))]
+    [JsonSerializable(typeof(FormFile))]
+
     [JsonSerializable(typeof(List<ProjectModel>))]
     [JsonSerializable(typeof(ProjectModel))]
     [JsonSerializable(typeof(CreateProjectRequest))]

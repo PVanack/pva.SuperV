@@ -1,15 +1,26 @@
-﻿namespace pva.SuperV.Model.FieldProcessings
+﻿using System.ComponentModel;
+
+namespace pva.SuperV.Model.FieldProcessings
 {
-    public record AlarmStateProcessingModel(string Name,
-            string TrigerringFieldName,
-            string? HighHighLimitFieldName,
-            string HighLimitFieldName,
-            string LowLimitFieldName,
-            string? LowLowLimitFieldName,
-            string? DeadbandFieldName,
-            string AlarmStateFieldName,
-            string? AckStateFieldName)
-            : FieldValueProcessingModel(Name, TrigerringFieldName)
+    [Description("Alarm state processing.")]
+    public record AlarmStateProcessingModel(
+        string Name,
+        string TrigerringFieldName,
+        [property: Description("High high limit field name.")]
+        string? HighHighLimitFieldName,
+        [property: Description("High limit field name.")]
+        string HighLimitFieldName,
+        [property: Description("Low limit field name.")]
+        string LowLimitFieldName,
+        [property: Description("Low low limit field name.")]
+        string? LowLowLimitFieldName,
+        [property: Description("Deadband field name.")]
+        string? DeadbandFieldName,
+        [property: Description("Alarm state field name.")]
+        string AlarmStateFieldName,
+        [property: Description("Acknowledgement field name.")]
+        string? AckStateFieldName)
+        : FieldValueProcessingModel(Name, TrigerringFieldName)
     {
     }
 }

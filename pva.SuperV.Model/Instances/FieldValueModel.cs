@@ -1,4 +1,5 @@
 ﻿using pva.SuperV.Engine;
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Model.Instances
@@ -14,7 +15,11 @@ namespace pva.SuperV.Model.Instances
     [JsonDerivedType(typeof(UintFieldValueModel), typeDiscriminator: nameof(UintFieldValueModel))]
     [JsonDerivedType(typeof(UlongFieldValueModel), typeDiscriminator: nameof(UlongFieldValueModel))]
     [JsonDerivedType(typeof(UshortFieldValueModel), typeDiscriminator: nameof(UshortFieldValueModel))]
-    public abstract record FieldValueModel(QualityLevel? Quality, DateTime? Timestamp)
+    public abstract record FieldValueModel(
+        [property: Description("Field value quality level.")]
+        QualityLevel? Quality,
+        [property: Description("Field value timestamp.")]
+        DateTime? Timestamp)
     {
     }
 }

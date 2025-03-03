@@ -1,8 +1,15 @@
 ﻿using pva.SuperV.Engine;
+using System.ComponentModel;
 
 namespace pva.SuperV.Model.Instances
 {
-    public record LongFieldValueModel(long Value, QualityLevel? Quality, DateTime? Timestamp) : FieldValueModel(Quality, Timestamp)
+    [Description("Long field value")]
+    public record LongFieldValueModel(
+        [property: Description("Field value.")] 
+        long Value,
+        QualityLevel? Quality,
+        DateTime? Timestamp)
+        : FieldValueModel(Quality, Timestamp)
     {
     }
 }

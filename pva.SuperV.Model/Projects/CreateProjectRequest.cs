@@ -2,6 +2,7 @@
 
 namespace pva.SuperV.Model.Projects
 {
+    [Description("Project creation reauest.")]
     public record CreateProjectRequest(
         [property: Description("Name of project")] string Name,
         [property: Description("Description of project")] string Description,
