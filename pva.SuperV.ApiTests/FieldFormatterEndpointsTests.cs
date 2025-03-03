@@ -16,7 +16,7 @@ namespace pva.SuperV.ApiTests
 
         private readonly TestProjectApplication application;
         private readonly HttpClient client;
-        private IFieldFormatterService MockFieldFormatterService { get => application.MockFieldFormatterService!; }
+        private IFieldFormatterService MockedFieldFormatterService { get => application.MockedFieldFormatterService!; }
 
         public FieldFormatterEndpointsTests(ITestOutputHelper output)
         {
@@ -30,7 +30,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             List<string> expectedFieldFormatterTypes = ["FormatterType1"];
-            MockFieldFormatterService.GetFieldFormatterTypes()
+            MockedFieldFormatterService.GetFieldFormatterTypes()
                 .Returns(expectedFieldFormatterTypes);
 
             // WHEN
@@ -47,7 +47,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             List<FieldFormatterModel> expectedFieldFormatters = [new EnumFormatterModel("FieldFormatter", new Dictionary<int, string>() { { 1, "OFF" } })];
-            MockFieldFormatterService.GetFieldFormatters("Project")
+            MockedFieldFormatterService.GetFieldFormatters("Project")
                 .Returns(expectedFieldFormatters);
 
             // WHEN
@@ -64,7 +64,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel("FieldFormatter", new Dictionary<int, string>() { { 1, "OFF" } });
-            MockFieldFormatterService.GetFieldFormatter("Project", expectedFieldFormatter.Name)
+            MockedFieldFormatterService.GetFieldFormatter("Project", expectedFieldFormatter.Name)
                 .Returns(expectedFieldFormatter);
 
             // WHEN
@@ -83,7 +83,7 @@ namespace pva.SuperV.ApiTests
             Dictionary<int, string> values = new() { { 0, "Off" }, { 1, "ON" } };
             EnumFormatterModel expectedFieldFormatter = new("FieldFormatter", values);
             CreateFieldFormatterRequest createRequest = new(expectedFieldFormatter);
-            MockFieldFormatterService.CreateFieldFormatter("Project", Arg.Any<FieldFormatterModel>())
+            MockedFieldFormatterService.CreateFieldFormatter("Project", Arg.Any<FieldFormatterModel>())
                 .Returns(expectedFieldFormatter);
 
             // WHEN

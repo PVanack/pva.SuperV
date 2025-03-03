@@ -54,7 +54,8 @@ namespace pva.SuperV.Api
                 .AddSingleton<IHistoryRepositoryService, HistoryRepositoryService>()
                 .AddSingleton<IFieldDefinitionService, FieldDefinitionService>()
                 .AddSingleton<IFieldProcessingService, FieldProcessingService>()
-                .AddSingleton<IInstanceService, InstanceService>();
+                .AddSingleton<IInstanceService, InstanceService>()
+                .AddSingleton<IFieldValueService, FieldValueService>();
             builder.Services.AddOpenApi(options =>
             {
                 options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -126,19 +127,18 @@ namespace pva.SuperV.Api
 
     [JsonSerializable(typeof(List<FieldDefinitionModel>))]
     [JsonSerializable(typeof(FieldDefinitionModel))]
-    [JsonSerializable(typeof(IntFieldDefinitionModel))]
     [JsonSerializable(typeof(BoolFieldDefinitionModel))]
-    [JsonSerializable(typeof(ShortFieldDefinitionModel))]
-    [JsonSerializable(typeof(UshortFieldDefinitionModel))]
-    [JsonSerializable(typeof(IntFieldDefinitionModel))]
-    [JsonSerializable(typeof(UintFieldDefinitionModel))]
-    [JsonSerializable(typeof(LongFieldDefinitionModel))]
-    [JsonSerializable(typeof(UlongFieldDefinitionModel))]
-    [JsonSerializable(typeof(FloatFieldDefinitionModel))]
-    [JsonSerializable(typeof(DoubleFieldDefinitionModel))]
-    [JsonSerializable(typeof(StringFieldDefinitionModel))]
     [JsonSerializable(typeof(DateTimeFieldDefinitionModel))]
+    [JsonSerializable(typeof(DoubleFieldDefinitionModel))]
+    [JsonSerializable(typeof(FloatFieldDefinitionModel))]
+    [JsonSerializable(typeof(IntFieldDefinitionModel))]
+    [JsonSerializable(typeof(LongFieldDefinitionModel))]
+    [JsonSerializable(typeof(ShortFieldDefinitionModel))]
+    [JsonSerializable(typeof(StringFieldDefinitionModel))]
     [JsonSerializable(typeof(TimeSpanFieldDefinitionModel))]
+    [JsonSerializable(typeof(UintFieldDefinitionModel))]
+    [JsonSerializable(typeof(UlongFieldDefinitionModel))]
+    [JsonSerializable(typeof(UshortFieldDefinitionModel))]
 
     [JsonSerializable(typeof(List<FieldValueProcessingModel>))]
     [JsonSerializable(typeof(FieldValueProcessingModel))]
@@ -148,17 +148,17 @@ namespace pva.SuperV.Api
     [JsonSerializable(typeof(List<InstanceModel>))]
     [JsonSerializable(typeof(InstanceModel))]
     [JsonSerializable(typeof(BoolFieldValueModel))]
-    [JsonSerializable(typeof(ShortFieldValueModel))]
-    [JsonSerializable(typeof(UshortFieldValueModel))]
-    [JsonSerializable(typeof(IntFieldValueModel))]
-    [JsonSerializable(typeof(UintFieldValueModel))]
-    [JsonSerializable(typeof(LongFieldValueModel))]
-    [JsonSerializable(typeof(UlongFieldValueModel))]
-    [JsonSerializable(typeof(FloatFieldValueModel))]
-    [JsonSerializable(typeof(DoubleFieldValueModel))]
-    [JsonSerializable(typeof(StringFieldValueModel))]
     [JsonSerializable(typeof(DateTimeFieldValueModel))]
+    [JsonSerializable(typeof(DoubleFieldValueModel))]
+    [JsonSerializable(typeof(FloatFieldValueModel))]
+    [JsonSerializable(typeof(IntFieldValueModel))]
+    [JsonSerializable(typeof(LongFieldValueModel))]
+    [JsonSerializable(typeof(ShortFieldValueModel))]
+    [JsonSerializable(typeof(StringFieldValueModel))]
     [JsonSerializable(typeof(TimeSpanFieldValueModel))]
+    [JsonSerializable(typeof(UintFieldValueModel))]
+    [JsonSerializable(typeof(UlongFieldValueModel))]
+    [JsonSerializable(typeof(UshortFieldValueModel))]
     internal partial class AppJsonSerializerContext : JsonSerializerContext
     {
     }

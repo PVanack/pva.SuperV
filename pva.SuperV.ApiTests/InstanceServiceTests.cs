@@ -11,13 +11,14 @@ namespace pva.SuperV.ApiTests
     public class InstanceServiceTests
     {
         private readonly InstanceService _instanceService;
+        private readonly FieldValueService _fieldValueService;
         private readonly RunnableProject runnableProject;
-        private readonly WipProject wipProject;
         private readonly InstanceModel expectedInstance;
 
         public InstanceServiceTests()
         {
             _instanceService = new();
+            _fieldValueService = new();
             runnableProject = ProjectHelpers.CreateRunnableProject();
             Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
             expectedInstance = new(instance!.Name, instance!.Class.Name!,
@@ -30,7 +31,6 @@ namespace pva.SuperV.ApiTests
                 new FieldModel(ProjectHelpers.LowLowLimitFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(ProjectHelpers.LowLowLimitFieldName))),
                 new FieldModel(ProjectHelpers.AlarmStateFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(ProjectHelpers.AlarmStateFieldName)))
             ]);
-            wipProject = ProjectHelpers.CreateWipProject(null);
         }
 
         [Fact]
@@ -99,6 +99,17 @@ namespace pva.SuperV.ApiTests
 
             // Assert
             runnableProject.Instances.ShouldNotContainKey(expectedInstance.Name);
+        }
+        [Fact]
+        public void UpdateInstanceFieldValueInRunnableProject_ShouldUpdateInstaceFieldValue()
+        {
+            StringFieldValueModel expectedFieldValue = (expectedInstance.Fields[0].FieldValue as StringFieldValueModel) with { Value = "The value has been updated" };
+            // Act & Assert
+            FieldValueModel updatedFieldModel = _fieldValueService.UpdateFieldValue(runnableProject.GetId(), expectedInstance.Name, expectedInstance.Fields[0].Name, expectedFieldValue);
+
+            updatedFieldModel.ShouldNotBeNull()
+                .ShouldBeOfType<StringFieldValueModel>()
+                .ShouldBeEquivalentTo(expectedFieldValue);
         }
     }
 }

@@ -107,9 +107,9 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="newValue">The value to be set.</param>
         /// <param name="timestamp">The timestamp of value.</param>
-        public void SetValue(T newValue, DateTime timestamp)
+        public void SetValue(T newValue, DateTime? timestamp)
         {
-            SetValue(newValue, timestamp, QualityLevel.Good);
+            SetValue(newValue, timestamp ?? DateTime.Now, QualityLevel.Good);
         }
 
         /// <summary>
@@ -117,9 +117,9 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="newValue">The value to be set.</param>
         /// <param name="quality">The quality of value.</param>
-        public void SetValue(T newValue, QualityLevel quality)
+        public void SetValue(T newValue, QualityLevel? quality)
         {
-            SetValue(newValue, DateTime.UtcNow, quality);
+            SetValue(newValue, DateTime.UtcNow, quality ?? QualityLevel.Good);
         }
 
         /// <summary>
@@ -128,14 +128,44 @@ namespace pva.SuperV.Engine
         /// <param name="newValue">The value to be set.</param>
         /// <param name="timestamp">The timestamp of value.</param>
         /// <param name="quality">The quality of value.</param>
-        public void SetValue(T newValue, DateTime timestamp, QualityLevel quality)
+        public void SetValue(T newValue, DateTime? timestamp, QualityLevel? quality)
         {
             T previousValue = _value;
-            SetValueInternal(newValue, timestamp, quality);
+            SetValueInternal(newValue, timestamp ?? DateTime.Now, quality ?? QualityLevel.Good);
             ProcessNewValue(!previousValue!.Equals(newValue), newValue, previousValue!);
         }
 
-        public void SetValueInternal(T newValue, DateTime timestamp, QualityLevel quality)
+
+        public static void SetValue<T1>(IField field, T1 value, DateTime? timestamp, QualityLevel? quality)
+        {
+            if (field.Type == typeof(T1))
+            {
+                ((Field<T1>)field).SetValue(value, timestamp, quality);
+                return;
+            }
+            else if (value is string stringValue)
+            {
+                (field switch
+                {
+                    Field<bool> typedField => new Action(() => typedField.SetValue(ConvertToBool(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
+                    Field<DateTime> typedField => new Action(() => typedField.SetValue(ConvertToDateTime(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
+                    Field<double> typedField => new Action(() => typedField.SetValue(ConvertToDouble(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
+                    Field<float> typedField => new Action(() => typedField.SetValue(ConvertToFloat(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
+                    Field<int> typedField => new Action(() => typedField.SetValue(ConvertToInt(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
+                    Field<long> typedField => new Action(() => typedField.SetValue(ConvertToLong(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
+                    Field<short> typedField => new Action(() => typedField.SetValue(ConvertToShort(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
+                    Field<TimeSpan> typedField => new Action(() => typedField.SetValue(ConvertToTimeSpan(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
+                    Field<uint> typedField => new Action(() => typedField.SetValue(ConvertToUint(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
+                    Field<ulong> typedField => new Action(() => typedField.SetValue(ConvertToUlong(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
+                    Field<ushort> typedField => new Action(() => typedField.SetValue(ConvertToUshort(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
+                    _ => new Action(() => throw new UnhandledFieldTypeException(field.FieldDefinition!.Name, field.Type))
+                })();
+                return;
+            }
+            throw new UnhandledFieldTypeException(field.FieldDefinition!.Name, field.Type);
+        }
+
+        public void SetValueInternal(T newValue, DateTime? timestamp, QualityLevel? quality)
         {
             _timestamp = timestamp;
             _quality = quality;
@@ -163,34 +193,6 @@ namespace pva.SuperV.Engine
             return FieldDefinition?.Formatter?.ConvertToString(Value) ??
                 Value?.ToString();
         }
-
-        public static void SetValue<T1>(IField field, T1 value, DateTime timestamp, QualityLevel quality)
-        {
-            if (field.Type == typeof(T1))
-            {
-                ((Field<T1>)field).SetValue(value, timestamp, quality);
-            }
-            else if (value is string stringValue)
-            {
-                (field switch
-                {
-                    Field<bool> typedField => new Action(() => typedField.SetValue(ConvertToBool(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
-                    Field<DateTime> typedField => new Action(() => typedField.SetValue(ConvertToDateTime(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
-                    Field<double> typedField => new Action(() => typedField.SetValue(ConvertToDouble(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
-                    Field<float> typedField => new Action(() => typedField.SetValue(ConvertToFloat(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
-                    Field<int> typedField => new Action(() => typedField.SetValue(ConvertToInt(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
-                    Field<long> typedField => new Action(() => typedField.SetValue(ConvertToLong(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
-                    Field<short> typedField => new Action(() => typedField.SetValue(ConvertToShort(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
-                    Field<TimeSpan> typedField => new Action(() => typedField.SetValue(ConvertToTimeSpan(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
-                    Field<uint> typedField => new Action(() => typedField.SetValue(ConvertToUint(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
-                    Field<ulong> typedField => new Action(() => typedField.SetValue(ConvertToUlong(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
-                    Field<ushort> typedField => new Action(() => typedField.SetValue(ConvertToUshort(field.FieldDefinition!.Name, stringValue), timestamp, quality)),
-                    _ => new Action(() => throw new UnhandledFieldTypeException(field.FieldDefinition!.Name, field.Type))
-                })();
-            }
-            throw new UnhandledFieldTypeException(field.FieldDefinition!.Name, field.Type);
-        }
-
         public static bool ConvertToBool(string fieldName, string stringValue)
              => Boolean.TryParse(stringValue, out bool result) ? result : throw new StringConversionException(fieldName, stringValue, typeof(bool));
 

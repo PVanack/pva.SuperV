@@ -259,14 +259,14 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// </summary>
         /// <param name="field">Field fr zhich the TDengine data type should be retrieved.</param>
         /// <returns>TDengine data type.</returns>
-        /// <exception cref="UnhandledFieldTypeException"></exception>
+        /// <exception cref="UnhandledHistoryFieldTypeException"></exception>
         private static string GetFieldDbType(IFieldDefinition field)
         {
             if (DotnetToDbTypes.TryGetValue(field.Type, out var dbType))
             {
                 return dbType;
             }
-            throw new UnhandledFieldTypeException(field.Name, field.Type);
+            throw new UnhandledHistoryFieldTypeException(field.Name, field.Type);
         }
     }
 }

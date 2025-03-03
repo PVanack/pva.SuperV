@@ -53,7 +53,7 @@ namespace pva.SuperV.EngineTests
             clazz.AddField(new FieldDefinition<TimeSpan>("TimeSpanField"));
             wipProject.AddFieldChangePostProcessing(ProjectHelpers.ClassName, ProjectHelpers.ValueFieldName,
                 new HistorizationProcessing<int>("BadHistProcessing", wipProject, clazz, ProjectHelpers.ValueFieldName, ProjectHelpers.HistoryRepositoryName, null, ["TimeSpanField"]));
-            await Assert.ThrowsAsync<UnhandledFieldTypeException>(async () => await Project.BuildAsync(wipProject));
+            await Assert.ThrowsAsync<UnhandledHistoryFieldTypeException>(async () => await Project.BuildAsync(wipProject));
         }
     }
 }

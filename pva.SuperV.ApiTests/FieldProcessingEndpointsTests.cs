@@ -17,7 +17,7 @@ namespace pva.SuperV.ApiTests
 
         private readonly TestProjectApplication application;
         private readonly HttpClient client;
-        private IFieldProcessingService MockedFieldProcessingService { get => application.MockFieldProcessingService!; }
+        private IFieldProcessingService MockedFieldProcessingService { get => application.MockedFieldProcessingService!; }
 
         public FieldProcessingEndpointsTests(ITestOutputHelper output)
         {

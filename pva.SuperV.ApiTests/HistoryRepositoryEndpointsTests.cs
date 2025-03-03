@@ -16,7 +16,7 @@ namespace pva.SuperV.ApiTests
 
         private readonly TestProjectApplication application;
         private readonly HttpClient client;
-        private IHistoryRepositoryService MockHistoryRepositoryService { get => application.MockHistoryRepositoryService!; }
+        private IHistoryRepositoryService MockedHistoryRepositoryService { get => application.MockedHistoryRepositoryService!; }
 
         public HistoryRepositoryEndpointsTests(ITestOutputHelper output)
         {
@@ -30,7 +30,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             List<HistoryRepositoryModel> expectedHistoryRepositories = [new HistoryRepositoryModel("Repository1")];
-            MockHistoryRepositoryService.GetHistoryRepositories("Project")
+            MockedHistoryRepositoryService.GetHistoryRepositories("Project")
                 .Returns(expectedHistoryRepositories);
             // WHEN
             var result = await client.GetAsync("/history-repositories/Project");
@@ -46,7 +46,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
-            MockHistoryRepositoryService.GetHistoryRepository("Project", $"{expectedHistoryRepository.Name}")
+            MockedHistoryRepositoryService.GetHistoryRepository("Project", $"{expectedHistoryRepository.Name}")
                 .Returns(expectedHistoryRepository);
             // WHEN
             var result = await client.GetAsync($"/history-repositories/Project/{expectedHistoryRepository.Name}");
@@ -62,7 +62,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
-            MockHistoryRepositoryService.CreateHistoryRepository("Project", expectedHistoryRepository)
+            MockedHistoryRepositoryService.CreateHistoryRepository("Project", expectedHistoryRepository)
                 .Returns(expectedHistoryRepository);
 
             // WHEN

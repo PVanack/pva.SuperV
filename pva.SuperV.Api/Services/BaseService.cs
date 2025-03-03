@@ -29,13 +29,13 @@ namespace pva.SuperV.Api.Services
             throw new UnknownEntityException("Class", className);
         }
 
-        protected static IFieldDefinition GetFieldEntity(Project project, string className, string fieldName)
+        protected static IFieldDefinition GetFieldDefinitionEntity(Project project, string className, string fieldName)
         {
             Class clazz = GetClassEntity(project, className);
-            return GetFieldEntity(clazz, fieldName);
+            return GetFieldDefinitionEntity(clazz, fieldName);
         }
 
-        protected static IFieldDefinition GetFieldEntity(Class clazz, string fieldName)
+        protected static IFieldDefinition GetFieldDefinitionEntity(Class clazz, string fieldName)
         {
             if (clazz.FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
             {
@@ -44,6 +44,16 @@ namespace pva.SuperV.Api.Services
             throw new UnknownEntityException("Field", fieldName);
         }
 
+        protected static IField GetFieldEntity(string projectId, string instanceName, string fieldName)
+        {
+            Project project = GetProjectEntity(projectId);
+            if (project is RunnableProject runnableProject)
+            {
+                Instance instance = runnableProject.GetInstance(instanceName);
+                return instance.GetField(fieldName);
+            }
+            throw new NonRunnableProjectException(projectId);
+        }
 
     }
 }

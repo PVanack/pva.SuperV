@@ -6,6 +6,7 @@ namespace pva.SuperV.Model.Instances
 {
     [JsonDerivedType(typeof(BoolFieldValueModel), typeDiscriminator: nameof(BoolFieldValueModel))]
     [JsonDerivedType(typeof(DateTimeFieldValueModel), typeDiscriminator: nameof(DateTimeFieldValueModel))]
+    [JsonDerivedType(typeof(DoubleFieldValueModel), typeDiscriminator: nameof(DoubleFieldValueModel))]
     [JsonDerivedType(typeof(FloatFieldValueModel), typeDiscriminator: nameof(FloatFieldValueModel))]
     [JsonDerivedType(typeof(IntFieldValueModel), typeDiscriminator: nameof(IntFieldValueModel))]
     [JsonDerivedType(typeof(LongFieldValueModel), typeDiscriminator: nameof(LongFieldValueModel))]

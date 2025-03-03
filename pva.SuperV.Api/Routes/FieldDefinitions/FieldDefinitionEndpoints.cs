@@ -15,8 +15,8 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 [Description("ID of project")] string projectId,
                 [Description("Name of class")] string className)
                     => GetFieldDefinitions.Handle(fieldDefinitionService, projectId, className))
-                .WithName("GetFields")
-                .WithDisplayName("GetFields")
+                .WithName("GetFieldDefinitions")
+                .WithDisplayName("GetFieldDefinitions")
                 .WithSummary("Gets the list of available fields in a class from a project")
                 .WithDescription("Gets the list of available fields in a class from a project")
                 .Produces<List<FieldDefinitionModel>>(StatusCodes.Status200OK)
@@ -29,10 +29,10 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 [Description("Name of class")] string className,
                 [Description("Name of field")] string fieldName)
                     => GetFieldDefinition.Handle(fieldDefinitionService, projectId, className, fieldName))
-                .WithName("GetField")
-                .WithDisplayName("GetField")
-                .WithSummary("Gets a field from a class of a project by its name")
-                .WithDescription("Gets a field from a class of a project by its name")
+                .WithName("GetFieldDefinition")
+                .WithDisplayName("GetFieldDefinition")
+                .WithSummary("Gets a field definition from a class of a project by its name")
+                .WithDescription("Gets a field definitionfrom a class of a project by its name")
                 .Produces<FieldDefinitionModel>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
@@ -43,10 +43,10 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 [Description("Name of class")] string className,
                 [Description("Field creation request")][FromBody] FieldDefinitionModel createRequest)
                     => CreateField.Handle(fieldDefinitionService, projectId, className, createRequest))
-                .WithName("CreateField")
-                .WithDisplayName("CreateField")
-                .WithSummary("Creates a field in a class of a project")
-                .WithDescription("Creates a field in a class of a project")
+                .WithName("CreateFieldDefinition")
+                .WithDisplayName("CreateFieldDefinition")
+                .WithSummary("Creates a field definition in a class of a project")
+                .WithDescription("Creates a field definition in a class of a project")
                 .Produces<FieldDefinitionModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
@@ -57,10 +57,10 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 [Description("Name of class")] string className,
                 [Description("Name of field")] string fieldName)
                     => DeleteField.Handle(fieldDefinitionService, projectId, className, fieldName))
-                .WithName("DeleteField")
-                .WithDisplayName("DeleteField")
-                .WithSummary("Deletes a field from a class of a project by its name")
-                .WithDescription("Deletes a field from a class of a project by its name")
+                .WithName("DeleteFieldDefinition")
+                .WithDisplayName("DeleteFieldDefinition")
+                .WithSummary("Deletes a field definition from a class of a project by its name")
+                .WithDescription("Deletes a field definition from a class of a project by its name")
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);

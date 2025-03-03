@@ -16,7 +16,7 @@ public class FieldDefinitionEndpointsTests
 
     private readonly TestProjectApplication application;
     private readonly HttpClient client;
-    private IFieldDefinitionService MockFieldDefinitionService { get => application.MockFieldDefinitionService!; }
+    private IFieldDefinitionService MockedFieldDefinitionService { get => application.MockedFieldDefinitionService!; }
 
     public FieldDefinitionEndpointsTests(ITestOutputHelper output)
     {
@@ -30,7 +30,7 @@ public class FieldDefinitionEndpointsTests
     {
         // GIVEN
         List<FieldDefinitionModel> expectedFieldDefinitions = [new IntFieldDefinitionModel("IntField")];
-        MockFieldDefinitionService.GetFields("Project", "Class")
+        MockedFieldDefinitionService.GetFields("Project", "Class")
             .Returns(expectedFieldDefinitions);
 
         // WHEN
@@ -117,7 +117,7 @@ public class FieldDefinitionEndpointsTests
     private async Task GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned<T>(T expectedFieldDefinition) where T : FieldDefinitionModel
     {
         // GIVEN
-        MockFieldDefinitionService.GetField("Project", "Class", expectedFieldDefinition.Name)
+        MockedFieldDefinitionService.GetField("Project", "Class", expectedFieldDefinition.Name)
             .Returns(expectedFieldDefinition);
 
         // WHEN
@@ -134,7 +134,7 @@ public class FieldDefinitionEndpointsTests
     {
         // GIVEN
         FieldDefinitionModel expectedFieldDefinition = new IntFieldDefinitionModel("IntField");
-        MockFieldDefinitionService.CreateField("Project", "Class", Arg.Any<FieldDefinitionModel>())
+        MockedFieldDefinitionService.CreateField("Project", "Class", Arg.Any<FieldDefinitionModel>())
             .Returns(expectedFieldDefinition);
 
         // WHEN

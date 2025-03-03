@@ -16,7 +16,8 @@ namespace pva.SuperV.ApiTests
 
         private readonly TestProjectApplication application;
         private readonly HttpClient client;
-        private IInstanceService MockedInstanceService { get => application.MockInstanceService!; }
+        private IInstanceService MockedInstanceService { get => application.MockedInstanceService!; }
+        private IFieldValueService MockedFieldValueService { get => application.MockedFieldValueService!; }
 
         public InstancesEndpointsTests(ITestOutputHelper output)
         {
@@ -64,7 +65,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task GivenWipProject_WhenCreatingProjectInstance_ThenInstanceIsCreated()
+        public async Task GivenWipProject_WhenCreatingProjectInstanceWithFieldValues_ThenInstanceIsCreatedWithFieldValues()
         {
             // GIVEN
             InstanceModel expectedInstance =
@@ -97,5 +98,21 @@ namespace pva.SuperV.ApiTests
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
         }
 
+        [Fact]
+        public async Task GivenWipProject_WhenUpdatingInstanceFieldValue_ThenFieldValueIsUpdated()
+        {
+            // GIVEN
+            FieldValueModel expectedFieldValue = new ShortFieldValueModel(5321, Engine.QualityLevel.Good, DateTime.Now);
+            MockedFieldValueService.UpdateFieldValue("Project1", "Instance1", "Field1", Arg.Any<FieldValueModel>())
+                .Returns(expectedFieldValue);
+
+            // WHEN
+            var response = await client.PutAsJsonAsync($"/instances/Project1/Instance1/Field1", expectedFieldValue);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            FieldValueModel? updatedValue = await response.Content.ReadFromJsonAsync<FieldValueModel>();
+            updatedValue.ShouldBeEquivalentTo(expectedFieldValue);
+        }
     }
 }

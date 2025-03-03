@@ -62,6 +62,35 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
+            fieldDefinitionsApi.MapGet("/{projectId}/{instanceName}/{fieldName}",
+                (IFieldValueService fieldValueService,
+                [Description("ID of project")] string projectId,
+                [Description("Name of instance")] string instanceName,
+                [Description("Name of field")] string fieldName)
+                    => GetInstanceField.Handle(fieldValueService, projectId, instanceName, fieldName))
+                .WithName("GetField")
+                .WithDisplayName("GetField")
+                .WithSummary("Gets the field of an instance from a project by its name")
+                .WithDescription("Gets the field of an instance from a project by its name")
+                .Produces(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
+
+            fieldDefinitionsApi.MapPut("/{projectId}/{instanceName}/{fieldName}",
+                (IFieldValueService fieldValueService,
+                [Description("ID of project")] string projectId,
+                [Description("Name of instance")] string instanceName,
+                [Description("Name of field")] string fieldName,
+                [Description("Value of field")][FromBody] FieldValueModel value)
+                    => UpdateInstanceFieldValue.Handle(fieldValueService, projectId, instanceName, fieldName, value))
+                .WithName("UpdateFieldValue")
+                .WithDisplayName("UpdateFieldValue")
+                .WithSummary("Updates the value of a field of an instance from a project by its name")
+                .WithDescription("Updates the value of a field of an instance from a project by its name")
+                .Produces(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
+
             return app;
         }
     }
