@@ -103,7 +103,7 @@ namespace pva.SuperV.ApiTests
         [Fact]
         public void UpdateInstanceFieldValueInRunnableProject_ShouldUpdateInstaceFieldValue()
         {
-            StringFieldValueModel expectedFieldValue = (expectedInstance.Fields[0].FieldValue as StringFieldValueModel) with { Value = "The value has been updated" };
+            StringFieldValueModel expectedFieldValue = ((StringFieldValueModel)expectedInstance.Fields[0].FieldValue) with { Value = "The value has been updated" };
             // Act & Assert
             FieldValueModel updatedFieldModel = _fieldValueService.UpdateFieldValue(runnableProject.GetId(), expectedInstance.Name, expectedInstance.Fields[0].Name, expectedFieldValue);
 
