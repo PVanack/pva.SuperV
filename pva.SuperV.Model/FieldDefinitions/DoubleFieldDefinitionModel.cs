@@ -3,10 +3,10 @@
 namespace pva.SuperV.Model.FieldDefinitions
 {
     [Description("Double field definition.")]
-    public record DoubleFieldDefinitionModel : FieldDefinitionModel
+    public record DoubleFieldDefinitionModel(
+            string Name,
+            [property: Description("Default value")] double DefaultValue)
+            : FieldDefinitionModel(Name, typeof(double).ToString())
     {
-        public DoubleFieldDefinitionModel(string Name) : base(Name, nameof(DoubleFieldDefinitionModel))
-        {
-        }
     }
 }

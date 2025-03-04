@@ -3,10 +3,10 @@
 namespace pva.SuperV.Model.FieldDefinitions
 {
     [Description("Boolean field definition.")]
-    public record BoolFieldDefinitionModel : FieldDefinitionModel
+    public record BoolFieldDefinitionModel(
+        string Name,
+        [property: Description("Default value")] bool DefaultValue)
+        : FieldDefinitionModel(Name, typeof(bool).ToString())
     {
-        public BoolFieldDefinitionModel(string Name) : base(Name, nameof(BoolFieldDefinitionModel))
-        {
-        }
     }
 }

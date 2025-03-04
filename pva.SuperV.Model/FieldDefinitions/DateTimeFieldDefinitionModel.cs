@@ -3,10 +3,10 @@
 namespace pva.SuperV.Model.FieldDefinitions
 {
     [Description("Date and time field definition.")]
-    public record DateTimeFieldDefinitionModel : FieldDefinitionModel
+    public record DateTimeFieldDefinitionModel(
+            string Name,
+            [property: Description("Default value")] DateTime DefaultValue)
+            : FieldDefinitionModel(Name, typeof(DateTime).ToString())
     {
-        public DateTimeFieldDefinitionModel(string Name) : base(Name, nameof(DateTimeFieldDefinitionModel))
-        {
-        }
     }
 }

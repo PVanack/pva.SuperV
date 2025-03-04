@@ -3,10 +3,10 @@
 namespace pva.SuperV.Model.FieldDefinitions
 {
     [Description("Long field definition.")]
-    public record LongFieldDefinitionModel : FieldDefinitionModel
+    public record LongFieldDefinitionModel(
+            string Name,
+            [property: Description("Default value")] long DefaultValue)
+            : FieldDefinitionModel(Name, typeof(long).ToString())
     {
-        public LongFieldDefinitionModel(string Name) : base(Name, nameof(LongFieldDefinitionModel))
-        {
-        }
     }
 }

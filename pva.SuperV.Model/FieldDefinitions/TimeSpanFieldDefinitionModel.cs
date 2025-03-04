@@ -3,10 +3,10 @@
 namespace pva.SuperV.Model.FieldDefinitions
 {
     [Description("Time span field definition.")]
-    public record TimeSpanFieldDefinitionModel : FieldDefinitionModel
+    public record TimeSpanFieldDefinitionModel(
+            string Name,
+            [property: Description("Default value")] TimeSpan DefaultValue)
+            : FieldDefinitionModel(Name, typeof(TimeSpan).ToString())
     {
-        public TimeSpanFieldDefinitionModel(string Name) : base(Name, nameof(TimeSpanFieldDefinitionModel))
-        {
-        }
     }
 }

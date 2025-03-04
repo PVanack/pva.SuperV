@@ -24,7 +24,7 @@ namespace pva.SuperV.ApiTests
         public void GetClassFieldDefinitions_ShouldReturnListOfClassFieldDefinitions()
         {
             // GIVEN
-            List<FieldDefinitionModel> expectedFieldDefinitions = [new StringFieldDefinitionModel(ProjectHelpers.BaseClassFieldName)];
+            List<FieldDefinitionModel> expectedFieldDefinitions = [new StringFieldDefinitionModel(ProjectHelpers.BaseClassFieldName, "InheritedField")];
             // WHEN
             List<FieldDefinitionModel> fieldDefinitions = fieldDefinitionService.GetFields(runnableProject.GetId(), ProjectHelpers.BaseClassName);
 
@@ -38,7 +38,7 @@ namespace pva.SuperV.ApiTests
         public void GetClassFieldDefinition_ShouldReturnClassFieldDefinition()
         {
             // GIVEN
-            FieldDefinitionModel expectedFieldDefinition = new StringFieldDefinitionModel(ProjectHelpers.BaseClassFieldName);
+            FieldDefinitionModel expectedFieldDefinition = new StringFieldDefinitionModel(ProjectHelpers.BaseClassFieldName, "InheritedField");
             // WHEN
             FieldDefinitionModel fieldDefinition = fieldDefinitionService.GetField(runnableProject.GetId(), ProjectHelpers.BaseClassName, ProjectHelpers.BaseClassFieldName);
 
@@ -52,7 +52,7 @@ namespace pva.SuperV.ApiTests
         public void CreateClassFieldDefinition_ShouldCreateClassFieldDefinition()
         {
             // GIVEN
-            FieldDefinitionModel expectedFieldDefinition = new StringFieldDefinitionModel($"{ProjectHelpers.BaseClassFieldName}Added");
+            FieldDefinitionModel expectedFieldDefinition = new StringFieldDefinitionModel($"{ProjectHelpers.BaseClassFieldName}Added", "");
             // WHEN
             FieldDefinitionModel fieldDefinition = fieldDefinitionService.CreateField(wipProject.GetId(), ProjectHelpers.BaseClassName, expectedFieldDefinition);
 

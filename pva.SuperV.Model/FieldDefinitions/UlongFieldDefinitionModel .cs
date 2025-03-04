@@ -3,10 +3,10 @@
 namespace pva.SuperV.Model.FieldDefinitions
 {
     [Description("Unsigned long field definition.")]
-    public record UlongFieldDefinitionModel : FieldDefinitionModel
+    public record UlongFieldDefinitionModel(
+            string Name,
+            [property: Description("Default value")] ulong DefaultValue)
+            : FieldDefinitionModel(Name, typeof(ulong).ToString())
     {
-        public UlongFieldDefinitionModel(string Name) : base(Name, nameof(UlongFieldDefinitionModel))
-        {
-        }
     }
 }

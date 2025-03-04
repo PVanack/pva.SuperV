@@ -3,10 +3,10 @@
 namespace pva.SuperV.Model.FieldDefinitions
 {
     [Description("Boolen field definition.")]
-    public record IntFieldDefinitionModel : FieldDefinitionModel
+    public record IntFieldDefinitionModel(
+            string Name,
+            [property: Description("Default value")] int DefaultValue)
+            : FieldDefinitionModel(Name, typeof(int).ToString())
     {
-        public IntFieldDefinitionModel(string Name) : base(Name, nameof(IntFieldDefinitionModel))
-        {
-        }
     }
 }

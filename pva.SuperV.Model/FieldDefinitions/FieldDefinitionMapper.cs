@@ -6,20 +6,20 @@ namespace pva.SuperV.Model.FieldDefinitions
     {
         public static IFieldDefinition FromDto(FieldDefinitionModel field)
         {
-            return field?.Type switch
+            return field switch
             {
-                nameof(BoolFieldDefinitionModel) => new FieldDefinition<bool>(field.Name),
-                nameof(ShortFieldDefinitionModel) => new FieldDefinition<short>(field.Name),
-                nameof(UshortFieldDefinitionModel) => new FieldDefinition<ushort>(field.Name),
-                nameof(IntFieldDefinitionModel) => new FieldDefinition<int>(field.Name),
-                nameof(UintFieldDefinitionModel) => new FieldDefinition<uint>(field.Name),
-                nameof(LongFieldDefinitionModel) => new FieldDefinition<long>(field.Name),
-                nameof(UlongFieldDefinitionModel) => new FieldDefinition<ulong>(field.Name),
-                nameof(FloatFieldDefinitionModel) => new FieldDefinition<float>(field.Name),
-                nameof(DoubleFieldDefinitionModel) => new FieldDefinition<double>(field.Name),
-                nameof(StringFieldDefinitionModel) => new FieldDefinition<string>(field.Name),
-                nameof(DateTimeFieldDefinitionModel) => new FieldDefinition<DateTime>(field.Name),
-                nameof(TimeSpanFieldDefinitionModel) => new FieldDefinition<TimeSpan>(field.Name),
+                BoolFieldDefinitionModel derivedField => new FieldDefinition<bool>(field.Name, derivedField.DefaultValue),
+                ShortFieldDefinitionModel derivedField => new FieldDefinition<short>(field.Name, derivedField.DefaultValue),
+                UshortFieldDefinitionModel derivedField => new FieldDefinition<ushort>(field.Name, derivedField.DefaultValue),
+                IntFieldDefinitionModel derivedField => new FieldDefinition<int>(field.Name, derivedField.DefaultValue),
+                UintFieldDefinitionModel derivedField => new FieldDefinition<uint>(field.Name, derivedField.DefaultValue),
+                LongFieldDefinitionModel derivedField => new FieldDefinition<long>(field.Name, derivedField.DefaultValue),
+                UlongFieldDefinitionModel derivedField => new FieldDefinition<ulong>(field.Name, derivedField.DefaultValue),
+                FloatFieldDefinitionModel derivedField => new FieldDefinition<float>(field.Name, derivedField.DefaultValue),
+                DoubleFieldDefinitionModel derivedField => new FieldDefinition<double>(field.Name, derivedField.DefaultValue),
+                StringFieldDefinitionModel derivedField => new FieldDefinition<string>(field.Name, derivedField.DefaultValue),
+                DateTimeFieldDefinitionModel derivedField => new FieldDefinition<DateTime>(field.Name, derivedField.DefaultValue),
+                TimeSpanFieldDefinitionModel derivedField => new FieldDefinition<TimeSpan>(field.Name, derivedField.DefaultValue),
                 _ => throw new UnhandledMappingException(nameof(FieldDefinitionMapper), field?.Type.ToString()),
             };
         }
@@ -28,18 +28,18 @@ namespace pva.SuperV.Model.FieldDefinitions
         {
             return field switch
             {
-                FieldDefinition<bool> => new BoolFieldDefinitionModel(field.Name),
-                FieldDefinition<short> => new ShortFieldDefinitionModel(field.Name),
-                FieldDefinition<ushort> => new UshortFieldDefinitionModel(field.Name),
-                FieldDefinition<int> => new IntFieldDefinitionModel(field.Name),
-                FieldDefinition<uint> => new UintFieldDefinitionModel(field.Name),
-                FieldDefinition<long> => new LongFieldDefinitionModel(field.Name!),
-                FieldDefinition<ulong> => new UlongFieldDefinitionModel(field.Name),
-                FieldDefinition<float> => new FloatFieldDefinitionModel(field.Name),
-                FieldDefinition<double> => new DoubleFieldDefinitionModel(field.Name),
-                FieldDefinition<string> => new StringFieldDefinitionModel(field.Name),
-                FieldDefinition<DateTime> => new DateTimeFieldDefinitionModel(field.Name),
-                FieldDefinition<TimeSpan> => new TimeSpanFieldDefinitionModel(field.Name),
+                FieldDefinition<bool> derivedField => new BoolFieldDefinitionModel(field.Name, derivedField.DefaultValue),
+                FieldDefinition<short> derivedField => new ShortFieldDefinitionModel(field.Name, derivedField.DefaultValue),
+                FieldDefinition<ushort> derivedField => new UshortFieldDefinitionModel(field.Name, derivedField.DefaultValue),
+                FieldDefinition<int> derivedField => new IntFieldDefinitionModel(field.Name, derivedField.DefaultValue),
+                FieldDefinition<uint> derivedField => new UintFieldDefinitionModel(field.Name, derivedField.DefaultValue),
+                FieldDefinition<long> derivedField => new LongFieldDefinitionModel(field.Name, derivedField.DefaultValue),
+                FieldDefinition<ulong> derivedField => new UlongFieldDefinitionModel(field.Name, derivedField.DefaultValue),
+                FieldDefinition<float> derivedField => new FloatFieldDefinitionModel(field.Name, derivedField.DefaultValue),
+                FieldDefinition<double> derivedField => new DoubleFieldDefinitionModel(field.Name, derivedField.DefaultValue),
+                FieldDefinition<string> derivedField => new StringFieldDefinitionModel(field.Name, derivedField.DefaultValue),
+                FieldDefinition<DateTime> derivedField => new DateTimeFieldDefinitionModel(field.Name, derivedField.DefaultValue),
+                FieldDefinition<TimeSpan> derivedField => new TimeSpanFieldDefinitionModel(field.Name, derivedField.DefaultValue),
                 _ => throw new UnhandledMappingException(nameof(FieldDefinitionMapper), field?.Type.ToString()),
             };
         }
