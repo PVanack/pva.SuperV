@@ -6,7 +6,7 @@ namespace pva.SuperV.Engine.Exceptions
     [Serializable]
     public class StringConversionException : SuperVException
     {
-        public StringConversionException(string fieldName, string stringValue, Type fieldType)
+        public StringConversionException(string fieldName, string? stringValue, Type fieldType)
             : base($"Can't convert {stringValue} for {fieldName} with type {fieldType}")
         {
         }

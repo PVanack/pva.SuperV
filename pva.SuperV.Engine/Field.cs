@@ -145,6 +145,10 @@ namespace pva.SuperV.Engine
             }
             else if (value is string stringValue)
             {
+                if (field.FieldDefinition?.Formatter is not null)
+                {
+                    field.FieldDefinition?.Formatter.ConvertFromString(field, value as string, timestamp, quality);
+                }
                 (field switch
                 {
                     Field<bool> typedField => new Action(() => typedField.SetValue(ConvertToBool(field.FieldDefinition!.Name, stringValue), timestamp, quality)),

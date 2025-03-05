@@ -90,8 +90,7 @@ namespace pva.SuperV.Engine
             });
         }
 
-        public List<HistoryRow> GetHistoryValues(string instanceName, DateTime from, DateTime to,
-            List<string> fieldNames)
+        public List<HistoryRow> GetHistoryValues(string instanceName, DateTime from, DateTime to, List<string> fieldNames)
         {
             Instance instance = GetInstance(instanceName);
             List<IFieldDefinition> fields = [];

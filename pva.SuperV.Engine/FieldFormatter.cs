@@ -69,5 +69,7 @@ namespace pva.SuperV.Engine
         /// <param name="value">The value.</param>
         /// <returns>String representing the value.</returns>
         public abstract string? ConvertToString(dynamic? value);
+
+        public abstract void ConvertFromString(IField field, string? value, DateTime? timestamp, QualityLevel? quality);
     }
 }

@@ -18,4 +18,8 @@
     <ProjectReference Include="..\pva.SuperV.Model\pva.SuperV.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="openapi\" />
+  </ItemGroup>
+
 </Project>
