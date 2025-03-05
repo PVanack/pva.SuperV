@@ -7,7 +7,7 @@ namespace pva.SuperV.Api.Routes.Instances
 {
     internal static class GetInstances
     {
-        public static Results<Ok<List<InstanceModel>>, NotFound<string>, BadRequest<string>> Handle(IInstanceService instanceService, string projectId)
+        internal static Results<Ok<List<InstanceModel>>, NotFound<string>, BadRequest<string>> Handle(IInstanceService instanceService, string projectId)
         {
             try
             {

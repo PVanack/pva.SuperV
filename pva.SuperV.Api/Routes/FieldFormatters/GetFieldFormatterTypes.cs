@@ -4,7 +4,7 @@ using pva.SuperV.Engine.Exceptions;
 
 namespace pva.SuperV.Api.Routes.FieldFormatters
 {
-    public static class GetFieldFormatterTypes
+    internal static class GetFieldFormatterTypes
     {
         internal static Results<Ok<List<string>>, BadRequest<string>> Handle(IFieldFormatterService fieldFormatterService)
         {

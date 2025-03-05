@@ -7,6 +7,7 @@ namespace pva.SuperV.Api.Services.Projects
         List<ProjectModel> GetProjects();
         ProjectModel GetProject(string projectId);
         ProjectModel CreateProject(CreateProjectRequest createProjectRequest);
+        ProjectModel CreateProjectFromRunnable(string runnableProjectId);
         Task<ProjectModel> BuildProjectAsync(string projectId);
         Task<StreamReader?> GetProjectDefinitionsAsync(string projectId);
         void UnloadProject(string projectId);

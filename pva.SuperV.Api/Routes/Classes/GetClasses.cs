@@ -5,9 +5,9 @@ using pva.SuperV.Model.Classes;
 
 namespace pva.SuperV.Api.Routes.Classes
 {
-    public static class GetClasses
+    internal static class GetClasses
     {
-        public static Results<Ok<List<ClassModel>>, NotFound<string>, BadRequest<string>> Handle(IClassService classService, string projectId)
+        internal static Results<Ok<List<ClassModel>>, NotFound<string>, BadRequest<string>> Handle(IClassService classService, string projectId)
         {
             try
             {

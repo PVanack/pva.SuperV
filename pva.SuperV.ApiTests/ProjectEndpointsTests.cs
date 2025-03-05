@@ -158,6 +158,23 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public async Task GivenRunnableProject_WhenCreatingWiprojectFromRunnable_ThenWipProjectIsCreated()
+        {
+            // GIVEN
+            ProjectModel expectedCreatedProject = new("1", "NewProject", 2, "descriptioon", false);
+            MockedProjectService.CreateProjectFromRunnable("NewProject")
+                .Returns(expectedCreatedProject);
+
+            // WHEN
+            var response = await client.PostAsync("/projects/create/NewProject", null);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
+            var createdProject = await response.Content.ReadFromJsonAsync<ProjectModel>();
+            createdProject.ShouldBeEquivalentTo(expectedCreatedProject);
+        }
+
+        [Fact]
         public async Task GivenWipProject_WhenBuildigProjectFromIt_ThenRunnableProjectIsBuilt()
         {
             // GIVEN

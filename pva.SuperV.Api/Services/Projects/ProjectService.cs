@@ -22,6 +22,17 @@ namespace pva.SuperV.Api.Services.Projects
             return ProjectMapper.ToDto(wipProject);
         }
 
+        public ProjectModel CreateProjectFromRunnable(string runnableProjectId)
+        {
+            Project project = GetProjectEntity(runnableProjectId);
+            if (project is RunnableProject runnableProject)
+            {
+                WipProject wipProject = Project.CreateProject(runnableProject);
+                return ProjectMapper.ToDto(wipProject);
+            }
+            throw new NonRunnableProjectException(runnableProjectId);
+        }
+
         public async Task<ProjectModel> BuildProjectAsync(string projectId)
         {
             Project project = GetProjectEntity(projectId);

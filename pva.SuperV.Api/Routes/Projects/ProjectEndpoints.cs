@@ -34,10 +34,21 @@ namespace pva.SuperV.Api.Routes.Projects
                 (IProjectService projectService,
                 [Description("Project creation request")][FromBody] CreateProjectRequest createProjectRequest)
                     => CreateProject.Handle(projectService, createProjectRequest))
-                .WithName("CreateProject")
-                .WithDisplayName("CreateProject")
+                .WithName("CreateBlankProject")
+                .WithDisplayName("CreateBlankProjectFromRunnable")
                 .WithSummary("Creates a blank WIP project")
                 .WithDescription("Creates a blank WIP project")
+                .Produces<ProjectModel>(StatusCodes.Status201Created)
+                .Produces<string>(StatusCodes.Status404NotFound);
+
+            projectsApi.MapPost("/create/{runnableProjectId}",
+                (IProjectService projectService,
+                [Description("Runnable project ID")] string runnableProjectId)
+                    => CreateProjectFromRunnable.Handle(projectService, runnableProjectId))
+                .WithName("CreateProjectFromRunnable")
+                .WithDisplayName("CreateProjectFromRunnable")
+                .WithSummary("Creates a WIP project from a runnable project")
+                .WithDescription("Creates a WIP project from a runnable project")
                 .Produces<ProjectModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound);
 

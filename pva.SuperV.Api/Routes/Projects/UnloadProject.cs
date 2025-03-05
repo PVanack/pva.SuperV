@@ -4,7 +4,7 @@ using pva.SuperV.Engine.Exceptions;
 
 namespace pva.SuperV.Api.Routes.Projects
 {
-    public static class UnloadProject
+    internal static class UnloadProject
     {
         internal static Results<NoContent, NotFound<string>, BadRequest<string>> Handle(IProjectService projectService, string projectId)
         {

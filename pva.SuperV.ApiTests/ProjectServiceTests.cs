@@ -113,6 +113,21 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public void CreateProjectFromRunnable_ShouldReturnCreatedProject()
+        {
+            // Arrange
+
+            // Act
+            var result = _projectService.CreateProjectFromRunnable(runnableProject.GetId());
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Name.ShouldBe(runnableProject.Name);
+            result.Version.ShouldBe(runnableProject.Version + 1);
+            result.Runnable.ShouldBeFalse();
+        }
+
+        [Fact]
         public async Task BuildProject_ShouldReturnRunnableProject_WhenProjectIsWip()
         {
             // Act

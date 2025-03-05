@@ -5,7 +5,7 @@ using pva.SuperV.Model.FieldFormatters;
 
 namespace pva.SuperV.Api.Routes.FieldFormatters
 {
-    public static class GetFieldFormatters
+    internal static class GetFieldFormatters
     {
         internal static Results<Ok<List<FieldFormatterModel>>, NotFound<string>, BadRequest<string>> Handle(IFieldFormatterService fieldFormatterService, string projectId)
         {

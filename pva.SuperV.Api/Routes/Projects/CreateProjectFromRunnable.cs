@@ -5,13 +5,13 @@ using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Api.Routes.Projects
 {
-    internal static class CreateProject
+    internal static class CreateProjectFromRunnable
     {
-        internal static Results<Created<ProjectModel>, BadRequest<string>> Handle(IProjectService projectService, CreateProjectRequest createProjectRequest)
+        internal static Results<Created<ProjectModel>, BadRequest<string>> Handle(IProjectService projectService, string runnableProjectId)
         {
             try
             {
-                ProjectModel createdProject = projectService.CreateProject(createProjectRequest);
+                ProjectModel createdProject = projectService.CreateProjectFromRunnable(runnableProjectId);
                 return TypedResults.Created<ProjectModel>($"/projects/{createdProject.Id}", createdProject);
             }
             catch (SuperVException e)

@@ -6,9 +6,9 @@ using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Api.Routes.Projects
 {
-    public static class GetProject
+    internal static class GetProject
     {
-        public static Results<Ok<ProjectModel>, NotFound<string>, BadRequest<string>> Handle(IProjectService projectService, string projectId)
+        internal static Results<Ok<ProjectModel>, NotFound<string>, BadRequest<string>> Handle(IProjectService projectService, string projectId)
         {
             try
             {
