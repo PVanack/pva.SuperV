@@ -1,0 +1,3323 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "SuperV API",
+    "description": "API for accessing SuperV projects.",
+    "version": "v1"
+  },
+  "paths": {
+    "/projects": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets the list of available projects",
+        "description": "Gets the list of available projects",
+        "operationId": "GetProjects",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectModel"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets a project by its ID",
+        "description": "Gets a project by its ID",
+        "operationId": "GetProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Unloads a project",
+        "description": "Unloads a project",
+        "operationId": "UnloadProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/create": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Creates a blank WIP project",
+        "description": "Creates a blank WIP project",
+        "operationId": "CreateProject",
+        "requestBody": {
+          "description": "Project creation request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/build": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Build a runnable project from a WIP project",
+        "description": "Build a runnable project from a WIP project",
+        "operationId": "BuildProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/definitions": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Saves the definitions of project to a stream writer",
+        "description": "Saves the definitions of project to a stream writer",
+        "operationId": "SaveProjectDefinitions",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/load-from-definitions": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Loads a project from a definition JSON",
+        "description": "Loads a project from a definition JSON",
+        "operationId": "LoadProjectFromDefinitions",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/IFormFile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/instances": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Saves the instances of project to a stream writer",
+        "description": "Saves the instances of project to a stream writer",
+        "operationId": "SaveProjectInstances",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Loads project instances from a JSON file",
+        "description": "Loads project instances from a JSON file",
+        "operationId": "LoadProjectInstances",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/IFormFile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/classes/{projectId}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets the list of available classes in a project",
+        "description": "Gets the list of available classes in a project",
+        "operationId": "GetClasses",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ClassModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Creates a class in a project",
+        "description": "Creates a class in a project",
+        "operationId": "CreateClass",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Class creation request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/classes/{projectId}/{className}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets a class of a project by its name",
+        "description": "Gets a class of a project by its name",
+        "operationId": "GetClass",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Deletes a class of a project by its name",
+        "description": "Deletes a class of a project by its name",
+        "operationId": "DeleteClass",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/field-formatters": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets the list of available field formatter types",
+        "description": "Gets the list of available field formatter types",
+        "operationId": "GetFieldFormatterTypes",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/field-formatters/{projectId}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets the list of field formatters of project",
+        "description": "Gets the list of field formatters of project",
+        "operationId": "GetFieldFormatters",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FieldFormatterModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Creates a field formatter of project",
+        "description": "Creates a field formatter of project",
+        "operationId": "CreateFieldFormatter",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Field formatter creation request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFieldFormatterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldFormatterModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/field-formatters/{projectId}/{fieldFormatterName}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets a field formatter of project",
+        "description": "Gets a field formatter of project",
+        "operationId": "GetFieldFormatter",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldFormatterName",
+            "in": "path",
+            "description": "Name of field formatter",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldFormatterModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Deletes a field formatter of project",
+        "description": "Deletes a field formatter of project",
+        "operationId": "DeleteFieldFormatter",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldFormatterName",
+            "in": "path",
+            "description": "Name of field formatter",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history-repositories/{projectId}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets the list of available history respoitories in project",
+        "description": "Gets the list of available history respoitories in project",
+        "operationId": "GetHistoryRepositories",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HistoryRepositoryModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Creates a project's history repository",
+        "description": "Creates a project's history repository",
+        "operationId": "CreateHistoryRepository",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "History repository create request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HistoryRepositoryModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryRepositoryModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history-repositories/{projectId}/{historyRepositoryName}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets a project's history repository by its name",
+        "description": "Gets a project's history repository by its name",
+        "operationId": "GetHistoryRepository",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "historyRepositoryName",
+            "in": "path",
+            "description": "Name of history repository",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryRepositoryModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Deletes a project's history repository by its name",
+        "description": "Deletes a project's history repository by its name",
+        "operationId": "DeleteHistoryRepository",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "historyRepositoryName",
+            "in": "path",
+            "description": "Name of history repository",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fields/{projectId}/{className}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets the list of available fields in a class from a project",
+        "description": "Gets the list of available fields in a class from a project",
+        "operationId": "GetFieldDefinitions",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FieldDefinitionModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Creates a field definition in a class of a project",
+        "description": "Creates a field definition in a class of a project",
+        "operationId": "CreateFieldDefinition",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Field creation request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldDefinitionModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldDefinitionModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fields/{projectId}/{className}/{fieldName}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets a field definition from a class of a project by its name",
+        "description": "Gets a field definitionfrom a class of a project by its name",
+        "operationId": "GetFieldDefinition",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldName",
+            "in": "path",
+            "description": "Name of field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldDefinitionModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Deletes a field definition from a class of a project by its name",
+        "description": "Deletes a field definition from a class of a project by its name",
+        "operationId": "DeleteFieldDefinition",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldName",
+            "in": "path",
+            "description": "Name of field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/field-processings/{projectId}/{className}/{fieldName}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets the list of available processings of a field in a class from a project",
+        "description": "Gets the list of available processings of a field in a class from a project",
+        "operationId": "GetFieldProcessings",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldName",
+            "in": "path",
+            "description": "Name of field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FieldDefinitionModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Creates a field processing in a class of a project",
+        "description": "Creates a field processing in a class of a project",
+        "operationId": "CreateProcessing",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldName",
+            "in": "path",
+            "description": "Name of field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Field processing creation request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldValueProcessingModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldDefinitionModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/field-processings/{projectId}/{className}/{fieldName}/{processingName}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets a field processing from a class of a project by its name",
+        "description": "Gets a field processing from a class of a project by its name",
+        "operationId": "GetFieldProcessing",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldName",
+            "in": "path",
+            "description": "Name of field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "processingName",
+            "in": "path",
+            "description": "Name of processing",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldDefinitionModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Deletes a field processing from a class of a project by its name",
+        "description": "Deletes a field processing from a class of a project by its name",
+        "operationId": "DeleteProcessing",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldName",
+            "in": "path",
+            "description": "Name of field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "processingName",
+            "in": "path",
+            "description": "Name of processing",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/instances/{projectId}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets the list of instances from a project",
+        "description": "Gets the list of instances from a project",
+        "operationId": "GetInstances",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FieldDefinitionModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Creates an instance with a class of a project",
+        "description": "Creates an instance with a class of a project",
+        "operationId": "CreateInstance",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Instance creation request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstanceModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldDefinitionModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/instances/{projectId}/{instanceName}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets an instance of a project by its name",
+        "description": "Gets an instance of a project by its name",
+        "operationId": "GetInstance",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "instanceName",
+            "in": "path",
+            "description": "Name of instance",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldDefinitionModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Deletes an instance from a project by its name",
+        "description": "Deletes an instance from a project by its name",
+        "operationId": "DeleteInstance",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "instanceName",
+            "in": "path",
+            "description": "Name of instance",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/instances/{projectId}/{instanceName}/{fieldName}/value": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets the field of an instance from a project by its name",
+        "description": "Gets the field of an instance from a project by its name",
+        "operationId": "GetField",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "instanceName",
+            "in": "path",
+            "description": "Name of instance",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldName",
+            "in": "path",
+            "description": "Name of field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Updates the value of a field of an instance from a project by its name",
+        "description": "Updates the value of a field of an instance from a project by its name",
+        "operationId": "UpdateFieldValue",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "instanceName",
+            "in": "path",
+            "description": "Name of instance",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldName",
+            "in": "path",
+            "description": "Name of field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Value of field",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldValueModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ClassModel": {
+        "required": [
+          "name",
+          "baseclassName"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the class."
+          },
+          "baseclassName": {
+            "type": "string",
+            "description": "Base class (if any).",
+            "nullable": true
+          }
+        }
+      },
+      "CreateFieldFormatterRequest": {
+        "required": [
+          "fieldFormatter"
+        ],
+        "type": "object",
+        "properties": {
+          "fieldFormatter": {
+            "$ref": "#/components/schemas/FieldFormatterModel"
+          }
+        }
+      },
+      "CreateProjectRequest": {
+        "required": [
+          "name",
+          "description"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of project"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of project"
+          },
+          "historyStorageConnectionString": {
+            "type": "string",
+            "description": "Connection string to history storage",
+            "default": null,
+            "nullable": true
+          }
+        }
+      },
+      "FieldDefinitionModel": {
+        "required": [
+          "$type"
+        ],
+        "type": "object",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/FieldDefinitionModelBoolFieldDefinitionModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldDefinitionModelDateTimeFieldDefinitionModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldDefinitionModelDoubleFieldDefinitionModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldDefinitionModelFloatFieldDefinitionModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldDefinitionModelIntFieldDefinitionModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldDefinitionModelLongFieldDefinitionModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldDefinitionModelShortFieldDefinitionModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldDefinitionModelStringFieldDefinitionModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldDefinitionModelTimeSpanFieldDefinitionModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldDefinitionModelUintFieldDefinitionModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldDefinitionModelUlongFieldDefinitionModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldDefinitionModelUshortFieldDefinitionModel"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "$type",
+          "mapping": {
+            "BoolFieldDefinitionModel": "#/components/schemas/FieldDefinitionModelBoolFieldDefinitionModel",
+            "DateTimeFieldDefinitionModel": "#/components/schemas/FieldDefinitionModelDateTimeFieldDefinitionModel",
+            "DoubleFieldDefinitionModel": "#/components/schemas/FieldDefinitionModelDoubleFieldDefinitionModel",
+            "FloatFieldDefinitionModel": "#/components/schemas/FieldDefinitionModelFloatFieldDefinitionModel",
+            "IntFieldDefinitionModel": "#/components/schemas/FieldDefinitionModelIntFieldDefinitionModel",
+            "LongFieldDefinitionModel": "#/components/schemas/FieldDefinitionModelLongFieldDefinitionModel",
+            "ShortFieldDefinitionModel": "#/components/schemas/FieldDefinitionModelShortFieldDefinitionModel",
+            "StringFieldDefinitionModel": "#/components/schemas/FieldDefinitionModelStringFieldDefinitionModel",
+            "TimeSpanFieldDefinitionModel": "#/components/schemas/FieldDefinitionModelTimeSpanFieldDefinitionModel",
+            "UintFieldDefinitionModel": "#/components/schemas/FieldDefinitionModelUintFieldDefinitionModel",
+            "UlongFieldDefinitionModel": "#/components/schemas/FieldDefinitionModelUlongFieldDefinitionModel",
+            "UshortFieldDefinitionModel": "#/components/schemas/FieldDefinitionModelUshortFieldDefinitionModel"
+          }
+        }
+      },
+      "FieldDefinitionModelBoolFieldDefinitionModel": {
+        "required": [
+          "defaultValue",
+          "name"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "BoolFieldDefinitionModel"
+            ],
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "boolean",
+            "description": "Default value"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of field"
+          }
+        }
+      },
+      "FieldDefinitionModelDateTimeFieldDefinitionModel": {
+        "required": [
+          "defaultValue",
+          "name"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "DateTimeFieldDefinitionModel"
+            ],
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "string",
+            "description": "Default value",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of field"
+          }
+        }
+      },
+      "FieldDefinitionModelDoubleFieldDefinitionModel": {
+        "required": [
+          "defaultValue",
+          "name"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "DoubleFieldDefinitionModel"
+            ],
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "number",
+            "description": "Default value",
+            "format": "double"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of field"
+          }
+        }
+      },
+      "FieldDefinitionModelFloatFieldDefinitionModel": {
+        "required": [
+          "defaultValue",
+          "name"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "FloatFieldDefinitionModel"
+            ],
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "number",
+            "description": "Default value",
+            "format": "float"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of field"
+          }
+        }
+      },
+      "FieldDefinitionModelIntFieldDefinitionModel": {
+        "required": [
+          "defaultValue",
+          "name"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "IntFieldDefinitionModel"
+            ],
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "integer",
+            "description": "Default value",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of field"
+          }
+        }
+      },
+      "FieldDefinitionModelLongFieldDefinitionModel": {
+        "required": [
+          "defaultValue",
+          "name"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "LongFieldDefinitionModel"
+            ],
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "integer",
+            "description": "Default value",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of field"
+          }
+        }
+      },
+      "FieldDefinitionModelShortFieldDefinitionModel": {
+        "required": [
+          "defaultValue",
+          "name"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "ShortFieldDefinitionModel"
+            ],
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "integer",
+            "description": "Default value",
+            "format": "int16"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of field"
+          }
+        }
+      },
+      "FieldDefinitionModelStringFieldDefinitionModel": {
+        "required": [
+          "defaultValue",
+          "name"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "StringFieldDefinitionModel"
+            ],
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "string",
+            "description": "Default value",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of field"
+          }
+        }
+      },
+      "FieldDefinitionModelTimeSpanFieldDefinitionModel": {
+        "required": [
+          "defaultValue",
+          "name"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "TimeSpanFieldDefinitionModel"
+            ],
+            "type": "string"
+          },
+          "defaultValue": {
+            "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
+            "type": "string",
+            "description": "Default value"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of field"
+          }
+        }
+      },
+      "FieldDefinitionModelUintFieldDefinitionModel": {
+        "required": [
+          "defaultValue",
+          "name"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "UintFieldDefinitionModel"
+            ],
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "integer",
+            "description": "Default value",
+            "format": "uint32"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of field"
+          }
+        }
+      },
+      "FieldDefinitionModelUlongFieldDefinitionModel": {
+        "required": [
+          "defaultValue",
+          "name"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "UlongFieldDefinitionModel"
+            ],
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "integer",
+            "description": "Default value",
+            "format": "uint64"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of field"
+          }
+        }
+      },
+      "FieldDefinitionModelUshortFieldDefinitionModel": {
+        "required": [
+          "defaultValue",
+          "name"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "UshortFieldDefinitionModel"
+            ],
+            "type": "string"
+          },
+          "defaultValue": {
+            "type": "integer",
+            "description": "Default value",
+            "format": "uint16"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of field"
+          }
+        }
+      },
+      "FieldFormatterModel": {
+        "required": [
+          "$type"
+        ],
+        "type": "object",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/FieldFormatterModelEnumFormatterModel"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "$type",
+          "mapping": {
+            "EnumFormatterModel": "#/components/schemas/FieldFormatterModelEnumFormatterModel"
+          }
+        }
+      },
+      "FieldFormatterModelEnumFormatterModel": {
+        "required": [
+          "values",
+          "name"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "EnumFormatterModel"
+            ],
+            "type": "string"
+          },
+          "values": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "String values associated with integers."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the formatter."
+          },
+          "formatterType": {
+            "type": "string",
+            "description": "Type of the formatter."
+          }
+        }
+      },
+      "FieldModel": {
+        "required": [
+          "name",
+          "type",
+          "fieldValue"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "fieldValue": {
+            "$ref": "#/components/schemas/FieldValueModel"
+          }
+        }
+      },
+      "FieldValueModel": {
+        "required": [
+          "$type"
+        ],
+        "type": "object",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/FieldValueModelBoolFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelDateTimeFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelDoubleFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelFloatFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelIntFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelLongFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelShortFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelStringFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelTimeSpanFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelUintFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelUlongFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelUshortFieldValueModel"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "$type",
+          "mapping": {
+            "BoolFieldValueModel": "#/components/schemas/FieldValueModelBoolFieldValueModel",
+            "DateTimeFieldValueModel": "#/components/schemas/FieldValueModelDateTimeFieldValueModel",
+            "DoubleFieldValueModel": "#/components/schemas/FieldValueModelDoubleFieldValueModel",
+            "FloatFieldValueModel": "#/components/schemas/FieldValueModelFloatFieldValueModel",
+            "IntFieldValueModel": "#/components/schemas/FieldValueModelIntFieldValueModel",
+            "LongFieldValueModel": "#/components/schemas/FieldValueModelLongFieldValueModel",
+            "ShortFieldValueModel": "#/components/schemas/FieldValueModelShortFieldValueModel",
+            "StringFieldValueModel": "#/components/schemas/FieldValueModelStringFieldValueModel",
+            "TimeSpanFieldValueModel": "#/components/schemas/FieldValueModelTimeSpanFieldValueModel",
+            "UintFieldValueModel": "#/components/schemas/FieldValueModelUintFieldValueModel",
+            "UlongFieldValueModel": "#/components/schemas/FieldValueModelUlongFieldValueModel",
+            "UshortFieldValueModel": "#/components/schemas/FieldValueModelUshortFieldValueModel"
+          }
+        }
+      },
+      "FieldValueModelBoolFieldValueModel": {
+        "required": [
+          "value",
+          "quality",
+          "timestamp"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "BoolFieldValueModel"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "type": "boolean",
+            "description": "Field value."
+          },
+          "quality": {
+            "type": "integer",
+            "description": "Field value quality level.",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Field value timestamp.",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "FieldValueModelDateTimeFieldValueModel": {
+        "required": [
+          "value",
+          "quality",
+          "timestamp"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "DateTimeFieldValueModel"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "type": "string",
+            "description": "Field value.",
+            "format": "date-time"
+          },
+          "quality": {
+            "type": "integer",
+            "description": "Field value quality level.",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Field value timestamp.",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "FieldValueModelDoubleFieldValueModel": {
+        "required": [
+          "value",
+          "quality",
+          "timestamp"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "DoubleFieldValueModel"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "type": "number",
+            "description": "Field value.",
+            "format": "double"
+          },
+          "quality": {
+            "type": "integer",
+            "description": "Field value quality level.",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Field value timestamp.",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "FieldValueModelFloatFieldValueModel": {
+        "required": [
+          "value",
+          "quality",
+          "timestamp"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "FloatFieldValueModel"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "type": "number",
+            "description": "Field value.",
+            "format": "float"
+          },
+          "quality": {
+            "type": "integer",
+            "description": "Field value quality level.",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Field value timestamp.",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "FieldValueModelIntFieldValueModel": {
+        "required": [
+          "value",
+          "quality",
+          "timestamp"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "IntFieldValueModel"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "type": "integer",
+            "description": "Field value.",
+            "format": "int32"
+          },
+          "quality": {
+            "type": "integer",
+            "description": "Field value quality level.",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Field value timestamp.",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "FieldValueModelLongFieldValueModel": {
+        "required": [
+          "value",
+          "quality",
+          "timestamp"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "LongFieldValueModel"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "type": "integer",
+            "description": "Field value.",
+            "format": "int64"
+          },
+          "quality": {
+            "type": "integer",
+            "description": "Field value quality level.",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Field value timestamp.",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "FieldValueModelShortFieldValueModel": {
+        "required": [
+          "value",
+          "quality",
+          "timestamp"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "ShortFieldValueModel"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "type": "integer",
+            "description": "Field value.",
+            "format": "int16"
+          },
+          "quality": {
+            "type": "integer",
+            "description": "Field value quality level.",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Field value timestamp.",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "FieldValueModelStringFieldValueModel": {
+        "required": [
+          "value",
+          "quality",
+          "timestamp"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "StringFieldValueModel"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "type": "string",
+            "description": "Field value."
+          },
+          "quality": {
+            "type": "integer",
+            "description": "Field value quality level.",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Field value timestamp.",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "FieldValueModelTimeSpanFieldValueModel": {
+        "required": [
+          "value",
+          "quality",
+          "timestamp"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "TimeSpanFieldValueModel"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
+            "type": "string",
+            "description": "Field value."
+          },
+          "quality": {
+            "type": "integer",
+            "description": "Field value quality level.",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Field value timestamp.",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "FieldValueModelUintFieldValueModel": {
+        "required": [
+          "value",
+          "quality",
+          "timestamp"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "UintFieldValueModel"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "type": "integer",
+            "description": "Field value.",
+            "format": "uint32"
+          },
+          "quality": {
+            "type": "integer",
+            "description": "Field value quality level.",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Field value timestamp.",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "FieldValueModelUlongFieldValueModel": {
+        "required": [
+          "value",
+          "quality",
+          "timestamp"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "UlongFieldValueModel"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "type": "integer",
+            "description": "Field value.",
+            "format": "uint64"
+          },
+          "quality": {
+            "type": "integer",
+            "description": "Field value quality level.",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Field value timestamp.",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "FieldValueModelUshortFieldValueModel": {
+        "required": [
+          "value",
+          "quality",
+          "timestamp"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "UshortFieldValueModel"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "type": "integer",
+            "description": "Field value.",
+            "format": "uint16"
+          },
+          "quality": {
+            "type": "integer",
+            "description": "Field value quality level.",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Field value timestamp.",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "FieldValueProcessingModel": {
+        "required": [
+          "$type"
+        ],
+        "type": "object",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/FieldValueProcessingModelAlarmStateProcessingModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueProcessingModelHistorizationProcessingModel"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "$type",
+          "mapping": {
+            "AlarmStateProcessingModel": "#/components/schemas/FieldValueProcessingModelAlarmStateProcessingModel",
+            "HistorizationProcessingModel": "#/components/schemas/FieldValueProcessingModelHistorizationProcessingModel"
+          }
+        }
+      },
+      "FieldValueProcessingModelAlarmStateProcessingModel": {
+        "required": [
+          "highHighLimitFieldName",
+          "highLimitFieldName",
+          "lowLimitFieldName",
+          "lowLowLimitFieldName",
+          "deadbandFieldName",
+          "alarmStateFieldName",
+          "ackStateFieldName",
+          "name",
+          "trigerringFieldName"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "AlarmStateProcessingModel"
+            ],
+            "type": "string"
+          },
+          "highHighLimitFieldName": {
+            "type": "string",
+            "description": "High high limit field name.",
+            "nullable": true
+          },
+          "highLimitFieldName": {
+            "type": "string",
+            "description": "High limit field name."
+          },
+          "lowLimitFieldName": {
+            "type": "string",
+            "description": "Low limit field name."
+          },
+          "lowLowLimitFieldName": {
+            "type": "string",
+            "description": "Low low limit field name.",
+            "nullable": true
+          },
+          "deadbandFieldName": {
+            "type": "string",
+            "description": "Deadband field name.",
+            "nullable": true
+          },
+          "alarmStateFieldName": {
+            "type": "string",
+            "description": "Alarm state field name."
+          },
+          "ackStateFieldName": {
+            "type": "string",
+            "description": "Acknowledgement field name.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field value change processing."
+          },
+          "trigerringFieldName": {
+            "type": "string",
+            "description": "Name of field triggering the processing."
+          }
+        }
+      },
+      "FieldValueProcessingModelHistorizationProcessingModel": {
+        "required": [
+          "historyRepositoryName",
+          "timestampFieldName",
+          "fieldsToHistorize",
+          "name",
+          "trigerringFieldName"
+        ],
+        "properties": {
+          "$type": {
+            "enum": [
+              "HistorizationProcessingModel"
+            ],
+            "type": "string"
+          },
+          "historyRepositoryName": {
+            "type": "string",
+            "description": "History repository name."
+          },
+          "timestampFieldName": {
+            "type": "string",
+            "description": "Timestamp field name.",
+            "nullable": true
+          },
+          "fieldsToHistorize": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of field whos value is to be historized."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field value change processing."
+          },
+          "trigerringFieldName": {
+            "type": "string",
+            "description": "Name of field triggering the processing."
+          }
+        }
+      },
+      "HistoryRepositoryModel": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "IFormFile": {
+        "type": "string",
+        "format": "binary"
+      },
+      "InstanceModel": {
+        "required": [
+          "name",
+          "className",
+          "fields"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Instance name."
+          },
+          "className": {
+            "type": "string",
+            "description": "Class name of instance."
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldModel"
+            },
+            "description": "Instance field values."
+          }
+        }
+      },
+      "ProjectModel": {
+        "required": [
+          "id",
+          "name",
+          "version",
+          "description",
+          "runnable"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Id of the project."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the project."
+          },
+          "version": {
+            "type": "integer",
+            "description": "Version of the project.",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the project.",
+            "nullable": true
+          },
+          "runnable": {
+            "type": "boolean",
+            "description": "Indicates if the project is runnable."
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "pva.SuperV.Api"
+    }
+  ]
+}

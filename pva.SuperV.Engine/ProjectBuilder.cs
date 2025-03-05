@@ -14,37 +14,45 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Builds the specified <see cref="WipProject"/>.
         /// </summary>
-        /// <param name="project">The WIP project.</param>
+        /// <param name="wipProject">The WIP project.</param>
         /// <returns>a <see cref="RunnableProject"/></returns>
         /// <exception cref="pva.SuperV.Engine.Exceptions.ProjectBuildException"></exception>
-        public static RunnableProject Build(WipProject project)
+        public static async Task<RunnableProject> BuildAsync(WipProject wipProject)
         {
-            string projectAssemblyFileName = project.GetAssemblyFileName();
-            string projectCode = project.GetCode();
-            var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(projectCode), $"{project.Name}-V{project.Version}");
-            using (MemoryStream dllStream = new())
-            using (MemoryStream pdbStream = new())
-            using (Stream win32resStream = compilation.CreateDefaultWin32Resources(
-                versionResource: true, // Important!
-                noManifest: false,
-                manifestContents: null,
-                iconInIcoFormat: null))
+            RunnableProject runnableProject = wipProject.CloneAsRunnable();
+            wipProject.Dispose();
+            await BuildAsync(runnableProject);
+            return runnableProject;
+        }
+
+        public static async ValueTask BuildAsync(RunnableProject runnableProject)
+        {
+            if (!File.Exists(runnableProject.GetAssemblyFileName()))
             {
+                string projectAssemblyFileName = runnableProject.GetAssemblyFileName();
+                string projectCode = runnableProject.GetCode();
+                var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(projectCode), $"{runnableProject.Name}-V{runnableProject.Version}");
+                using MemoryStream dllStream = new();
+                using MemoryStream pdbStream = new();
+                using Stream win32ResStream = compilation.CreateDefaultWin32Resources(
+                    versionResource: true, // Important!
+                    noManifest: false,
+                    manifestContents: null,
+                    iconInIcoFormat: null);
                 var compilationResult = compilation.Emit(
                     peStream: dllStream,
                     pdbStream: pdbStream,
-                    win32Resources: win32resStream);
+                    win32Resources: win32ResStream);
 
                 if (!compilationResult.Success)
                 {
                     StringBuilder diagnostics = new();
                     compilationResult.Diagnostics
                         .ForEach(diagnostic => diagnostics.AppendLine(diagnostic.ToString()));
-                    throw new ProjectBuildException(project, diagnostics.ToString());
+                    throw new ProjectBuildException(runnableProject, diagnostics.ToString());
                 }
-                File.WriteAllBytes(projectAssemblyFileName, dllStream.ToArray());
+                await File.WriteAllBytesAsync(projectAssemblyFileName, dllStream.ToArray());
             }
-            return project.CloneAsRunnable();
         }
 
         /// <summary>
@@ -71,7 +79,7 @@ namespace pva.SuperV.Engine
                 // Basic types assembly
                 MetadataReference.CreateFromFile(typeof(string).Assembly.Location),
                 // SuperV Project assembly
-                MetadataReference.CreateFromFile(typeof(Project).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Project).Assembly.Location)
             ];
 
             return CSharpCompilation

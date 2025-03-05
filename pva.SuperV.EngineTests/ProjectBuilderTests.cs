@@ -14,7 +14,7 @@ namespace pva.SuperV.EngineTests
             RunnableProject project = ProjectHelpers.CreateRunnableProject();
 
             // WHEN
-            var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName) as dynamic;
             var retrievedInstance = project.GetInstance(ProjectHelpers.InstanceName);
 
             // THEN
@@ -114,7 +114,7 @@ namespace pva.SuperV.EngineTests
         }
 
         [Fact]
-        public void GivenWipProjectWithClassInstance_WhenBuildingRunnableProject_ThenInstancesAreRecreated()
+        public async Task GivenWipProjectWithClassInstance_WhenBuildingRunnableProject_ThenInstancesAreRecreated()
         {
             // GIVEN
             RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
@@ -124,7 +124,7 @@ namespace pva.SuperV.EngineTests
             WipProject wipProject = Project.CreateProject(runnableProject);
 
             // WHEN
-            runnableProject = ProjectBuilder.Build(wipProject);
+            runnableProject = await Project.BuildAsync(wipProject);
 
             // THEN
             runnableProject.Instances.Count.ShouldBe(1);

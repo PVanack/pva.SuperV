@@ -14,7 +14,7 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// The name of the field. Uses <see cref="Name"/> to access value.
         /// </summary>
-        private string? _name;
+        private string _name;
 
         /// <summary>
         /// Gets or sets the name of the field.
@@ -22,13 +22,13 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The name.
         /// </value>
-        public string? Name
+        public string Name
         {
             get => _name;
             set
             {
-                IdentifierValidation.ValidateIdentifier("field", value);
                 _name = value;
+                IdentifierValidation.ValidateIdentifier("field", value);
             }
         }
 
@@ -54,7 +54,7 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The default value.
         /// </value>
-        public T? DefaultValue { get; set; }
+        public T? DefaultValue { get; }
 
         /// <summary>
         /// Gets or sets the value post change processings.
@@ -77,11 +77,13 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="name">The name of the field.</param>
         /// <param name="defaultValue">The default value for fields.</param>
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         public FieldDefinition(string name, T? defaultValue)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         {
-            this.Name = name;
-            this.DefaultValue = defaultValue ?? default;
-            this.Type = typeof(T);
+            Name = name;
+            DefaultValue = defaultValue ?? default;
+            Type = typeof(T);
         }
 
         /// <summary>
@@ -91,7 +93,8 @@ namespace pva.SuperV.Engine
         public string GetCode()
         {
             StringBuilder codeBuilder = new();
-            codeBuilder.AppendLine($"public Field<{typeof(T)}> {Name} {{ get; set; }} = new({GetCodeValueForNew(DefaultValue)});");
+            codeBuilder.AppendLine(
+                $"public Field<{typeof(T)}> {Name} {{ get; set; }} = new({GetCodeValueForNew(DefaultValue)});");
             return codeBuilder.ToString();
         }
 
@@ -101,19 +104,22 @@ namespace pva.SuperV.Engine
             {
                 return $"\"{defaultValue}\"";
             }
-            else if (defaultValue is bool boolean)
+            else
             {
-                string booleanValue = boolean ? "true" : "false";
-                return $"{booleanValue}";
+                switch (defaultValue)
+                {
+                    case bool boolean:
+                        {
+                            string booleanValue = boolean ? "true" : "false";
+                            return $"{booleanValue}";
+                        }
+                    case DateTime dateTime:
+                        return $"new {typeof(T)}({dateTime.Ticks.ToString(CultureInfo.InvariantCulture)}L)";
+                    case TimeSpan timespan:
+                        return $"new {typeof(T)}({timespan.Ticks.ToString(CultureInfo.InvariantCulture)}L)";
+                }
             }
-            else if (defaultValue is DateTime dateTime)
-            {
-                return $"new {typeof(T)}({dateTime.Ticks.ToString(CultureInfo.InvariantCulture)}L)";
-            }
-            else if (defaultValue is TimeSpan timespan)
-            {
-                return $"new {typeof(T)}({timespan.Ticks.ToString(CultureInfo.InvariantCulture)}L)";
-            }
+
             return defaultValue!.ToString();
         }
 
@@ -123,9 +129,10 @@ namespace pva.SuperV.Engine
         /// <returns></returns>
         IFieldDefinition IFieldDefinition.Clone()
         {
-            FieldDefinition<T> fieldDefinition = new(this.Name!, this.DefaultValue)
+            FieldDefinition<T> fieldDefinition = new(Name, DefaultValue)
             {
-                Formatter = this.Formatter
+                Formatter = Formatter,
+                ValuePostChangeProcessings = [.. ValuePostChangeProcessings]
             };
             return fieldDefinition;
         }

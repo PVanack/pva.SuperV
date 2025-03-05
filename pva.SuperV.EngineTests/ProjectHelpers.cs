@@ -1,4 +1,5 @@
-﻿using DotNet.Testcontainers.Builders;
+﻿//#define DELETE_PROJECT_ASSEMBLY
+using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using NSubstitute;
 using pva.SuperV.Engine;
@@ -7,7 +8,7 @@ using pva.SuperV.Engine.Processing;
 
 namespace pva.SuperV.EngineTests
 {
-    internal static class ProjectHelpers
+    public static class ProjectHelpers
     {
         public const string ProjectName = "TestProject";
         public const string ClassName = "TestClass";
@@ -15,37 +16,48 @@ namespace pva.SuperV.EngineTests
         public const string ValueFieldName = "Value";
         public const string AlarmStateFieldName = "AlarmState";
         public const string AlarmStatesFormatterName = "AlarmStates";
-        private const string HighHighLimitFieldName = "HighHighLimit";
-        private const string HighLimitFieldName = "HighLimit";
-        private const string LowLimitFieldName = "LowLimit";
-        private const string LowLowLimitFieldName = "LowLowlimit";
+        public const string HighHighLimitFieldName = "HighHighLimit";
+        public const string HighLimitFieldName = "HighLimit";
+        public const string LowLimitFieldName = "LowLimit";
+        public const string LowLowLimitFieldName = "LowLowlimit";
 
         public const string BaseClassName = "TestBaseClass";
         public const string BaseClassFieldName = "InheritedField";
         public const string HistoryRepositoryName = "HistoryRepository";
-
+        public static readonly Dictionary<int, string> AlarmStatesFormatterValues = new() {
+                { -2, "LowLow" },
+                { -1, "Low" },
+                { 0, "OK" },
+                { 1, "High" },
+                { 2, "HighHigh" }
+            };
         private static IContainer? tdEngineContainer;
 
         public static async Task<string> StartTDengineContainer()
         {
-            tdEngineContainer = new ContainerBuilder()
-                .WithImage("tdengine/tdengine:latest")
-                .WithPortBinding(6030, false)
-                .WithPortBinding(6031, false)
-                .WithPortBinding(6032, false)
-                .WithPortBinding(6033, false)
-                .WithPortBinding(6034, false)
-                .WithPortBinding(6035, false)
-                .WithPortBinding(6036, false)
-                .WithPortBinding(6037, false)
-                .WithPortBinding(6038, false)
-                .WithPortBinding(6039, false)
-                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(6030))
-                .Build();
+            if (tdEngineContainer is null)
+            {
+                tdEngineContainer = new ContainerBuilder()
+                    .WithImage("tdengine/tdengine:latest")
+                    .WithPortBinding(6030, false)
+                    //.WithPortBinding(6031, false)
+                    //.WithPortBinding(6032, false)
+                    //.WithPortBinding(6033, false)
+                    //.WithPortBinding(6034, false)
+                    //.WithPortBinding(6035, false)
+                    //.WithPortBinding(6036, false)
+                    //.WithPortBinding(6037, false)
+                    //.WithPortBinding(6038, false)
+                    //.WithPortBinding(6039, false)
+                    .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(6030))
+                    .Build();
 
-            // Start the container.
-            await tdEngineContainer.StartAsync()
-              .ConfigureAwait(false);
+                // Start the container.
+                await tdEngineContainer.StartAsync()
+                  .ConfigureAwait(false);
+                // Wait to make sure the processes in container are ready and running.
+                Thread.Sleep(200);
+            }
             return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
         }
 
@@ -66,18 +78,17 @@ namespace pva.SuperV.EngineTests
         public static RunnableProject CreateRunnableProject(string? historyEngineType)
         {
             WipProject wipProject = CreateWipProject(historyEngineType);
-            RunnableProject project = ProjectBuilder.Build(wipProject);
-            wipProject.Dispose();
+            RunnableProject project = Task.Run(async () => await Project.BuildAsync(wipProject)).Result;
             return project;
         }
 
         public static WipProject CreateWipProject(string? historyEngineType)
         {
             string? connectionString = historyEngineType;
-            if (!String.IsNullOrEmpty(historyEngineType) && historyEngineType.Equals(HistoryStorageEngineFactory.TdEngineHistoryStorage))
+            if (!String.IsNullOrEmpty(historyEngineType) && historyEngineType.Equals(TDengineHistoryStorage.Prefix))
             {
                 string tdEngineConnectionString = Task.Run(async () => await StartTDengineContainer()).Result;
-                connectionString = $"{HistoryStorageEngineFactory.TdEngineHistoryStorage}:{tdEngineConnectionString}";
+                connectionString = $"{TDengineHistoryStorage.Prefix}:{tdEngineConnectionString}";
             }
 
             WipProject wipProject = Project.CreateProject(ProjectName, connectionString);
@@ -92,13 +103,7 @@ namespace pva.SuperV.EngineTests
             _ = wipProject.AddClass(BaseClassName);
             wipProject.AddField(BaseClassName, new FieldDefinition<string>(BaseClassFieldName, "InheritedField"));
 
-            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, new Dictionary<int, string>{
-                { -2, "LowLow" },
-                { -1, "Low" },
-                { 0, "OK" },
-                { 1, "High" },
-                { 2, "HighHigh" }
-            });
+            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, AlarmStatesFormatterValues);
             wipProject.AddFieldFormatter(formatter);
             Class clazz = wipProject.AddClass(ClassName, BaseClassName);
             wipProject.AddField(ClassName, new FieldDefinition<int>(ValueFieldName, 10));
@@ -112,24 +117,27 @@ namespace pva.SuperV.EngineTests
                 HighHighLimitFieldName, HighLimitFieldName, LowLimitFieldName, LowLowLimitFieldName, null, AlarmStateFieldName, null);
             wipProject.AddFieldChangePostProcessing(ClassName, ValueFieldName, alarmStateProcessing);
 
-            List<string> FieldsToHistorize = [ValueFieldName];
-            HistorizationProcessing<int> historizationProcessing = new("Historization", wipProject, clazz, ValueFieldName, historyRepository.Name, null, FieldsToHistorize);
+            List<string> fieldsToHistorize = [ValueFieldName];
+            HistorizationProcessing<int> historizationProcessing = new("Historization", wipProject, clazz, ValueFieldName, historyRepository.Name, null, fieldsToHistorize);
             wipProject.AddFieldChangePostProcessing(ClassName, ValueFieldName, historizationProcessing);
             return wipProject;
         }
 
         public static void DeleteProject(Project project)
         {
-            //            Task.Run(async () => await StopTDengineContainer());
-
-            project.Dispose();
-#if DELETE_PROJECT_FILE
+            Task.Run(async () => await StopTDengineContainer());
+#if DELETE_PROJECT_ASSEMBLY
+            string projectAssemblyPath = project.GetAssemblyFileName();
+            String projectName = project.Name!;
+#endif
+            Project.Unload(project);
+#if DELETE_PROJECT_ASSEMBLY
             bool deleted = false;
             for (int i = 0; !deleted && i < 10; i++)
             {
                 try
                 {
-                    File.Delete(project.GetAssemblyFileName());
+                    File.Delete(projectAssemblyPath);
                     deleted = true;
                 }
                 catch (Exception ex)
@@ -139,7 +147,7 @@ namespace pva.SuperV.EngineTests
             }
             if (!deleted)
             {
-                Console.WriteLine($"Project {project.Name} not deleted");
+                Console.WriteLine($"Project {projectName} not deleted");
             }
 #endif
         }

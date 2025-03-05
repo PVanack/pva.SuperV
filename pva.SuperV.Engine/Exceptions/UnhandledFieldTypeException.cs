@@ -2,12 +2,12 @@
 
 namespace pva.SuperV.Engine.Exceptions
 {
-    /// <summary>Exception thrown when an unknown field is referenced.</summary>
+    /// <summary>Exception thrown when an unhandled field type for history storage engine is referenced.</summary>
     [Serializable]
     public class UnhandledFieldTypeException : SuperVException
     {
         public UnhandledFieldTypeException(string? fieldName, Type fieldType)
-            : base($"Field {fieldName} has unhandled type {fieldType}")
+            : base($"Field {fieldName} has unhandled type {fieldType} by SuperV engine.")
         {
         }
 

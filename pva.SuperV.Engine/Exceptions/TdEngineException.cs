@@ -2,12 +2,13 @@
 
 namespace pva.SuperV.Engine.Exceptions
 {
-    /// <summary>Exception thrown when type requested doesn't match actual field type.</summary>
+    /// <summary>Exception thrown when a TDengine error occurs.</summary>
     [Serializable]
     public class TdEngineException : SuperVException
     {
+        [ExcludeFromCodeCoverage]
         public TdEngineException(string operation, Exception innerException)
-            : base($"TDengine {operation} failure: {innerException.Message}")
+            : base($"TDengine {operation} failure: {innerException.Message}", innerException)
         {
         }
 

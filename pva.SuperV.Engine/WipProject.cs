@@ -1,7 +1,7 @@
 ﻿using pva.Helpers.Extensions;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
-using System.Text;
 
 namespace pva.SuperV.Engine
 {
@@ -12,9 +12,16 @@ namespace pva.SuperV.Engine
     public class WipProject : Project
     {
         /// <summary>
-        /// To be loaded instances when the project is converted to a <see cref="RunnableProject"/> through <see cref="ProjectBuilder.Build(WipProject)"/>.
+        /// To be loaded instances when the project is converted to a <see cref="RunnableProject"/> through <see cref="Project.BuildAsync(WipProject)"/>.
         /// </summary>
-        public Dictionary<string, dynamic> ToLoadInstances { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, Instance> ToLoadInstances { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WipProject"/> class. Only used for deserialization.
+        /// </summary>
+        public WipProject()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WipProject"/> class.
@@ -23,7 +30,7 @@ namespace pva.SuperV.Engine
         public WipProject(string projectName)
         {
             Name = projectName;
-            this.Version = GetNextVersion();
+            Version = GetNextVersion();
         }
 
         /// <summary>
@@ -32,14 +39,14 @@ namespace pva.SuperV.Engine
         /// <param name="runnableProject">The runnable project.</param>
         public WipProject(RunnableProject runnableProject)
         {
-            this.Name = runnableProject.Name;
-            this.Description = runnableProject.Description;
-            this.Version = GetNextVersion();
-            this.Classes = new(runnableProject.Classes.Count);
+            Name = runnableProject.Name;
+            Description = runnableProject.Description;
+            Version = GetNextVersion();
+            Classes = new(runnableProject.Classes.Count);
             runnableProject.Classes
-                .ForEach((k, v) => this.Classes.Add(k, v.Clone()));
-            this.FieldFormatters = new(runnableProject.FieldFormatters);
-            this.ToLoadInstances = new(runnableProject.Instances, StringComparer.OrdinalIgnoreCase);
+                .ForEach((k, v) => Classes.Add(k, v.Clone()));
+            FieldFormatters = new(runnableProject.FieldFormatters);
+            ToLoadInstances = new(runnableProject.Instances, StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -86,11 +93,10 @@ namespace pva.SuperV.Engine
         /// <param name="className">Name of the class.</param>
         public void RemoveClass(string className)
         {
-            if (Classes.TryGetValue(className, out var clazz))
+            if (Classes.Remove(className, out var clazz))
             {
-                Classes.Remove(className);
                 ToLoadInstances.Values
-                    .Where(instance => instance.Class.Name.Equals(clazz.Name))
+                    .Where(instance => instance.Class.Name!.Equals(clazz.Name))
                     .ToList()
                     .ForEach(instance => ToLoadInstances.Remove(instance.Name));
             }
@@ -103,10 +109,10 @@ namespace pva.SuperV.Engine
         /// <param name="className">Name of the class.</param>
         /// <param name="field">The field.</param>
         /// <returns></returns>
-        public FieldDefinition<T> AddField<T>(string className, FieldDefinition<T> field)
+        public IFieldDefinition AddField(string className, IFieldDefinition field)
         {
-            Class? clazz = GetClass(className);
-            return clazz!.AddField<T>(field);
+            Class clazz = GetClass(className);
+            return clazz.AddField(field);
         }
 
         /// <summary>
@@ -117,12 +123,12 @@ namespace pva.SuperV.Engine
         /// <param name="field">The field.</param>
         /// <param name="formatterName">Name of the formatter.</param>
         /// <returns></returns>
-        public FieldDefinition<T> AddField<T>(string className, FieldDefinition<T> field, string formatterName)
+        public IFieldDefinition AddField(string className, IFieldDefinition field, string formatterName)
         {
-            Class? clazz = GetClass(className);
-            FieldFormatter? formatter = GetFormatter(formatterName);
-            formatter.ValidateAllowedType(typeof(T));
-            return clazz!.AddField<T>(field, formatter);
+            Class clazz = GetClass(className);
+            FieldFormatter formatter = GetFormatter(formatterName);
+            formatter.ValidateAllowedType(field.Type);
+            return clazz.AddField(field, formatter);
         }
 
         /// <summary>
@@ -132,8 +138,8 @@ namespace pva.SuperV.Engine
         /// <param name="fieldName">Name of the field.</param>
         public void RemoveField(string className, string fieldName)
         {
-            Class? clazz = GetClass(className);
-            clazz!.RemoveField(fieldName);
+            Class clazz = GetClass(className);
+            clazz.RemoveField(fieldName);
         }
 
         /// <summary>
@@ -155,44 +161,27 @@ namespace pva.SuperV.Engine
         /// Removes a field formatter.
         /// </summary>
         /// <param name="fieldFormatterName">Name of the field formatter.</param>
-        public void RemoveFieldFormatter(string fieldFormatterName)
+        public bool RemoveFieldFormatter(string fieldFormatterName)
         {
-            FieldFormatters.Remove(fieldFormatterName);
+            // TODO: Remove field formatter from field Definitions referencing it.
+            return FieldFormatters.Remove(fieldFormatterName);
         }
 
         /// <summary>
         /// Adds a field change post processing on a field..
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="className">Name of the class.</param>
         /// <param name="fieldName">Name of the field.</param>
         /// <param name="fieldValueProcessing">The field value processing.</param>
-        public void AddFieldChangePostProcessing<T>(string className, string fieldName, FieldValueProcessing<T> fieldValueProcessing)
+        public void AddFieldChangePostProcessing(string className, string fieldName, IFieldValueProcessing fieldValueProcessing)
         {
-            Class? clazz = GetClass(className);
-            clazz!.AddFieldChangePostProcessing(fieldName, fieldValueProcessing);
+            Class clazz = GetClass(className);
+            clazz.AddFieldChangePostProcessing(fieldName, fieldValueProcessing);
         }
 
-        /// <summary>
-        /// Gets the C# code for generating the project's assembly with <see cref="ProjectBuilder.Build(WipProject)"/>.
-        /// </summary>
-        /// <returns>C# code.</returns>
-        public string GetCode()
+        public override string GetId()
         {
-            StringBuilder codeBuilder = new();
-            codeBuilder.AppendLine($"using {this.GetType().Namespace};");
-            codeBuilder.AppendLine("using System.Collections.Generic;");
-            codeBuilder.AppendLine("using System.Reflection;");
-            codeBuilder.AppendLine($"[assembly: AssemblyProduct(\"{Name}\")]");
-            codeBuilder.AppendLine($"[assembly: AssemblyTitle(\"{Description}\")]");
-            codeBuilder.AppendLine($"[assembly: AssemblyVersion(\"{Version}\")]");
-            codeBuilder.AppendLine($"[assembly: AssemblyFileVersion(\"{Version}\")]");
-            codeBuilder.AppendLine($"[assembly: AssemblyInformationalVersion(\"{Version}\")]");
-            codeBuilder.AppendLine($"namespace {Name}.V{Version} {{");
-            Classes
-                .ForEach((_, v) => codeBuilder.AppendLine(v.GetCode()));
-            codeBuilder.AppendLine("}");
-            return codeBuilder.ToString();
+            return $"{Name!}-WIP";
         }
 
         /// <summary>
@@ -202,7 +191,7 @@ namespace pva.SuperV.Engine
         /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
         public void AddHistoryRepository(HistoryRepository historyRepository)
         {
-            if (HistoryRepositories.ContainsKey(historyRepository.Name!))
+            if (HistoryRepositories.ContainsKey(historyRepository.Name))
             {
                 throw new EntityAlreadyExistException("History repository", historyRepository.Name);
             }

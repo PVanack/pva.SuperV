@@ -2,7 +2,7 @@
 
 namespace pva.SuperV.Engine.Exceptions
 {
-    /// <summary>Exception thrown when an unknown field is referenced.</summary>
+    /// <summary>Exception thrown when an unknown entity is referenced.</summary>
     [Serializable]
     public class UnknownEntityException : SuperVException
     {

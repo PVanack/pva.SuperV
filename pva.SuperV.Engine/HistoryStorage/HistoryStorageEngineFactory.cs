@@ -1,29 +1,38 @@
-﻿namespace pva.SuperV.Engine.HistoryStorage
+﻿using pva.SuperV.Engine.Exceptions;
+
+namespace pva.SuperV.Engine.HistoryStorage
 {
+    /// <summary>
+    /// HIstory storage engine factory. Based on connection string, the appropriate history storage engine will be created.
+    /// </summary>
     public static class HistoryStorageEngineFactory
     {
-        public const string NullHistoryStorage = "NullHistoryStorage";
-        public const string TdEngineHistoryStorage = "TDengine";
 
+        /// <summary>
+        /// Creates the appropriate history storage engine based on connection string.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        /// <returns>Created <see cref="IHistoryStorageEngine"/></returns>
+        /// <exception cref="ArgumentException"></exception>
         public static IHistoryStorageEngine? CreateHistoryStorageEngine(string? connectionString)
         {
-            if (String.IsNullOrEmpty(connectionString))
+            if (string.IsNullOrEmpty(connectionString))
             {
                 return null;
             }
-            if (connectionString.StartsWith(NullHistoryStorage))
+
+            if (connectionString.StartsWith(NullHistoryStorageEngine.Prefix))
             {
                 return new NullHistoryStorageEngine();
             }
-            else if (connectionString.StartsWith(TdEngineHistoryStorage))
+
+            if (connectionString.StartsWith(TDengineHistoryStorage.Prefix))
             {
-                string tdEngineConnectionString = connectionString.Replace($"{TdEngineHistoryStorage}:", "").Trim();
+                string tdEngineConnectionString = connectionString.Replace($"{TDengineHistoryStorage.Prefix}:", "").Trim();
                 return new TDengineHistoryStorage(tdEngineConnectionString);
             }
-            else
-            {
-                throw new ArgumentException($"Unknown history storage engine connection string: {connectionString}");
-            }
+
+            throw new UnknownHistoryStorageEngineException(connectionString);
         }
     }
 }

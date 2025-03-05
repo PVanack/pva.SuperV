@@ -15,7 +15,7 @@ namespace pva.SuperV.Benchmarks
             WipProject theProject = Project.CreateProject(BenchmarkHelpers.ProjectName);
             _ = theProject.AddClass(BenchmarkHelpers.ClassName);
             theProject.AddField(BenchmarkHelpers.ClassName, new FieldDefinition<int>(BenchmarkHelpers.FieldName, 10));
-            return ProjectBuilder.Build(theProject);
+            return Task.Run(async () => await Project.BuildAsync(theProject)).Result;
         }
 
         [Params(100, 200)]

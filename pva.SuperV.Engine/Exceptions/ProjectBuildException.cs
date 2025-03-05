@@ -4,7 +4,7 @@ namespace pva.SuperV.Engine.Exceptions
 {
     /// <summary>Exception thrown when an error occurs while building a project.</summary>
     [Serializable]
-    [ExcludeFromCodeCoverage(Justification = "Impossible to create a Roslyn compilation error by unit test.")]
+    [ExcludeFromCodeCoverage]
     public class ProjectBuildException : SuperVException
     {
         public ProjectBuildException(Project project, string diagnostics)

@@ -12,31 +12,7 @@
         /// <value>
         /// The name.
         /// </value>
-        public string? Name { get; set; }
-
-        /// <summary>
-        /// Gets or sets the class name.
-        /// </summary>
-        /// <value>
-        /// The class name.
-        /// </value>
-        public string? ClassName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the type of the trigerring field.
-        /// </summary>
-        /// <value>
-        /// The type of the trigerring field.
-        /// </value>
-        public Type TrigerringFieldType => typeof(T);
-
-        /// <summary>
-        /// Gets the additional types.
-        /// </summary>
-        /// <value>
-        /// The additional types.
-        /// </value>
-        public List<Type> AdditionalTypes { get; set; } = [];
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the constructor arguments.
@@ -52,23 +28,13 @@
         /// <value>
         /// The trigerring field definition.
         /// </value>
-        public FieldDefinition<T>? TrigerringFieldDefinition { get; set; }
+        public IFieldDefinition? TrigerringFieldDefinition { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FieldValueProcessing{T}"/> class. Ctor used for deserialization.
         /// </summary>
         protected FieldValueProcessing()
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FieldValueProcessing{T}"/> class.
-        /// </summary>
-        /// <param name="name">The name of processing.</param>
-        /// <param name="clazz">Name of the class</param>
-        protected FieldValueProcessing(string name, Class clazz)
-        {
-            Name = name;
         }
 
         protected FieldValueProcessing(string name)
@@ -89,7 +55,7 @@
         /// <param name="index">The index of argument.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException">index</exception>
-        protected T1? GetCtorArgument<T1>(int index)
+        public T1 GetCtorArgument<T1>(int index)
         {
             ArgumentOutOfRangeException.ThrowIfGreaterThan(index, CtorArguments.Count);
             return (T1)CtorArguments[index];
@@ -130,6 +96,18 @@
             return string.IsNullOrEmpty(fieldName)
                 ? null
                 : clazz.GetField<T1>(fieldName);
+        }
+
+        /// <summary>
+        /// Converts a field definition to a specific type.
+        /// </summary>
+        /// <typeparam name="T1">The type of the field definition.</typeparam>
+        /// <param name="fieldDefinition">The field definition to convert.</param>
+        /// <param name="fieldName">Name of the field.</param>
+        /// <returns><see cref="FieldDefinition{T}"/></returns>
+        protected static FieldDefinition<T1>? ConvertFieldDefinition<T1>(IFieldDefinition fieldDefinition)
+        {
+            return fieldDefinition as FieldDefinition<T1>;
         }
 
         /// <summary>

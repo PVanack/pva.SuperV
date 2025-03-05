@@ -1,6 +1,7 @@
 ﻿using pva.Helpers.Extensions;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
+using System.Collections.Concurrent;
 using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Engine
@@ -39,7 +40,7 @@ namespace pva.SuperV.Engine
         /// </value>
         public string? Name
         {
-            get { return _name; }
+            get => _name;
             set
             {
                 IdentifierValidation.ValidateIdentifier("project", value);
@@ -110,6 +111,12 @@ namespace pva.SuperV.Engine
         /// The history repositories.
         /// </value>
         public Dictionary<string, HistoryRepository> HistoryRepositories { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// List of projects in use.
+        /// </summary>
+        public static ConcurrentDictionary<string, Project> Projects { get; } = new(StringComparer.OrdinalIgnoreCase);
+
         /// <summary>
         /// Creates an empty <see cref="WipProject"/>.
         /// </summary>
@@ -129,12 +136,14 @@ namespace pva.SuperV.Engine
         public static WipProject CreateProject(string projectName, string? historyStorageEngineConnectionString)
         {
             WipProject project = new(projectName);
-            if (!String.IsNullOrEmpty(historyStorageEngineConnectionString))
+            AddProjectToCollection(project);
+            if (string.IsNullOrEmpty(historyStorageEngineConnectionString))
             {
-                project.HistoryStorageEngineConnectionString = historyStorageEngineConnectionString;
-                project.HistoryStorageEngine = HistoryStorageEngineFactory.CreateHistoryStorageEngine(historyStorageEngineConnectionString);
+                return project;
             }
 
+            project.HistoryStorageEngineConnectionString = historyStorageEngineConnectionString;
+            project.HistoryStorageEngine = HistoryStorageEngineFactory.CreateHistoryStorageEngine(historyStorageEngineConnectionString);
             return project;
         }
 
@@ -145,7 +154,30 @@ namespace pva.SuperV.Engine
         /// <returns>The new <see cref="WipProject"/></returns>
         public static WipProject CreateProject(RunnableProject runnableProject)
         {
-            return new WipProject(runnableProject);
+            WipProject wipProject = new(runnableProject);
+            AddProjectToCollection(wipProject);
+            return wipProject;
+        }
+
+        internal static void AddProjectToCollection(Project project)
+        {
+            if (Projects.TryGetValue(project.GetId(), out Project? previousProject))
+            {
+                previousProject?.Unload();
+            }
+            Projects[project.GetId()] = project;
+        }
+
+        /// <summary>
+        /// Builds the specified <see cref="WipProject"/>.
+        /// </summary>
+        /// <param name="wipProject">The WIP project.</param>
+        /// <returns>a <see cref="RunnableProject"/></returns>
+        public static async Task<RunnableProject> BuildAsync(WipProject wipProject)
+        {
+            RunnableProject runnableProject = await ProjectBuilder.BuildAsync(wipProject);
+            AddProjectToCollection(runnableProject);
+            return runnableProject;
         }
 
         /// <summary>
@@ -253,12 +285,40 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Unloads the project.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S1215:\"GC.Collect\" should not be called", Justification = "This call is used to unload the project assembly")]
+        public static void Unload(Project project)
+        {
+            WeakReference? projectAssemblyLoaderWeakRef = null;
+            if (project is RunnableProject runnableProject)
+            {
+                projectAssemblyLoaderWeakRef = runnableProject.ProjectAssemblyLoaderWeakRef;
+            }
+            project.Dispose();
+            if (projectAssemblyLoaderWeakRef is not null)
+            {
+                CallGcCleanup(projectAssemblyLoaderWeakRef);
+            }
+        }
+
+
+        /// <summary>
+        /// Unloads the project.
+        /// </summary>
         public virtual void Unload()
         {
+            FieldFormatters.Clear();
             Classes.Clear();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+            Projects.Remove(GetId(), out _);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S1215:\"GC.Collect\" should not be called",
+            Justification = "Need to call GC to remove references to assembly")]
+        public static void CallGcCleanup(WeakReference palWeakRef)
+        {
+            for (int i = 0; palWeakRef.IsAlive && i < 10; i++)
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
         }
 
         /// <summary>
@@ -278,5 +338,7 @@ namespace pva.SuperV.Engine
         {
             Unload();
         }
+
+        public abstract string GetId();
     }
 }

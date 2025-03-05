@@ -10,7 +10,7 @@ namespace pva.SuperV.Engine
     public class Class
     {
         /// <summary>
-        /// Name of class. Access done through <see cref="Name"./>
+        /// Name of class. Access done through <see cref="Name"/>.
         /// </summary>
         private string? _name;
 
@@ -78,33 +78,33 @@ namespace pva.SuperV.Engine
         /// <typeparam name="T"></typeparam>
         /// <param name="field">The field.</param>
         /// <returns>The field once it has been added.</returns>
-        internal FieldDefinition<T> AddField<T>(FieldDefinition<T> field)
+        public IFieldDefinition AddField(IFieldDefinition field)
         {
-            return AddField<T>(field, null);
+            return AddField(field, null);
         }
 
         /// <summary>
         /// Adds a field with a field formatter.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="field">The <see cref="FieldDefinition{T}" to be added.</param>
+        /// <param name="field">The <see cref="FieldDefinition{T}"/> to be added.</param>
         /// <param name="formatter">The formatter to be used when using ToString()."/>.</param>
         /// <returns></returns>
         /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
-        internal FieldDefinition<T> AddField<T>(FieldDefinition<T> field, FieldFormatter? formatter)
+        public IFieldDefinition AddField(IFieldDefinition field, FieldFormatter? formatter)
         {
-            if (FieldDefinitions.ContainsKey(field.Name!))
+            if (FieldDefinitions.ContainsKey(field.Name))
             {
                 throw new EntityAlreadyExistException("Field", field.Name);
             }
             field.Formatter = formatter;
-            FieldDefinitions.Add(field.Name!, field);
+            FieldDefinitions.Add(field.Name, field);
             return field;
         }
 
-        internal void AddFieldChangePostProcessing<T>(string fieldName, FieldValueProcessing<T> fieldValueProcessing)
+        internal void AddFieldChangePostProcessing(string fieldName, IFieldValueProcessing fieldValueProcessing)
         {
-            FieldDefinition<T>? fieldDefinition = GetField<T>(fieldName);
+            IFieldDefinition? fieldDefinition = GetField(fieldName);
             fieldDefinition!.ValuePostChangeProcessings.Add(fieldValueProcessing!);
         }
 
@@ -120,7 +120,7 @@ namespace pva.SuperV.Engine
             {
                 return fieldDefinition;
             }
-            else if (BaseClass is not null)
+            if (BaseClass is not null)
             {
                 return BaseClass.GetField(fieldName);
             }
@@ -149,7 +149,7 @@ namespace pva.SuperV.Engine
         /// Removes a field.
         /// </summary>
         /// <param name="fieldName">Name of the field to be removed.</param>
-        internal void RemoveField(string fieldName)
+        public void RemoveField(string fieldName)
         {
             FieldDefinitions.Remove(fieldName);
         }
@@ -182,7 +182,7 @@ namespace pva.SuperV.Engine
         /// <returns>A new <see cref="Class"/> clone of class instance.</returns>
         internal Class Clone()
         {
-            var clazz = new Class(this.Name!, BaseClass);
+            var clazz = new Class(Name!, BaseClass);
             FieldDefinitions
                 .ForEach((k, v) => clazz.FieldDefinitions.Add(k, v.Clone()));
             return clazz;

@@ -11,6 +11,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.Benchmarks", "pv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.Helpers", "pva.Helpers\pva.Helpers.csproj", "{00370AA6-4092-479F-90B4-201FA641B350}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3F372F59-056F-4D2E-B940-8A5BD95DD255}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.targets = Directory.Build.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.Api", "pva.SuperV.Api\pva.SuperV.Api.csproj", "{C1374A7E-7E2F-41B2-842E-D05EF1D890B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.Model", "pva.SuperV.Model\pva.SuperV.Model.csproj", "{13225DF8-71F7-45F7-88EE-87FDC756869B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.ApiTests", "pva.SuperV.ApiTests\pva.SuperV.ApiTests.csproj", "{39700329-AD78-44DC-A582-2245299BABC4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{13225DF8-71F7-45F7-88EE-87FDC756869B} = {13225DF8-71F7-45F7-88EE-87FDC756869B}
+		{C1374A7E-7E2F-41B2-842E-D05EF1D890B7} = {C1374A7E-7E2F-41B2-842E-D05EF1D890B7}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +47,18 @@ Global
 		{00370AA6-4092-479F-90B4-201FA641B350}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00370AA6-4092-479F-90B4-201FA641B350}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00370AA6-4092-479F-90B4-201FA641B350}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1374A7E-7E2F-41B2-842E-D05EF1D890B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1374A7E-7E2F-41B2-842E-D05EF1D890B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1374A7E-7E2F-41B2-842E-D05EF1D890B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1374A7E-7E2F-41B2-842E-D05EF1D890B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13225DF8-71F7-45F7-88EE-87FDC756869B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13225DF8-71F7-45F7-88EE-87FDC756869B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13225DF8-71F7-45F7-88EE-87FDC756869B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13225DF8-71F7-45F7-88EE-87FDC756869B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39700329-AD78-44DC-A582-2245299BABC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39700329-AD78-44DC-A582-2245299BABC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39700329-AD78-44DC-A582-2245299BABC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39700329-AD78-44DC-A582-2245299BABC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

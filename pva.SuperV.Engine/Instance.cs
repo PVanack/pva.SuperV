@@ -60,7 +60,7 @@ namespace pva.SuperV.Engine
         public Field<T>? GetField<T>(string fieldName)
         {
             IField field = GetField(fieldName);
-            if (field.Type != (typeof(T)))
+            if (field.Type != typeof(T))
             {
                 throw new WrongFieldTypeException(fieldName, field.Type, typeof(T));
             }
@@ -75,14 +75,9 @@ namespace pva.SuperV.Engine
         /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownEntityException"></exception>
         public IField GetField(string fieldName)
         {
-            Class? actualClass = Class;
-            while (actualClass is not null)
+            if (Fields.TryGetValue(fieldName, out var field))
             {
-                if (actualClass.FieldDefinitions.ContainsKey(fieldName))
-                {
-                    return Fields[fieldName];
-                }
-                actualClass = actualClass.BaseClass;
+                return field;
             }
             throw new UnknownEntityException(fieldName, Class.Name);
         }

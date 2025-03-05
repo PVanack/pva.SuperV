@@ -19,7 +19,7 @@ namespace pva.SuperV.Engine
         public static string SaveProjectDefinition<T>(T project) where T : Project
         {
             string filename = Path.Combine(Project.ProjectsPath, $"{project.Name}.{project.Version}.prj");
-            SaveProjectDefinition(project, filename);
+            Task.Run(async () => await SaveProjectDefinition(project, filename)).Wait();
             return filename;
         }
 
@@ -29,10 +29,37 @@ namespace pva.SuperV.Engine
         /// <typeparam name="T"></typeparam>
         /// <param name="project">The project.</param>
         /// <param name="filename">The filename.</param>
-        public static void SaveProjectDefinition<T>(T project, string filename) where T : Project
+        public static async ValueTask SaveProjectDefinition<T>(T project, string filename) where T : Project
         {
             using StreamWriter outputFile = new(filename);
-            outputFile.WriteLine(JsonSerializer.Serialize(project));
+            await StreamProjectDefinition(project, outputFile);
+        }
+
+        /// <summary>
+        /// Saves a project definition.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="project">The project.</param>
+        /// <param name="filename">The filename.</param>
+        public static async Task<StreamReader?> StreamProjectDefinition<T>(T project, StreamWriter streamWriter) where T : Project
+        {
+            await streamWriter.WriteAsync(JsonSerializer.Serialize(project));
+            await streamWriter.FlushAsync();
+            streamWriter.BaseStream.Position = 0;
+            return (streamWriter.BaseStream.CanRead) ? new StreamReader(streamWriter.BaseStream) : null;
+        }
+
+
+        /// <summary>
+        /// Loads a project definition from a file.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="filename">The filename.</param>
+        /// <returns></returns>
+        public static T LoadProjectDefinition<T>(string filename) where T : Project
+        {
+            using StreamReader fileReader = new(filename);
+            return CreateProjectFromJsonDefinition<T>(fileReader);
         }
 
         /// <summary>
@@ -41,12 +68,12 @@ namespace pva.SuperV.Engine
         /// <typeparam name="T"></typeparam>
         /// <param name="filename">The filename.</param>
         /// <returns></returns>
-        public static T? LoadProjectDefinition<T>(string filename) where T : Project
+        public static T CreateProjectFromJsonDefinition<T>(StreamReader streamReader) where T : Project
         {
-            string json = File.ReadAllText(filename);
+            string json = streamReader.ReadToEnd();
             T? projectInstance = JsonSerializer.Deserialize<T>(json);
             projectInstance!.HistoryStorageEngine = HistoryStorageEngineFactory.CreateHistoryStorageEngine(projectInstance.HistoryStorageEngineConnectionString);
-            projectInstance!.Classes.Values.ForEach(clazz =>
+            projectInstance.Classes.Values.ForEach(clazz =>
             {
                 if (clazz.BaseClassName != null)
                 {
@@ -58,6 +85,7 @@ namespace pva.SuperV.Engine
                         postProcessing.BuildAfterDeserialization(projectInstance, clazz));
                 });
             });
+            Project.AddProjectToCollection(projectInstance);
             return projectInstance;
         }
 
@@ -69,7 +97,7 @@ namespace pva.SuperV.Engine
         public static string SaveProjectInstances(RunnableProject project)
         {
             string filename = Path.Combine(Project.ProjectsPath, $"{project.Name}.{project.Version}.snp");
-            SaveProjectInstances(project, filename);
+            Task.Run(async () => await SaveProjectInstances(project, filename)).Wait();
             return filename;
         }
 
@@ -78,16 +106,36 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="project">The project.</param>
         /// <param name="filename">The filename.</param>
-        public static void SaveProjectInstances(RunnableProject project, string filename)
+        public static async ValueTask SaveProjectInstances(RunnableProject project, string filename)
         {
             using StreamWriter outputFile = new(filename);
             Dictionary<string, IInstance> instances = new(project.Instances.Count);
             project.Instances.ForEach((k, v) =>
             {
-                var instance = v! as IInstance;
+                var instance = v as IInstance;
                 instances.Add(k, instance!);
             });
-            outputFile.WriteLine(JsonSerializer.Serialize(instances));
+            await StreamProjectInstances(project, outputFile);
+        }
+
+        /// <summary>
+        /// Saves a project instances into a file.
+        /// </summary>
+        /// <param name="project">The project.</param>
+        /// <param name="filename">The filename.</param>
+        public static async Task<StreamReader?> StreamProjectInstances(RunnableProject project, StreamWriter streamWriter)
+        {
+            Dictionary<string, IInstance> instances = new(project.Instances.Count);
+            project.Instances.ForEach((k, v) =>
+            {
+                var instance = v as IInstance;
+                instances.Add(k, instance!);
+            });
+            await streamWriter.WriteAsync(JsonSerializer.Serialize(instances));
+            await streamWriter.FlushAsync();
+            streamWriter.BaseStream.Position = 0;
+            return (streamWriter.BaseStream.CanRead) ? new StreamReader(streamWriter.BaseStream) : null;
+
         }
 
         /// <summary>
@@ -99,7 +147,14 @@ namespace pva.SuperV.Engine
         {
             InstanceJsonConverter.LoadedProject = project;
             // Instances are already added to project as deserialization uses project.CreateInstance()
-            JsonSerializer.Deserialize<Dictionary<string, IInstance>>(File.ReadAllText(filename));
+            LoadProjectInstances(project, new StreamReader(filename));
+        }
+
+        public static void LoadProjectInstances(RunnableProject project, StreamReader streamReader)
+        {
+            InstanceJsonConverter.LoadedProject = project;
+            // Instances are already added to project as deserialization uses project.CreateInstance()
+            JsonSerializer.Deserialize<Dictionary<string, IInstance>>(streamReader.ReadToEnd());
         }
     }
 }

@@ -2,6 +2,9 @@
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Engine
@@ -18,6 +21,14 @@ namespace pva.SuperV.Engine
         [JsonIgnore]
         private ProjectAssemblyLoader? _projectAssemblyLoader;
 
+        [JsonIgnore]
+        public WeakReference? ProjectAssemblyLoaderWeakRef
+        {
+            get => _projectAssemblyLoader == null
+                ? null
+                : new WeakReference(_projectAssemblyLoader, trackResurrection: true);
+        }
+
         /// <summary>
         /// Gets the instances.
         /// </summary>
@@ -25,7 +36,7 @@ namespace pva.SuperV.Engine
         /// The instances.
         /// </value>
         [JsonIgnore]
-        public Dictionary<string, dynamic> Instances { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, Instance> Instances { get; } = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RunnableProject"/> class.
@@ -40,18 +51,29 @@ namespace pva.SuperV.Engine
         /// <param name="wipProject">The wip project.</param>
         public RunnableProject(WipProject wipProject)
         {
-            this.Name = wipProject.Name;
-            this.Version = wipProject.Version;
-            this.Classes = new(wipProject.Classes);
-            this.FieldFormatters = new(wipProject.FieldFormatters);
-            this.HistoryStorageEngineConnectionString = wipProject.HistoryStorageEngineConnectionString;
-            this.HistoryStorageEngine = wipProject.HistoryStorageEngine;
-            this.HistoryRepositories = new(wipProject.HistoryRepositories);
+            Name = wipProject.Name;
+            Version = wipProject.Version;
+            Classes = new(wipProject.Classes);
+            FieldFormatters = new(wipProject.FieldFormatters);
+            HistoryStorageEngineConnectionString = wipProject.HistoryStorageEngineConnectionString;
+            HistoryStorageEngine = wipProject.HistoryStorageEngine;
+            HistoryRepositories = new(wipProject.HistoryRepositories);
             CreateHistoryRepositories(wipProject.HistoryStorageEngine);
             CreateHistoryClassTimeSeries();
-            this._projectAssemblyLoader = new();
-            this._projectAssemblyLoader.LoadFromAssemblyPath(GetAssemblyFileName());
+            SetupProjectAssemblyLoader();
             RecreateInstances(wipProject);
+        }
+
+        public override string GetId()
+        {
+            return $"{Name!}";
+        }
+
+        private void SetupProjectAssemblyLoader()
+        {
+            Task.Run(async () => await ProjectBuilder.BuildAsync(this)).Wait();
+            _projectAssemblyLoader ??= new();
+            _projectAssemblyLoader.LoadFromAssemblyPath(GetAssemblyFileName());
         }
 
         private void CreateHistoryClassTimeSeries()
@@ -63,7 +85,7 @@ namespace pva.SuperV.Engine
                     fieldDefinition.ValuePostChangeProcessings
                         .OfType<IHistorizationProcessing>()
                         .ForEach(hp =>
-                            hp?.UpsertInHistoryStorage(this.Name!, clazz.Name!));
+                            hp.UpsertInHistoryStorage(Name!, clazz.Name!));
                 });
             });
         }
@@ -85,26 +107,31 @@ namespace pva.SuperV.Engine
                     historyRepository = hp.HistoryRepository;
                     classTimeSerieId = hp.ClassTimeSerieId;
                 }
+
                 fields.Add(field);
             });
             if (historyRepository is null || classTimeSerieId is null)
             {
                 throw new NoHistoryStorageEngineException();
             }
-            return HistoryStorageEngine!.GetHistoryValues(historyRepository.HistoryStorageId, classTimeSerieId!, instanceName, from, to, fields);
+
+            return HistoryStorageEngine!.GetHistoryValues(historyRepository.HistoryStorageId!, classTimeSerieId!,
+                instanceName, from, to, fields);
         }
 
         private void CreateHistoryRepositories(IHistoryStorageEngine? historyStorageEngine)
         {
-            if (HistoryRepositories.Keys.Count > 0)
+            if (HistoryRepositories.Keys.Count == 0)
             {
-                if (historyStorageEngine is null)
-                {
-                    throw new NoHistoryStorageEngineException(this.Name);
-                }
-                HistoryRepositories.Values.ForEach(repository =>
-                    repository.UpsertRepository(Name!, historyStorageEngine));
+                return;
             }
+            if (historyStorageEngine is null)
+            {
+                throw new NoHistoryStorageEngineException(Name);
+            }
+
+            HistoryRepositories.Values.ForEach(repository =>
+                repository.UpsertRepository(Name!, historyStorageEngine));
         }
 
         /// <summary>
@@ -114,29 +141,61 @@ namespace pva.SuperV.Engine
         /// <param name="instanceName">Name of the instance.</param>
         /// <returns>The newly created instance.</returns>
         /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
-        public dynamic? CreateInstance(string className, string instanceName)
+        public Instance? CreateInstance(string className, string instanceName)
         {
+            SetupProjectAssemblyLoader();
             if (Instances.ContainsKey(instanceName))
             {
                 throw new EntityAlreadyExistException("Instance", instanceName);
             }
+
             Class clazz = GetClass(className);
             string classFullName = $"{Name}.V{Version}.{clazz.Name}";
-            dynamic? dynamicInstance = Activator.CreateInstanceFrom(GetAssemblyFileName(), classFullName)
-                ?.Unwrap();
-            if (dynamicInstance is not null)
+            Type? classType = _projectAssemblyLoader?.Assemblies.First()?.GetType(classFullName!);
+
+            Instance? instance = CreateInstance(classType!);
+            if (instance is null)
             {
-                dynamicInstance.Name = instanceName;
-                dynamicInstance.Class = clazz;
-                IInstance? instance = dynamicInstance as IInstance;
-                clazz.FieldDefinitions.ForEach((k, v) =>
+                return instance;
+            }
+            instance.Name = instanceName;
+            instance.Class = clazz;
+            Class? currentClass = clazz;
+            while (currentClass is not null)
+            {
+                currentClass.FieldDefinitions.ForEach((k, v) =>
                 {
                     instance!.Fields.TryGetValue(k, out IField? field);
                     field!.FieldDefinition = v;
                 });
-                Instances.Add(instanceName, dynamicInstance);
+                currentClass = currentClass.BaseClass;
             }
-            return dynamicInstance;
+            Instances.Add(instanceName, instance);
+            return instance;
+        }
+
+        /// <summary>
+        /// Creates an instance for targetType's <see cref="FieldDefinition{T}"/>.
+        /// </summary>
+        /// <param name="targetType">Type of the target.</param>
+        /// <returns><see cref="IFieldDefinition"/> created instance.</returns>
+        private static Instance CreateInstance(Type targetType)
+        {
+            var ctor = GetConstructor(targetType);
+            return (Instance)ctor.Invoke([]);
+        }
+
+        /// <summary>
+        /// Gets the constructor for targetType's <see cref="FieldDefinition{T}"/>.
+        /// </summary>
+        /// <param name="targetType">Type of the target.</param>
+        /// <param name="argumentType">Type of the argument.</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">No constructor found for FieldDefinition{targetType.Name}.</exception>
+        private static ConstructorInfo GetConstructor(Type targetType)
+        {
+            return targetType.GetConstructor(Type.EmptyTypes)
+                ?? throw new InvalidOperationException($"No constructor found for {targetType.Name}.");
         }
 
         /// <summary>
@@ -160,6 +219,7 @@ namespace pva.SuperV.Engine
             {
                 return instance;
             }
+
             throw new UnknownEntityException("Instance", instanceName);
         }
 
@@ -174,20 +234,14 @@ namespace pva.SuperV.Engine
                 {
                     string instanceName = k;
                     Instance oldInstance = v;
-                    Instance? newInstance = CreateInstance(oldInstance!.Class!.Name!, instanceName!);
-                    Dictionary<string, IField> newFields = new(newInstance!.Fields!.Count);
+                    Instance? newInstance = CreateInstance(oldInstance.Class.Name!, instanceName);
+                    Dictionary<string, IField> newFields = new(newInstance!.Fields.Count);
                     newInstance.Fields
-                        .ForEach((k, v) =>
+                        .ForEach((k1, v2) =>
                         {
-                            string fieldName = k;
-                            if (oldInstance.Fields.TryGetValue(fieldName, out IField? oldField))
-                            {
-                                newFields.Add(fieldName, oldField);
-                            }
-                            else
-                            {
-                                newFields.Add(fieldName, v);
-                            }
+                            string fieldName = k1;
+                            newFields.Add(fieldName,
+                                oldInstance.Fields.GetValueOrDefault(fieldName, v2));
                         });
                     newInstance.Fields = newFields;
                 });
@@ -196,23 +250,48 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Unloads the project. Clears all instances.
         /// </summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public override void Unload()
         {
             Instances.Values.ForEach(instance =>
                 instance.Dispose());
             Instances.Clear();
             base.Unload();
+            Projects.Remove(GetId(), out _);
             _projectAssemblyLoader?.Unload();
             _projectAssemblyLoader = null;
         }
+
+        /// <summary>
+        /// Gets the C# code for generating the project's assembly with <see cref="Project.BuildAsync(WipProject)"/>.
+        /// </summary>
+        /// <returns>C# code.</returns>
+        public string GetCode()
+        {
+            StringBuilder codeBuilder = new();
+            codeBuilder.AppendLine($"using {GetType().Namespace};");
+            codeBuilder.AppendLine("using System.Collections.Generic;");
+            codeBuilder.AppendLine("using System.Reflection;");
+            codeBuilder.AppendLine($"[assembly: AssemblyProduct(\"{Name}\")]");
+            codeBuilder.AppendLine($"[assembly: AssemblyTitle(\"{Description}\")]");
+            codeBuilder.AppendLine($"[assembly: AssemblyVersion(\"{Version}\")]");
+            codeBuilder.AppendLine($"[assembly: AssemblyFileVersion(\"{Version}\")]");
+            codeBuilder.AppendLine($"[assembly: AssemblyInformationalVersion(\"{Version}\")]");
+            codeBuilder.AppendLine($"namespace {Name}.V{Version} {{");
+            Classes
+                .ForEach((_, v) => codeBuilder.AppendLine(v.GetCode()));
+            codeBuilder.AppendLine("}");
+            return codeBuilder.ToString();
+        }
+
         public void SetInstanceValue<T>(string instanceName, string fieldName, T fieldValue)
         {
-            SetInstanceValue(instanceName, fieldName, fieldValue, DateTime.UtcNow, QualityLevel.GOOD);
+            SetInstanceValue(instanceName, fieldName, fieldValue, DateTime.UtcNow, QualityLevel.Good);
         }
 
         public void SetInstanceValue<T>(string instanceName, string fieldName, T fieldValue, DateTime timestamp)
         {
-            SetInstanceValue(instanceName, fieldName, fieldValue, timestamp, QualityLevel.GOOD);
+            SetInstanceValue(instanceName, fieldName, fieldValue, timestamp, QualityLevel.Good);
         }
 
         public void SetInstanceValue<T>(string instanceName, string fieldName, T fieldValue, QualityLevel qualityLevel)
@@ -220,7 +299,8 @@ namespace pva.SuperV.Engine
             SetInstanceValue(instanceName, fieldName, fieldValue, DateTime.UtcNow, qualityLevel);
         }
 
-        public void SetInstanceValue<T>(string instanceName, string fieldName, T fieldValue, DateTime timestamp, QualityLevel qualityLevel)
+        public void SetInstanceValue<T>(string instanceName, string fieldName, T fieldValue, DateTime timestamp,
+            QualityLevel qualityLevel)
         {
             Instance instance = GetInstance(instanceName);
             IField field = instance.GetField(fieldName);
@@ -228,6 +308,7 @@ namespace pva.SuperV.Engine
             {
                 throw new WrongFieldTypeException(fieldName);
             }
+
             typedField.SetValue(fieldValue, timestamp, qualityLevel);
         }
     }

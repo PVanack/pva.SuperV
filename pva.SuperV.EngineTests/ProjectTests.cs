@@ -124,42 +124,6 @@ namespace pva.SuperV.EngineTests
         }
 
         [Fact]
-        public void GivenProjectWithClassAndField_WhenGettingCode_ThenGeneratedCodeIsAsExpected()
-        {
-            // GIVEN
-            WipProject project = Project.CreateProject(ProjectName);
-            _ = project.AddClass(ClassName);
-            project.AddField(ClassName, new FieldDefinition<int>("IntField", 10));
-
-            // WHEN
-            string projectCode = project.GetCode();
-
-            // THEN
-            string expectedCode = $$"""
-using pva.SuperV.Engine;
-using System.Collections.Generic;
-using System.Reflection;
-[assembly: AssemblyProduct("{{project.Name}}")]
-[assembly: AssemblyTitle("{{project.Description}}")]
-[assembly: AssemblyVersion("{{project.Version}}")]
-[assembly: AssemblyFileVersion("{{project.Version}}")]
-[assembly: AssemblyInformationalVersion("{{project.Version}}")]
-namespace {{ProjectName}}.V{{project.Version}} {
-public class {{ClassName}} : Instance {
-public Field<System.Int32> IntField { get; set; } = new(10);
-
-public TestClass() {Fields.Add("IntField", IntField);IntField.Instance = this;
-}
-
-}
-
-}
-
-""";
-            projectCode.ShouldBe(expectedCode);
-        }
-
-        [Fact]
         public void GivenProjectWithClassAndFormatter_WhenGettingFormatter_ThenFormatterIsReturned()
         {
             // GIVEN
@@ -228,7 +192,7 @@ public TestClass() {Fields.Add("IntField", IntField);IntField.Instance = this;
             _ = project.AddClass(ClassName);
 
             // WHEN
-            FieldDefinition<int> field = project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), ProjectHelpers.AlarmStatesFormatterName);
+            IFieldDefinition field = project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), ProjectHelpers.AlarmStatesFormatterName);
 
             // THEN
             field.Formatter.ShouldBe(formatter);

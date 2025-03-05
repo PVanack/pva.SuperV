@@ -14,10 +14,10 @@ namespace pva.SuperV.Engine.JsonConverters
         /// <summary>
         /// The field converters cache.
         /// </summary>
-        private static readonly Dictionary<Type, dynamic> fieldConvertersCache = [];
+        private static readonly Dictionary<Type, dynamic> FieldConvertersCache = [];
 
         /// <summary>
-        /// Reads and converts the JSON to type <typeparamref name="T" />.
+        /// Reads and converts the JSON to type.
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <param name="typeToConvert">The type to convert.</param>
@@ -26,7 +26,7 @@ namespace pva.SuperV.Engine.JsonConverters
         /// The converted value.
         /// </returns>
         /// <exception cref="JsonException"></exception>
-        public override IFieldDefinition? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override IFieldDefinition Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType != JsonTokenType.StartObject)
             {
@@ -101,21 +101,21 @@ namespace pva.SuperV.Engine.JsonConverters
             writer.WriteString("Name", fieldDefinition.Name);
             dynamic actualFieldDefinition = fieldDefinition;
             Type fieldType = actualFieldDefinition.Type;
-            if (!fieldConvertersCache.TryGetValue(fieldType, out dynamic? fieldConverter))
+            if (!FieldConvertersCache.TryGetValue(fieldType, out dynamic? fieldConverter))
             {
                 fieldConverter = JsonSerializerOptions.Default.GetConverter(fieldType);
-                fieldConvertersCache.Add(fieldType, fieldConverter);
+                FieldConvertersCache.Add(fieldType, fieldConverter);
             }
             writer.WritePropertyName("DefaultValue");
             fieldConverter.Write(writer, actualFieldDefinition.DefaultValue, options);
 
             writer.WritePropertyName("ValuePostChangeProcessings");
-            JsonSerializer.Serialize(writer, fieldDefinition!.ValuePostChangeProcessings, options);
+            JsonSerializer.Serialize(writer, fieldDefinition.ValuePostChangeProcessings, options);
 
             if (fieldDefinition!.Formatter is not null)
             {
                 writer.WritePropertyName("Formatter");
-                JsonSerializer.Serialize(writer, fieldDefinition!.Formatter, options);
+                JsonSerializer.Serialize(writer, fieldDefinition.Formatter, options);
             }
             writer.WriteEndObject();
         }
@@ -139,7 +139,7 @@ namespace pva.SuperV.Engine.JsonConverters
         /// <param name="targetType">Type of the target.</param>
         /// <param name="argumentType">Type of the argument.</param>
         /// <returns></returns>
-        /// <exception cref="InvalidOperationException">No constructor found for FieldDefinition<{targetType.Name}>.</exception>
+        /// <exception cref="InvalidOperationException">No constructor found for FieldDefinition{targetType.Name}.</exception>
         private static ConstructorInfo GetConstructor(Type targetType, Type argumentType)
         {
             return typeof(FieldDefinition<>)
