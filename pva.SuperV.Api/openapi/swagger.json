@@ -145,7 +145,7 @@
         ],
         "summary": "Creates a blank WIP project",
         "description": "Creates a blank WIP project",
-        "operationId": "CreateProject",
+        "operationId": "CreateBlankProject",
         "requestBody": {
           "description": "Project creation request",
           "content": {
@@ -157,6 +157,59 @@
           },
           "required": true
         },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/create/{runnableProjectId}": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Creates a WIP project from a runnable project",
+        "description": "Creates a WIP project from a runnable project",
+        "operationId": "CreateProjectFromRunnable",
+        "parameters": [
+          {
+            "name": "runnableProjectId",
+            "in": "path",
+            "description": "Runnable project ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created",
