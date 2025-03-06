@@ -40,32 +40,32 @@ namespace pva.SuperV.Api.Routes.FieldProcessings
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapPost("/{projectId}/{className}/{fieldName}",
+            fieldDefinitionsApi.MapPost("/{wipProjectId}/{className}/{fieldName}",
                 (IFieldProcessingService fieldProcessingService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of WIP project")] string wipProjectId,
                 [Description("Name of class")] string className,
                 [Description("Name of field")] string fieldName,
                 [Description("Field processing creation request")][FromBody] FieldValueProcessingModel createRequest)
-                    => CreateProcessing.Handle(fieldProcessingService, projectId, className, fieldName, createRequest))
+                    => CreateProcessing.Handle(fieldProcessingService, wipProjectId, className, fieldName, createRequest))
                 .WithName("CreateProcessing")
                 .WithDisplayName("CreateProcessing")
-                .WithSummary("Creates a field processing in a class of a project")
-                .WithDescription("Creates a field processing in a class of a project")
+                .WithSummary("Creates a field processing in a class of a WIP project")
+                .WithDescription("Creates a field processing in a class of a WIP project")
                 .Produces<FieldDefinitionModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapDelete("/{projectId}/{className}/{fieldName}/{processingName}",
+            fieldDefinitionsApi.MapDelete("/{wipProjectId}/{className}/{fieldName}/{processingName}",
                 (IFieldProcessingService fieldProcessingService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of WIP project")] string wipProjectId,
                 [Description("Name of class")] string className,
                 [Description("Name of field")] string fieldName,
                 [Description("Name of processing")] string processingName)
-                    => DeleteProcessing.Handle(fieldProcessingService, projectId, className, fieldName, processingName))
+                    => DeleteProcessing.Handle(fieldProcessingService, wipProjectId, className, fieldName, processingName))
                 .WithName("DeleteProcessing")
                 .WithDisplayName("DeleteProcessing")
-                .WithSummary("Deletes a field processing from a class of a project by its name")
-                .WithDescription("Deletes a field processing from a class of a project by its name")
+                .WithSummary("Deletes a field processing from a class of a WIP project by its name")
+                .WithDescription("Deletes a field processing from a class of a WIP project by its name")
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);

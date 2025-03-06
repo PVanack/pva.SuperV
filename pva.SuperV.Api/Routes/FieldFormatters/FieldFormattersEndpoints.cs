@@ -43,28 +43,28 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldFormattersApi.MapPost("/{projectId}",
+            fieldFormattersApi.MapPost("/{wipProjectId}",
                 (IFieldFormatterService fieldFormatterService, HttpContext context,
-                [Description("ID of project")] string projectId,
+                [Description("ID of WIP project")] string wipProjectId,
                 [Description("Field formatter creation request")][FromBody] CreateFieldFormatterRequest createRequest)
-                    => CreateFieldFormatter.Handle(fieldFormatterService, projectId, createRequest))
+                    => CreateFieldFormatter.Handle(fieldFormatterService, wipProjectId, createRequest))
                 .WithName("CreateFieldFormatter")
                 .WithDisplayName("CreateFieldFormatter")
-                .WithSummary("Creates a field formatter of project")
-                .WithDescription("Creates a field formatter of project")
+                .WithSummary("Creates a field formatter in a WIP project")
+                .WithDescription("Creates a field formatter in a WIP project")
                 .Produces<FieldFormatterModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldFormattersApi.MapDelete("/{projectId}/{fieldFormatterName}",
+            fieldFormattersApi.MapDelete("/{wipProjectId}/{fieldFormatterName}",
                 (IFieldFormatterService fieldFormatterService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of WUP project")] string wipProjectId,
                 [Description("Name of field formatter")] string fieldFormatterName)
-                    => DeleteFieldFormatter.Handle(fieldFormatterService, projectId, fieldFormatterName))
+                    => DeleteFieldFormatter.Handle(fieldFormatterService, wipProjectId, fieldFormatterName))
                 .WithName("DeleteFieldFormatter")
                 .WithDisplayName("DeleteFieldFormatter")
-                .WithSummary("Deletes a field formatter of project")
-                .WithDescription("Deletes a field formatter of project")
+                .WithSummary("Deletes a field formatter from a WIP project")
+                .WithDescription("Deletes a field formatter from a WIP project")
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);

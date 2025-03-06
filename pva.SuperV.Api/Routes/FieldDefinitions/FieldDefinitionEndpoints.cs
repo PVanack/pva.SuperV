@@ -37,30 +37,30 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapPost("/{projectId}/{className}",
+            fieldDefinitionsApi.MapPost("/{wipProjectId}/{className}",
                 (IFieldDefinitionService fieldDefinitionService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of WIP project")] string wipProjectId,
                 [Description("Name of class")] string className,
                 [Description("Field creation requests")][FromBody] List<FieldDefinitionModel> createRequests)
-                    => CreateFieldDefinitions.Handle(fieldDefinitionService, projectId, className, createRequests))
+                    => CreateFieldDefinitions.Handle(fieldDefinitionService, wipProjectId, className, createRequests))
                 .WithName("CreateFieldDefinitions")
                 .WithDisplayName("CreateFieldDefinitions")
-                .WithSummary("Creates field definitions in a class of a project")
-                .WithDescription("Creates field definitions in a class of a project")
+                .WithSummary("Creates field definitions in a class of a WIP project")
+                .WithDescription("Creates field definitions in a class of a WIP project")
                 .Produces<List<FieldDefinitionModel>>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapDelete("/{projectId}/{className}/{fieldName}",
+            fieldDefinitionsApi.MapDelete("/{wipProjectId}/{className}/{fieldName}",
                 (IFieldDefinitionService fieldDefinitionService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of WIP project")] string wipProjectId,
                 [Description("Name of class")] string className,
                 [Description("Name of field")] string fieldName)
-                    => DeleteFieldDefinition.Handle(fieldDefinitionService, projectId, className, fieldName))
+                    => DeleteFieldDefinition.Handle(fieldDefinitionService, wipProjectId, className, fieldName))
                 .WithName("DeleteFieldDefinition")
                 .WithDisplayName("DeleteFieldDefinition")
-                .WithSummary("Deletes a field definition from a class of a project by its name")
-                .WithDescription("Deletes a field definition from a class of a project by its name")
+                .WithSummary("Deletes a field definition from a class of a WIP project by its name")
+                .WithDescription("Deletes a field definition from a class of a WIP project by its name")
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);

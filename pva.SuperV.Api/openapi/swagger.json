@@ -203,7 +203,7 @@
           {
             "name": "runnableProjectId",
             "in": "path",
-            "description": "Runnable project ID",
+            "description": " ID of runnable project",
             "required": true,
             "schema": {
               "type": "string"
@@ -244,7 +244,7 @@
         }
       }
     },
-    "/projects/{projectId}/build": {
+    "/projects/{wipProjectId}/build": {
       "post": {
         "tags": [
           "pva.SuperV.Api"
@@ -254,9 +254,9 @@
         "operationId": "BuildProject",
         "parameters": [
           {
-            "name": "projectId",
+            "name": "wipProjectId",
             "in": "path",
-            "description": "ID of project",
+            "description": "ID of WIP project",
             "required": true,
             "schema": {
               "type": "string"
@@ -422,7 +422,7 @@
         }
       }
     },
-    "/projects/{projectId}/instances": {
+    "/projects/{runnableProjectId}/instances": {
       "get": {
         "tags": [
           "pva.SuperV.Api"
@@ -432,9 +432,9 @@
         "operationId": "SaveProjectInstances",
         "parameters": [
           {
-            "name": "projectId",
+            "name": "runnableProjectId",
             "in": "path",
-            "description": "ID of project",
+            "description": "ID of runnable project",
             "required": true,
             "schema": {
               "type": "string"
@@ -493,9 +493,9 @@
         "operationId": "LoadProjectInstances",
         "parameters": [
           {
-            "name": "projectId",
+            "name": "runnableProjectId",
             "in": "path",
-            "description": "ID of project",
+            "description": "ID of runnable project",
             "required": true,
             "schema": {
               "type": "string"
@@ -600,78 +600,6 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "pva.SuperV.Api"
-        ],
-        "summary": "Creates a class in a project",
-        "description": "Creates a class in a project",
-        "operationId": "CreateClass",
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "description": "ID of project",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Class creation request",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ClassModel"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClassModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/classes/{projectId}/{className}": {
@@ -734,19 +662,95 @@
             }
           }
         }
-      },
+      }
+    },
+    "/classes/{wipProjectId}": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Creates a class in a WIP project",
+        "description": "Creates a class in a WIP project",
+        "operationId": "CreateClass",
+        "parameters": [
+          {
+            "name": "wipProjectId",
+            "in": "path",
+            "description": "ID of WIP project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Class creation request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/classes/{wipProjectId}/{className}": {
       "delete": {
         "tags": [
           "pva.SuperV.Api"
         ],
         "summary": "Deletes a class of a project by its name",
-        "description": "Deletes a class of a project by its name",
+        "description": "Deletes a class of a WIP project by its name",
         "operationId": "DeleteClass",
         "parameters": [
           {
-            "name": "projectId",
+            "name": "wipProjectId",
             "in": "path",
-            "description": "ID of project",
+            "description": "ID of WIP project",
             "required": true,
             "schema": {
               "type": "string"
@@ -878,68 +882,6 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "pva.SuperV.Api"
-        ],
-        "summary": "Creates a field formatter of project",
-        "description": "Creates a field formatter of project",
-        "operationId": "CreateFieldFormatter",
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "description": "ID of project",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Field formatter creation request",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateFieldFormatterRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FieldFormatterModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/field-formatters/{projectId}/{fieldFormatterName}": {
@@ -1002,19 +944,85 @@
             }
           }
         }
-      },
+      }
+    },
+    "/field-formatters/{wipProjectId}": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Creates a field formatter in a WIP project",
+        "description": "Creates a field formatter in a WIP project",
+        "operationId": "CreateFieldFormatter",
+        "parameters": [
+          {
+            "name": "wipProjectId",
+            "in": "path",
+            "description": "ID of WIP project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Field formatter creation request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFieldFormatterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldFormatterModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/field-formatters/{wipProjectId}/{fieldFormatterName}": {
       "delete": {
         "tags": [
           "pva.SuperV.Api"
         ],
-        "summary": "Deletes a field formatter of project",
-        "description": "Deletes a field formatter of project",
+        "summary": "Deletes a field formatter from a WIP project",
+        "description": "Deletes a field formatter from a WIP project",
         "operationId": "DeleteFieldFormatter",
         "parameters": [
           {
-            "name": "projectId",
+            "name": "wipProjectId",
             "in": "path",
-            "description": "ID of project",
+            "description": "ID of WUP project",
             "required": true,
             "schema": {
               "type": "string"
@@ -1111,68 +1119,6 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "pva.SuperV.Api"
-        ],
-        "summary": "Creates a project's history repository",
-        "description": "Creates a project's history repository",
-        "operationId": "CreateHistoryRepository",
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "description": "ID of project",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "History repository create request",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HistoryRepositoryModel"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HistoryRepositoryModel"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/history-repositories/{projectId}/{historyRepositoryName}": {
@@ -1235,19 +1181,85 @@
             }
           }
         }
-      },
+      }
+    },
+    "/history-repositories/{wipProjectId}": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Creates a history repository in a WIP project",
+        "description": "Creates a history repository in a WIP project",
+        "operationId": "CreateHistoryRepository",
+        "parameters": [
+          {
+            "name": "wipProjectId",
+            "in": "path",
+            "description": "ID of WIP project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "History repository create request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HistoryRepositoryModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryRepositoryModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history-repositories/{wipProjectId}/{historyRepositoryName}": {
       "delete": {
         "tags": [
           "pva.SuperV.Api"
         ],
-        "summary": "Deletes a project's history repository by its name",
-        "description": "Deletes a project's history repository by its name",
+        "summary": "Deletes a history repository from a WIP project by its name",
+        "description": "Deletes a history repository from a WIP project by its name",
         "operationId": "DeleteHistoryRepository",
         "parameters": [
           {
-            "name": "projectId",
+            "name": "wipProjectId",
             "in": "path",
-            "description": "ID of project",
+            "description": "ID of WIP project",
             "required": true,
             "schema": {
               "type": "string"
@@ -1353,83 +1365,6 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "pva.SuperV.Api"
-        ],
-        "summary": "Creates field definitions in a class of a project",
-        "description": "Creates field definitions in a class of a project",
-        "operationId": "CreateFieldDefinitions",
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "description": "ID of project",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "className",
-            "in": "path",
-            "description": "Name of class",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Field creation requests",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/FieldDefinitionModel"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FieldDefinitionModel"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/fields/{projectId}/{className}/{fieldName}": {
@@ -1501,19 +1436,100 @@
             }
           }
         }
-      },
+      }
+    },
+    "/fields/{wipProjectId}/{className}": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Creates field definitions in a class of a WIP project",
+        "description": "Creates field definitions in a class of a WIP project",
+        "operationId": "CreateFieldDefinitions",
+        "parameters": [
+          {
+            "name": "wipProjectId",
+            "in": "path",
+            "description": "ID of WIP project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Field creation requests",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FieldDefinitionModel"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FieldDefinitionModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fields/{wipProjectId}/{className}/{fieldName}": {
       "delete": {
         "tags": [
           "pva.SuperV.Api"
         ],
-        "summary": "Deletes a field definition from a class of a project by its name",
-        "description": "Deletes a field definition from a class of a project by its name",
+        "summary": "Deletes a field definition from a class of a WIP project by its name",
+        "description": "Deletes a field definition from a class of a WIP project by its name",
         "operationId": "DeleteFieldDefinition",
         "parameters": [
           {
-            "name": "projectId",
+            "name": "wipProjectId",
             "in": "path",
-            "description": "ID of project",
+            "description": "ID of WIP project",
             "required": true,
             "schema": {
               "type": "string"
@@ -1637,86 +1653,6 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "pva.SuperV.Api"
-        ],
-        "summary": "Creates a field processing in a class of a project",
-        "description": "Creates a field processing in a class of a project",
-        "operationId": "CreateProcessing",
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "description": "ID of project",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "className",
-            "in": "path",
-            "description": "Name of class",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "fieldName",
-            "in": "path",
-            "description": "Name of field",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Field processing creation request",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FieldValueProcessingModel"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FieldDefinitionModel"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/field-processings/{projectId}/{className}/{fieldName}/{processingName}": {
@@ -1797,19 +1733,103 @@
             }
           }
         }
-      },
+      }
+    },
+    "/field-processings/{wipProjectId}/{className}/{fieldName}": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Creates a field processing in a class of a WIP project",
+        "description": "Creates a field processing in a class of a WIP project",
+        "operationId": "CreateProcessing",
+        "parameters": [
+          {
+            "name": "wipProjectId",
+            "in": "path",
+            "description": "ID of WIP project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldName",
+            "in": "path",
+            "description": "Name of field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Field processing creation request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldValueProcessingModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldDefinitionModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/field-processings/{wipProjectId}/{className}/{fieldName}/{processingName}": {
       "delete": {
         "tags": [
           "pva.SuperV.Api"
         ],
-        "summary": "Deletes a field processing from a class of a project by its name",
-        "description": "Deletes a field processing from a class of a project by its name",
+        "summary": "Deletes a field processing from a class of a WIP project by its name",
+        "description": "Deletes a field processing from a class of a WIP project by its name",
         "operationId": "DeleteProcessing",
         "parameters": [
           {
-            "name": "projectId",
+            "name": "wipProjectId",
             "in": "path",
-            "description": "ID of project",
+            "description": "ID of WIP project",
             "required": true,
             "schema": {
               "type": "string"
@@ -1870,7 +1890,7 @@
         }
       }
     },
-    "/instances/{projectId}": {
+    "/instances/{runnableProjectId}": {
       "get": {
         "tags": [
           "pva.SuperV.Api"
@@ -1880,9 +1900,9 @@
         "operationId": "GetInstances",
         "parameters": [
           {
-            "name": "projectId",
+            "name": "runnableProjectId",
             "in": "path",
-            "description": "ID of project",
+            "description": "ID of runnable project",
             "required": true,
             "schema": {
               "type": "string"
@@ -1934,9 +1954,9 @@
         "operationId": "CreateInstance",
         "parameters": [
           {
-            "name": "projectId",
+            "name": "runnableProjectId",
             "in": "path",
-            "description": "ID of project",
+            "description": "ID of runnable project",
             "required": true,
             "schema": {
               "type": "string"
@@ -1988,7 +2008,7 @@
         }
       }
     },
-    "/instances/{projectId}/{instanceName}": {
+    "/instances/{runnableProjectId}/{instanceName}": {
       "get": {
         "tags": [
           "pva.SuperV.Api"
@@ -1998,9 +2018,9 @@
         "operationId": "GetInstance",
         "parameters": [
           {
-            "name": "projectId",
+            "name": "runnableProjectId",
             "in": "path",
-            "description": "ID of project",
+            "description": "ID of runnable project",
             "required": true,
             "schema": {
               "type": "string"
@@ -2058,9 +2078,9 @@
         "operationId": "DeleteInstance",
         "parameters": [
           {
-            "name": "projectId",
+            "name": "runnableProjectId",
             "in": "path",
-            "description": "ID of project",
+            "description": "ID of runnable project",
             "required": true,
             "schema": {
               "type": "string"
@@ -2103,7 +2123,7 @@
         }
       }
     },
-    "/instances/{projectId}/{instanceName}/{fieldName}/value": {
+    "/instances/{runnableProjectId}/{instanceName}/{fieldName}/value": {
       "get": {
         "tags": [
           "pva.SuperV.Api"
@@ -2113,9 +2133,9 @@
         "operationId": "GetField",
         "parameters": [
           {
-            "name": "projectId",
+            "name": "runnableProjectId",
             "in": "path",
-            "description": "ID of project",
+            "description": "ID of runnable project",
             "required": true,
             "schema": {
               "type": "string"
@@ -2175,9 +2195,9 @@
         "operationId": "UpdateFieldValue",
         "parameters": [
           {
-            "name": "projectId",
+            "name": "runnableProjectId",
             "in": "path",
-            "description": "ID of project",
+            "description": "ID of runnable project",
             "required": true,
             "schema": {
               "type": "string"

@@ -43,7 +43,7 @@ namespace pva.SuperV.Api.Routes.Projects
 
             projectsApi.MapPost("/create/{runnableProjectId}",
                 (IProjectService projectService,
-                [Description("Runnable project ID")] string runnableProjectId)
+                [Description(" ID of runnable project")] string runnableProjectId)
                     => CreateProjectFromRunnable.Handle(projectService, runnableProjectId))
                 .WithName("CreateProjectFromRunnable")
                 .WithDisplayName("CreateProjectFromRunnable")
@@ -52,10 +52,10 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<ProjectModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound);
 
-            projectsApi.MapPost("/{projectId}/build",
+            projectsApi.MapPost("/{wipProjectId}/build",
                 async (IProjectService projectService,
-                        [Description("ID of project")] string projectId)
-                    => await BuildProject.Handle(projectService, projectId))
+                        [Description("ID of WIP project")] string wipProjectId)
+                    => await BuildProject.Handle(projectService, wipProjectId))
                 .WithName("BuildProject")
                 .WithSummary("Build a runnable project from a WIP project")
                 .WithDescription("Build a runnable project from a WIP project")
@@ -76,7 +76,7 @@ namespace pva.SuperV.Api.Routes.Projects
 
             projectsApi.MapPost("/load-from-definitions",
                 (IProjectService projectService,
-                [Description("HTTP reaqest")] HttpRequest request)
+                [Description("HTTP request")] HttpRequest request)
                     => LoadProjectFromDefinitions.Handle(projectService, request))
                 .WithName("LoadProjectFromDefinitions")
                 .WithSummary("Loads a project from a definition JSON")
@@ -86,10 +86,10 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            projectsApi.MapGet("/{projectId}/instances",
+            projectsApi.MapGet("/{runnableProjectId}/instances",
                  async (IProjectService projectService,
-                        [Description("ID of project")] string projectId)
-                    => await SaveProjectInstances.Handle(projectService, projectId))
+                        [Description("ID of runnable project")] string runnableProjectId)
+                    => await SaveProjectInstances.Handle(projectService, runnableProjectId))
                 .WithName("SaveProjectInstances")
                 .WithSummary("Saves the instances of project to a stream writer")
                 .WithDescription("Saves the instances of project to a stream writer")
@@ -97,11 +97,11 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            projectsApi.MapPost("/{projectId}/instances",
+            projectsApi.MapPost("/{runnableProjectId}/instances",
                 (IProjectService projectService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of runnable project")] string runnableProjectId,
                 [Description(" HTTP Request")] HttpRequest request)
-                    => LoadProjectInstances.Handle(projectService, projectId, request))
+                    => LoadProjectInstances.Handle(projectService, runnableProjectId, request))
                 .WithName("LoadProjectInstances")
                 .WithSummary("Loads project instances from a JSON file")
                 .WithDescription("Loads project instances from a JSON file")

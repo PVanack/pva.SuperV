@@ -34,28 +34,28 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            historyRepositoriesApi.MapPost("/{projectId}",
+            historyRepositoriesApi.MapPost("/{wipProjectId}",
                 (IHistoryRepositoryService historyRepositoryService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of WIP project")] string wipProjectId,
                 [Description("History repository create request")] HistoryRepositoryModel historyRepositoryCreateRequest)
-                    => CreateHistoryRepository.Handle(historyRepositoryService, projectId, historyRepositoryCreateRequest))
+                    => CreateHistoryRepository.Handle(historyRepositoryService, wipProjectId, historyRepositoryCreateRequest))
                 .WithName("CreateHistoryRepository")
                 .WithDisplayName("CreateHistoryRepository")
-                .WithSummary("Creates a project's history repository")
-                .WithDescription("Creates a project's history repository")
+                .WithSummary("Creates a history repository in a WIP project")
+                .WithDescription("Creates a history repository in a WIP project")
                 .Produces<HistoryRepositoryModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            historyRepositoriesApi.MapDelete("/{projectId}/{historyRepositoryName}",
+            historyRepositoriesApi.MapDelete("/{wipProjectId}/{historyRepositoryName}",
                 (IHistoryRepositoryService historyRepositoryService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of WIP project")] string wipProjectId,
                 [Description("Name of history repository")] string historyRepositoryName)
-                    => DeleteHistoryRepository.Handle(historyRepositoryService, projectId, historyRepositoryName))
+                    => DeleteHistoryRepository.Handle(historyRepositoryService, wipProjectId, historyRepositoryName))
                 .WithName("DeleteHistoryRepository")
                 .WithDisplayName("DeleteHistoryRepository")
-                .WithSummary("Deletes a project's history repository by its name")
-                .WithDescription("Deletes a project's history repository by its name")
+                .WithSummary("Deletes a history repository from a WIP project by its name")
+                .WithDescription("Deletes a history repository from a WIP project by its name")
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);

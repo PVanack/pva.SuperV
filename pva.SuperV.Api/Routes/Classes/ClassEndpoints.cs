@@ -35,28 +35,28 @@ namespace pva.SuperV.Api.Routes.Classes
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            classesApi.MapPost("/{projectId}",
+            classesApi.MapPost("/{wipProjectId}",
                 (IClassService classService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of WIP project")] string wipProjectId,
                 [Description("Class creation request")][FromBody] ClassModel createRequest)
-                    => CreateClass.Handle(classService, projectId, createRequest))
+                    => CreateClass.Handle(classService, wipProjectId, createRequest))
                 .WithName("CreateClass")
                 .WithDisplayName("CreateClass")
-                .WithSummary("Creates a class in a project")
-                .WithDescription("Creates a class in a project")
+                .WithSummary("Creates a class in a WIP project")
+                .WithDescription("Creates a class in a WIP project")
                 .Produces<ClassModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            classesApi.MapDelete("/{projectId}/{className}",
+            classesApi.MapDelete("/{wipProjectId}/{className}",
                 (IClassService classService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of WIP project")] string wipProjectId,
                 [Description("Name of class")] string className)
-                    => DeleteClass.Handle(classService, projectId, className))
+                    => DeleteClass.Handle(classService, wipProjectId, className))
                 .WithName("DeleteClass")
                 .WithDisplayName("DeleteClass")
                 .WithSummary("Deletes a class of a project by its name")
-                .WithDescription("Deletes a class of a project by its name")
+                .WithDescription("Deletes a class of a WIP project by its name")
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);

@@ -11,10 +11,10 @@ namespace pva.SuperV.Api.Routes.Instances
         public static WebApplication MapInstancesEndpoints(this WebApplication app)
         {
             RouteGroupBuilder fieldDefinitionsApi = app.MapGroup("/instances");
-            fieldDefinitionsApi.MapGet("/{projectId}",
+            fieldDefinitionsApi.MapGet("/{runnableProjectId}",
                 (IInstanceService instanceService,
-                [Description("ID of project")] string projectId)
-                    => GetInstances.Handle(instanceService, projectId))
+                [Description("ID of runnable project")] string runnableProjectId)
+                    => GetInstances.Handle(instanceService, runnableProjectId))
                 .WithName("GetInstances")
                 .WithDisplayName("GetInstances")
                 .WithSummary("Gets the list of instances from a project")
@@ -23,11 +23,11 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapGet("/{projectId}/{instanceName}",
+            fieldDefinitionsApi.MapGet("/{runnableProjectId}/{instanceName}",
                 (IInstanceService instanceService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of runnable project")] string runnableProjectId,
                 [Description("Name of instance")] string instanceName)
-                    => GetInstance.Handle(instanceService, projectId, instanceName))
+                    => GetInstance.Handle(instanceService, runnableProjectId, instanceName))
                 .WithName("GetInstance")
                 .WithDisplayName("GetInstance")
                 .WithSummary("Gets an instance of a project by its name")
@@ -36,11 +36,11 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapPost("/{projectId}",
+            fieldDefinitionsApi.MapPost("/{runnableProjectId}",
                 (IInstanceService instanceService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of runnable project")] string runnableProjectId,
                 [Description("Instance creation request")][FromBody] InstanceModel createRequest)
-                    => CreateInstance.Handle(instanceService, projectId, createRequest))
+                    => CreateInstance.Handle(instanceService, runnableProjectId, createRequest))
                 .WithName("CreateInstance")
                 .WithDisplayName("CreateInstance")
                 .WithSummary("Creates an instance with a class of a project")
@@ -49,11 +49,11 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapDelete("/{projectId}/{instanceName}",
+            fieldDefinitionsApi.MapDelete("/{runnableProjectId}/{instanceName}",
                 (IInstanceService instanceService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of runnable project")] string runnableProjectId,
                 [Description("Name of instance")] string instanceName)
-                    => DeleteInstance.Handle(instanceService, projectId, instanceName))
+                    => DeleteInstance.Handle(instanceService, runnableProjectId, instanceName))
                 .WithName("DeleteInstance")
                 .WithDisplayName("DeleteInstance")
                 .WithSummary("Deletes an instance from a project by its name")
@@ -62,12 +62,12 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapGet("/{projectId}/{instanceName}/{fieldName}/value",
+            fieldDefinitionsApi.MapGet("/{runnableProjectId}/{instanceName}/{fieldName}/value",
                 (IFieldValueService fieldValueService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of runnable project")] string runnableProjectId,
                 [Description("Name of instance")] string instanceName,
                 [Description("Name of field")] string fieldName)
-                    => GetInstanceField.Handle(fieldValueService, projectId, instanceName, fieldName))
+                    => GetInstanceField.Handle(fieldValueService, runnableProjectId, instanceName, fieldName))
                 .WithName("GetField")
                 .WithDisplayName("GetField")
                 .WithSummary("Gets the field of an instance from a project by its name")
@@ -76,13 +76,13 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapPut("/{projectId}/{instanceName}/{fieldName}/value",
+            fieldDefinitionsApi.MapPut("/{runnableProjectId}/{instanceName}/{fieldName}/value",
                 (IFieldValueService fieldValueService,
-                [Description("ID of project")] string projectId,
+                [Description("ID of runnable project")] string runnableProjectId,
                 [Description("Name of instance")] string instanceName,
                 [Description("Name of field")] string fieldName,
                 [Description("Value of field")][FromBody] FieldValueModel value)
-                    => UpdateInstanceFieldValue.Handle(fieldValueService, projectId, instanceName, fieldName, value))
+                    => UpdateInstanceFieldValue.Handle(fieldValueService, runnableProjectId, instanceName, fieldName, value))
                 .WithName("UpdateFieldValue")
                 .WithDisplayName("UpdateFieldValue")
                 .WithSummary("Updates the value of a field of an instance from a project by its name")
