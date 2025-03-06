@@ -2,6 +2,7 @@
 @projectName=TestProject
 @baseClassName=BaseClass
 @derivedClassName=DerivedClass
+@instanceName=Instance
 
 # Create a new blank project
 POST {{pva.SuperV.Api_HostAddress}}/projects/create
@@ -161,7 +162,62 @@ Content-Type: application/json
 ###
 
 # Build project
-
 POST {{pva.SuperV.Api_HostAddress}}/projects/{{projectName}}-WIP/build
+
+###
+
+# Create instance of derived class and change the limit values
+POST {{pva.SuperV.Api_HostAddress}}/instances/{{projectName}}
+Content-Type: application/json
+{
+    "name": "{{instanceName}}",
+    "className": "{{derivedClassName}}",
+    "fields":
+    [
+        {
+            "name": "HighLimit",
+            "type": "",
+            "fieldValue":
+            {
+                "$type": "FloatFieldValueModel",
+                "value": 75
+            }
+        },
+        {
+            "name": "LowLimit",
+            "type": "",
+            "fieldValue":
+            {
+                "$type": "FloatFieldValueModel",
+                "value": 25
+            }
+        }
+    ]
+
+}
+###
+
+# Set value of Value field of instance
+PUT {{pva.SuperV.Api_HostAddress}}/instances/{{projectName}}/{{instanceName}}/Value/value
+Content-Type: application/json
+{
+    "$type": "FloatFieldValueModel",
+    "value": 50.25
+}
+
+###
+
+# Set value as string of Value field of instance
+PUT {{pva.SuperV.Api_HostAddress}}/instances/{{projectName}}/{{instanceName}}/Value/value
+Content-Type: application/json
+{
+    "$type": "StringFieldValueModel",
+    "value": "-12.34"
+}
+
+###
+
+# Get value of AlarmState field of instance
+GET {{pva.SuperV.Api_HostAddress}}/instances/{{projectName}}/{{instanceName}}/AlarmState/value
 
 ###

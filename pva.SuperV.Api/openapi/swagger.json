@@ -2880,6 +2880,7 @@
       "FieldValueModelBoolFieldValueModel": {
         "required": [
           "value",
+          "formattedValue",
           "quality",
           "timestamp"
         ],
@@ -2893,6 +2894,11 @@
           "value": {
             "type": "boolean",
             "description": "Field value."
+          },
+          "formattedValue": {
+            "type": "string",
+            "description": "Field formated value if formatting is present on field.",
+            "nullable": true
           },
           "quality": {
             "type": "integer",
@@ -2910,6 +2916,7 @@
       "FieldValueModelDateTimeFieldValueModel": {
         "required": [
           "value",
+          "formattedValue",
           "quality",
           "timestamp"
         ],
@@ -2924,6 +2931,11 @@
             "type": "string",
             "description": "Field value.",
             "format": "date-time"
+          },
+          "formattedValue": {
+            "type": "string",
+            "description": "Field formated value if formatting is present on field.",
+            "nullable": true
           },
           "quality": {
             "type": "integer",
@@ -2941,6 +2953,7 @@
       "FieldValueModelDoubleFieldValueModel": {
         "required": [
           "value",
+          "formattedValue",
           "quality",
           "timestamp"
         ],
@@ -2955,6 +2968,11 @@
             "type": "number",
             "description": "Field value.",
             "format": "double"
+          },
+          "formattedValue": {
+            "type": "string",
+            "description": "Field formated value if formatting is present on field.",
+            "nullable": true
           },
           "quality": {
             "type": "integer",
@@ -2972,6 +2990,7 @@
       "FieldValueModelFloatFieldValueModel": {
         "required": [
           "value",
+          "formattedValue",
           "quality",
           "timestamp"
         ],
@@ -2986,6 +3005,11 @@
             "type": "number",
             "description": "Field value.",
             "format": "float"
+          },
+          "formattedValue": {
+            "type": "string",
+            "description": "Field formated value if formatting is present on field.",
+            "nullable": true
           },
           "quality": {
             "type": "integer",
@@ -3003,6 +3027,7 @@
       "FieldValueModelIntFieldValueModel": {
         "required": [
           "value",
+          "formattedValue",
           "quality",
           "timestamp"
         ],
@@ -3017,6 +3042,11 @@
             "type": "integer",
             "description": "Field value.",
             "format": "int32"
+          },
+          "formattedValue": {
+            "type": "string",
+            "description": "Field formated value if formatting is present on field.",
+            "nullable": true
           },
           "quality": {
             "type": "integer",
@@ -3034,6 +3064,7 @@
       "FieldValueModelLongFieldValueModel": {
         "required": [
           "value",
+          "formattedValue",
           "quality",
           "timestamp"
         ],
@@ -3048,6 +3079,11 @@
             "type": "integer",
             "description": "Field value.",
             "format": "int64"
+          },
+          "formattedValue": {
+            "type": "string",
+            "description": "Field formated value if formatting is present on field.",
+            "nullable": true
           },
           "quality": {
             "type": "integer",
@@ -3065,6 +3101,7 @@
       "FieldValueModelShortFieldValueModel": {
         "required": [
           "value",
+          "formattedValue",
           "quality",
           "timestamp"
         ],
@@ -3079,6 +3116,11 @@
             "type": "integer",
             "description": "Field value.",
             "format": "int16"
+          },
+          "formattedValue": {
+            "type": "string",
+            "description": "Field formated value if formatting is present on field.",
+            "nullable": true
           },
           "quality": {
             "type": "integer",
@@ -3110,6 +3152,11 @@
             "type": "string",
             "description": "Field value."
           },
+          "formattedValue": {
+            "type": "string",
+            "description": "Field formated value if formatting is present on field.",
+            "nullable": true
+          },
           "quality": {
             "type": "integer",
             "description": "Field value quality level.",
@@ -3126,6 +3173,7 @@
       "FieldValueModelTimeSpanFieldValueModel": {
         "required": [
           "value",
+          "formattedValue",
           "quality",
           "timestamp"
         ],
@@ -3140,6 +3188,11 @@
             "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
             "type": "string",
             "description": "Field value."
+          },
+          "formattedValue": {
+            "type": "string",
+            "description": "Field formated value if formatting is present on field.",
+            "nullable": true
           },
           "quality": {
             "type": "integer",
@@ -3157,6 +3210,7 @@
       "FieldValueModelUintFieldValueModel": {
         "required": [
           "value",
+          "formattedValue",
           "quality",
           "timestamp"
         ],
@@ -3171,6 +3225,11 @@
             "type": "integer",
             "description": "Field value.",
             "format": "uint32"
+          },
+          "formattedValue": {
+            "type": "string",
+            "description": "Field formated value if formatting is present on field.",
+            "nullable": true
           },
           "quality": {
             "type": "integer",
@@ -3188,6 +3247,7 @@
       "FieldValueModelUlongFieldValueModel": {
         "required": [
           "value",
+          "formattedValue",
           "quality",
           "timestamp"
         ],
@@ -3202,6 +3262,11 @@
             "type": "integer",
             "description": "Field value.",
             "format": "uint64"
+          },
+          "formattedValue": {
+            "type": "string",
+            "description": "Field formated value if formatting is present on field.",
+            "nullable": true
           },
           "quality": {
             "type": "integer",
@@ -3219,6 +3284,7 @@
       "FieldValueModelUshortFieldValueModel": {
         "required": [
           "value",
+          "formattedValue",
           "quality",
           "timestamp"
         ],
@@ -3233,6 +3299,11 @@
             "type": "integer",
             "description": "Field value.",
             "format": "uint16"
+          },
+          "formattedValue": {
+            "type": "string",
+            "description": "Field formated value if formatting is present on field.",
+            "nullable": true
           },
           "quality": {
             "type": "integer",

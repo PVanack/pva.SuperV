@@ -7,9 +7,10 @@ namespace pva.SuperV.Model.Instances
     public record FloatFieldValueModel(
         [property: Description("Field value.")]
         float Value,
+        string? FormattedValue,
         QualityLevel? Quality,
         DateTime? Timestamp)
-        : FieldValueModel(Quality, Timestamp)
+        : FieldValueModel(FormattedValue, Quality, Timestamp)
     {
     }
 }

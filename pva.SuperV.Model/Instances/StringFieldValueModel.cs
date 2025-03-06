@@ -9,7 +9,7 @@ namespace pva.SuperV.Model.Instances
         string Value,
         QualityLevel? Quality,
         DateTime? Timestamp)
-        : FieldValueModel(Quality, Timestamp)
+        : FieldValueModel(null, Quality, Timestamp)
     {
     }
 }

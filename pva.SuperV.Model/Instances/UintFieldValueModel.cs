@@ -7,9 +7,10 @@ namespace pva.SuperV.Model.Instances
     public record UintFieldValueModel(
         [property: Description("Field value.")]
         uint Value,
+        string? FormattedValue,
         QualityLevel? Quality,
         DateTime? Timestamp)
-        : FieldValueModel(Quality, Timestamp)
+        : FieldValueModel(FormattedValue, Quality, Timestamp)
     {
     }
 }

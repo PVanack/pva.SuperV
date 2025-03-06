@@ -100,15 +100,22 @@ namespace pva.SuperV.Engine
 
         private static string? GetCodeValueForNew(T? defaultValue)
         {
-            return defaultValue switch
+            if (typeof(T).Equals(typeof(string)))
             {
-                string stringValue => $"\"{stringValue}\"",
-                bool boolValue => boolValue ? "true" : "false",
-                float floatValue => $"{floatValue}F",
-                DateTime dateTimeValue => $"new {typeof(T)}({dateTimeValue.Ticks.ToString(CultureInfo.InvariantCulture)}L)",
-                TimeSpan timespanValue => $"new {typeof(T)}({timespanValue.Ticks.ToString(CultureInfo.InvariantCulture)}L)",
-                _ => defaultValue!.ToString(),
-            };
+                return $"\"{defaultValue}\"";
+            }
+            else
+            {
+
+                return defaultValue switch
+                {
+                    bool boolValue => boolValue ? "true" : "false",
+                    float floatValue => $"{floatValue}F",
+                    DateTime dateTimeValue => $"new {typeof(T)}({dateTimeValue.Ticks.ToString(CultureInfo.InvariantCulture)}L)",
+                    TimeSpan timespanValue => $"new {typeof(T)}({timespanValue.Ticks.ToString(CultureInfo.InvariantCulture)}L)",
+                    _ => defaultValue!.ToString(),
+                };
+            }
         }
 
         /// <summary>

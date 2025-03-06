@@ -7,9 +7,10 @@ namespace pva.SuperV.Model.Instances
     public record ShortFieldValueModel(
         [property: Description("Field value.")]
         short Value,
+        string? FormattedValue,
         QualityLevel? Quality,
         DateTime? Timestamp)
-        : FieldValueModel(Quality, Timestamp)
+        : FieldValueModel(FormattedValue, Quality, Timestamp)
     {
     }
 }

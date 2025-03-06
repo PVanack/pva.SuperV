@@ -9,20 +9,25 @@ namespace pva.SuperV.Model.Instances
         {
             return field switch
             {
-                Field<bool> boolField => new BoolFieldValueModel(boolField.Value, boolField.Quality, boolField.Timestamp),
-                Field<DateTime> dateTimeField => new DateTimeFieldValueModel(dateTimeField.Value, dateTimeField.Quality, dateTimeField.Timestamp),
-                Field<double> doubleField => new DoubleFieldValueModel(doubleField.Value, doubleField.Quality, doubleField.Timestamp),
-                Field<float> floatField => new FloatFieldValueModel(floatField.Value, floatField.Quality, floatField.Timestamp),
-                Field<int> intField => new IntFieldValueModel(intField.Value, intField.Quality, intField.Timestamp),
-                Field<long> longField => new LongFieldValueModel(longField.Value, longField.Quality, longField.Timestamp),
-                Field<short> shortField => new ShortFieldValueModel(shortField.Value, shortField.Quality, shortField.Timestamp),
+                Field<bool> boolField => new BoolFieldValueModel(boolField.Value, FormatValue(boolField), boolField.Quality, boolField.Timestamp),
+                Field<DateTime> dateTimeField => new DateTimeFieldValueModel(dateTimeField.Value, FormatValue(dateTimeField), dateTimeField.Quality, dateTimeField.Timestamp),
+                Field<double> doubleField => new DoubleFieldValueModel(doubleField.Value, FormatValue(doubleField), doubleField.Quality, doubleField.Timestamp),
+                Field<float> floatField => new FloatFieldValueModel(floatField.Value, FormatValue(floatField), floatField.Quality, floatField.Timestamp),
+                Field<int> intField => new IntFieldValueModel(intField.Value, FormatValue(intField), intField.Quality, intField.Timestamp),
+                Field<long> longField => new LongFieldValueModel(longField.Value, FormatValue(longField), longField.Quality, longField.Timestamp),
+                Field<short> shortField => new ShortFieldValueModel(shortField.Value, FormatValue(shortField), shortField.Quality, shortField.Timestamp),
                 Field<string> stringField => new StringFieldValueModel(stringField.Value, stringField.Quality, stringField.Timestamp),
-                Field<TimeSpan> timeSpanField => new TimeSpanFieldValueModel(timeSpanField.Value, timeSpanField.Quality, timeSpanField.Timestamp),
-                Field<uint> uintField => new UintFieldValueModel(uintField.Value, uintField.Quality, uintField.Timestamp),
-                Field<ulong> ulongField => new UlongFieldValueModel(ulongField.Value, ulongField.Quality, ulongField.Timestamp),
-                Field<ushort> ushortField => new UshortFieldValueModel(ushortField.Value, ushortField.Quality, ushortField.Timestamp),
+                Field<TimeSpan> timeSpanField => new TimeSpanFieldValueModel(timeSpanField.Value, FormatValue(timeSpanField), timeSpanField.Quality, timeSpanField.Timestamp),
+                Field<uint> uintField => new UintFieldValueModel(uintField.Value, FormatValue(uintField), uintField.Quality, uintField.Timestamp),
+                Field<ulong> ulongField => new UlongFieldValueModel(ulongField.Value, FormatValue(ulongField), ulongField.Quality, ulongField.Timestamp),
+                Field<ushort> ushortField => new UshortFieldValueModel(ushortField.Value, FormatValue(ushortField), ushortField.Quality, ushortField.Timestamp),
                 _ => throw new UnhandledMappingException(nameof(FieldValueMapper), field.Type.ToString())
             };
+        }
+
+        private static string? FormatValue<T>(Field<T> field)
+        {
+            return field.FieldDefinition?.Formatter?.ConvertToString(field.Value) ?? null;
         }
 
         public static void SetFieldValue(IField field, FieldValueModel value)

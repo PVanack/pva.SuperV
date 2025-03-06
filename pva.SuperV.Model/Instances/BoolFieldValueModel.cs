@@ -7,9 +7,10 @@ namespace pva.SuperV.Model.Instances
     public record BoolFieldValueModel(
         [property: Description("Field value.")]
         bool Value,
+        string? FormattedValue,
         QualityLevel? Quality,
         DateTime? Timestamp)
-        : FieldValueModel(Quality, Timestamp)
+        : FieldValueModel(FormattedValue, Quality, Timestamp)
     {
     }
 }

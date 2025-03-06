@@ -17,6 +17,8 @@ namespace pva.SuperV.Model.Instances
     [JsonDerivedType(typeof(UlongFieldValueModel), typeDiscriminator: nameof(UlongFieldValueModel))]
     [JsonDerivedType(typeof(UshortFieldValueModel), typeDiscriminator: nameof(UshortFieldValueModel))]
     public abstract record FieldValueModel(
+        [property: Description("Field formated value if formatting is present on field.")]
+        string? FormattedValue,
         [property: Description("Field value quality level.")]
         QualityLevel? Quality,
         [property: Description("Field value timestamp.")]
