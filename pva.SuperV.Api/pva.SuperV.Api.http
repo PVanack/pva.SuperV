@@ -1,11 +1,116 @@
 @pva.SuperV.Api_HostAddress = http://localhost:5153
+@projectName=TestProject
+@baseClassName=BaseClass
+@derivedClassName=DerivedClass
 
+# Create a new blank project
+POST {{pva.SuperV.Api_HostAddress}}/projects/create
+Content-Type: application/json
+{
+  "name":  "TestProject",
+  "description": "A test project",
+  "historyStorageConnectionString": null
+}
+###
+
+# Get existing projects
 GET {{pva.SuperV.Api_HostAddress}}/projects/
-Accept: application/json
+###
+
+# Get newly created WIP project
+GET {{pva.SuperV.Api_HostAddress}}/projects/{{projectName}}-WIP
 
 ###
 
-GET {{pva.SuperV.Api_HostAddress}}/projects/1
-Accept: application/json
+# Create a new class without inheritance
+POST {{pva.SuperV.Api_HostAddress}}/classes/{{projectName}}-WIP
+Content-Type: application/json
+{
+    "name": "BaseClass"
+}
+###
 
+# Create a new class with inheritance
+POST {{pva.SuperV.Api_HostAddress}}/classes/{{projectName}}-WIP
+Content-Type: application/json
+{
+    "name": "DerivedClass",
+    "baseClassName": "BaseClass"
+}
+###
+
+# Get existing classes
+GET {{pva.SuperV.Api_HostAddress}}/classes/{{projectName}}-WIP
+###
+
+# Get existing class
+GET {{pva.SuperV.Api_HostAddress}}/classes/{{projectName}}-WIP/{{baseClassName}}
+###
+
+
+# Create bool field in base class
+POST {{pva.SuperV.Api_HostAddress}}/fields/{{projectName}}-WIP/{{baseClassName}}
+Content-Type: application/json
+[
+    {
+        "$type": "BoolFieldDefinitionModel",
+        "name": "BoolField",
+        "defaultValue": false
+    },
+    {
+        "$type": "DateTimeFieldDefinitionModel",
+        "name": "DateTimeField",
+        "defaultValue": "2025-03-05T08:00:00+01:00"
+    },
+    {
+        "$type": "DoubleFieldDefinitionModel",
+        "name": "DoubleField",
+        "defaultValue": 0.0
+    },
+    {
+        "$type": "FloatFieldDefinitionModel",
+        "name": "FloatField",
+        "defaultValue": 1.2
+    },
+    {
+        "$type": "IntFieldDefinitionModel",
+        "name": "IntField",
+        "defaultValue": 0
+    },
+    {
+        "$type": "LongFieldDefinitionModel",
+        "name": "LongField",
+        "defaultValue": 1
+    },
+    {
+        "$type": "ShortFieldDefinitionModel",
+        "name": "ShortField",
+        "defaultValue": 2
+    },
+    {
+        "$type": "StringFieldDefinitionModel",
+        "name": "StringField",
+        "defaultValue": "Hello from SuperV"
+    },
+    {
+        "$type": "TimeSpanFieldDefinitionModel",
+        "name": "TimeSpanField",
+        "defaultValue": "00:00:00"
+    },
+    {
+        "$type": "UintFieldDefinitionModel",
+        "name": "UintField",
+        "defaultValue": 3
+    },
+    {
+        "$type": "UlongFieldDefinitionModel",
+        "name": "UlongField",
+        "defaultValue": 4
+    },
+    {
+        "$type": "UshortFieldDefinitionModel",
+        "name": "UshortField",
+        "defaultValue": 5
+    }
+]
 ###

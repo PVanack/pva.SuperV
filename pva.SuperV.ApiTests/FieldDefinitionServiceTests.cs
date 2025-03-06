@@ -52,14 +52,11 @@ namespace pva.SuperV.ApiTests
         public void CreateClassFieldDefinition_ShouldCreateClassFieldDefinition()
         {
             // GIVEN
-            FieldDefinitionModel expectedFieldDefinition = new StringFieldDefinitionModel($"{ProjectHelpers.BaseClassFieldName}Added", "");
+            List<FieldDefinitionModel> expectedFieldDefinitions = [new StringFieldDefinitionModel($"{ProjectHelpers.BaseClassFieldName}Added", "")];
             // WHEN
-            FieldDefinitionModel fieldDefinition = fieldDefinitionService.CreateField(wipProject.GetId(), ProjectHelpers.BaseClassName, expectedFieldDefinition);
+            fieldDefinitionService.CreateFields(wipProject.GetId(), ProjectHelpers.BaseClassName, expectedFieldDefinitions);
 
             // THEN
-            fieldDefinition
-                .ShouldNotBeNull()
-                .ShouldBeEquivalentTo(expectedFieldDefinition);
         }
 
         [Fact]

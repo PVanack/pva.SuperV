@@ -7,12 +7,13 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
 {
     internal static class CreateField
     {
-        internal static Results<Created<FieldDefinitionModel>, NotFound<string>, BadRequest<string>> Handle(IFieldDefinitionService fieldDefinitionService, string projectId, string className, FieldDefinitionModel createRequest)
+        internal static Results<Created, NotFound<string>, BadRequest<string>>
+            Handle(IFieldDefinitionService fieldDefinitionService, string projectId, string className, List<FieldDefinitionModel> createRequests)
         {
             try
             {
-                FieldDefinitionModel createdField = fieldDefinitionService.CreateField(projectId, className, createRequest);
-                return TypedResults.Created<FieldDefinitionModel>($"/fields/{projectId}/{className}/{createdField.Name}", createdField);
+                fieldDefinitionService.CreateFields(projectId, className, createRequests);
+                return TypedResults.Created();
             }
             catch (UnknownEntityException e)
             {

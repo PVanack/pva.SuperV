@@ -9,9 +9,7 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
         public List<FieldDefinitionModel> GetFields(string projectId, string className)
         {
             Class clazz = GetClassEntity(projectId, className);
-            return clazz.FieldDefinitions.Values
-                .Select(field => FieldDefinitionMapper.ToDto(field!))
-                .ToList();
+            return [.. clazz.FieldDefinitions.Values.Select(field => FieldDefinitionMapper.ToDto(field!))];
         }
 
         public FieldDefinitionModel GetField(string projectId, string className, string fieldName)
@@ -24,15 +22,36 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
             throw new UnknownEntityException("Field", fieldName);
         }
 
-        public FieldDefinitionModel CreateField(string projectId, string className, FieldDefinitionModel createRequest)
+        public void CreateFields(string projectId, string className, List<FieldDefinitionModel> createRequests)
         {
             Project project = GetProjectEntity(projectId);
             if (project is WipProject wipProject)
             {
                 Class clazz = GetClassEntity(wipProject, className);
-                IFieldDefinition fieldDefinition = clazz.AddField(FieldDefinitionMapper.FromDto(createRequest));
-                return FieldDefinitionMapper.ToDto(fieldDefinition);
-
+                try
+                {
+                    createRequests.ForEach(fieldDefinition =>
+                    {
+                        _ = clazz.AddField(FieldDefinitionMapper.FromDto(fieldDefinition));
+                    });
+                }
+                catch (SuperVException)
+                {
+                    // If exception while creatig one of the fields, remove all the already created fields.
+                    try
+                    {
+                        createRequests.ForEach(fieldDefinition =>
+                        {
+                            clazz.RemoveField(fieldDefinition.Name);
+                        });
+                    }
+                    catch (SuperVException)
+                    {
+                        // Ignore execption while deleting
+                    }
+                    throw;
+                }
+                return;
             }
             throw new NonWipProjectException(projectId);
         }

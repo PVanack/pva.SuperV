@@ -41,13 +41,13 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 (IFieldDefinitionService fieldDefinitionService,
                 [Description("ID of project")] string projectId,
                 [Description("Name of class")] string className,
-                [Description("Field creation request")][FromBody] FieldDefinitionModel createRequest)
-                    => CreateField.Handle(fieldDefinitionService, projectId, className, createRequest))
-                .WithName("CreateFieldDefinition")
-                .WithDisplayName("CreateFieldDefinition")
-                .WithSummary("Creates a field definition in a class of a project")
-                .WithDescription("Creates a field definition in a class of a project")
-                .Produces<FieldDefinitionModel>(StatusCodes.Status201Created)
+                [Description("Field creation requests")][FromBody] List<FieldDefinitionModel> createRequests)
+                    => CreateField.Handle(fieldDefinitionService, projectId, className, createRequests))
+                .WithName("CreateFieldDefinitions")
+                .WithDisplayName("CreateFieldDefinitions")
+                .WithSummary("Creates field definitions in a class of a project")
+                .WithDescription("Creates field definitions in a class of a project")
+                .Produces(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 

@@ -7,7 +7,7 @@ namespace pva.SuperV.Model.Classes
         [property: Description("Name of the class.")]
         string Name,
         [property: Description("Base class (if any).")]
-        string? BaseclassName)
+        string? BaseClassName)
     {
     }
 }

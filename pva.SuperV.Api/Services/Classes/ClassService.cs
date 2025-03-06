@@ -22,7 +22,7 @@ namespace pva.SuperV.Api.Services.Classes
             Project project = GetProjectEntity(projectId);
             if (project is WipProject wipProject)
             {
-                return ClassMapper.ToDto(wipProject.AddClass(createRequest!.Name, createRequest!.BaseclassName));
+                return ClassMapper.ToDto(wipProject.AddClass(createRequest!.Name, createRequest!.BaseClassName));
             }
             throw new NonWipProjectException(projectId);
         }

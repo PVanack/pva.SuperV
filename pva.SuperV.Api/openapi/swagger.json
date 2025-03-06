@@ -1358,9 +1358,9 @@
         "tags": [
           "pva.SuperV.Api"
         ],
-        "summary": "Creates a field definition in a class of a project",
-        "description": "Creates a field definition in a class of a project",
-        "operationId": "CreateFieldDefinition",
+        "summary": "Creates field definitions in a class of a project",
+        "description": "Creates field definitions in a class of a project",
+        "operationId": "CreateFieldDefinitions",
         "parameters": [
           {
             "name": "projectId",
@@ -1382,11 +1382,14 @@
           }
         ],
         "requestBody": {
-          "description": "Field creation request",
+          "description": "Field creation requests",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/FieldDefinitionModel"
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FieldDefinitionModel"
+                }
               }
             }
           },
@@ -1394,14 +1397,7 @@
         },
         "responses": {
           "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FieldDefinitionModel"
-                }
-              }
-            }
+            "description": "Created"
           },
           "404": {
             "description": "Not Found",
@@ -2240,7 +2236,7 @@
       "ClassModel": {
         "required": [
           "name",
-          "baseclassName"
+          "baseClassName"
         ],
         "type": "object",
         "properties": {
@@ -2248,7 +2244,7 @@
             "type": "string",
             "description": "Name of the class."
           },
-          "baseclassName": {
+          "baseClassName": {
             "type": "string",
             "description": "Base class (if any).",
             "nullable": true

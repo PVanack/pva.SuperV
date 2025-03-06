@@ -133,17 +133,13 @@ public class FieldDefinitionEndpointsTests
     public async Task GivenClass_WhenCreatingClassFieldDefinition_ThenFieldDefinitionIsCreated()
     {
         // GIVEN
-        FieldDefinitionModel expectedFieldDefinition = new IntFieldDefinitionModel("IntField", default);
-        MockedFieldDefinitionService.CreateField("Project", "Class", Arg.Any<FieldDefinitionModel>())
-            .Returns(expectedFieldDefinition);
+        List<FieldDefinitionModel> expectedFieldDefinitions = [new IntFieldDefinitionModel("IntField", default)];
 
         // WHEN
-        var response = await client.PostAsJsonAsync("/fields/Project/Class", expectedFieldDefinition);
+        var response = await client.PostAsJsonAsync("/fields/Project/Class", expectedFieldDefinitions);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
-        FieldDefinitionModel? fieldDefinition = await response.Content.ReadFromJsonAsync<FieldDefinitionModel>();
-        fieldDefinition.ShouldBeEquivalentTo(expectedFieldDefinition);
     }
 
     [Fact]
