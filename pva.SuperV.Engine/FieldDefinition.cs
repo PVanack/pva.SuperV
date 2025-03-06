@@ -94,33 +94,21 @@ namespace pva.SuperV.Engine
         {
             StringBuilder codeBuilder = new();
             codeBuilder.AppendLine(
-                $"public Field<{typeof(T)}> {Name} {{ get; set; }} = new({GetCodeValueForNew(DefaultValue)});");
+                $"public Field<{typeof(T)}> {Name} {{ get; set; }} = new ({GetCodeValueForNew(DefaultValue)});");
             return codeBuilder.ToString();
         }
 
         private static string? GetCodeValueForNew(T? defaultValue)
         {
-            if (typeof(T).Equals(typeof(string)))
+            return defaultValue switch
             {
-                return $"\"{defaultValue}\"";
-            }
-            else
-            {
-                switch (defaultValue)
-                {
-                    case bool boolean:
-                        {
-                            string booleanValue = boolean ? "true" : "false";
-                            return $"{booleanValue}";
-                        }
-                    case DateTime dateTime:
-                        return $"new {typeof(T)}({dateTime.Ticks.ToString(CultureInfo.InvariantCulture)}L)";
-                    case TimeSpan timespan:
-                        return $"new {typeof(T)}({timespan.Ticks.ToString(CultureInfo.InvariantCulture)}L)";
-                }
-            }
-
-            return defaultValue!.ToString();
+                string stringValue => $"\"{stringValue}\"",
+                bool boolValue => boolValue ? "true" : "false",
+                float floatValue => $"{floatValue}F",
+                DateTime dateTimeValue => $"new {typeof(T)}({dateTimeValue.Ticks.ToString(CultureInfo.InvariantCulture)}L)",
+                TimeSpan timespanValue => $"new {typeof(T)}({timespanValue.Ticks.ToString(CultureInfo.InvariantCulture)}L)",
+                _ => defaultValue!.ToString(),
+            };
         }
 
         /// <summary>

@@ -2359,7 +2359,8 @@
       "FieldDefinitionModelBoolFieldDefinitionModel": {
         "required": [
           "defaultValue",
-          "name"
+          "name",
+          "valueFormatter"
         ],
         "properties": {
           "$type": {
@@ -2379,13 +2380,19 @@
           "type": {
             "type": "string",
             "description": "Type of field"
+          },
+          "valueFormatter": {
+            "type": "string",
+            "description": "Field value formatter",
+            "nullable": true
           }
         }
       },
       "FieldDefinitionModelDateTimeFieldDefinitionModel": {
         "required": [
           "defaultValue",
-          "name"
+          "name",
+          "valueFormatter"
         ],
         "properties": {
           "$type": {
@@ -2406,13 +2413,19 @@
           "type": {
             "type": "string",
             "description": "Type of field"
+          },
+          "valueFormatter": {
+            "type": "string",
+            "description": "Field value formatter",
+            "nullable": true
           }
         }
       },
       "FieldDefinitionModelDoubleFieldDefinitionModel": {
         "required": [
           "defaultValue",
-          "name"
+          "name",
+          "valueFormatter"
         ],
         "properties": {
           "$type": {
@@ -2433,13 +2446,19 @@
           "type": {
             "type": "string",
             "description": "Type of field"
+          },
+          "valueFormatter": {
+            "type": "string",
+            "description": "Field value formatter",
+            "nullable": true
           }
         }
       },
       "FieldDefinitionModelFloatFieldDefinitionModel": {
         "required": [
           "defaultValue",
-          "name"
+          "name",
+          "valueFormatter"
         ],
         "properties": {
           "$type": {
@@ -2460,13 +2479,19 @@
           "type": {
             "type": "string",
             "description": "Type of field"
+          },
+          "valueFormatter": {
+            "type": "string",
+            "description": "Field value formatter",
+            "nullable": true
           }
         }
       },
       "FieldDefinitionModelIntFieldDefinitionModel": {
         "required": [
           "defaultValue",
-          "name"
+          "name",
+          "valueFormatter"
         ],
         "properties": {
           "$type": {
@@ -2487,13 +2512,19 @@
           "type": {
             "type": "string",
             "description": "Type of field"
+          },
+          "valueFormatter": {
+            "type": "string",
+            "description": "Field value formatter",
+            "nullable": true
           }
         }
       },
       "FieldDefinitionModelLongFieldDefinitionModel": {
         "required": [
           "defaultValue",
-          "name"
+          "name",
+          "valueFormatter"
         ],
         "properties": {
           "$type": {
@@ -2514,13 +2545,19 @@
           "type": {
             "type": "string",
             "description": "Type of field"
+          },
+          "valueFormatter": {
+            "type": "string",
+            "description": "Field value formatter",
+            "nullable": true
           }
         }
       },
       "FieldDefinitionModelShortFieldDefinitionModel": {
         "required": [
           "defaultValue",
-          "name"
+          "name",
+          "valueFormatter"
         ],
         "properties": {
           "$type": {
@@ -2541,13 +2578,19 @@
           "type": {
             "type": "string",
             "description": "Type of field"
+          },
+          "valueFormatter": {
+            "type": "string",
+            "description": "Field value formatter",
+            "nullable": true
           }
         }
       },
       "FieldDefinitionModelStringFieldDefinitionModel": {
         "required": [
           "defaultValue",
-          "name"
+          "name",
+          "valueFormatter"
         ],
         "properties": {
           "$type": {
@@ -2568,13 +2611,19 @@
           "type": {
             "type": "string",
             "description": "Type of field"
+          },
+          "valueFormatter": {
+            "type": "string",
+            "description": "Field value formatter",
+            "nullable": true
           }
         }
       },
       "FieldDefinitionModelTimeSpanFieldDefinitionModel": {
         "required": [
           "defaultValue",
-          "name"
+          "name",
+          "valueFormatter"
         ],
         "properties": {
           "$type": {
@@ -2595,13 +2644,19 @@
           "type": {
             "type": "string",
             "description": "Type of field"
+          },
+          "valueFormatter": {
+            "type": "string",
+            "description": "Field value formatter",
+            "nullable": true
           }
         }
       },
       "FieldDefinitionModelUintFieldDefinitionModel": {
         "required": [
           "defaultValue",
-          "name"
+          "name",
+          "valueFormatter"
         ],
         "properties": {
           "$type": {
@@ -2622,13 +2677,19 @@
           "type": {
             "type": "string",
             "description": "Type of field"
+          },
+          "valueFormatter": {
+            "type": "string",
+            "description": "Field value formatter",
+            "nullable": true
           }
         }
       },
       "FieldDefinitionModelUlongFieldDefinitionModel": {
         "required": [
           "defaultValue",
-          "name"
+          "name",
+          "valueFormatter"
         ],
         "properties": {
           "$type": {
@@ -2649,13 +2710,19 @@
           "type": {
             "type": "string",
             "description": "Type of field"
+          },
+          "valueFormatter": {
+            "type": "string",
+            "description": "Field value formatter",
+            "nullable": true
           }
         }
       },
       "FieldDefinitionModelUshortFieldDefinitionModel": {
         "required": [
           "defaultValue",
-          "name"
+          "name",
+          "valueFormatter"
         ],
         "properties": {
           "$type": {
@@ -2676,6 +2743,11 @@
           "type": {
             "type": "string",
             "description": "Type of field"
+          },
+          "valueFormatter": {
+            "type": "string",
+            "description": "Field value formatter",
+            "nullable": true
           }
         }
       },

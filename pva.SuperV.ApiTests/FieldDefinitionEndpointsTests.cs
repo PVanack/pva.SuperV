@@ -29,7 +29,7 @@ public class FieldDefinitionEndpointsTests
     public async Task GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinitions_ThenFieldDefinitionsAreReturned()
     {
         // GIVEN
-        List<FieldDefinitionModel> expectedFieldDefinitions = [new IntFieldDefinitionModel("IntField", default)];
+        List<FieldDefinitionModel> expectedFieldDefinitions = [new IntFieldDefinitionModel("IntField", default, null)];
         MockedFieldDefinitionService.GetFields("Project", "Class")
             .Returns(expectedFieldDefinitions);
 
@@ -45,73 +45,85 @@ public class FieldDefinitionEndpointsTests
     [Fact]
     public async Task GetBoolField()
     {
-        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new BoolFieldDefinitionModel("BoolField", default));
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(
+            new BoolFieldDefinitionModel("BoolField", default, null));
     }
 
     [Fact]
     public async Task GetDateTimeField()
     {
-        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new DateTimeFieldDefinitionModel("DateTimeField", default));
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(
+            new DateTimeFieldDefinitionModel("DateTimeField", default, null));
     }
 
     [Fact]
     public async Task GetDoubleField()
     {
-        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new DoubleFieldDefinitionModel("DoubleField", default));
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(
+            new DoubleFieldDefinitionModel("DoubleField", default, null));
     }
 
     [Fact]
     public async Task GetFloatField()
     {
-        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new FloatFieldDefinitionModel("BoolField", default));
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(
+            new FloatFieldDefinitionModel("BoolField", default, null));
     }
 
     [Fact]
     public async Task GetIntField()
     {
-        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new IntFieldDefinitionModel("IntField", default));
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(
+            new IntFieldDefinitionModel("IntField", default, null));
     }
 
     [Fact]
     public async Task GetLongField()
     {
-        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new LongFieldDefinitionModel("LongField", default));
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(
+            new LongFieldDefinitionModel("LongField", default, null));
     }
 
     [Fact]
     public async Task GetShortField()
     {
-        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new ShortFieldDefinitionModel("ShortField", default));
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(
+            new ShortFieldDefinitionModel("ShortField", default, null));
     }
 
     [Fact]
     public async Task GetStringField()
     {
-        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new StringFieldDefinitionModel("StringField", ""));
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(
+            new StringFieldDefinitionModel("StringField", "", null));
     }
 
     [Fact]
     public async Task GetTimeSpanField()
     {
-        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new TimeSpanFieldDefinitionModel("TimeSpanField", default));
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(
+            new TimeSpanFieldDefinitionModel("TimeSpanField", default, null));
     }
 
     [Fact]
     public async Task GetUintField()
     {
-        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new UintFieldDefinitionModel("UintField", default));
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(
+            new UintFieldDefinitionModel("UintField", default, null));
     }
 
     [Fact]
     public async Task GetUlongField()
     {
-        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new UlongFieldDefinitionModel("UlongField", default));
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(
+            new UlongFieldDefinitionModel("UlongField", default, null));
     }
 
     [Fact]
     public async Task GetUshortField()
     {
-        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(new UshortFieldDefinitionModel("UshortField", default));
+        await GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned(
+            new UshortFieldDefinitionModel("UshortField", default, null));
     }
 
     private async Task GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned<T>(T expectedFieldDefinition) where T : FieldDefinitionModel
@@ -133,7 +145,7 @@ public class FieldDefinitionEndpointsTests
     public async Task GivenClass_WhenCreatingClassFieldDefinition_ThenFieldDefinitionIsCreated()
     {
         // GIVEN
-        List<FieldDefinitionModel> expectedFieldDefinitions = [new IntFieldDefinitionModel("IntField", default)];
+        List<FieldDefinitionModel> expectedFieldDefinitions = [new IntFieldDefinitionModel("IntField", default, null)];
         MockedFieldDefinitionService.CreateFields("Project", "Class", Arg.Any<List<FieldDefinitionModel>>())
             .Returns(expectedFieldDefinitions);
 

@@ -13,12 +13,24 @@ Content-Type: application/json
 }
 ###
 
-# Get existing projects
-GET {{pva.SuperV.Api_HostAddress}}/projects/
-###
-
-# Get newly created WIP project
-GET {{pva.SuperV.Api_HostAddress}}/projects/{{projectName}}-WIP
+# Create field formatter for alarm states
+POST {{pva.SuperV.Api_HostAddress}}/field-formatters/{{projectName}}-WIP
+Content-Type: application/json
+{
+    "fieldFormatter":
+    {
+        "$type": "EnumFormatterModel",
+        "name": "AlarmStates",
+        "values":
+        {
+            "-2": "LowLow",
+            "-1": "Low",
+            "0": "Ok",
+            "1": "High",
+            "2": "HighHigh"
+        }
+    }
+}
 
 ###
 
@@ -26,29 +38,11 @@ GET {{pva.SuperV.Api_HostAddress}}/projects/{{projectName}}-WIP
 POST {{pva.SuperV.Api_HostAddress}}/classes/{{projectName}}-WIP
 Content-Type: application/json
 {
-    "name": "BaseClass"
+    "name": "{{baseClassName}}"
 }
 ###
 
-# Create a new class with inheritance
-POST {{pva.SuperV.Api_HostAddress}}/classes/{{projectName}}-WIP
-Content-Type: application/json
-{
-    "name": "DerivedClass",
-    "baseClassName": "BaseClass"
-}
-###
-
-# Get existing classes
-GET {{pva.SuperV.Api_HostAddress}}/classes/{{projectName}}-WIP
-###
-
-# Get existing class
-GET {{pva.SuperV.Api_HostAddress}}/classes/{{projectName}}-WIP/{{baseClassName}}
-###
-
-
-# Create bool field in base class
+# Create all supported fields in base class
 POST {{pva.SuperV.Api_HostAddress}}/fields/{{projectName}}-WIP/{{baseClassName}}
 Content-Type: application/json
 [
@@ -113,4 +107,61 @@ Content-Type: application/json
         "defaultValue": 5
     }
 ]
+###
+
+# Create a new class with inheritance
+POST {{pva.SuperV.Api_HostAddress}}/classes/{{projectName}}-WIP
+Content-Type: application/json
+{
+    "name": "{{derivedClassName}}",
+    "baseClassName": "{{baseClassName}}"
+}
+###
+
+# Add fields for alarm state processing
+POST {{pva.SuperV.Api_HostAddress}}/fields/{{projectName}}-WIP/{{derivedClassName}}
+Content-Type: application/json
+[
+    {
+        "$type": "FloatFieldDefinitionModel",
+        "name": "Value",
+        "defaultValue": 0
+    },
+    {
+        "$type": "FloatFieldDefinitionModel",
+        "name": "HighLimit",
+        "defaultValue": 100
+    },
+        {
+        "$type": "FloatFieldDefinitionModel",
+        "name": "LowLimit",
+        "defaultValue": 0
+    },
+    {
+        "$type": "IntFieldDefinitionModel",
+        "name": "AlarmState",
+        "defaultValue": 0,
+        "valueFormatter": "AlarmStates"
+    }
+]
+
+###
+
+# Create an alarm state on Value field with only high and low limits and no deadband and acknowldegement fields
+POST {{pva.SuperV.Api_HostAddress}}/field-processings/{{projectName}}-WIP/{{derivedClassName}}/Value
+Content-Type: application/json
+{
+    "$type": "AlarmStateProcessingModel",
+    "name": "ValueAlarmState",
+    "trigerringFieldName": "Value",
+    "highLimitFieldName": "HighLimit",
+    "lowLimitFieldName": "LowLimit",
+    "alarmStateFieldName": "AlarmState"
+}
+###
+
+# Build project
+
+POST {{pva.SuperV.Api_HostAddress}}/projects/{{projectName}}-WIP/build
+
 ###

@@ -63,7 +63,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenExistingFieldFormattersInProject_WhenGettingProjectFieldFormatter_ThenFieldFormatterIsReturned()
         {
             // GIVEN
-            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel("FieldFormatter", new Dictionary<int, string>() { { 1, "OFF" } });
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel("FieldFormatter", new Dictionary<int, string>() { { 0, "OFF" }, { 1, "ON" } });
             MockedFieldFormatterService.GetFieldFormatter("Project", expectedFieldFormatter.Name)
                 .Returns(expectedFieldFormatter);
 

@@ -24,7 +24,10 @@ namespace pva.SuperV.ApiTests
         public void GetClassFieldDefinitions_ShouldReturnListOfClassFieldDefinitions()
         {
             // GIVEN
-            List<FieldDefinitionModel> expectedFieldDefinitions = [new StringFieldDefinitionModel(ProjectHelpers.BaseClassFieldName, "InheritedField")];
+            List<FieldDefinitionModel> expectedFieldDefinitions =
+                [
+                    new StringFieldDefinitionModel(ProjectHelpers.BaseClassFieldName, "InheritedField", null)
+                ];
             // WHEN
             List<FieldDefinitionModel> fieldDefinitions = fieldDefinitionService.GetFields(runnableProject.GetId(), ProjectHelpers.BaseClassName);
 
@@ -38,7 +41,8 @@ namespace pva.SuperV.ApiTests
         public void GetClassFieldDefinition_ShouldReturnClassFieldDefinition()
         {
             // GIVEN
-            FieldDefinitionModel expectedFieldDefinition = new StringFieldDefinitionModel(ProjectHelpers.BaseClassFieldName, "InheritedField");
+            FieldDefinitionModel expectedFieldDefinition =
+                new StringFieldDefinitionModel(ProjectHelpers.BaseClassFieldName, "InheritedField", null);
             // WHEN
             FieldDefinitionModel fieldDefinition = fieldDefinitionService.GetField(runnableProject.GetId(), ProjectHelpers.BaseClassName, ProjectHelpers.BaseClassFieldName);
 
@@ -52,7 +56,10 @@ namespace pva.SuperV.ApiTests
         public void CreateClassFieldDefinition_ShouldCreateClassFieldDefinition()
         {
             // GIVEN
-            List<FieldDefinitionModel> expectedFieldDefinitions = [new StringFieldDefinitionModel($"{ProjectHelpers.BaseClassFieldName}Added", "")];
+            List<FieldDefinitionModel> expectedFieldDefinitions =
+                [
+                new StringFieldDefinitionModel($"{ProjectHelpers.BaseClassFieldName}Added", "", null)
+                ];
             // WHEN
             List<FieldDefinitionModel> createdFieldDefinitions = fieldDefinitionService.CreateFields(wipProject.GetId(), ProjectHelpers.BaseClassName, expectedFieldDefinitions);
 

@@ -33,7 +33,12 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
                 {
                     createRequests.ForEach(fieldDefinition =>
                     {
-                        createdFieldDefinitions.Add(FieldDefinitionMapper.ToDto(clazz.AddField(FieldDefinitionMapper.FromDto(fieldDefinition))));
+                        FieldFormatter? fieldFormatter = null;
+                        if (fieldDefinition.ValueFormatter is not null)
+                        {
+                            fieldFormatter = wipProject.GetFormatter(fieldDefinition.ValueFormatter);
+                        }
+                        createdFieldDefinitions.Add(FieldDefinitionMapper.ToDto(clazz.AddField(FieldDefinitionMapper.FromDto(fieldDefinition), fieldFormatter)));
                     });
                     return createdFieldDefinitions;
                 }
