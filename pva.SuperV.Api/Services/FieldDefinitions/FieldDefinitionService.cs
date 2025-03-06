@@ -22,25 +22,27 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
             throw new UnknownEntityException("Field", fieldName);
         }
 
-        public void CreateFields(string projectId, string className, List<FieldDefinitionModel> createRequests)
+        public List<FieldDefinitionModel> CreateFields(string projectId, string className, List<FieldDefinitionModel> createRequests)
         {
             Project project = GetProjectEntity(projectId);
             if (project is WipProject wipProject)
             {
+                List<FieldDefinitionModel> createdFieldDefinitions = [];
                 Class clazz = GetClassEntity(wipProject, className);
                 try
                 {
                     createRequests.ForEach(fieldDefinition =>
                     {
-                        _ = clazz.AddField(FieldDefinitionMapper.FromDto(fieldDefinition));
+                        createdFieldDefinitions.Add(FieldDefinitionMapper.ToDto(clazz.AddField(FieldDefinitionMapper.FromDto(fieldDefinition))));
                     });
+                    return createdFieldDefinitions;
                 }
                 catch (SuperVException)
                 {
                     // If exception while creatig one of the fields, remove all the already created fields.
                     try
                     {
-                        createRequests.ForEach(fieldDefinition =>
+                        createdFieldDefinitions.ForEach(fieldDefinition =>
                         {
                             clazz.RemoveField(fieldDefinition.Name);
                         });
@@ -51,7 +53,6 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
                     }
                     throw;
                 }
-                return;
             }
             throw new NonWipProjectException(projectId);
         }

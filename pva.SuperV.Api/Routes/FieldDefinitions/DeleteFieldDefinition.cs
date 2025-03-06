@@ -4,7 +4,7 @@ using pva.SuperV.Engine.Exceptions;
 
 namespace pva.SuperV.Api.Routes.FieldDefinitions
 {
-    internal static class DeleteField
+    internal static class DeleteFieldDefinition
     {
         internal static Results<NoContent, NotFound<string>, BadRequest<string>> Handle(IFieldDefinitionService fieldDefinitionService, string projectId, string className, string fieldName)
         {

@@ -54,9 +54,10 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             List<FieldDefinitionModel> expectedFieldDefinitions = [new StringFieldDefinitionModel($"{ProjectHelpers.BaseClassFieldName}Added", "")];
             // WHEN
-            fieldDefinitionService.CreateFields(wipProject.GetId(), ProjectHelpers.BaseClassName, expectedFieldDefinitions);
+            List<FieldDefinitionModel> createdFieldDefinitions = fieldDefinitionService.CreateFields(wipProject.GetId(), ProjectHelpers.BaseClassName, expectedFieldDefinitions);
 
             // THEN
+            createdFieldDefinitions.ShouldBeEquivalentTo(expectedFieldDefinitions);
         }
 
         [Fact]

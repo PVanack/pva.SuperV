@@ -1397,7 +1397,17 @@
         },
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FieldDefinitionModel"
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Not Found",

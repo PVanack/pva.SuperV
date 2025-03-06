@@ -5,15 +5,15 @@ using pva.SuperV.Model.FieldDefinitions;
 
 namespace pva.SuperV.Api.Routes.FieldDefinitions
 {
-    internal static class CreateField
+    internal static class CreateFieldDefinitions
     {
-        internal static Results<Created, NotFound<string>, BadRequest<string>>
+        internal static Results<Created<List<FieldDefinitionModel>>, NotFound<string>, BadRequest<string>>
             Handle(IFieldDefinitionService fieldDefinitionService, string projectId, string className, List<FieldDefinitionModel> createRequests)
         {
             try
             {
-                fieldDefinitionService.CreateFields(projectId, className, createRequests);
-                return TypedResults.Created();
+                List<FieldDefinitionModel> createdFieldDefinitions = fieldDefinitionService.CreateFields(projectId, className, createRequests);
+                return TypedResults.Created(null as Uri, createdFieldDefinitions);
             }
             catch (UnknownEntityException e)
             {
