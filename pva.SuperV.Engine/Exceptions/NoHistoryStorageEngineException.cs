@@ -3,7 +3,6 @@
 namespace pva.SuperV.Engine.Exceptions
 {
     /// <summary>Exception thrown when no history storage engine is defined.</summary>
-    [Serializable]
     public class NoHistoryStorageEngineException : SuperVException
     {
         public NoHistoryStorageEngineException(string? projectName)

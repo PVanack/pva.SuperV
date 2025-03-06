@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 namespace pva.SuperV.Api
 {
     /// <summary>Exception thrown when trying to build from a non WIP project.</summary>
-    [Serializable]
     public class NonWipProjectException : SuperVException
     {
         public NonWipProjectException(string projectId)

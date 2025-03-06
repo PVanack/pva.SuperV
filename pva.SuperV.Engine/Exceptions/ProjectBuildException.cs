@@ -3,7 +3,6 @@
 namespace pva.SuperV.Engine.Exceptions
 {
     /// <summary>Exception thrown when an error occurs while building a project.</summary>
-    [Serializable]
     [ExcludeFromCodeCoverage]
     public class ProjectBuildException : SuperVException
     {

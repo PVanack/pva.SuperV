@@ -3,7 +3,6 @@
 namespace pva.SuperV.Engine.Exceptions
 {
     /// <summary>Exception thrown when name of an entity contains invalid character(s).</summary>
-    [Serializable]
     public class InvalidIdentifierNameException : SuperVException
     {
         public InvalidIdentifierNameException(string entityType, string? identifier, string identifierNamePattern)

@@ -24,7 +24,7 @@ namespace pva.SuperV.EngineTests
         public const string BaseClassName = "TestBaseClass";
         public const string BaseClassFieldName = "InheritedField";
         public const string HistoryRepositoryName = "HistoryRepository";
-        public static readonly Dictionary<int, string> AlarmStatesFormatterValues = new() {
+        public static Dictionary<int, string> AlarmStatesFormatterValues = new() {
                 { -2, "LowLow" },
                 { -1, "Low" },
                 { 0, "OK" },

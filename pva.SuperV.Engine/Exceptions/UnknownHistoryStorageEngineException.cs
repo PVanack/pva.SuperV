@@ -3,7 +3,6 @@
 namespace pva.SuperV.Engine.Exceptions
 {
     /// <summary>Exception thrown when history engine connection string contains an unknown type.</summary>
-    [Serializable]
     public class UnknownHistoryStorageEngineException : SuperVException
     {
         [ExcludeFromCodeCoverage]

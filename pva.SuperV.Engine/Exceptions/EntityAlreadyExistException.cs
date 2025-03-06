@@ -3,7 +3,6 @@
 namespace pva.SuperV.Engine.Exceptions
 {
     /// <summary>Exception thrown when an entity with same name already exists in project.</summary>
-    [Serializable]
     public class EntityAlreadyExistException : SuperVException
     {
         public EntityAlreadyExistException(string entityType, string? entityName)

@@ -71,7 +71,7 @@ namespace pva.SuperV.Engine
 
         private void CreateStringsToValuesDictionary()
         {
-            Values.ForEach(entry
+            Values?.ForEach(entry
                 => StringsToValues?.Add(entry.Value, entry.Key));
         }
         /// <summary>

@@ -36,11 +36,6 @@ namespace pva.SuperV.Engine.Processing
         private const int LowLowAlarmState = -2;
 
         /// <summary>
-        /// The acknowledge state value
-        /// </summary>
-        private const int AckState = 0;
-
-        /// <summary>
         /// The unacknowledge state value.
         /// </summary>
         private const int UnackState = 1;
@@ -191,7 +186,8 @@ namespace pva.SuperV.Engine.Processing
             Field<T>? highLimit = GetInstanceField<T>(instance, HighLimitField!.Name);
             Field<T>? lowLimit = GetInstanceField<T>(instance, LowLimitField!.Name);
             Field<T>? lowLowLimit = GetInstanceField<T>(instance, LowLowLimitField?.Name);
-            Field<T>? deadband = GetInstanceField<T>(instance, DeadbandField?.Name);
+            // TODO: Add deadband
+            // Field<T>? deadband = GetInstanceField<T>(instance, DeadbandField?.Name);
             Field<int> alarmState = GetInstanceField<int>(instance, AlarmStateField!.Name)!;
             Field<int>? ackState = GetInstanceField<int>(instance, AckStateField?.Name);
             int previousAlarmState = alarmState.Value;

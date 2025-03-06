@@ -3,7 +3,6 @@
 namespace pva.SuperV.Engine.Exceptions
 {
     /// <summary>Exception thrown when type requested doesn't match actual field type.</summary>
-    [Serializable]
     public class StringConversionException : SuperVException
     {
         public StringConversionException(string fieldName, string? stringValue, Type fieldType)

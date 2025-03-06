@@ -3,7 +3,6 @@
 namespace pva.SuperV.Engine.Exceptions
 {
     /// <summary>Exception thrown when a TDengine error occurs.</summary>
-    [Serializable]
     public class TdEngineException : SuperVException
     {
         [ExcludeFromCodeCoverage]

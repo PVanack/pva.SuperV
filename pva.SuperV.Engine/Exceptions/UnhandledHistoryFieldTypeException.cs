@@ -3,7 +3,6 @@
 namespace pva.SuperV.Engine.Exceptions
 {
     /// <summary>Exception thrown when an unhandled field type for history storage engine is referenced.</summary>
-    [Serializable]
     public class UnhandledHistoryFieldTypeException : SuperVException
     {
         public UnhandledHistoryFieldTypeException(string? fieldName, Type fieldType)
