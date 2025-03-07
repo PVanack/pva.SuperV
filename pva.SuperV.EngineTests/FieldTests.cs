@@ -137,7 +137,7 @@ namespace pva.SuperV.EngineTests
         public static TheoryData<ValueToTest<DateTime>> GetDateTimeValidValues()
             =>
                 [
-                    new ValueToTest<DateTime>("2025-03-01T23:55:01+01:00", new DateTime(2025, 3, 1, 23, 55, 1, DateTimeKind.Local))
+                    new ValueToTest<DateTime>("2025-03-01T23:55:01+00:00", new DateTime(2025, 3, 1, 23, 55, 1, DateTimeKind.Utc))
                 ];
         [Theory]
         [MemberData(nameof(GetDateTimeValidValues))]
