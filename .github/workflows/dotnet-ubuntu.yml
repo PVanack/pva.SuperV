@@ -22,7 +22,7 @@ jobs:
     - name: Install TDengine driver 
       run: sudo ./TDengine/install-TDengine-client.sh
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore --configuration Release 
     - name: Build
       run: dotnet build --no-restore --configuration Release 
     - name: Test
