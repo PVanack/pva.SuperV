@@ -48,7 +48,7 @@ namespace pva.SuperV.Api.Services.Projects
         {
             Project project = GetProjectEntity(projectId);
             StreamWriter stream = new(new MemoryStream());
-            return await ProjectStorage.StreamProjectDefinition(project, stream);
+            return await ProjectStorage.StreamProjectDefinitionAsync(project, stream);
         }
 
         public ProjectModel CreateProjectFromJsonDefinition(StreamReader streamReader)
@@ -62,7 +62,7 @@ namespace pva.SuperV.Api.Services.Projects
             if (project is RunnableProject runnableProject)
             {
                 StreamWriter stream = new(new MemoryStream());
-                return await ProjectStorage.StreamProjectInstances(runnableProject, stream);
+                return await ProjectStorage.StreamProjectInstancesAsync(runnableProject, stream);
             }
             throw new NonRunnableProjectException(projectId);
         }
