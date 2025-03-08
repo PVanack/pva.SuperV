@@ -9,35 +9,27 @@ namespace pva.SuperV.Api.Services.FieldProcessings
     {
         public List<FieldValueProcessingModel> GetFieldProcessings(string projectId, string className, string fieldName)
         {
-            Project project = GetProjectEntity(projectId);
-            IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(project, className, fieldName);
+            IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(GetProjectEntity(projectId), className, fieldName);
             return [.. fieldDefinition.ValuePostChangeProcessings.Select(Field => FieldProcessingMapper.ToDto(Field))];
         }
 
         public FieldValueProcessingModel GetFieldProcessing(string projectId, string className, string fieldName, string processingName)
         {
-            Project project = GetProjectEntity(projectId);
-            IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(project, className, fieldName);
+            IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(GetProjectEntity(projectId), className, fieldName);
             IFieldValueProcessing? processing = fieldDefinition.ValuePostChangeProcessings
                 .FirstOrDefault(field => field.Name.Equals(processingName));
-            if (processing is not null)
-            {
-                return FieldProcessingMapper.ToDto(processing);
-            }
-            else
-            {
-                throw new UnknownEntityException("FieldValueProcessing", processingName);
-            }
+            return processing is not null
+                ? FieldProcessingMapper.ToDto(processing)
+                : throw new UnknownEntityException("FieldValueProcessing", processingName);
         }
 
         public FieldValueProcessingModel CreateFieldProcessing(string projectId, string className, string fieldName, FieldValueProcessingModel createRequest)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is WipProject wipProject)
+            if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 Class clazz = GetClassEntity(wipProject, className);
                 IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(clazz, fieldName);
-                IFieldValueProcessing fieldProcessing = FieldProcessingMapper.FromDto(project, clazz, fieldDefinition, createRequest);
+                IFieldValueProcessing fieldProcessing = FieldProcessingMapper.FromDto(wipProject, clazz, fieldDefinition, createRequest);
                 wipProject.AddFieldChangePostProcessing(className, fieldName, fieldProcessing);
                 return FieldProcessingMapper.ToDto(fieldProcessing);
             }
@@ -46,8 +38,7 @@ namespace pva.SuperV.Api.Services.FieldProcessings
 
         public void DeleteFieldProcessing(string projectId, string className, string fieldName, string processingName)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is WipProject wipProject)
+            if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(wipProject, className, fieldName);
                 IFieldValueProcessing? processing = fieldDefinition.ValuePostChangeProcessings

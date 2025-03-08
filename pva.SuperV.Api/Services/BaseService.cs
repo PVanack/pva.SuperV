@@ -16,8 +16,7 @@ namespace pva.SuperV.Api.Services
 
         protected static Class GetClassEntity(string projectId, string className)
         {
-            Project project = GetProjectEntity(projectId);
-            return GetClassEntity(project, className);
+            return GetClassEntity(GetProjectEntity(projectId), className);
         }
 
         protected static Class GetClassEntity(Project project, string className)
@@ -31,8 +30,7 @@ namespace pva.SuperV.Api.Services
 
         protected static IFieldDefinition GetFieldDefinitionEntity(Project project, string className, string fieldName)
         {
-            Class clazz = GetClassEntity(project, className);
-            return GetFieldDefinitionEntity(clazz, fieldName);
+            return GetFieldDefinitionEntity(GetClassEntity(project, className), fieldName);
         }
 
         protected static IFieldDefinition GetFieldDefinitionEntity(Class clazz, string fieldName)
@@ -46,8 +44,7 @@ namespace pva.SuperV.Api.Services
 
         protected static IField GetFieldEntity(string projectId, string instanceName, string fieldName)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is RunnableProject runnableProject)
+            if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {
                 Instance instance = runnableProject.GetInstance(instanceName);
                 return instance.GetField(fieldName);

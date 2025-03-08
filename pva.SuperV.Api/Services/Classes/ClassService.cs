@@ -12,15 +12,11 @@ namespace pva.SuperV.Api.Services.Classes
         }
 
         public ClassModel GetClass(string projectId, string className)
-        {
-            Class clazz = GetClassEntity(projectId, className);
-            return ClassMapper.ToDto(clazz);
-        }
+            => ClassMapper.ToDto(GetClassEntity(projectId, className));
 
         public ClassModel CreateClass(string projectId, ClassModel createRequest)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is WipProject wipProject)
+            if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 return ClassMapper.ToDto(wipProject.AddClass(createRequest!.Name, createRequest!.BaseClassName));
             }
@@ -29,8 +25,7 @@ namespace pva.SuperV.Api.Services.Classes
 
         public void DeleteClass(string projectId, string className)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is WipProject wipProject)
+            if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 wipProject.RemoveClass(className);
                 return;

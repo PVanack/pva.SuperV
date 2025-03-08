@@ -10,8 +10,7 @@ namespace pva.SuperV.Api.Services.Projects
 
         public ProjectModel GetProject(string projectId)
         {
-            Project project = GetProjectEntity(projectId);
-            return ProjectMapper.ToDto(project);
+            return ProjectMapper.ToDto(GetProjectEntity(projectId));
 
         }
 
@@ -22,21 +21,19 @@ namespace pva.SuperV.Api.Services.Projects
             return ProjectMapper.ToDto(wipProject);
         }
 
-        public ProjectModel CreateProjectFromRunnable(string runnableProjectId)
+        public ProjectModel CreateProjectFromRunnable(string projectId)
         {
-            Project project = GetProjectEntity(runnableProjectId);
-            if (project is RunnableProject runnableProject)
+            if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {
                 WipProject wipProject = Project.CreateProject(runnableProject);
                 return ProjectMapper.ToDto(wipProject);
             }
-            throw new NonRunnableProjectException(runnableProjectId);
+            throw new NonRunnableProjectException(projectId);
         }
 
         public async Task<ProjectModel> BuildProjectAsync(string projectId)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is WipProject wipProject)
+            if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 RunnableProject runnableProject = await Project.BuildAsync(wipProject);
                 return ProjectMapper.ToDto(runnableProject);
@@ -48,7 +45,7 @@ namespace pva.SuperV.Api.Services.Projects
         {
             Project project = GetProjectEntity(projectId);
             StreamWriter stream = new(new MemoryStream());
-            return await ProjectStorage.StreamProjectDefinition(project, stream);
+            return await ProjectStorage.StreamProjectDefinitionAsync(project, stream);
         }
 
         public ProjectModel CreateProjectFromJsonDefinition(StreamReader streamReader)
@@ -58,19 +55,17 @@ namespace pva.SuperV.Api.Services.Projects
 
         public async Task<StreamReader?> GetProjectInstancesAsync(string projectId)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is RunnableProject runnableProject)
+            if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {
                 StreamWriter stream = new(new MemoryStream());
-                return await ProjectStorage.StreamProjectInstances(runnableProject, stream);
+                return await ProjectStorage.StreamProjectInstancesAsync(runnableProject, stream);
             }
             throw new NonRunnableProjectException(projectId);
         }
 
         public void LoadProjectInstances(string projectId, StreamReader reader)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is RunnableProject runnableProject)
+            if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {
                 ProjectStorage.LoadProjectInstances(runnableProject, reader);
                 return;
@@ -80,8 +75,7 @@ namespace pva.SuperV.Api.Services.Projects
 
         public void UnloadProject(string projectId)
         {
-            Project project = GetProjectEntity(projectId);
-            project.Unload();
+            GetProjectEntity(projectId).Unload();
         }
     }
 }

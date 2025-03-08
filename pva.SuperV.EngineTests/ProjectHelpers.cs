@@ -33,7 +33,7 @@ namespace pva.SuperV.EngineTests
             };
         private static IContainer? tdEngineContainer;
 
-        public static async Task<string> StartTDengineContainer()
+        public static async Task<string> StartTDengineContainerAsync()
         {
             if (tdEngineContainer is null)
             {
@@ -61,7 +61,7 @@ namespace pva.SuperV.EngineTests
             return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
         }
 
-        public static async Task StopTDengineContainer()
+        public static async Task StopTDengineContainerAsync()
         {
             if (tdEngineContainer != null)
             {
@@ -87,7 +87,7 @@ namespace pva.SuperV.EngineTests
             string? connectionString = historyEngineType;
             if (!String.IsNullOrEmpty(historyEngineType) && historyEngineType.Equals(TDengineHistoryStorage.Prefix))
             {
-                string tdEngineConnectionString = Task.Run(async () => await StartTDengineContainer()).Result;
+                string tdEngineConnectionString = Task.Run(async () => await StartTDengineContainerAsync()).Result;
                 connectionString = $"{TDengineHistoryStorage.Prefix}:{tdEngineConnectionString}";
             }
 
@@ -125,7 +125,7 @@ namespace pva.SuperV.EngineTests
 
         public static void DeleteProject(Project project)
         {
-            Task.Run(async () => await StopTDengineContainer());
+            Task.Run(async () => await StopTDengineContainerAsync());
 #if DELETE_PROJECT_ASSEMBLY
             string projectAssemblyPath = project.GetAssemblyFileName();
             String projectName = project.Name!;

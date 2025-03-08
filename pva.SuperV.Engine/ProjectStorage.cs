@@ -19,7 +19,7 @@ namespace pva.SuperV.Engine
         public static string SaveProjectDefinition<T>(T project) where T : Project
         {
             string filename = Path.Combine(Project.ProjectsPath, $"{project.Name}.{project.Version}.prj");
-            Task.Run(async () => await SaveProjectDefinition(project, filename)).Wait();
+            Task.Run(async () => await SaveProjectDefinitionAsync(project, filename)).Wait();
             return filename;
         }
 
@@ -29,10 +29,10 @@ namespace pva.SuperV.Engine
         /// <typeparam name="T"></typeparam>
         /// <param name="project">The project.</param>
         /// <param name="filename">The filename.</param>
-        public static async ValueTask SaveProjectDefinition<T>(T project, string filename) where T : Project
+        public static async ValueTask SaveProjectDefinitionAsync<T>(T project, string filename) where T : Project
         {
             using StreamWriter outputFile = new(filename);
-            await StreamProjectDefinition(project, outputFile);
+            await StreamProjectDefinitionAsync(project, outputFile);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace pva.SuperV.Engine
         /// <typeparam name="T"></typeparam>
         /// <param name="project">The project.</param>
         /// <param name="filename">The filename.</param>
-        public static async Task<StreamReader?> StreamProjectDefinition<T>(T project, StreamWriter streamWriter) where T : Project
+        public static async Task<StreamReader?> StreamProjectDefinitionAsync<T>(T project, StreamWriter streamWriter) where T : Project
         {
             await streamWriter.WriteAsync(JsonSerializer.Serialize(project));
             await streamWriter.FlushAsync();
@@ -97,7 +97,7 @@ namespace pva.SuperV.Engine
         public static string SaveProjectInstances(RunnableProject project)
         {
             string filename = Path.Combine(Project.ProjectsPath, $"{project.Name}.{project.Version}.snp");
-            Task.Run(async () => await SaveProjectInstances(project, filename)).Wait();
+            Task.Run(async () => await SaveProjectInstancesAsync(project, filename)).Wait();
             return filename;
         }
 
@@ -106,7 +106,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="project">The project.</param>
         /// <param name="filename">The filename.</param>
-        public static async ValueTask SaveProjectInstances(RunnableProject project, string filename)
+        public static async ValueTask SaveProjectInstancesAsync(RunnableProject project, string filename)
         {
             using StreamWriter outputFile = new(filename);
             Dictionary<string, IInstance> instances = new(project.Instances.Count);
@@ -115,7 +115,7 @@ namespace pva.SuperV.Engine
                 var instance = v as IInstance;
                 instances.Add(k, instance!);
             });
-            await StreamProjectInstances(project, outputFile);
+            await StreamProjectInstancesAsync(project, outputFile);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="project">The project.</param>
         /// <param name="filename">The filename.</param>
-        public static async Task<StreamReader?> StreamProjectInstances(RunnableProject project, StreamWriter streamWriter)
+        public static async Task<StreamReader?> StreamProjectInstancesAsync(RunnableProject project, StreamWriter streamWriter)
         {
             Dictionary<string, IInstance> instances = new(project.Instances.Count);
             project.Instances.ForEach((k, v) =>
