@@ -3,22 +3,22 @@
 
 |||
 |:---|:---|
-| Generated on: | 03/08/2025 - 15:56:08 |
-| Coverage date: | 03/08/2025 - 15:55:53 - 03/08/2025 - 15:56:05 |
+| Generated on: | 03/08/2025 - 18:06:47 |
+| Coverage date: | 03/08/2025 - 18:06:30 - 03/08/2025 - 18:06:44 |
 | Parser: | MultiReport (2x Cobertura) |
 | Assemblies: | 4 |
 | Classes: | 141 |
 | Files: | 142 |
-| **Line coverage:** | 81.7% (2536 of 3101) |
-| Covered lines: | 2536 |
-| Uncovered lines: | 565 |
-| Coverable lines: | 3101 |
-| Total lines: | 7167 |
+| **Line coverage:** | 81.6% (2501 of 3063) |
+| Covered lines: | 2501 |
+| Uncovered lines: | 562 |
+| Coverable lines: | 3063 |
+| Total lines: | 7124 |
 | **Branch coverage:** | 61.7% (389 of 630) |
 | Covered branches: | 389 |
 | Total branches: | 630 |
 | **Method coverage:** | [Feature is only available for sponsors](https://reportgenerator.io/pro) |
-| Tag: | dotnet-ubuntu_13739177044 |
+| Tag: | dotnet-ubuntu_13740136255 |
 
 </details>
 
@@ -32,11 +32,11 @@
 |pva.Helpers.Extensions.IEnumerableExtensions|100%|100%|
 
 </details>
-<details><summary>pva.SuperV.Api - 79.3%</summary>
+<details><summary>pva.SuperV.Api - 78.9%</summary>
 
 |**Name**|**Line**|**Branch**|
 |:---|---:|---:|
-|**pva.SuperV.Api**|**79.3%**|**62.8%**|
+|**pva.SuperV.Api**|**78.9%**|**62.8%**|
 |pva.SuperV.Api.NonRunnableProjectException|100%||
 |pva.SuperV.Api.NonWipProjectException|100%||
 |pva.SuperV.Api.Routes.Classes.ClassEndpoints|100%||
@@ -83,15 +83,15 @@
 |pva.SuperV.Api.Routes.Projects.SaveProjectDefinitions|53.8%|50%|
 |pva.SuperV.Api.Routes.Projects.SaveProjectInstances|76.9%|50%|
 |pva.SuperV.Api.Routes.Projects.UnloadProject|45.4%||
-|pva.SuperV.Api.Services.BaseService|94.1%|75%|
-|pva.SuperV.Api.Services.Classes.ClassService|91.3%|50%|
-|pva.SuperV.Api.Services.FieldDefinitions.FieldDefinitionService|64.7%|50%|
-|pva.SuperV.Api.Services.FieldFormatters.FieldFormatterService|94.7%|83.3%|
-|pva.SuperV.Api.Services.FieldProcessings.FieldProcessingService|86%|50%|
-|pva.SuperV.Api.Services.HistoryRepositories.HistoryRepositoryService|89.2%|50%|
+|pva.SuperV.Api.Services.BaseService|93.5%|75%|
+|pva.SuperV.Api.Services.Classes.ClassService|88.8%|50%|
+|pva.SuperV.Api.Services.FieldDefinitions.FieldDefinitionService|59%|50%|
+|pva.SuperV.Api.Services.FieldFormatters.FieldFormatterService|94.1%|83.3%|
+|pva.SuperV.Api.Services.FieldProcessings.FieldProcessingService|89.1%|50%|
+|pva.SuperV.Api.Services.HistoryRepositories.HistoryRepositoryService|88%|50%|
 |pva.SuperV.Api.Services.Instances.FieldValueService|100%||
-|pva.SuperV.Api.Services.Instances.InstanceService|71%|50%|
-|pva.SuperV.Api.Services.Projects.ProjectService|98.1%|87.5%|
+|pva.SuperV.Api.Services.Instances.InstanceService|70.5%|50%|
+|pva.SuperV.Api.Services.Projects.ProjectService|97.9%|87.5%|
 |pva.SuperV.Api.WebApiProgram|86.9%||
 
 </details>
