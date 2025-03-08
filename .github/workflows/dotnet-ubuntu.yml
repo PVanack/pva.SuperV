@@ -37,6 +37,7 @@ jobs:
         title: pva.SuperV
         tag: '${{ github.workflow}}_${{ github.run_id }}'
     - name: Commit and Push code coverage badge and report
+      if: github.event_name == 'pull_request'
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -45,9 +46,3 @@ jobs:
           git commit -m "Update coverage report"
           git push origin HEAD:${{ github.ref }}
         fi
-    - name: Add Coverage PR Comment
-      uses: marocchino/sticky-pull-request-comment@v2
-      if: github.event_name == 'pull_request'
-      with:
-        recreate: true
-        path: "./coverageReport/SummaryGithub.md"
