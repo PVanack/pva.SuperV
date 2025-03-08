@@ -39,12 +39,10 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Coverage Report
-        path: './coverageReport/*'
+        path: './coverageReport/SummaryGithub.md'
     - name: Add Coverage PR Comment
       uses: marocchino/sticky-pull-request-comment@v2
       if: github.event_name == 'pull_request'
       with:
         recreate: true
-        path: ./coverageReport/Summary.md
-    - name: List files in codecoverage
-      run: ls ./codeCoverage
+        path: ./coverageReport/SummaryGithub.md
