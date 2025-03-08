@@ -20,14 +20,12 @@ namespace pva.SuperV.Api.Services.FieldFormatters
 
         public List<FieldFormatterModel> GetFieldFormatters(string projectId)
         {
-            Project project = GetProjectEntity(projectId);
-            return [.. project.FieldFormatters.Values.Select(fieldFormatter => FieldFormatterMapper.ToDto(fieldFormatter))];
+            return [.. GetProjectEntity(projectId).FieldFormatters.Values.Select(fieldFormatter => FieldFormatterMapper.ToDto(fieldFormatter))];
         }
 
         public FieldFormatterModel GetFieldFormatter(string projectId, string fieldFormatterName)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project.FieldFormatters.TryGetValue(fieldFormatterName, out FieldFormatter? fieldFormatter))
+            if (GetProjectEntity(projectId).FieldFormatters.TryGetValue(fieldFormatterName, out FieldFormatter? fieldFormatter))
             {
                 return FieldFormatterMapper.ToDto(fieldFormatter);
             }
@@ -36,8 +34,7 @@ namespace pva.SuperV.Api.Services.FieldFormatters
 
         public FieldFormatterModel CreateFieldFormatter(string projectId, FieldFormatterModel fieldFormatterModel)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is WipProject wipProject)
+            if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 FieldFormatter fieldFormatter = FieldFormatterMapper.FromDto(fieldFormatterModel);
                 wipProject.AddFieldFormatter(fieldFormatter);
@@ -48,8 +45,7 @@ namespace pva.SuperV.Api.Services.FieldFormatters
 
         public void DeleteFieldFormatter(string projectId, string fieldFormatterName)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is WipProject wipProject)
+            if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 if (wipProject.RemoveFieldFormatter(fieldFormatterName))
                 {

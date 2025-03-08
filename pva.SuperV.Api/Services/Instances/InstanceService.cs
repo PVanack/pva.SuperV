@@ -8,8 +8,7 @@ namespace pva.SuperV.Api.Services.Instances
     {
         public List<InstanceModel> GetInstances(string projectId)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is RunnableProject runnableProject)
+            if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {
                 return [.. runnableProject.Instances.Values.Select(InstanceMapper.ToDto)];
             }
@@ -18,8 +17,7 @@ namespace pva.SuperV.Api.Services.Instances
 
         public InstanceModel GetInstance(string projectId, string instanceName)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is RunnableProject runnableProject)
+            if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {
                 if (runnableProject.Instances.TryGetValue(instanceName, out Instance? instance))
                 {
@@ -32,8 +30,7 @@ namespace pva.SuperV.Api.Services.Instances
 
         public InstanceModel CreateInstance(string projectId, InstanceModel createRequest)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is RunnableProject runnableProject)
+            if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {
                 Instance? createdInstance = runnableProject.CreateInstance(createRequest.ClassName, createRequest.Name);
                 createRequest.Fields.ForEach(fieldModel =>
@@ -48,14 +45,12 @@ namespace pva.SuperV.Api.Services.Instances
 
         public void DeleteInstance(string projectId, string instanceName)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is RunnableProject runnableProject)
+            if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {
                 runnableProject.RemoveInstance(instanceName);
                 return;
             }
             throw new NonRunnableProjectException(projectId);
         }
-
     }
 }

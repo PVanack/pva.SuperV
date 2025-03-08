@@ -7,15 +7,11 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
     public class FieldDefinitionService : BaseService, IFieldDefinitionService
     {
         public List<FieldDefinitionModel> GetFields(string projectId, string className)
-        {
-            Class clazz = GetClassEntity(projectId, className);
-            return [.. clazz.FieldDefinitions.Values.Select(field => FieldDefinitionMapper.ToDto(field!))];
-        }
+            => [.. GetClassEntity(projectId, className).FieldDefinitions.Values.Select(field => FieldDefinitionMapper.ToDto(field!))];
 
         public FieldDefinitionModel GetField(string projectId, string className, string fieldName)
         {
-            Class clazz = GetClassEntity(projectId, className);
-            if (clazz.FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
+            if (GetClassEntity(projectId, className).FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
             {
                 return FieldDefinitionMapper.ToDto(fieldDefinition);
             }
@@ -24,8 +20,7 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
 
         public List<FieldDefinitionModel> CreateFields(string projectId, string className, List<FieldDefinitionModel> createRequests)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is WipProject wipProject)
+            if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 List<FieldDefinitionModel> createdFieldDefinitions = [];
                 Class clazz = GetClassEntity(wipProject, className);
@@ -64,11 +59,9 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
 
         public void DeleteField(string projectId, string className, string fieldName)
         {
-            Project project = GetProjectEntity(projectId);
-            if (project is WipProject wipProject)
+            if (GetProjectEntity(projectId) is WipProject wipProject)
             {
-                Class clazz = GetClassEntity(wipProject, className);
-                clazz.RemoveField(fieldName);
+                GetClassEntity(wipProject, className).RemoveField(fieldName);
                 return;
             }
             throw new NonWipProjectException(projectId);
