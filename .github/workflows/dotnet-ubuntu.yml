@@ -26,7 +26,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal -property:ParallelizeTestCollections=false --logger trx /property:CollectCoverage=True /property:CoverletOutputFormat=opencover --results-directory ./coverage
+      run: dotnet test --no-build --verbosity normal -property:ParallelizeTestCollections=false /property:CollectCoverage=True /property:CoverletOutputFormat=opencover --results-directory ./coverage
     - name: Code Coverage Summary Report
       uses: im-open/code-coverage-report-generator@v5.0.0
       with:
