@@ -32,6 +32,7 @@ jobs:
     - name: Generate code coverage summary report
       uses: danielpalme/ReportGenerator-GitHub-Action@5.4.4
       with:
+        verbosity: Warning
         reports: './coverage/*/coverage.cobertura.xml'
         targetdir: coverageReport
         reporttypes: MarkdownSummaryGithub;Badges;Html_Dark;MHtml
