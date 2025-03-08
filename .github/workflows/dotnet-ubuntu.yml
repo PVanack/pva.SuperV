@@ -34,6 +34,7 @@ jobs:
       with:
         verbosity: Warning
         reports: './coverage/*/coverage.cobertura.xml'
+        classfilters: -*.g.cs;-*.Generated.*.cs;-*Tests.cs
         targetdir: coverageReport
         reporttypes: MarkdownSummaryGithub;Badges;Html_Dark;MHtml
         title: pva.SuperV
