@@ -3,8 +3,8 @@
 
 |||
 |:---|:---|
-| Generated on: | 03/08/2025 - 14:52:19 |
-| Coverage date: | 03/08/2025 - 14:52:06 - 03/08/2025 - 14:52:16 |
+| Generated on: | 03/08/2025 - 14:57:27 |
+| Coverage date: | 03/08/2025 - 14:57:15 - 03/08/2025 - 14:57:25 |
 | Parser: | MultiReport (2x Cobertura) |
 | Assemblies: | 5 |
 | Classes: | 159 |
@@ -18,7 +18,7 @@
 | Covered branches: | 1643 |
 | Total branches: | 3326 |
 | **Method coverage:** | [Feature is only available for sponsors](https://reportgenerator.io/pro) |
-| Tag: | dotnet-ubuntu_13738699793 |
+| Tag: | dotnet-ubuntu_13738731204 |
 
 </details>
 
