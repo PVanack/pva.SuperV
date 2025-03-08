@@ -7,7 +7,8 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-
+env:
+   GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
 jobs:
   build:
 
@@ -27,7 +28,7 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal -property:ParallelizeTestCollections=false --collect:"XPlat Code Coverage" --results-directory ./coverage
-    - name: Code Coverage Summary Report
+    - name: Generate code coverage summary report
       uses: danielpalme/ReportGenerator-GitHub-Action@5.4.4
       with:
         reports: './coverage/*/coverage.cobertura.xml'
@@ -35,18 +36,20 @@ jobs:
         reporttypes: MarkdownSummaryGithub;Badges;Html_Dark;MHtml
         title: pva.SuperV
         tag: '${{ github.workflow}}_${{ github.run_id }}'
-    - name: Upload coverage report artifact
+    - name: Upload code coverage report artifact
       uses: actions/upload-artifact@v4
       with:
         name: Coverage Report
         path: './coverageReport/SummaryGithub.md'
-    - name: Commit and Push code coverage
+    - name: Commit and Push code coverage badge and report
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add ./coverageReport/SummaryGithub.md ./coverageReport/badge_combined.svg
-        git commit -m "Update coverage report"
-        git push origin HEAD:${{ github.ref }}
+        git add ./coverageReport/SummaryGithub.md ./coverageReport/badge_combined.svg ./coverageReport/tmphtml/index.html
+        if [ -n "$(git status --porcelain)" ]; then
+          git commit -m "Update coverage report"
+          git push origin HEAD:${{ github.ref }}
+        fi
     - name: Add Coverage PR Comment
       uses: marocchino/sticky-pull-request-comment@v2
       if: github.event_name == 'pull_request'
