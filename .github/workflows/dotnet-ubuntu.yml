@@ -24,7 +24,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore --configuration Release 
     - name: Test
       run: dotnet test --no-build --verbosity normal -property:ParallelizeTestCollections=false --logger trx --configuration Release /property:CollectCoverage=True /property:CoverletOutputFormat=opencover --results-directory ./coverage
     - name: Code Coverage Summary Report
