@@ -51,11 +51,11 @@ jobs:
     - name: Commit and Push code coverage badge
       run: |
         cd ..
-        git clone https://${{ secrets.GITHUB_TOKEN }}@gist.github.com/PVanack/a37763530da2924b21070f862606eaa1.git a37763530da2924b21070f862606eaa1
+        git clone https://gist.github.com/PVanack/a37763530da2924b21070f862606eaa1.git a37763530da2924b21070f862606eaa1
         cp ./pva.SuperV/codeCoverage/badge_combined.svg ./a37763530da2924b21070f862606eaa1/
         cd a37763530da2924b21070f862606eaa1
-        git config --global user.name "github-actions[bot]"
+        git config --global user.name "${{ secrets.GITHUB_TOKEN }}"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add ./badge_combined.svg
         git commit -m "Update coverage report"
-        git push https://${{ secrets.GITHUB_TOKEN }}@gist.github.com/PVanack/a37763530da2924b21070f862606eaa1.git main
+        git push https://gist.github.com/PVanack/a37763530da2924b21070f862606eaa1.git main
