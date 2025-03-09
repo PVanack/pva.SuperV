@@ -12,8 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-      with:
-        ssh-key: ${{ secrets.DEPLOY_KEY }}
 
     - name: Configure git
       run: |
@@ -48,10 +46,9 @@ jobs:
         title: pva.SuperV
         tag: '${{ github.workflow}}_${{ github.run_id }}'
 
-    - name: Commit and Push code coverage badge and report
+    - name: Commit and Push code coverage badge
       run: |
-        git add ./coverageReport/SummaryGithub.md ./coverageReport/badge_combined.svg ./coverageReport/index.html
-        if [ -n "$(git status --porcelain)" ]; then  
-          git commit -m "Update coverage report"
-          git push origin HEAD:${{ github.ref }}
-        fi
+        git clone https://gist.github.com/a37763530da2924b21070f862606eaa1.git
+        git add ./coverageReport/badge_combined.svg
+        git commit -m "Update coverage report"
+        git push origin master
