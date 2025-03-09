@@ -55,3 +55,5 @@ jobs:
         git add ./badge_combined.svg
         git commit -m "Update coverage report"
         git push origin main
+    env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
