@@ -4,8 +4,6 @@ name: dotnet-ubuntu
 
 on: [push]
 
-env:
-   GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
 permissions:
   contents: write
 
@@ -16,18 +14,29 @@ jobs:
     - uses: actions/checkout@v4
       with:
         ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+    - name: Configure git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
+
     - name: Install TDengine driver 
       run: sudo ./TDengine/install-TDengine-client.sh
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build
       run: dotnet build --no-restore
-    - name: Test
+
+    - name: Run tests with coverage
       run: dotnet test --no-build --verbosity normal -property:ParallelizeTestCollections=false --collect:"XPlat Code Coverage" --results-directory ./coverage
+
     - name: Generate code coverage summary report
       uses: danielpalme/ReportGenerator-GitHub-Action@5.4.4
       with:
@@ -38,11 +47,9 @@ jobs:
         reporttypes: MarkdownSummaryGithub;Badges;Html_Dark;MHtml
         title: pva.SuperV
         tag: '${{ github.workflow}}_${{ github.run_id }}'
+
     - name: Commit and Push code coverage badge and report
-      if: github.event_name == 'pull_request'
       run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add ./coverageReport/SummaryGithub.md ./coverageReport/badge_combined.svg ./coverageReport/index.html
         if [ -n "$(git status --porcelain)" ]; then  
           git commit -m "Update coverage report"
