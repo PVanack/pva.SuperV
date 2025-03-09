@@ -51,7 +51,7 @@ jobs:
     - name: Commit and Push code coverage badge
       run: |
         cd ..
-        git clone https://gist/PVanack/a37763530da2924b21070f862606eaa1.git a37763530da2924b21070f862606eaa1
+        git clone https://gist.github.com/PVanack/a37763530da2924b21070f862606eaa1.git a37763530da2924b21070f862606eaa1
         cp ./pva.SuperV/codeCoverage/badge_combined.svg ./a37763530da2924b21070f862606eaa1/
         cd a37763530da2924b21070f862606eaa1
         git config --global user.name "github-actions[bot]"
