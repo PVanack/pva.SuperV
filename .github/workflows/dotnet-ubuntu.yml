@@ -49,10 +49,9 @@ jobs:
     - name: Commit and Push code coverage badge
       run: |
         cd ..
-        mkdir badge
-        cd badge
-        cp ../codeCoverage/badge_combined.svg ./
         git clone https://gist.github.com/PVanack/a37763530da2924b21070f862606eaa1.git
+        cp ./codeCoverage/badge_combined.svg ./a37763530da2924b21070f862606eaa1/
+        cd a37763530da2924b21070f862606eaa1
         git add ./badge_combined.svg
         git commit -m "Update coverage report"
         git push origin main
