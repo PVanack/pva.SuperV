@@ -51,4 +51,4 @@ jobs:
         git clone https://gist.github.com/a37763530da2924b21070f862606eaa1.git
         git add ./coverageReport/badge_combined.svg
         git commit -m "Update coverage report"
-        git push origin master
+        git push origin main
