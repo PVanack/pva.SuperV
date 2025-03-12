@@ -1,5 +1,6 @@
 ﻿using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Model.FieldDefinitions;
 
 namespace pva.SuperV.Api.Services.FieldDefinitions

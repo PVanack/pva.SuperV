@@ -1,12 +1,13 @@
 ﻿using pva.Helpers.Extensions;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.FieldFormatters;
 
-namespace pva.SuperV.Engine
+namespace pva.SuperV.Engine.FieldValueFormatters
 {
     /// <summary>
     /// Enum formatter for integer fields. Allows to display the string representation according to a list of strings.
     /// </summary>
-    /// <seealso cref="pva.SuperV.Engine.FieldFormatter" />
+    /// <seealso cref="FieldFormatter" />
     public class EnumFormatter : FieldFormatter
     {
         /// <summary>
@@ -95,7 +96,7 @@ namespace pva.SuperV.Engine
 
         public override void ConvertFromString(IField field, string? stringValue, DateTime? timestamp, QualityLevel? quality)
         {
-            if (String.IsNullOrEmpty(stringValue))
+            if (string.IsNullOrEmpty(stringValue))
             {
                 throw new StringConversionException(field.FieldDefinition!.Name, stringValue, field.Type);
             }
