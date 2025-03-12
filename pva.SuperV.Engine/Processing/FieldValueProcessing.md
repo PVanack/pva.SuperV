@@ -1,7 +1,7 @@
 ﻿# Field value change processing
 Field value processing allows to perform custom processing whenever the associated triggering field value changes. All field value processings extend the [FieldValueProcessing\<T\>](/Processing/FieldValueProcessing.cs) where *T* is the type of the field trigerring the change.
 
-They need to implement method <code>void ProcessValue(IInstance instance, Field<T> changedField, bool valueChanged, T previousValue, T currentValue)</code>
+They need to implement method `void ProcessValue(IInstance instance, Field<T> changedField, bool valueChanged, T previousValue, T currentValue)`
 
 The following processings are already defined:
 - [AlarmStateProcessing](#Alarm-state-processing)
