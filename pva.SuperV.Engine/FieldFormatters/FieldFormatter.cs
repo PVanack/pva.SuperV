@@ -1,7 +1,8 @@
 ﻿using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.FieldValueFormatters;
 using System.Text.Json.Serialization;
 
-namespace pva.SuperV.Engine
+namespace pva.SuperV.Engine.FieldFormatters
 {
     /// <summary>
     /// Base class for <see cref="Field{T}"/> formatting. If adding new formatters, they need to be added as JsonDerivedType annotation.
@@ -54,7 +55,7 @@ namespace pva.SuperV.Engine
         /// Validates that type is part of the allowed types of formatter.
         /// </summary>
         /// <param name="fieldType">Type of the field.</param>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.InvalidTypeForFormatterException"></exception>
+        /// <exception cref="InvalidTypeForFormatterException"></exception>
         internal void ValidateAllowedType(Type fieldType)
         {
             if (!AllowedTypes.Contains(fieldType))
