@@ -17,7 +17,7 @@ The solution is composed of the following projects:
 
 ## SuperV project workflow
 Project creation workflow using the engine library is as follows (the same can be achieved using the [REST API with those calls](/pva.SuperV.Api/pva.SuperV.Api.http):
-- Create an empty WIP (Work In Progress) project through <code>Project.CreateProject(String projectName)</code> or <code>CreateProject(string projectName, string? historyStorageEngineConnectionString)</code>.
+- Create an empty WIP (Work In Progress) project through <code>Project.CreateProject(String projectName)</code> or <code>CreateProject(string projectName, string? historyStorageEngineConnectionString)</code>. For the historyStorageConnectionString, see [history storage](pva.SuperV.Engine/HistoryStorage/HistoryStorage.md)
 - Add history repositories to project if required with <code>wipProject.AddHistoryRepository(HistoryRepository historyRepository)</code> if a history storage engine has been defined when creating the project.
 - Add field formatters to project if required with <code>wipProject.AddFieldFormatter(FieldFormatter fieldFormatter)</code> where fieldFormatter can be be one of the following:
 	- [EnumFormatter](/pva.SuperV.Engine/FieldFormatters/FieldFormatter.md#Enum-formatter) which allows to format integer values to strings (i.e. to convert 0/1 values to OFF/ON string)
