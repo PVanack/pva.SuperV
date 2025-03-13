@@ -31,6 +31,14 @@ with the [classes](/pva.SuperV.Engine/Class.cs)
 and [defined fields](/pva.SuperV.Engine/FiedldDefinitions.cs).
 - Create instances from a defined class by calling `runnableProject.CreateInstance(string className, string instanceName)`.
 [The created instance](/pva.SuperV.Engine/Instance.cs) will then have the fields and processings associated with the class they are defined against.
+- Write values with their associated quality and timestamp to instances fields through one of the `runnableProject.SetInstaceValue\<T\>()` overloads.
+
+If changes to the structure of a runnable project need to be done, a new WIP project must be created by calling `Project.CreateProject(runnableProject)`. This project can then go through the above workflow.
+
+Projects structure can be saved to and restored from file by calling `ProjectStorage,SaveProjectDefinition\<T\>(T project)` and `ProjectStorage,LoadProjectDefinition\<T\>(string filename)`.
+Runnable projects instances can be saved to and restored from file by calling `ProjectStorage,SaveProjectInstances(RunnableProject runnableProject)` and `ProjectStorage,LoadProjectInstances(RunnableProject runnableProject, string filename)`.
+
+Projects can be unloaded from memory by calling `Project.Unload(Project project)`.
 
 ## Field definitions
 The engine allows to define [fields](/pva.SuperV.Engine/FiedldDefinitions.cs) of any type,
