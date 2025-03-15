@@ -32,7 +32,7 @@ namespace pva.SuperV.EngineTests
 
             // THEN
             List<string> fields = [ProjectHelpers.ValueFieldName];
-            List<HistoryRow> rows = runnableProject.GetHistoryValues(instance.Name, testStart, DateTime.Now, fields);
+            List<HistoryRow> rows = runnableProject.GetHistoryValues(instance.Name, testStart, DateTime.UtcNow, fields);
             rows.Count.ShouldBe(2);
             rows[0].Ts.ShouldBe(ts1);
             rows[0].Values.Count.ShouldBe(1);

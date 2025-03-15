@@ -2259,6 +2259,79 @@
           }
         }
       }
+    },
+    "/history-values/{projectId}/{instanceName}/raw": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets history values of instance fields between 2 dates.",
+        "description": "Gets history values of instance fields between 2 dates.",
+        "operationId": "GetInstanceValuesHistory",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "instanceName",
+            "in": "path",
+            "description": "Name of instance",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "History request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HistoryRequestModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryRawResultModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3461,6 +3534,92 @@
           }
         }
       },
+      "HistoryFieldModel": {
+        "required": [
+          "name",
+          "type",
+          "columnIndex"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "columnIndex": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "HistoryRawResultModel": {
+        "required": [
+          "header",
+          "rows"
+        ],
+        "type": "object",
+        "properties": {
+          "header": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoryFieldModel"
+            },
+            "description": "Header containing fields information."
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoryRawRowModel"
+            },
+            "description": "Rows of history values."
+          }
+        }
+      },
+      "HistoryRawRowModel": {
+        "required": [
+          "timestamp",
+          "startTime",
+          "endTime",
+          "duration",
+          "quality",
+          "fieldValues"
+        ],
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "description": "Timestamp of row.",
+            "format": "date-time"
+          },
+          "startTime": {
+            "type": "string",
+            "description": "Start timestamp of interval of row in case of interpolated values.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endTime": {
+            "type": "string",
+            "description": "End timestamp of interval of row in case of interpolated values.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "duration": {
+            "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
+            "type": "string",
+            "description": "Duration of interval of row in case of interpolated values.",
+            "nullable": true
+          },
+          "quality": {
+            "$ref": "#/components/schemas/QualityLevel"
+          },
+          "fieldValues": {
+            "type": "array",
+            "description": "Retrieved values."
+          }
+        }
+      },
       "HistoryRepositoryModel": {
         "required": [
           "name"
@@ -3469,6 +3628,44 @@
         "properties": {
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "HistoryRequestModel": {
+        "required": [
+          "startTime",
+          "endTime",
+          "interpolationInterval",
+          "fillMode",
+          "historyFields"
+        ],
+        "type": "object",
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "description": "Start time of request.",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "description": "End time of request.",
+            "format": "date-time"
+          },
+          "interpolationInterval": {
+            "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
+            "type": "string",
+            "description": "Time span of interpolation. If null, indicates to use actual history values.",
+            "nullable": true
+          },
+          "fillMode": {
+            "$ref": "#/components/schemas/NullableOfFillMode"
+          },
+          "historyFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of fields to be retrieved."
           }
         }
       },
@@ -3500,6 +3697,11 @@
             "description": "Instance field values."
           }
         }
+      },
+      "NullableOfFillMode": {
+        "type": "integer",
+        "description": "Fill mode in case the interval misses values.",
+        "nullable": true
       },
       "ProjectModel": {
         "required": [
@@ -3534,6 +3736,10 @@
             "description": "Indicates if the project is runnable."
           }
         }
+      },
+      "QualityLevel": {
+        "type": "integer",
+        "description": "Quality level of row."
       }
     }
   },

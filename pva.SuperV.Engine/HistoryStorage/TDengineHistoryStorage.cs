@@ -132,7 +132,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             try
             {
                 _tdEngineClient?.Exec($"USE {repositoryStorageId};");
-                string fieldNames = "TS TIMESTAMP,";
+                string fieldNames = "TS TIMESTAMP, QUALITY NCHAR(10),";
                 fieldNames +=
                     historizationProcessing.FieldsToHistorize
                         .Select(field => $"_{field.Name} {GetFieldDbType(field)}")
@@ -159,19 +159,20 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <param name="instanceName">The instance name.</param>
         /// <param name="timestamp">the timestamp of the values</param>
         /// <param name="fieldsToHistorize">List of fields to be historized.</param>
-        public void HistorizeValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime timestamp, List<IField> fieldsToHistorize)
+        public void HistorizeValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime timestamp, QualityLevel? quality, List<IField> fieldsToHistorize)
         {
             string instanceTableName = instanceName.ToLowerInvariant();
             _tdEngineClient!.Exec($"USE {repositoryStorageId};");
             using var stmt = _tdEngineClient!.StmtInit();
             try
             {
-                string fieldsPlaceholders = Enumerable.Repeat("?", fieldsToHistorize.Count + 1)
+                string fieldsPlaceholders = Enumerable.Repeat("?", fieldsToHistorize.Count + 2)
                     .Aggregate((a, b) => $"{a},{b}");
                 string sql = $"INSERT INTO ? USING {classTimeSerieId} TAGS(?) VALUES ({fieldsPlaceholders});";
-                List<object> rowValues = new(fieldsToHistorize.Count + 1)
+                List<object> rowValues = new(fieldsToHistorize.Count + 2)
                     {
-                        timestamp
+                        timestamp.ToLocalTime(),
+                        (quality ?? QualityLevel.Good).ToString()
                     };
                 fieldsToHistorize.ForEach(field =>
                     rowValues.Add(((dynamic)field).Value));
@@ -210,9 +211,9 @@ namespace pva.SuperV.Engine.HistoryStorage
             try
             {
                 _tdEngineClient!.Exec($"USE {repositoryStorageId};");
-                string fieldNames = "TS," + fields.Select(field => $"_{field.Name}")
+                string fieldNames = fields.Select(field => $"_{field.Name}")
                     .Aggregate((a, b) => $"{a},{b}");
-                string query = $"SELECT {fieldNames} FROM {instanceTableName} WHERE TS between {FormatToSqlDate(from)} and {FormatToSqlDate(to)}";
+                string query = $"SELECT TS, QUALITY, {fieldNames} FROM {instanceTableName} WHERE TS between \"{FormatToSqlDate(from)}\" and \"{FormatToSqlDate(to)}\"";
                 using IRows row = _tdEngineClient!.Query(query);
                 while (row.Read())
                 {
@@ -227,13 +228,13 @@ namespace pva.SuperV.Engine.HistoryStorage
         }
 
         /// <summary>
-        /// Formats a DateTime to SAL format used by TDengine.
+        /// Formats a DateTime to SQL format used by TDengine.
         /// </summary>
         /// <param name="dateTime">The date time to be formatted.</param>
         /// <returns>SQL string for date time.</returns>
         private static string FormatToSqlDate(DateTime dateTime)
         {
-            return $"\"{dateTime:yyyy-MM-dd HH:mm:ss.fff}\"";
+            return $"{dateTime.ToUniversalTime():yyyy-MM-dd HH:mm:ss.fffK}";
         }
 
         /// <summary>

@@ -13,6 +13,11 @@ namespace pva.SuperV.Engine.HistoryStorage
         public DateTime Ts { get; }
 
         /// <summary>
+        /// Quality of history row.
+        /// </summary>
+        public QualityLevel Quality { get; }
+
+        /// <summary>
         /// List of values
         /// </summary>
         public List<dynamic> Values { get; } = [];
@@ -24,7 +29,8 @@ namespace pva.SuperV.Engine.HistoryStorage
         public HistoryRow(IRows row)
         {
             Ts = ((DateTime)row.GetValue(0)).ToUniversalTime();
-            for (int i = 1; i < row.FieldCount; i++)
+            Quality = Enum.Parse<QualityLevel>((string)row.GetValue(1));
+            for (int i = 2; i < row.FieldCount; i++)
             {
                 Values.Add(row.GetValue(i));
             }
