@@ -5,21 +5,21 @@ using Shouldly;
 namespace pva.SuperV.EngineTests
 {
     [Collection("Project building")]
-    public class ProjectBuilderTests
+    public class ProjectBuilderTests : SuperVTestsBase
     {
         [Fact]
         public void GivenProjectWithClassAndField_WhenBuildingAndCreatingClassInstance_ThenInstanceIsCreatedAndHasInheritedProperties()
         {
             // GIVEN
-            RunnableProject project = ProjectHelpers.CreateRunnableProject();
+            RunnableProject project = CreateRunnableProject();
 
             // WHEN
-            var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName) as dynamic;
-            var retrievedInstance = project.GetInstance(ProjectHelpers.InstanceName);
+            var instance = project.CreateInstance(ClassName, InstanceName) as dynamic;
+            var retrievedInstance = project.GetInstance(InstanceName);
 
             // THEN
             Assert.NotNull(instance);
-            Assert.Equal(ProjectHelpers.InstanceName, instance!.Name!);
+            Assert.Equal(InstanceName, instance!.Name!);
             Assert.Equal(10, instance.Value.Value);
             Assert.Equal(1, instance.AlarmState.Value);
             Assert.Equal("High", instance.AlarmState.ToString());
@@ -28,15 +28,15 @@ namespace pva.SuperV.EngineTests
             Assert.Equal("InheritedField", instance.InheritedField.Value);
 
             instance.Dispose();
-            ProjectHelpers.DeleteProject(project);
+            DeleteProject(project);
         }
 
         [Fact]
         public void GivenProjectWithClassInstance_WhenRemovingClassInstance_ThenInstanceIsRemoved()
         {
             // GIVEN
-            RunnableProject project = ProjectHelpers.CreateRunnableProject();
-            var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            RunnableProject project = CreateRunnableProject();
+            var instance = project.CreateInstance(ClassName, InstanceName);
 
             // WHEN
             project.RemoveInstance(instance!.Name!);
@@ -45,43 +45,43 @@ namespace pva.SuperV.EngineTests
             project.Instances.ShouldBeEmpty();
 
             instance?.Dispose();
-            ProjectHelpers.DeleteProject(project);
+            DeleteProject(project);
         }
 
         [Fact]
         public void GivenProjectWithClassInstance_WhenGettingWrongInstance_ThenExceptionIsThrown()
         {
             // GIVEN
-            RunnableProject project = ProjectHelpers.CreateRunnableProject();
-            var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            RunnableProject project = CreateRunnableProject();
+            var instance = project.CreateInstance(ClassName, InstanceName);
 
             // WHEN/THEN
             Assert.Throws<UnknownEntityException>(() => project.GetInstance("WrongInstance"));
 
             instance?.Dispose();
-            ProjectHelpers.DeleteProject(project);
+            DeleteProject(project);
         }
 
         [Fact]
         public void GivenProjectWithClassInstance_WheCreatingInstanceWithSameName_ThenExceptionIsThrown()
         {
             // GIVEN
-            RunnableProject project = ProjectHelpers.CreateRunnableProject();
-            var instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            RunnableProject project = CreateRunnableProject();
+            var instance = project.CreateInstance(ClassName, InstanceName);
 
             // WHEN/THEN
-            Assert.Throws<EntityAlreadyExistException>(() => project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName));
+            Assert.Throws<EntityAlreadyExistException>(() => project.CreateInstance(ClassName, InstanceName));
 
             instance?.Dispose();
-            ProjectHelpers.DeleteProject(project);
+            DeleteProject(project);
         }
 
         [Fact]
         public void GivenRunnableProjectWithClassInstance_WhenCreatingWipFromIt_ThenWipProjectIsCorrectlySetup()
         {
             // GIVEN
-            RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
-            var instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            RunnableProject runnableProject = CreateRunnableProject();
+            var instance = runnableProject.CreateInstance(ClassName, InstanceName);
 
             // WHEN
             WipProject wipProject = Project.CreateProject(runnableProject);
@@ -92,34 +92,34 @@ namespace pva.SuperV.EngineTests
             wipProject.Version.ShouldBe(runnableProject.Version + 1);
 
             instance?.Dispose();
-            ProjectHelpers.DeleteProject(runnableProject);
+            DeleteProject(runnableProject);
         }
 
         [Fact]
         public void GivenWipProjectWithClassInstance_WhenRemovingClassFromIt_ThenToLoadInstancesIsEmpty()
         {
             // GIVEN
-            RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
-            var instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            RunnableProject runnableProject = CreateRunnableProject();
+            var instance = runnableProject.CreateInstance(ClassName, InstanceName);
             WipProject wipProject = Project.CreateProject(runnableProject);
 
             // WHEN
-            wipProject.RemoveClass(ProjectHelpers.ClassName);
+            wipProject.RemoveClass(ClassName);
 
             // THEN
             wipProject.ToLoadInstances.ShouldBeEmpty();
 
             instance?.Dispose();
-            ProjectHelpers.DeleteProject(runnableProject);
+            DeleteProject(runnableProject);
         }
 
         [Fact]
         public async Task GivenWipProjectWithClassInstance_WhenBuildingRunnableProject_ThenInstancesAreRecreated()
         {
             // GIVEN
-            RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
-            Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
-            Field<int>? intField = instance?.GetField<int>(ProjectHelpers.ValueFieldName);
+            RunnableProject runnableProject = CreateRunnableProject();
+            Instance? instance = runnableProject.CreateInstance(ClassName, InstanceName);
+            Field<int>? intField = instance?.GetField<int>(ValueFieldName);
             intField!.SetValue(1234);
             WipProject wipProject = Project.CreateProject(runnableProject);
 
@@ -128,67 +128,67 @@ namespace pva.SuperV.EngineTests
 
             // THEN
             runnableProject.Instances.Count.ShouldBe(1);
-            instance = runnableProject.GetInstance(ProjectHelpers.InstanceName);
+            instance = runnableProject.GetInstance(InstanceName);
             instance.ShouldNotBeNull();
-            instance.Class.Name.ShouldBe(ProjectHelpers.ClassName);
-            intField = instance.GetField<int>(ProjectHelpers.ValueFieldName);
+            instance.Class.Name.ShouldBe(ClassName);
+            intField = instance.GetField<int>(ValueFieldName);
             intField!.Value.ShouldBe(1234);
 
             instance?.Dispose();
-            ProjectHelpers.DeleteProject(runnableProject);
+            DeleteProject(runnableProject);
         }
 
         [Fact]
         public void GivenProjectWithClassInstance_WhenGettingField_ThenFieldIsReturned()
         {
             // GIVEN
-            RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
-            Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            RunnableProject runnableProject = CreateRunnableProject();
+            Instance? instance = runnableProject.CreateInstance(ClassName, InstanceName);
 
             // WHEN
-            Field<int>? field = instance?.GetField<int>(ProjectHelpers.ValueFieldName);
+            Field<int>? field = instance?.GetField<int>(ValueFieldName);
 
             // THEN
             field.ShouldNotBeNull();
 
             instance?.Dispose();
-            ProjectHelpers.DeleteProject(runnableProject);
+            DeleteProject(runnableProject);
         }
 
         [Fact]
         public void GivenProjectWithClassInstance_WhenGettingUnknownField_ThenExceptionIsThrown()
         {
             // GIVEN
-            RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
-            Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            RunnableProject runnableProject = CreateRunnableProject();
+            Instance? instance = runnableProject.CreateInstance(ClassName, InstanceName);
 
             // WHEN/THEN
             Assert.Throws<UnknownEntityException>(() => instance!.GetField<int>("UnknownField"));
 
             instance?.Dispose();
-            ProjectHelpers.DeleteProject(runnableProject);
+            DeleteProject(runnableProject);
         }
 
         [Fact]
         public void GivenProjectWithClassInstance_WhenGettingFieldWithWrongType_ThenExceptionIsThrown()
         {
             // GIVEN
-            RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
-            Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            RunnableProject runnableProject = CreateRunnableProject();
+            Instance? instance = runnableProject.CreateInstance(ClassName, InstanceName);
 
             // WHEN/THEN
-            Assert.Throws<WrongFieldTypeException>(() => instance!.GetField<double>(ProjectHelpers.ValueFieldName));
+            Assert.Throws<WrongFieldTypeException>(() => instance!.GetField<double>(ValueFieldName));
 
             instance?.Dispose();
-            ProjectHelpers.DeleteProject(runnableProject);
+            DeleteProject(runnableProject);
         }
 
         [Fact]
         public void GivenProjectWithClassInstance_WhenSettingFieldValue_ThenValueChangeProcessingIsPerformed()
         {
             // GIVEN
-            RunnableProject runnableProject = ProjectHelpers.CreateRunnableProject();
-            dynamic? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            RunnableProject runnableProject = CreateRunnableProject();
+            dynamic? instance = runnableProject.CreateInstance(ClassName, InstanceName);
 
             // WHEN
             instance!.Value.SetValue(50);
@@ -199,7 +199,7 @@ namespace pva.SuperV.EngineTests
             alarmState.ShouldBe(2);
 
             instance?.Dispose();
-            ProjectHelpers.DeleteProject(runnableProject);
+            DeleteProject(runnableProject);
         }
     }
 }

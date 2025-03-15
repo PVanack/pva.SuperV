@@ -1,4 +1,5 @@
-﻿using TDengine.Driver;
+﻿using pva.SuperV.Engine.Exceptions;
+using TDengine.Driver;
 
 namespace pva.SuperV.Engine.HistoryStorage
 {
@@ -13,20 +14,43 @@ namespace pva.SuperV.Engine.HistoryStorage
         public DateTime Ts { get; }
 
         /// <summary>
-        /// List of values
+        /// Quality of history row.
         /// </summary>
-        public List<dynamic> Values { get; } = [];
+        public QualityLevel Quality { get; }
 
         /// <summary>
-        /// Builds a row from a TDengine row. TODO Refactor this
+        /// List of values as objects.
+        /// </summary>
+        public List<object> Values { get; } = [];
+
+        /// <summary>
+        /// Builds a row from a TDengine row.
         /// </summary>
         /// <param name="row">TDengine row</param>
-        public HistoryRow(IRows row)
+        public HistoryRow(IRows row, List<IFieldDefinition> fields)
         {
-            Ts = ((DateTime)row.GetValue(0)).ToUniversalTime();
-            for (int i = 1; i < row.FieldCount; i++)
+            Ts = ((DateTime)row.GetValue(row.FieldCount - 2)).ToUniversalTime();
+            Quality = Enum.Parse<QualityLevel>((string)row.GetValue(row.FieldCount - 1));
+            for (int i = 0; i < fields.Count; i++)
             {
-                Values.Add(row.GetValue(i));
+                IFieldDefinition field = fields[i];
+                Values.Add(field switch
+                {
+                    FieldDefinition<bool> derivedField => (bool)row.GetValue(i),
+                    FieldDefinition<DateTime> derivedField => (DateTime)row.GetValue(i),
+                    FieldDefinition<double> derivedField => (double)row.GetValue(i),
+                    FieldDefinition<float> derivedField => (float)row.GetValue(i),
+                    FieldDefinition<int> derivedField => (int)row.GetValue(i),
+                    FieldDefinition<long> derivedField => (long)row.GetValue(i),
+                    FieldDefinition<TimeSpan> derivedField => (TimeSpan)row.GetValue(i),
+                    FieldDefinition<short> derivedField => (short)row.GetValue(i),
+                    FieldDefinition<string> derivedField => (string)row.GetValue(i),
+                    FieldDefinition<uint> derivedField => (uint)row.GetValue(i),
+                    FieldDefinition<ulong> derivedField => (ulong)row.GetValue(i),
+                    FieldDefinition<ushort> derivedField => (ushort)row.GetValue(i),
+                    _ => throw new UnhandledMappingException(nameof(HistoryRow), field?.Type.ToString()),
+
+                });
             }
         }
 
@@ -38,7 +62,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <returns></returns>
         public T GetValue<T>(int colIndex)
         {
-            return Values[colIndex];
+            return (T)Values[colIndex];
         }
     }
 }

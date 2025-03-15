@@ -10,6 +10,8 @@ namespace pva.SuperV.EngineTests
     {
         private const string ProjectName = "TestProject";
         private const string ClassName = "TestClass";
+        private const string AlarmStatesFormatterName = "AlarmStates";
+
 
         [Theory]
         [InlineData("AS.0")]
@@ -130,11 +132,11 @@ namespace pva.SuperV.EngineTests
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
 
             // WHEN
-            FieldFormatter foundFormatter = project.GetFormatter(ProjectHelpers.AlarmStatesFormatterName);
+            FieldFormatter foundFormatter = project.GetFormatter(AlarmStatesFormatterName);
 
             // THEN
             foundFormatter.ShouldNotBeNull()
@@ -146,7 +148,7 @@ namespace pva.SuperV.EngineTests
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
 
             // WHEN
@@ -158,11 +160,11 @@ namespace pva.SuperV.EngineTests
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
 
             // WHEN
-            FieldFormatter? foundFormatter = project.FindFormatter(ProjectHelpers.AlarmStatesFormatterName);
+            FieldFormatter? foundFormatter = project.FindFormatter(AlarmStatesFormatterName);
 
             // THEN
             foundFormatter.ShouldNotBeNull()
@@ -174,7 +176,7 @@ namespace pva.SuperV.EngineTests
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
 
             // WHEN
@@ -189,12 +191,12 @@ namespace pva.SuperV.EngineTests
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
             _ = project.AddClass(ClassName);
 
             // WHEN
-            IFieldDefinition field = project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), ProjectHelpers.AlarmStatesFormatterName);
+            IFieldDefinition field = project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), AlarmStatesFormatterName);
 
             // THEN
             field.Formatter.ShouldBe(formatter);
@@ -205,12 +207,12 @@ namespace pva.SuperV.EngineTests
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
             _ = project.AddClass(ClassName);
 
             // WHEN/THEN
-            Assert.Throws<InvalidTypeForFormatterException>(() => project.AddField(ClassName, new FieldDefinition<double>("DoubleField", 10.0), ProjectHelpers.AlarmStatesFormatterName));
+            Assert.Throws<InvalidTypeForFormatterException>(() => project.AddField(ClassName, new FieldDefinition<double>("DoubleField", 10.0), AlarmStatesFormatterName));
         }
 
         [Fact]
@@ -218,7 +220,7 @@ namespace pva.SuperV.EngineTests
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
             _ = project.AddClass(ClassName);
 
@@ -231,7 +233,7 @@ namespace pva.SuperV.EngineTests
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
-            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, ["Closed", "Opened"]);
+            EnumFormatter formatter = new(AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
 
             // WHEN/THEN

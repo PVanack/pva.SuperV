@@ -152,7 +152,7 @@ namespace pva.SuperV.Engine.Processing
                     fieldsToHistorize.Add(field);
                 }
             });
-            HistoryRepository?.HistorizeValues(ClassTimeSerieId!, instance, historyTs ?? DateTime.Now, fieldsToHistorize);
+            HistoryRepository?.HistorizeValues(ClassTimeSerieId!, instance, historyTs ?? DateTime.Now, changedField.Quality, fieldsToHistorize);
         }
     }
 }

@@ -10,8 +10,8 @@ namespace pva.SuperV.Api.Routes.Instances
     {
         public static WebApplication MapInstancesEndpoints(this WebApplication app)
         {
-            RouteGroupBuilder fieldDefinitionsApi = app.MapGroup("/instances");
-            fieldDefinitionsApi.MapGet("/{runnableProjectId}",
+            RouteGroupBuilder instancesApi = app.MapGroup("/instances");
+            instancesApi.MapGet("/{runnableProjectId}",
                 (IInstanceService instanceService,
                 [Description("ID of runnable project")] string runnableProjectId)
                     => GetInstances.Handle(instanceService, runnableProjectId))
@@ -23,7 +23,7 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapGet("/{runnableProjectId}/{instanceName}",
+            instancesApi.MapGet("/{runnableProjectId}/{instanceName}",
                 (IInstanceService instanceService,
                 [Description("ID of runnable project")] string runnableProjectId,
                 [Description("Name of instance")] string instanceName)
@@ -36,7 +36,7 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapPost("/{runnableProjectId}",
+            instancesApi.MapPost("/{runnableProjectId}",
                 (IInstanceService instanceService,
                 [Description("ID of runnable project")] string runnableProjectId,
                 [Description("Instance creation request")][FromBody] InstanceModel createRequest)
@@ -49,7 +49,7 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapDelete("/{runnableProjectId}/{instanceName}",
+            instancesApi.MapDelete("/{runnableProjectId}/{instanceName}",
                 (IInstanceService instanceService,
                 [Description("ID of runnable project")] string runnableProjectId,
                 [Description("Name of instance")] string instanceName)
@@ -62,7 +62,7 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapGet("/{runnableProjectId}/{instanceName}/{fieldName}/value",
+            instancesApi.MapGet("/{runnableProjectId}/{instanceName}/{fieldName}/value",
                 (IFieldValueService fieldValueService,
                 [Description("ID of runnable project")] string runnableProjectId,
                 [Description("Name of instance")] string instanceName,
@@ -76,7 +76,7 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapPut("/{runnableProjectId}/{instanceName}/{fieldName}/value",
+            instancesApi.MapPut("/{runnableProjectId}/{instanceName}/{fieldName}/value",
                 (IFieldValueService fieldValueService,
                 [Description("ID of runnable project")] string runnableProjectId,
                 [Description("Name of instance")] string instanceName,

@@ -7,7 +7,7 @@ using Shouldly;
 namespace pva.SuperV.ApiTests
 {
     [Collection("Project building")]
-    public class FieldProcessingServiceTests
+    public class FieldProcessingServiceTests : SuperVTestsBase
     {
         private readonly FieldProcessingService fieldProcessingService;
         private readonly RunnableProject runnableProject;
@@ -16,7 +16,7 @@ namespace pva.SuperV.ApiTests
         public FieldProcessingServiceTests()
         {
             fieldProcessingService = new();
-            runnableProject = ProjectHelpers.CreateRunnableProject();
+            runnableProject = CreateRunnableProject();
             wipProject = Project.CreateProject(runnableProject);
         }
 
@@ -24,25 +24,25 @@ namespace pva.SuperV.ApiTests
         public void GetFieldProcessings_ShouldReturnListOfFieldProcessings()
         {
             // GIVEN
-            List<string> fieldsToHistorize = [ProjectHelpers.ValueFieldName];
+            List<string> fieldsToHistorize = [ValueFieldName];
             List<FieldValueProcessingModel> expectedFieldProcessings =
             [
                 new AlarmStateProcessingModel("ValueAlarmState",
-                    ProjectHelpers.ValueFieldName,
-                    ProjectHelpers.HighHighLimitFieldName,
-                    ProjectHelpers.HighLimitFieldName,
-                    ProjectHelpers.LowLimitFieldName,
-                    ProjectHelpers.LowLowLimitFieldName, null,
-                    ProjectHelpers.AlarmStateFieldName,
+                    ValueFieldName,
+                    HighHighLimitFieldName,
+                    HighLimitFieldName,
+                    LowLimitFieldName,
+                    LowLowLimitFieldName, null,
+                    AlarmStateFieldName,
                     null),
                 new HistorizationProcessingModel("Historization",
-                    ProjectHelpers.ValueFieldName,
-                     ProjectHelpers.HistoryRepositoryName,
+                    ValueFieldName,
+                     HistoryRepositoryName,
                      null,
                      fieldsToHistorize)
                 ];
             // WHEN
-            List<FieldValueProcessingModel> FieldProcessings = fieldProcessingService.GetFieldProcessings(runnableProject.GetId(), ProjectHelpers.ClassName, ProjectHelpers.ValueFieldName);
+            List<FieldValueProcessingModel> FieldProcessings = fieldProcessingService.GetFieldProcessings(runnableProject.GetId(), ClassName, ValueFieldName);
 
             // THEN
             FieldProcessings
@@ -55,15 +55,15 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new AlarmStateProcessingModel("ValueAlarmState",
-                    ProjectHelpers.ValueFieldName,
-                    ProjectHelpers.HighHighLimitFieldName,
-                    ProjectHelpers.HighLimitFieldName,
-                    ProjectHelpers.LowLimitFieldName,
-                    ProjectHelpers.LowLowLimitFieldName, null,
-                    ProjectHelpers.AlarmStateFieldName,
+                    ValueFieldName,
+                    HighHighLimitFieldName,
+                    HighLimitFieldName,
+                    LowLimitFieldName,
+                    LowLowLimitFieldName, null,
+                    AlarmStateFieldName,
                     null);
             // WHEN
-            FieldValueProcessingModel FieldProcessing = fieldProcessingService.GetFieldProcessing(runnableProject.GetId(), ProjectHelpers.ClassName, ProjectHelpers.ValueFieldName, expectedFieldProcessing.Name);
+            FieldValueProcessingModel FieldProcessing = fieldProcessingService.GetFieldProcessing(runnableProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing.Name);
 
             // THEN
             FieldProcessing
@@ -76,15 +76,15 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new AlarmStateProcessingModel("ValueAlarmStateAdded",
-                    ProjectHelpers.ValueFieldName,
-                    ProjectHelpers.HighHighLimitFieldName,
-                    ProjectHelpers.HighLimitFieldName,
-                    ProjectHelpers.LowLimitFieldName,
-                    ProjectHelpers.LowLowLimitFieldName, null,
-                    ProjectHelpers.AlarmStateFieldName,
+                    ValueFieldName,
+                    HighHighLimitFieldName,
+                    HighLimitFieldName,
+                    LowLimitFieldName,
+                    LowLowLimitFieldName, null,
+                    AlarmStateFieldName,
                     null);
             // WHEN
-            FieldValueProcessingModel FieldProcessing = fieldProcessingService.CreateFieldProcessing(wipProject.GetId(), ProjectHelpers.ClassName, ProjectHelpers.ValueFieldName, expectedFieldProcessing);
+            FieldValueProcessingModel FieldProcessing = fieldProcessingService.CreateFieldProcessing(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
 
             // THEN
             FieldProcessing
@@ -98,11 +98,11 @@ namespace pva.SuperV.ApiTests
             // GIVEN
 
             // WHEN
-            fieldProcessingService.DeleteFieldProcessing(wipProject.GetId(), ProjectHelpers.ClassName, ProjectHelpers.ValueFieldName, "ValueAlarmState");
+            fieldProcessingService.DeleteFieldProcessing(wipProject.GetId(), ClassName, ValueFieldName, "ValueAlarmState");
 
             // THEN
-            wipProject.GetClass(ProjectHelpers.ClassName)
-                .GetField(ProjectHelpers.ValueFieldName)
+            wipProject.GetClass(ClassName)
+                .GetField(ValueFieldName)
                 .ValuePostChangeProcessings.FirstOrDefault(f => f.Name == "ValueAlarmState")
                 .ShouldBeNull();
         }

@@ -1,4 +1,5 @@
 ﻿using pva.SuperV.Engine;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.Processing;
 using System.Numerics;
 

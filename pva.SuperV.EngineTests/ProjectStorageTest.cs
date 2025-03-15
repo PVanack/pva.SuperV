@@ -8,7 +8,7 @@ using Shouldly;
 namespace pva.SuperV.EngineTests
 {
     [Collection("Project building")]
-    public class ProjectStorageTest
+    public class ProjectStorageTest : SuperVTestsBase
     {
         [Fact]
         public void GivenProjectWithClassAndField_WhenSavingAndReloadingRunnableProjectDefinition_ThenReloadedProjectDefinitionIsSameAsSavedProject()
@@ -16,8 +16,8 @@ namespace pva.SuperV.EngineTests
             // GIVEN
 
             // WHEN
-            RunnableProject expectedProject = ProjectHelpers.CreateRunnableProject(NullHistoryStorageEngine.Prefix);
-            var instance = expectedProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            RunnableProject expectedProject = CreateRunnableProject(NullHistoryStorageEngine.Prefix);
+            var instance = expectedProject.CreateInstance(ClassName, InstanceName);
             string filename = ProjectStorage.SaveProjectDefinition(expectedProject);
             // Tweak to keep the expected project and avoid it being unloaded!
             WipProject? loadedProject = ProjectStorage.LoadProjectDefinition<WipProject>(filename);
@@ -28,7 +28,7 @@ namespace pva.SuperV.EngineTests
             CheckProjectFieldFormatters(expectedProject, loadedProject!);
 
             instance!.Dispose();
-            ProjectHelpers.DeleteProject(expectedProject);
+            DeleteProject(expectedProject);
         }
 
         [Fact]
@@ -37,9 +37,9 @@ namespace pva.SuperV.EngineTests
             // GIVEN
 
             // WHEN
-            RunnableProject project = ProjectHelpers.CreateRunnableProject(NullHistoryStorageEngine.Prefix);
-            Instance? instance = project.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
-            Field<int>? intField = instance!.GetField<int>(ProjectHelpers.ValueFieldName);
+            RunnableProject project = CreateRunnableProject(NullHistoryStorageEngine.Prefix);
+            Instance? instance = project.CreateInstance(ClassName, InstanceName);
+            Field<int>? intField = instance!.GetField<int>(ValueFieldName);
             intField!.SetValue(314);
             string filename = ProjectStorage.SaveProjectInstances(project);
             project.Instances.Clear();
@@ -48,19 +48,19 @@ namespace pva.SuperV.EngineTests
 
             // THEN
             project.Instances.Count.ShouldBe(1);
-            Instance loadedInstance = project.GetInstance(ProjectHelpers.InstanceName);
+            Instance loadedInstance = project.GetInstance(InstanceName);
             loadedInstance.ShouldNotBeNull();
             loadedInstance.ShouldNotBeSameAs(instance);
             loadedInstance.Name.ShouldBe(instance.Name);
             loadedInstance.Class.Name.ShouldBe(instance.Class.Name);
             loadedInstance.Fields.Count.ShouldBe(7);
-            Field<int>? loadedField = loadedInstance.GetField<int>(ProjectHelpers.ValueFieldName);
+            Field<int>? loadedField = loadedInstance.GetField<int>(ValueFieldName);
             loadedField!.Value.ShouldBe(intField.Value);
             loadedField!.Value.ToString().ShouldBe(intField.Value.ToString());
             loadedField!.Instance.ShouldBe(loadedInstance);
 
             instance.Dispose();
-            ProjectHelpers.DeleteProject(project);
+            DeleteProject(project);
         }
 
         private static void CheckProjectProperties(Project expectedProject, Project loadedProject)

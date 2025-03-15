@@ -5,7 +5,7 @@ using Shouldly;
 namespace pva.SuperV.EngineTests
 {
     [Collection("Project building")]
-    public class FieldTests
+    public class FieldTests : SuperVTestsBase
     {
         [Theory]
         [InlineData("AS.0")]
@@ -91,17 +91,17 @@ namespace pva.SuperV.EngineTests
 
         private static void GivenProjectWithSpecificField_WhenBuildingAndReloadingProject_ThenFieldValueIsAsExpected<T>(T fieldValue)
         {
-            WipProject wipProject = Project.CreateProject(ProjectHelpers.ProjectName);
-            _ = wipProject.AddClass(ProjectHelpers.ClassName);
-            wipProject.AddField(ProjectHelpers.ClassName, new FieldDefinition<T>(ProjectHelpers.ValueFieldName));
+            WipProject wipProject = Project.CreateProject(ProjectName);
+            _ = wipProject.AddClass(ClassName);
+            wipProject.AddField(ClassName, new FieldDefinition<T>(ValueFieldName));
             RunnableProject runnableProject = Task.Run(async () => await Project.BuildAsync(wipProject)).Result;
 
-            dynamic? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            dynamic? instance = runnableProject.CreateInstance(ClassName, InstanceName);
 
-            Field<T>? field = instance!.GetField<T>(ProjectHelpers.ValueFieldName);
+            Field<T>? field = instance!.GetField<T>(ValueFieldName);
             field?.SetValue(fieldValue);
 
-            runnableProject.SetInstanceValue<T>(ProjectHelpers.InstanceName, ProjectHelpers.ValueFieldName, fieldValue);
+            runnableProject.SetInstanceValue<T>(InstanceName, ValueFieldName, fieldValue);
 
             string projectDefinitionFileName = ProjectStorage.SaveProjectDefinition(runnableProject);
             string projectInstancesFileName = ProjectStorage.SaveProjectInstances(runnableProject);
@@ -109,9 +109,9 @@ namespace pva.SuperV.EngineTests
             RunnableProject? loadedProject = ProjectStorage.LoadProjectDefinition<RunnableProject>(projectDefinitionFileName);
             ProjectStorage.LoadProjectInstances(loadedProject!, projectInstancesFileName);
 
-            Instance? loadedInstance = loadedProject!.GetInstance(ProjectHelpers.InstanceName);
+            Instance? loadedInstance = loadedProject!.GetInstance(InstanceName);
 
-            field = loadedInstance!.GetField<T>(ProjectHelpers.ValueFieldName);
+            field = loadedInstance!.GetField<T>(ValueFieldName);
 
             field!.Value.ShouldBe(fieldValue);
         }

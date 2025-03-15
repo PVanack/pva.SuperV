@@ -41,7 +41,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <param name="instanceName">The instance name.</param>
         /// <param name="timestamp">the timestamp of the values</param>
         /// <param name="fieldsToHistorize">List of fields to be historized.</param>
-        void HistorizeValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime timestamp, List<IField> fieldsToHistorize);
+        void HistorizeValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime timestamp, QualityLevel? quality, List<IField> fieldsToHistorize);
 
         /// <summary>
         /// Gets instance values historized between 2 timestamps.

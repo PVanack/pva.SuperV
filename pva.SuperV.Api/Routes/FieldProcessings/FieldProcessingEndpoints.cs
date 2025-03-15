@@ -10,8 +10,8 @@ namespace pva.SuperV.Api.Routes.FieldProcessings
     {
         public static WebApplication MapFieldProcessingEndpoints(this WebApplication app)
         {
-            RouteGroupBuilder fieldDefinitionsApi = app.MapGroup("/field-processings");
-            fieldDefinitionsApi.MapGet("/{projectId}/{className}/{fieldName}",
+            RouteGroupBuilder fieldProcessingsApi = app.MapGroup("/field-processings");
+            fieldProcessingsApi.MapGet("/{projectId}/{className}/{fieldName}",
                 (IFieldProcessingService fieldProcessingService,
                 [Description("ID of project")] string projectId,
                 [Description("Name of class")] string className,
@@ -25,7 +25,7 @@ namespace pva.SuperV.Api.Routes.FieldProcessings
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapGet("/{projectId}/{className}/{fieldName}/{processingName}",
+            fieldProcessingsApi.MapGet("/{projectId}/{className}/{fieldName}/{processingName}",
                 (IFieldProcessingService fieldProcessingService,
                 [Description("ID of project")] string projectId,
                 [Description("Name of class")] string className,
@@ -40,7 +40,7 @@ namespace pva.SuperV.Api.Routes.FieldProcessings
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapPost("/{wipProjectId}/{className}/{fieldName}",
+            fieldProcessingsApi.MapPost("/{wipProjectId}/{className}/{fieldName}",
                 (IFieldProcessingService fieldProcessingService,
                 [Description("ID of WIP project")] string wipProjectId,
                 [Description("Name of class")] string className,
@@ -55,7 +55,7 @@ namespace pva.SuperV.Api.Routes.FieldProcessings
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
-            fieldDefinitionsApi.MapDelete("/{wipProjectId}/{className}/{fieldName}/{processingName}",
+            fieldProcessingsApi.MapDelete("/{wipProjectId}/{className}/{fieldName}/{processingName}",
                 (IFieldProcessingService fieldProcessingService,
                 [Description("ID of WIP project")] string wipProjectId,
                 [Description("Name of class")] string className,

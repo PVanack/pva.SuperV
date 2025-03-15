@@ -10,7 +10,7 @@ using System.Text;
 namespace pva.SuperV.ApiTests
 {
     [Collection("Project building")]
-    public class ProjectServiceTests
+    public class ProjectServiceTests : SuperVTestsBase
     {
         private const string projectDefinitionsJson = """
                  {
@@ -60,8 +60,8 @@ namespace pva.SuperV.ApiTests
         public ProjectServiceTests()
         {
             _projectService = new();
-            runnableProject = ProjectHelpers.CreateRunnableProject();
-            wipProject = ProjectHelpers.CreateWipProject(null);
+            runnableProject = CreateRunnableProject();
+            wipProject = CreateWipProject(null);
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace pva.SuperV.ApiTests
             result.ShouldContain(p
                 => p.Id == runnableProject.GetId() &&
                 p.Runnable &&
-                p.Name == ProjectHelpers.ProjectName);
+                p.Name == ProjectName);
         }
 
         [Fact]
