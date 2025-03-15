@@ -35,7 +35,7 @@ jobs:
       run: dotnet build --no-restore
 
     - name: Run tests with coverage
-      run: dotnet test --no-build --verbosity normal -property:ParallelizeTestCollections=false --collect:"XPlat Code Coverage" --results-directory ./coverage
+      run: dotnet test --no-build --verbosity normal -property:TestTfmsInParallel=false -property:ParallelizeTestCollections=false --collect:"XPlat Code Coverage" --results-directory ./coverage
 
     - name: Generate code coverage summary report
       uses: danielpalme/ReportGenerator-GitHub-Action@5.4.4
