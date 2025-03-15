@@ -23,14 +23,14 @@ namespace pva.SuperV.Engine.HistoryStorage
         public List<dynamic> Values { get; } = [];
 
         /// <summary>
-        /// Builds a row from a TDengine row. TODO Refactor this
+        /// Builds a row from a TDengine row.
         /// </summary>
         /// <param name="row">TDengine row</param>
-        public HistoryRow(IRows row)
+        public HistoryRow(IRows row, List<IFieldDefinition> fields)
         {
-            Ts = ((DateTime)row.GetValue(0)).ToUniversalTime();
-            Quality = Enum.Parse<QualityLevel>((string)row.GetValue(1));
-            for (int i = 2; i < row.FieldCount; i++)
+            Ts = ((DateTime)row.GetValue(row.FieldCount - 2)).ToUniversalTime();
+            Quality = Enum.Parse<QualityLevel>((string)row.GetValue(row.FieldCount - 1));
+            for (int i = 0; i < fields.Count; i++)
             {
                 Values.Add(row.GetValue(i));
             }

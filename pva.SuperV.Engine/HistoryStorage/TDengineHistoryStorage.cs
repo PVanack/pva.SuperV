@@ -213,11 +213,11 @@ namespace pva.SuperV.Engine.HistoryStorage
                 _tdEngineClient!.Exec($"USE {repositoryStorageId};");
                 string fieldNames = fields.Select(field => $"_{field.Name}")
                     .Aggregate((a, b) => $"{a},{b}");
-                string query = $"SELECT TS, QUALITY, {fieldNames} FROM {instanceTableName} WHERE TS between \"{FormatToSqlDate(from)}\" and \"{FormatToSqlDate(to)}\"";
+                string query = $"SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName} WHERE TS between \"{FormatToSqlDate(from)}\" and \"{FormatToSqlDate(to)}\"";
                 using IRows row = _tdEngineClient!.Query(query);
                 while (row.Read())
                 {
-                    rows.Add(new HistoryRow(row));
+                    rows.Add(new HistoryRow(row, fields));
                 }
             }
             catch (Exception e)
