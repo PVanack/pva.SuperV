@@ -8,7 +8,7 @@ using Shouldly;
 namespace pva.SuperV.ApiTests
 {
     [Collection("Project building")]
-    public class HistoryValueServiceTests
+    public class HistoryValueServiceTests : SuperVTestsBase
     {
         private readonly HistoryValuesService historyValuesService;
         private readonly RunnableProject runnableProject;
@@ -16,9 +16,9 @@ namespace pva.SuperV.ApiTests
         public HistoryValueServiceTests()
         {
             historyValuesService = new();
-            WipProject wipProject = ProjectHelpers.CreateWipProject(TDengineHistoryStorage.Prefix);
+            WipProject wipProject = CreateWipProject(TDengineHistoryStorage.Prefix);
             runnableProject = Task.Run(async () => await Project.BuildAsync(wipProject)).Result;
-            runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            runnableProject.CreateInstance(ClassName, InstanceName);
             Project.Unload(wipProject);
         }
 
@@ -27,13 +27,13 @@ namespace pva.SuperV.ApiTests
         {
             // Given
             DateTime timestamp = DateTime.UtcNow;
-            HistoryRawResultModel expectedHistoryResult = new([new HistoryFieldModel(ProjectHelpers.ValueFieldName, "System.Int32", 0)],
+            HistoryRawResultModel expectedHistoryResult = new([new HistoryFieldModel(ValueFieldName, "System.Int32", 0)],
                 [new HistoryRawRowModel(timestamp, null, null, null, QualityLevel.Good, [123456])]);
 
-            runnableProject.SetInstanceValue<int>(ProjectHelpers.InstanceName, ProjectHelpers.ValueFieldName, 123456, timestamp);
+            runnableProject.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
             // Act
-            HistoryRequestModel request = new(timestamp.AddSeconds(-1), DateTime.Now, null, null, [ProjectHelpers.ValueFieldName]);
-            HistoryRawResultModel historyResult = historyValuesService!.GetInstanceRawHistoryValues(runnableProject.GetId(), ProjectHelpers.InstanceName, request);
+            HistoryRequestModel request = new(timestamp.AddSeconds(-1), DateTime.Now, null, null, [ValueFieldName]);
+            HistoryRawResultModel historyResult = historyValuesService!.GetInstanceRawHistoryValues(runnableProject.GetId(), InstanceName, request);
 
             // Assert
             // This doesn' work, as comparison of the object values use Object Equals().

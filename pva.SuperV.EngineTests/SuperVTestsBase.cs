@@ -9,81 +9,84 @@ using pva.SuperV.Engine.Processing;
 
 namespace pva.SuperV.EngineTests
 {
-    public static class ProjectHelpers
+    public class SuperVTestsBase : IDisposable
     {
-        public const string ProjectName = "TestProject";
-        public const string ClassName = "TestClass";
-        public const string InstanceName = "Instance";
-        public const string ValueFieldName = "Value";
-        public const string AlarmStateFieldName = "AlarmState";
-        public const string AlarmStatesFormatterName = "AlarmStates";
-        public const string HighHighLimitFieldName = "HighHighLimit";
-        public const string HighLimitFieldName = "HighLimit";
-        public const string LowLimitFieldName = "LowLimit";
-        public const string LowLowLimitFieldName = "LowLowlimit";
-
-        public const string BaseClassName = "TestBaseClass";
-        public const string BaseClassFieldName = "InheritedField";
-        public const string HistoryRepositoryName = "HistoryRepository";
-        public static Dictionary<int, string> AlarmStatesFormatterValues = new() {
+        protected const string ProjectName = "TestProject";
+        protected const string ClassName = "TestClass";
+        protected const string InstanceName = "Instance";
+        protected const string ValueFieldName = "Value";
+        protected const string AlarmStateFieldName = "AlarmState";
+        protected const string AlarmStatesFormatterName = "AlarmStates";
+        protected const string HighHighLimitFieldName = "HighHighLimit";
+        protected const string HighLimitFieldName = "HighLimit";
+        protected const string LowLimitFieldName = "LowLimit";
+        protected const string LowLowLimitFieldName = "LowLowlimit";
+        protected const string BaseClassName = "TestBaseClass";
+        protected const string BaseClassFieldName = "InheritedField";
+        protected const string HistoryRepositoryName = "HistoryRepository";
+        protected static Dictionary<int, string> AlarmStatesFormatterValues = new() {
                 { -2, "LowLow" },
                 { -1, "Low" },
                 { 0, "OK" },
                 { 1, "High" },
                 { 2, "HighHigh" }
             };
-        private static IContainer? tdEngineContainer;
+        private IContainer? tdEngineContainer;
 
-        public static async Task<string> StartTDengineContainerAsync()
+        public void Dispose()
+        {
+            Task.Run(async () => await StopTDengineContainerAsync()).Wait();
+        }
+
+        protected async Task<string> StartTDengineContainerAsync()
         {
             if (tdEngineContainer is null)
             {
                 tdEngineContainer = new ContainerBuilder()
                     .WithImage("tdengine/tdengine:latest")
                     .WithPortBinding(6030, false)
-                    //.WithPortBinding(6031, false)
-                    //.WithPortBinding(6032, false)
-                    //.WithPortBinding(6033, false)
-                    //.WithPortBinding(6034, false)
-                    //.WithPortBinding(6035, false)
-                    //.WithPortBinding(6036, false)
-                    //.WithPortBinding(6037, false)
-                    //.WithPortBinding(6038, false)
-                    //.WithPortBinding(6039, false)
-                    .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(6030))
+                    .WithWaitStrategy(
+                        Wait.ForUnixContainer()
+                            .UntilPortIsAvailable(6030)
+                            .UntilPortIsAvailable(6041)
+                            .UntilPortIsAvailable(6043)
+                            .UntilPortIsAvailable(6060)
+                    )
                     .Build();
 
                 // Start the container.
                 await tdEngineContainer.StartAsync()
                   .ConfigureAwait(false);
                 // Wait to make sure the processes in container are ready and running.
-                Thread.Sleep(200);
+                Thread.Sleep(500);
             }
             return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
         }
 
-        public static async Task StopTDengineContainerAsync()
+        protected async Task StopTDengineContainerAsync()
         {
-            if (tdEngineContainer != null)
+            if (tdEngineContainer is not null)
             {
                 await tdEngineContainer.StopAsync()
                     .ConfigureAwait(false);
+                long exitCode = await tdEngineContainer.GetExitCodeAsync();
+                tdEngineContainer = null;
             }
         }
 
-        public static RunnableProject CreateRunnableProject()
+        protected RunnableProject CreateRunnableProject()
         {
             return CreateRunnableProject("");
         }
 
-        public static RunnableProject CreateRunnableProject(string? historyEngineType)
+        public RunnableProject CreateRunnableProject(string? historyEngineType)
         {
             WipProject wipProject = CreateWipProject(historyEngineType);
             RunnableProject project = Task.Run(async () => await Project.BuildAsync(wipProject)).Result;
             return project;
         }
 
-        public static WipProject CreateWipProject(string? historyEngineType)
+        protected WipProject CreateWipProject(string? historyEngineType)
         {
             string? connectionString = historyEngineType;
             if (!String.IsNullOrEmpty(historyEngineType) && historyEngineType.Equals(TDengineHistoryStorage.Prefix))
@@ -98,13 +101,13 @@ namespace pva.SuperV.EngineTests
                 IHistoryStorageEngine historyStorageEngine = Substitute.For<IHistoryStorageEngine>();
                 wipProject.HistoryStorageEngine = historyStorageEngine;
             }
-            HistoryRepository historyRepository = new(ProjectHelpers.HistoryRepositoryName);
+            HistoryRepository historyRepository = new(HistoryRepositoryName);
             wipProject.AddHistoryRepository(historyRepository);
 
             _ = wipProject.AddClass(BaseClassName);
             wipProject.AddField(BaseClassName, new FieldDefinition<string>(BaseClassFieldName, "InheritedField"));
 
-            EnumFormatter formatter = new(ProjectHelpers.AlarmStatesFormatterName, AlarmStatesFormatterValues);
+            EnumFormatter formatter = new(AlarmStatesFormatterName, AlarmStatesFormatterValues);
             wipProject.AddFieldFormatter(formatter);
             Class clazz = wipProject.AddClass(ClassName, BaseClassName);
             wipProject.AddField(ClassName, new FieldDefinition<int>(ValueFieldName, 10));
@@ -124,7 +127,7 @@ namespace pva.SuperV.EngineTests
             return wipProject;
         }
 
-        public static void DeleteProject(Project project)
+        protected void DeleteProject(Project project)
         {
             Task.Run(async () => await StopTDengineContainerAsync());
 #if DELETE_PROJECT_ASSEMBLY

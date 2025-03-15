@@ -23,13 +23,13 @@ public class HistoryRepositoryTests
     {
         // GIVEN
         var historyStorageEngineMock = Substitute.For<IHistoryStorageEngine>();
-        WipProject wipProject = Project.CreateProject(ProjectHelpers.ProjectName);
+        WipProject wipProject = Project.CreateProject("TestProject");
         wipProject.HistoryStorageEngine = historyStorageEngineMock;
-        HistoryRepository historyRepository = new(ProjectHelpers.HistoryRepositoryName);
+        HistoryRepository historyRepository = new("TestRepository");
         wipProject.AddHistoryRepository(historyRepository);
 
         // WHEN
-        HistoryRepository historyRepositoryOther = new(ProjectHelpers.HistoryRepositoryName);
+        HistoryRepository historyRepositoryOther = new("TestRepository");
         Assert.Throws<EntityAlreadyExistException>(() => wipProject.AddHistoryRepository(historyRepositoryOther));
     }
 
@@ -38,13 +38,13 @@ public class HistoryRepositoryTests
     {
         // GIVEN
         var historyStorageEngineMock = Substitute.For<IHistoryStorageEngine>();
-        WipProject wipProject = Project.CreateProject(ProjectHelpers.ProjectName);
+        WipProject wipProject = Project.CreateProject("TestProject");
         wipProject.HistoryStorageEngine = historyStorageEngineMock;
-        HistoryRepository historyRepository = new(ProjectHelpers.HistoryRepositoryName);
+        HistoryRepository historyRepository = new("TestRepository");
         wipProject.AddHistoryRepository(historyRepository);
 
         // WHEN
-        wipProject.RemoveHistoryRepository(ProjectHelpers.HistoryRepositoryName);
+        wipProject.RemoveHistoryRepository("TestRepository");
 
         // THEN
         wipProject.HistoryRepositories.ShouldBeEmpty();
@@ -55,11 +55,11 @@ public class HistoryRepositoryTests
     {
         // GIVEN
         var historyStorageEngineMock = Substitute.For<IHistoryStorageEngine>();
-        WipProject wipProject = Project.CreateProject(ProjectHelpers.ProjectName);
+        WipProject wipProject = Project.CreateProject("TestProject");
         wipProject.HistoryStorageEngine = historyStorageEngineMock;
 
         // WHEN
-        HistoryRepository historyRepository = new(ProjectHelpers.HistoryRepositoryName);
+        HistoryRepository historyRepository = new("TestRepository");
         wipProject.AddHistoryRepository(historyRepository);
         _ = Project.BuildAsync(wipProject);
 
@@ -71,10 +71,10 @@ public class HistoryRepositoryTests
     public async Task GivenProjectWithoutHistoryStorageEngine_WhenAddingRepositoryAndBuldingProject_ThenExceptionIsThrown()
     {
         // GIVEN
-        WipProject wipProject = Project.CreateProject(ProjectHelpers.ProjectName);
+        WipProject wipProject = Project.CreateProject("TestProject");
 
         // WHEN/THEN
-        HistoryRepository historyRepository = new(ProjectHelpers.HistoryRepositoryName);
+        HistoryRepository historyRepository = new("TestRepository");
         wipProject.AddHistoryRepository(historyRepository);
         await Assert.ThrowsAsync<NoHistoryStorageEngineException>(async () => _ = await Project.BuildAsync(wipProject));
     }

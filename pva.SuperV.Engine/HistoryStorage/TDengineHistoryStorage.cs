@@ -75,7 +75,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"connect to {builder}", e);
+                throw new TdEngineException($"connect to {_connectionString}", e);
             }
         }
 
@@ -94,7 +94,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"upsert repository {repositoryName}", e);
+                throw new TdEngineException($"upsert repository {repositoryName} on {_connectionString}", e);
             }
             return repositoryName;
         }
@@ -113,7 +113,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"delete repository {repositoryActualName}", e);
+                throw new TdEngineException($"delete repository {repositoryActualName} on {_connectionString}", e);
             }
         }
 
@@ -146,7 +146,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"upsert class time series {tableName}", e);
+                throw new TdEngineException($"upsert class time series {tableName} on {_connectionString}", e);
             }
             return tableName;
         }
@@ -190,7 +190,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"insert to table {classTimeSerieId}", e);
+                throw new TdEngineException($"insert to table {classTimeSerieId} on {_connectionString}", e);
             }
         }
 
@@ -222,7 +222,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"select from table {instanceTableName}", e);
+                throw new TdEngineException($"select from table {instanceTableName} on {_connectionString}", e);
             }
             return rows;
         }

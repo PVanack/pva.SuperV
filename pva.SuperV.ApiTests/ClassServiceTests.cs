@@ -8,7 +8,7 @@ using Shouldly;
 namespace pva.SuperV.ApiTests
 {
     [Collection("Project building")]
-    public class ClassServiceTests
+    public class ClassServiceTests : SuperVTestsBase
     {
         private readonly ClassService _classService;
         private readonly RunnableProject runnableProject;
@@ -17,8 +17,8 @@ namespace pva.SuperV.ApiTests
         public ClassServiceTests()
         {
             _classService = new();
-            runnableProject = ProjectHelpers.CreateRunnableProject();
-            wipProject = ProjectHelpers.CreateWipProject(null);
+            runnableProject = CreateRunnableProject();
+            wipProject = CreateWipProject(null);
         }
 
         [Fact]
@@ -29,19 +29,19 @@ namespace pva.SuperV.ApiTests
 
             // Assert
             result.Count.ShouldBe(2);
-            result.ShouldContain(c => c.Name == ProjectHelpers.ClassName);
-            result.ShouldContain(c => c.Name == ProjectHelpers.BaseClassName);
+            result.ShouldContain(c => c.Name == ClassName);
+            result.ShouldContain(c => c.Name == BaseClassName);
         }
 
         [Fact]
         public void GetClass_ShouldReturnClass_WhenClassExists()
         {
             // Act
-            var result = _classService.GetClass(runnableProject.GetId(), ProjectHelpers.ClassName);
+            var result = _classService.GetClass(runnableProject.GetId(), ClassName);
 
             // Assert
             result.ShouldNotBeNull();
-            result.Name.ShouldBe(ProjectHelpers.ClassName);
+            result.Name.ShouldBe(ClassName);
         }
 
         [Fact]

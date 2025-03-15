@@ -8,7 +8,7 @@ using Shouldly;
 namespace pva.SuperV.ApiTests
 {
     [Collection("Project building")]
-    public class InstanceServiceTests
+    public class InstanceServiceTests : SuperVTestsBase
     {
         private readonly InstanceService _instanceService;
         private readonly FieldValueService _fieldValueService;
@@ -19,17 +19,17 @@ namespace pva.SuperV.ApiTests
         {
             _instanceService = new();
             _fieldValueService = new();
-            runnableProject = ProjectHelpers.CreateRunnableProject();
-            Instance? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            runnableProject = CreateRunnableProject();
+            Instance? instance = runnableProject.CreateInstance(ClassName, InstanceName);
             expectedInstance = new(instance!.Name, instance!.Class.Name!,
             [
-                new FieldModel(ProjectHelpers.BaseClassFieldName, typeof(string).ToString(), FieldValueMapper.ToDto(instance!.GetField(ProjectHelpers.BaseClassFieldName))),
-                new FieldModel(ProjectHelpers.ValueFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(ProjectHelpers.ValueFieldName))),
-                new FieldModel(ProjectHelpers.HighHighLimitFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(ProjectHelpers.HighHighLimitFieldName))),
-                new FieldModel(ProjectHelpers.HighLimitFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(ProjectHelpers.HighLimitFieldName))),
-                new FieldModel(ProjectHelpers.LowLimitFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(ProjectHelpers.LowLimitFieldName))),
-                new FieldModel(ProjectHelpers.LowLowLimitFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(ProjectHelpers.LowLowLimitFieldName))),
-                new FieldModel(ProjectHelpers.AlarmStateFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(ProjectHelpers.AlarmStateFieldName)))
+                new FieldModel(BaseClassFieldName, typeof(string).ToString(), FieldValueMapper.ToDto(instance!.GetField(BaseClassFieldName))),
+                new FieldModel(ValueFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(ValueFieldName))),
+                new FieldModel(HighHighLimitFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(HighHighLimitFieldName))),
+                new FieldModel(HighLimitFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(HighLimitFieldName))),
+                new FieldModel(LowLimitFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(LowLimitFieldName))),
+                new FieldModel(LowLowLimitFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(LowLowLimitFieldName))),
+                new FieldModel(AlarmStateFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(AlarmStateFieldName)))
             ]);
         }
 
@@ -48,7 +48,7 @@ namespace pva.SuperV.ApiTests
         public void GetInstance_ShouldReturnInstance_WhenInstanceExists()
         {
             // Act
-            var result = _instanceService.GetInstance(runnableProject.GetId(), ProjectHelpers.InstanceName);
+            var result = _instanceService.GetInstance(runnableProject.GetId(), InstanceName);
 
             // Assert
             result.ShouldNotBeNull();

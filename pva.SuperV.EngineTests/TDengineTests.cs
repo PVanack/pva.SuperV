@@ -7,14 +7,14 @@ using Shouldly;
 namespace pva.SuperV.EngineTests
 {
     [Collection("Project building")]
-    public class TDengineTests
+    public class TDengineTests : SuperVTestsBase
     {
         private readonly WipProject wipProject;
         private RunnableProject? runnableProject;
 
         public TDengineTests()
         {
-            wipProject = ProjectHelpers.CreateWipProject(TDengineHistoryStorage.Prefix);
+            wipProject = CreateWipProject(TDengineHistoryStorage.Prefix);
         }
 
         [Fact]
@@ -22,7 +22,7 @@ namespace pva.SuperV.EngineTests
         {
             // GIVEN
             runnableProject = await Project.BuildAsync(wipProject);
-            dynamic? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            dynamic? instance = runnableProject.CreateInstance(ClassName, InstanceName);
             DateTime testStart = DateTime.UtcNow;
             // WHEN
             instance!.Value.SetValue(50);
@@ -31,7 +31,7 @@ namespace pva.SuperV.EngineTests
             DateTime ts2 = instance!.Value.Timestamp;
 
             // THEN
-            List<string> fields = [ProjectHelpers.ValueFieldName];
+            List<string> fields = [ValueFieldName];
             List<HistoryRow> rows = runnableProject.GetHistoryValues(instance.Name, testStart, DateTime.UtcNow, fields);
             rows.Count.ShouldBe(2);
             rows[0].Ts.ShouldBe(ts1);
@@ -49,10 +49,10 @@ namespace pva.SuperV.EngineTests
         public async Task GivenTimespanFieldUsedInHistorizationProcessing_WhenBuildingProject_ThenExceptionIsThrown()
         {
             // GIVEN
-            Class clazz = wipProject.GetClass(ProjectHelpers.ClassName);
+            Class clazz = wipProject.GetClass(ClassName);
             clazz.AddField(new FieldDefinition<TimeSpan>("TimeSpanField"));
-            wipProject.AddFieldChangePostProcessing(ProjectHelpers.ClassName, ProjectHelpers.ValueFieldName,
-                new HistorizationProcessing<int>("BadHistProcessing", wipProject, clazz, ProjectHelpers.ValueFieldName, ProjectHelpers.HistoryRepositoryName, null, ["TimeSpanField"]));
+            wipProject.AddFieldChangePostProcessing(ClassName, ValueFieldName,
+                new HistorizationProcessing<int>("BadHistProcessing", wipProject, clazz, ValueFieldName, HistoryRepositoryName, null, ["TimeSpanField"]));
             await Assert.ThrowsAsync<UnhandledHistoryFieldTypeException>(async () => await Project.BuildAsync(wipProject));
         }
     }
