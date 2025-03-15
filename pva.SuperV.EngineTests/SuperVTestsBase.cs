@@ -40,27 +40,34 @@ namespace pva.SuperV.EngineTests
 
         protected async Task<string> StartTDengineContainerAsync()
         {
-            if (tdEngineContainer is null)
+            try
             {
-                tdEngineContainer = new ContainerBuilder()
-                    .WithImage("tdengine/tdengine:latest")
-                    .WithPortBinding(6030, false)
-                    .WithWaitStrategy(
-                        Wait.ForUnixContainer()
-                            .UntilPortIsAvailable(6030)
-                            .UntilPortIsAvailable(6041)
-                            .UntilPortIsAvailable(6043)
-                            .UntilPortIsAvailable(6060)
-                    )
-                    .Build();
+                if (tdEngineContainer is null)
+                {
+                    tdEngineContainer = new ContainerBuilder()
+                        .WithImage("tdengine/tdengine:latest")
+                        .WithPortBinding(6030, false)
+                        .WithWaitStrategy(
+                            Wait.ForUnixContainer()
+                                .UntilPortIsAvailable(6030)
+                        //                            .UntilPortIsAvailable(6041)
+                        //                            .UntilPortIsAvailable(6043)
+                        //                            .UntilPortIsAvailable(6060)
+                        )
+                        .Build();
 
-                // Start the container.
-                await tdEngineContainer.StartAsync()
-                  .ConfigureAwait(false);
-                // Wait to make sure the processes in container are ready and running.
-                Thread.Sleep(500);
+                    // Start the container.
+                    await tdEngineContainer.StartAsync()
+                      .ConfigureAwait(false);
+                    // Wait to make sure the processes in container are ready and running.
+                    Thread.Sleep(500);
+                }
+                return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
             }
-            return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         protected async Task StopTDengineContainerAsync()
