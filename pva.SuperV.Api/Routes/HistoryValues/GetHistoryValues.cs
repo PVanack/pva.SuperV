@@ -3,11 +3,11 @@ using pva.SuperV.Api.Services.History;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.HistoryRetrieval;
 
-namespace pva.SuperV.Api.Routes.History
+namespace pva.SuperV.Api.Routes.HistoryValues
 {
-    internal class GetHistoryRawValues
+    internal class GetHistoryValues
     {
-        internal static Results<Ok<HistoryRawResultModel>, NotFound<string>, BadRequest<string>> Handle(IHistoryValuesService historyValuesService, string projectId, string instanceName, HistoryRequestModel request)
+        internal static Results<Ok<HistoryResultModel>, NotFound<string>, BadRequest<string>> Handle(IHistoryValuesService historyValuesService, string projectId, string instanceName, HistoryRequestModel request)
         {
             try
             {
@@ -15,7 +15,7 @@ namespace pva.SuperV.Api.Routes.History
                 {
                     return TypedResults.BadRequest("Start time needs to be before end time");
                 }
-                HistoryRawResultModel value = historyValuesService.GetInstanceRawHistoryValues(projectId, instanceName, request);
+                HistoryResultModel value = historyValuesService.GetInstanceHistoryValues(projectId, instanceName, request);
                 return TypedResults.Ok(value);
             }
             catch (UnknownEntityException e)

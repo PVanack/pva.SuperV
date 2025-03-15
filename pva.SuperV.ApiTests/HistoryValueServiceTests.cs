@@ -3,6 +3,7 @@ using pva.SuperV.Engine;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.EngineTests;
 using pva.SuperV.Model.HistoryRetrieval;
+using pva.SuperV.Model.Instances;
 using Shouldly;
 
 namespace pva.SuperV.ApiTests
@@ -23,7 +24,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GivenInstamceWithHistory_WhenGettingHistory_ThenHistoryRowsAreReturned()
+        public void GivenInstanceWithHistory_WhenGettingHistoryRawValues_ThenHistoryRawRowsAreReturned()
         {
             // Given
             DateTime timestamp = DateTime.UtcNow;
@@ -33,7 +34,7 @@ namespace pva.SuperV.ApiTests
             runnableProject.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
             // Act
             HistoryRequestModel request = new(timestamp.AddSeconds(-1), DateTime.Now, null, null, [ValueFieldName]);
-            HistoryRawResultModel historyResult = historyValuesService!.GetInstanceRawHistoryValues(runnableProject.GetId(), InstanceName, request);
+            HistoryRawResultModel historyResult = historyValuesService.GetInstanceRawHistoryValues(runnableProject.GetId(), InstanceName, request);
 
             // Assert
             // This doesn' work, as comparison of the object values use Object Equals().
@@ -58,7 +59,24 @@ namespace pva.SuperV.ApiTests
                     actualValue.ShouldBe(expectedValue);
                 }
             }
+        }
 
+        [Fact]
+        public void GivenInstanceWithHistory_WhenGettingHistoryValues_ThenHistoryRowsAreReturned()
+        {
+            // Given
+            DateTime timestamp = DateTime.UtcNow;
+            HistoryResultModel expectedHistoryResult = new([new HistoryFieldModel(ValueFieldName, "System.Int32", 0)],
+                [new HistoryRowModel(timestamp, null, null, null, QualityLevel.Good, [new IntFieldValueModel(123456, null, QualityLevel.Good, timestamp)])]);
+
+            runnableProject.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
+            // Act
+            HistoryRequestModel request = new(timestamp.AddSeconds(-1), DateTime.Now, null, null, [ValueFieldName]);
+            HistoryResultModel historyResult = historyValuesService.GetInstanceHistoryValues(runnableProject.GetId(), InstanceName, request);
+
+            // Assert
+            // This doesn' work, as comparison of the object values use Object Equals().
+            historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
         }
     }
 }

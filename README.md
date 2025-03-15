@@ -52,8 +52,9 @@ The engine allows to define [fields](/pva.SuperV.Engine/FiedldDefinitions.cs) of
 but the API needs to have concrete type not generics ones, so changes need to be done in the following files should you 
 want to add a new field type:
 - [Field.SetValue()](/pva.SuperV.Engine/Field.cs)
-- the [field definition mapper](/pva.SuperV.Model/FieldDefinitions/FieldDefinitionMapper.cs)
-- the [field value mapper](/pva.SuperV.Model/Instances/FieldValueMapper.cs)
+- [FieldDefinitionMapper](/pva.SuperV.Model/FieldDefinitions/FieldDefinitionMapper.cs)
+- [FieldValueMapper](/pva.SuperV.Model/Instances/FieldValueMapper.cs)
+- [HistoryRowMapper](/pva.SuperV.Model/HistoryRetrieval/HistoryRowMapper.cs)
 
 Current handled types are the following:
 - bool

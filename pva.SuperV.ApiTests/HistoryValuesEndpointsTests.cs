@@ -3,6 +3,7 @@ using pva.Helpers.Extensions;
 using pva.SuperV.Api.Services.History;
 using pva.SuperV.Engine;
 using pva.SuperV.Model.HistoryRetrieval;
+using pva.SuperV.Model.Instances;
 using Shouldly;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -29,7 +30,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task GivenInstanceWithHistoryValues_WhenGettingHistoryValues_ThenHistoryValuesAreReturned()
+        public async Task GivenInstanceWithHistoryValues_WhenGettingHistoryRawValues_ThenHistoryRawValuesAreReturned()
         {
             // GIVEN
             DateTime rowTimestamp = DateTime.Now;
@@ -72,6 +73,26 @@ namespace pva.SuperV.ApiTests
                 }
             }
 
+        }
+
+        [Fact]
+        public async Task GivenInstanceWithHistoryValues_WhenGettingHistoryValues_ThenHistoryValuesAreReturned()
+        {
+            // GIVEN
+            DateTime rowTimestamp = DateTime.Now;
+            HistoryResultModel expectedHistoryResult = new([new HistoryFieldModel("Field1", "System.Int32", 0)],
+                [new HistoryRowModel(rowTimestamp, null, null, null, QualityLevel.Good, [new IntFieldValueModel(1, null, QualityLevel.Good, rowTimestamp)])]);
+            HistoryRequestModel request = new(DateTime.Now.AddHours(-1), DateTime.Now, null, null, ["Field1"]);
+            MockedHistoryValuesService.GetInstanceHistoryValues("Project", "Instance", Arg.Any<HistoryRequestModel>())
+                .Returns(expectedHistoryResult);
+
+            // WHEN
+            var result = await client.PostAsJsonAsync("/history-values/Project/Instance", request);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            HistoryResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryResultModel>();
+            historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
         }
     }
 }

@@ -12,15 +12,41 @@ namespace pva.SuperV.Api.Services.History
             if (project is RunnableProject runnableProject)
             {
                 Instance instance = runnableProject.GetInstance(instanceName);
+                List<IFieldDefinition> fields;
+                HistoryRepository? historyRepository;
+                string? classTimeSerieId;
+                runnableProject.GetHistoryParametersForFields(instance, request.HistoryFields, out fields, out historyRepository, out classTimeSerieId);
                 int fieldIndex = 0;
-                List<HistoryFieldModel> header = [.. request.HistoryFields.Select(fieldName =>
+                List<HistoryFieldModel> header = [.. fields.Select(fieldDefinition =>
                 {
-                    IField field = instance.GetField(fieldName);
-                    return new HistoryFieldModel(fieldName, field.Type.ToString(), fieldIndex++);
+                    return new HistoryFieldModel(fieldDefinition.Name, fieldDefinition.Type.ToString(), fieldIndex++);
                 })];
-                List<HistoryRow> rows = runnableProject.GetHistoryValues(instanceName, request.StartTime, request.EndTime,
-                        request.HistoryFields);
-                return new HistoryRawResultModel(header, HistoryRawRowMapper.ToDto(rows));
+
+                List<HistoryRow> rows = runnableProject.GetHistoryValues(instanceName, request.StartTime, request.EndTime, fields, historyRepository!, classTimeSerieId!);
+                return new HistoryRawResultModel(header, HistoryRowMapper.ToRawDto(rows));
+
+            }
+            throw new NonRunnableProjectException(projectId);
+        }
+
+        public HistoryResultModel GetInstanceHistoryValues(string projectId, string instanceName, HistoryRequestModel request)
+        {
+            Project project = GetProjectEntity(projectId);
+            if (project is RunnableProject runnableProject)
+            {
+                Instance instance = runnableProject.GetInstance(instanceName);
+                List<IFieldDefinition> fields;
+                HistoryRepository? historyRepository;
+                string? classTimeSerieId;
+                runnableProject.GetHistoryParametersForFields(instance, request.HistoryFields, out fields, out historyRepository, out classTimeSerieId);
+                int fieldIndex = 0;
+                List<HistoryFieldModel> header = [.. fields.Select(fieldDefinition =>
+                {
+                    return new HistoryFieldModel(fieldDefinition.Name, fieldDefinition.Type.ToString(), fieldIndex++);
+                })];
+
+                List<HistoryRow> rows = runnableProject.GetHistoryValues(instanceName, request.StartTime, request.EndTime, fields, historyRepository!, classTimeSerieId!);
+                return new HistoryResultModel(header, HistoryRowMapper.ToDto(rows, fields));
 
             }
             throw new NonRunnableProjectException(projectId);

@@ -1,7 +1,6 @@
-﻿using pva.SuperV.Engine.Exceptions;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
-namespace pva.SuperV.Model
+namespace pva.SuperV.Engine.Exceptions
 {
     public class UnhandledMappingException : SuperVException
     {
