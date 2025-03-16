@@ -23,8 +23,8 @@ Project creation workflow using the engine library is as follows (the same can b
 	- [EnumFormatter](/pva.SuperV.Engine/FieldFormatters/FieldFormatter.md#Enum-formatter) which allows to format integer values to strings (i.e. to convert 0/1 values to OFF/ON string)
 - Add classes to this project with `wipProject.AddClass(string className)` or `wipProject.AddClass(string className, String baseClassName)`.
 - Add fields definitions to the created classes by calling `wpiProject.AddField(string className, IFieldDefinition field)` or
-`AddField(string className, IFieldDefinition field, string formatterName)`. The field definition should be defined by `FieldDefinition\<T\>` where `T` is a basic type (see [FieldDefinitions](#Field-definitions) for handled types).
-- Add fields value processings to the created fields by calling `wipProject.AddFieldChangePostProcessing(string className, string fieldName, IFieldValueProcessing fieldValueProcessing)`. `fieldValueProcessing` can be on of the following:
+`AddField(string className, IFieldDefinition field, string formatterName)`. The field definition should be defined by `FieldDefinition<T>` where `T` is a basic type (see [FieldDefinitions](#Field-definitions) for handled types).
+- Add fields value processings to the created fields by calling `wipProject.AddFieldChangePostProcessing(string className, string fieldName, IFieldValueProcessing fieldValueProcessing)`. `fieldValueProcessing` can be one of the following:
 	- [AlarmStateProcessing](/pva.SuperV.Engine/Processing/FieldValueProcessing.md#Alarm-state-processing)  to check the value against 2 or 4 thresholds and set an alarm state and optionally an acknowledgment field.
 	- [HistorizationProcessing](/pva.SuperV.Engine/Processing/FieldValueProcessing.md#Historization-processing) to historize a list of fields to the history storage engine if one is defined in project.
 - Build the WIP project to create a runnable project by calling `Project.BuildAsync(wipProject)`. This creates a dynamic assembly
@@ -34,18 +34,16 @@ and [defined fields](/pva.SuperV.Engine/FiedldDefinitions.cs).
 [The created instance](/pva.SuperV.Engine/Instance.cs) will then have the fields and processings associated with the class
 they are defined against.
 - Write values with their associated quality and timestamp to instances fields through one of the
-`runnableProject.SetInstaceValue\<T\>()` overloads.
-
-If changes to the structure of a runnable project need to be done, a new WIP project must be created by calling
-`Project.CreateProject(runnableProject)`. This project's structure can then modified by going through the above workflow.
-
-Projects structure can be saved to and restored from file by calling `ProjectStorage,SaveProjectDefinition\<T\>(T project)` and
-`ProjectStorage,LoadProjectDefinition\<T\>(string filename)`.
+`runnableProject.SetInstanceValue<T>(string instanceName, string fieldName, T value)` overloads.
+- If changes to the structure of a runnable project need to be done, a new WIP project must be created by calling
+`Project.CreateProject(runnableProject)`. This WIP project's structure can then modified by going through the above workflow.
+- Projects structure can be saved to and restored from file by calling `ProjectStorage,SaveProjectDefinition<T>(T project)` and
+`ProjectStorage,LoadProjectDefinition<T>(string filename)`.
 Runnable projects instances can be saved to and restored from file by calling
 `ProjectStorage,SaveProjectInstances(RunnableProject runnableProject)` and
 `ProjectStorage,LoadProjectInstances(RunnableProject runnableProject, string filename)`.
 
-Projects can be unloaded from memory by calling `Project.Unload(Project project)`.
+Projects, when no more used, can be unloaded from memory by calling `Project.Unload(Project project)`.
 
 ## Field definitions
 The engine allows to define [fields](/pva.SuperV.Engine/FiedldDefinitions.cs) of any type,
