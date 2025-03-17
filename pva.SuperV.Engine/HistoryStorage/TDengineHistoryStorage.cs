@@ -1,4 +1,5 @@
 ﻿using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.HistoryRetrieval;
 using pva.SuperV.Engine.Processing;
 using TDengine.Driver;
 using TDengine.Driver.Client;
@@ -75,7 +76,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"connect to {builder}", e);
+                throw new TdEngineException($"connect to {_connectionString}", e);
             }
         }
 
@@ -94,7 +95,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"upsert repository {repositoryName}", e);
+                throw new TdEngineException($"upsert repository {repositoryName} on {_connectionString}", e);
             }
             return repositoryName;
         }
@@ -113,7 +114,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"delete repository {repositoryActualName}", e);
+                throw new TdEngineException($"delete repository {repositoryActualName} on {_connectionString}", e);
             }
         }
 
@@ -132,7 +133,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             try
             {
                 _tdEngineClient?.Exec($"USE {repositoryStorageId};");
-                string fieldNames = "TS TIMESTAMP,";
+                string fieldNames = "TS TIMESTAMP, QUALITY NCHAR(10),";
                 fieldNames +=
                     historizationProcessing.FieldsToHistorize
                         .Select(field => $"_{field.Name} {GetFieldDbType(field)}")
@@ -146,7 +147,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"upsert class time series {tableName}", e);
+                throw new TdEngineException($"upsert class time series {tableName} on {_connectionString}", e);
             }
             return tableName;
         }
@@ -159,19 +160,20 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <param name="instanceName">The instance name.</param>
         /// <param name="timestamp">the timestamp of the values</param>
         /// <param name="fieldsToHistorize">List of fields to be historized.</param>
-        public void HistorizeValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime timestamp, List<IField> fieldsToHistorize)
+        public void HistorizeValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime timestamp, QualityLevel? quality, List<IField> fieldsToHistorize)
         {
             string instanceTableName = instanceName.ToLowerInvariant();
             _tdEngineClient!.Exec($"USE {repositoryStorageId};");
             using var stmt = _tdEngineClient!.StmtInit();
             try
             {
-                string fieldsPlaceholders = Enumerable.Repeat("?", fieldsToHistorize.Count + 1)
+                string fieldsPlaceholders = Enumerable.Repeat("?", fieldsToHistorize.Count + 2)
                     .Aggregate((a, b) => $"{a},{b}");
                 string sql = $"INSERT INTO ? USING {classTimeSerieId} TAGS(?) VALUES ({fieldsPlaceholders});";
-                List<object> rowValues = new(fieldsToHistorize.Count + 1)
+                List<object> rowValues = new(fieldsToHistorize.Count + 2)
                     {
-                        timestamp
+                        timestamp.ToLocalTime(),
+                        (quality ?? QualityLevel.Good).ToString()
                     };
                 fieldsToHistorize.ForEach(field =>
                     rowValues.Add(((dynamic)field).Value));
@@ -189,7 +191,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"insert to table {classTimeSerieId}", e);
+                throw new TdEngineException($"insert to table {classTimeSerieId} on {_connectionString}", e);
             }
         }
 
@@ -199,41 +201,118 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <param name="repositoryStorageId">The history repository ID.</param>
         /// <param name="classTimeSerieId">The time series ID.</param>
         /// <param name="instanceName">The instance name.</param>
-        /// <param name="from">From timestamp.</param>
-        /// <param name="to">To timestamp.</param>
+        /// <param name="timeRange">Time range for querying.</param>
         /// <param name="fields">List of fields to be retrieved. One of them should have the <see cref="HistorizationProcessing{T}"/></param>
         /// <returns>List of history rows.</returns>
-        public List<HistoryRow> GetHistoryValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime from, DateTime to, List<IFieldDefinition> fields)
+        public List<HistoryRow> GetHistoryValues(string repositoryStorageId, string classTimeSerieId, string instanceName, HistoryTimeRange timeRange, List<IFieldDefinition> fields)
         {
             string instanceTableName = instanceName.ToLowerInvariant();
             List<HistoryRow> rows = [];
             try
             {
                 _tdEngineClient!.Exec($"USE {repositoryStorageId};");
-                string fieldNames = "TS," + fields.Select(field => $"_{field.Name}")
+                string fieldNames = fields.Select(field => $"_{field.Name}")
                     .Aggregate((a, b) => $"{a},{b}");
-                string query = $"SELECT {fieldNames} FROM {instanceTableName} WHERE TS between {FormatToSqlDate(from)} and {FormatToSqlDate(to)}";
-                using IRows row = _tdEngineClient!.Query(query);
+                string sqlQuery =
+                    $@"
+SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
+ WHERE TS between ""{FormatToSqlDate(timeRange.From)}"" and ""{FormatToSqlDate(timeRange.To)}""
+ ";
+                using IRows row = _tdEngineClient!.Query(sqlQuery);
                 while (row.Read())
                 {
-                    rows.Add(new HistoryRow(row));
+                    rows.Add(new HistoryRow(row, fields));
                 }
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"select from table {instanceTableName}", e);
+                throw new TdEngineException($"select from table {instanceTableName} on {_connectionString}", e);
             }
             return rows;
         }
 
         /// <summary>
-        /// Formats a DateTime to SAL format used by TDengine.
+        /// Gets instance statistic values historized between 2 timestamps.
+        /// </summary>
+        /// <param name="repositoryStorageId">The history repository ID.</param>
+        /// <param name="classTimeSerieId">The time series ID.</param>
+        /// <param name="instanceName">The instance name.</param>
+        /// <param name="timeRange">Query containing time range parameters.</param>
+        /// <param name="fields">List of fields to be retrieved. One of them should have the <see cref="HistorizationProcessing{T}"/></param>
+        /// <returns>List of history rows.</returns>
+        public List<HistoryStatisticRow> GetHistoryStatistics(string repositoryStorageId, string classTimeSerieId, string instanceName,
+            HistoryStatisticTimeRange timeRange, List<HistoryStatisticField> fields)
+        {
+            string instanceTableName = instanceName.ToLowerInvariant();
+            List<HistoryStatisticRow> rows = [];
+            try
+            {
+                _tdEngineClient!.Exec($"USE {repositoryStorageId};");
+                string fieldNames = fields.Select(field => $"{field.StatisticFunction}(_{field.Field.Name})")
+                    .Aggregate((a, b) => $"{a},{b}");
+                string fillClause = "";
+                if (timeRange.FillMode is not null)
+                {
+                    fillClause = $"FILL({timeRange.FillMode})";
+                }
+                string sqlQuery =
+                    $@"
+SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {instanceTableName}
+ WHERE TS between ""{FormatToSqlDate(timeRange.From)}"" and ""{FormatToSqlDate(timeRange.To)}""
+ INTERVAL({FormatInterval(timeRange.Interval)}) SLIDING({FormatInterval(timeRange.Interval)}) {fillClause}
+ ";
+                using IRows row = _tdEngineClient!.Query(sqlQuery);
+                while (row.Read())
+                {
+                    rows.Add(new HistoryStatisticRow(row, fields));
+                }
+            }
+            catch (Exception e)
+            {
+                throw new TdEngineException($"select from table {instanceTableName} on {_connectionString}", e);
+            }
+            return rows;
+        }
+
+        /// <summary>
+        /// Formats a DateTime to SQL format used by TDengine.
         /// </summary>
         /// <param name="dateTime">The date time to be formatted.</param>
         /// <returns>SQL string for date time.</returns>
         private static string FormatToSqlDate(DateTime dateTime)
         {
-            return $"\"{dateTime:yyyy-MM-dd HH:mm:ss.fff}\"";
+            return $"{dateTime.ToUniversalTime():yyyy-MM-dd HH:mm:ss.fffK}";
+        }
+
+        private static string FormatInterval(TimeSpan? interval)
+        {
+            if (interval is null || !interval.HasValue || interval.Value.TotalNanoseconds <= 0)
+            {
+                return "";
+            }
+            TimeSpan timespan = interval.Value;
+            string intervalText = "";
+            intervalText += GetIntervalPeriod(timespan.Days / 365, 'y');
+            intervalText += GetIntervalPeriod((timespan.Days % 365) / 30, 'm');
+            intervalText += GetIntervalPeriod(((timespan.Days % 365) % 30) / 7, 'w');
+            intervalText += GetIntervalPeriod(((timespan.Days % 365) % 30) % 7, 'd');
+            intervalText += GetIntervalPeriod(timespan.Hours, 'h');
+            intervalText += GetIntervalPeriod(timespan.Minutes, 'm');
+            intervalText += GetIntervalPeriod(timespan.Seconds, 's');
+            intervalText += GetIntervalPeriod(timespan.Milliseconds, 'a');
+            intervalText += GetIntervalPeriod(timespan.Nanoseconds, 'b');
+            // Remove last comma and space
+            return intervalText.TrimEnd()[..^1];
+        }
+
+        private static string GetIntervalPeriod(int value, char periodLetter)
+        {
+            if (value > 0)
+            {
+                return $"{value}{periodLetter}, ";
+            }
+
+            return "";
         }
 
         /// <summary>

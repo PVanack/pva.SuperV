@@ -198,36 +198,58 @@ namespace pva.SuperV.Engine
                 Value?.ToString();
         }
         public static bool ConvertToBool(string fieldName, string stringValue)
-             => Boolean.TryParse(stringValue, out bool result) ? result : throw new StringConversionException(fieldName, stringValue, typeof(bool));
+             => Boolean.TryParse(stringValue, out bool result)
+                    ? result
+                    : throw new StringConversionException(fieldName, stringValue, typeof(bool));
 
         public static DateTime ConvertToDateTime(string fieldName, string stringValue)
-             => DateTime.TryParse(stringValue, CultureInfo.InvariantCulture, out DateTime result) ? result : throw new StringConversionException(fieldName, stringValue, typeof(DateTime));
+             => DateTime.TryParse(stringValue, CultureInfo.InvariantCulture, out DateTime result)
+                    ? result.ToUniversalTime()
+                    : throw new StringConversionException(fieldName, stringValue, typeof(DateTime));
 
         public static double ConvertToDouble(string fieldName, string stringValue)
-             => double.TryParse(stringValue, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) ? result : throw new StringConversionException(fieldName, stringValue, typeof(double));
+             => double.TryParse(stringValue, NumberStyles.Float, CultureInfo.InvariantCulture, out double result)
+                    ? result
+                    : throw new StringConversionException(fieldName, stringValue, typeof(double));
 
         public static float ConvertToFloat(string fieldName, string stringValue)
-             => float.TryParse(stringValue, NumberStyles.Float, CultureInfo.InvariantCulture, out float result) ? result : throw new StringConversionException(fieldName, stringValue, typeof(float));
+             => float.TryParse(stringValue, NumberStyles.Float, CultureInfo.InvariantCulture, out float result)
+                    ? result
+                    : throw new StringConversionException(fieldName, stringValue, typeof(float));
 
         public static int ConvertToInt(string fieldName, string stringValue)
-             => int.TryParse(stringValue, out int result) ? result : throw new StringConversionException(fieldName, stringValue, typeof(int));
+             => int.TryParse(stringValue, out int result)
+                    ? result
+                    : throw new StringConversionException(fieldName, stringValue, typeof(int));
 
         public static long ConvertToLong(string fieldName, string stringValue)
-             => long.TryParse(stringValue, out long result) ? result : throw new StringConversionException(fieldName, stringValue, typeof(long));
+             => long.TryParse(stringValue, out long result)
+                    ? result
+                    : throw new StringConversionException(fieldName, stringValue, typeof(long));
 
         public static short ConvertToShort(string fieldName, string stringValue)
-             => short.TryParse(stringValue, out short result) ? result : throw new StringConversionException(fieldName, stringValue, typeof(short));
+             => short.TryParse(stringValue, out short result)
+                    ? result
+                    : throw new StringConversionException(fieldName, stringValue, typeof(short));
 
         public static TimeSpan ConvertToTimeSpan(string fieldName, string stringValue)
-             => TimeSpan.TryParse(stringValue, CultureInfo.InvariantCulture, out TimeSpan result) ? result : throw new StringConversionException(fieldName, stringValue, typeof(TimeSpan));
+             => TimeSpan.TryParse(stringValue, CultureInfo.InvariantCulture, out TimeSpan result)
+                    ? result
+                    : throw new StringConversionException(fieldName, stringValue, typeof(TimeSpan));
 
         public static uint ConvertToUint(string fieldName, string stringValue)
-             => uint.TryParse(stringValue, out uint result) ? result : throw new StringConversionException(fieldName, stringValue, typeof(uint));
+             => uint.TryParse(stringValue, out uint result)
+                    ? result
+                    : throw new StringConversionException(fieldName, stringValue, typeof(uint));
 
         public static ulong ConvertToUlong(string fieldName, string stringValue)
-             => ulong.TryParse(stringValue, out ulong result) ? result : throw new StringConversionException(fieldName, stringValue, typeof(ulong));
+             => ulong.TryParse(stringValue, out ulong result)
+                    ? result
+                    : throw new StringConversionException(fieldName, stringValue, typeof(ulong));
 
         public static ushort ConvertToUshort(string fieldName, string stringValue)
-             => ushort.TryParse(stringValue, out ushort result) ? result : throw new StringConversionException(fieldName, stringValue, typeof(ushort));
+             => ushort.TryParse(stringValue, out ushort result)
+                    ? result
+                    : throw new StringConversionException(fieldName, stringValue, typeof(ushort));
     }
 }

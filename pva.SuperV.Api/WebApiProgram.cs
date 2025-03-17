@@ -4,12 +4,14 @@ using pva.SuperV.Api.Routes.FieldDefinitions;
 using pva.SuperV.Api.Routes.FieldFormatters;
 using pva.SuperV.Api.Routes.FieldProcessings;
 using pva.SuperV.Api.Routes.HistoryRepositories;
+using pva.SuperV.Api.Routes.HistoryValues;
 using pva.SuperV.Api.Routes.Instances;
 using pva.SuperV.Api.Routes.Projects;
 using pva.SuperV.Api.Services.Classes;
 using pva.SuperV.Api.Services.FieldDefinitions;
 using pva.SuperV.Api.Services.FieldFormatters;
 using pva.SuperV.Api.Services.FieldProcessings;
+using pva.SuperV.Api.Services.History;
 using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Api.Services.Instances;
 using pva.SuperV.Api.Services.Projects;
@@ -18,6 +20,7 @@ using pva.SuperV.Model.FieldDefinitions;
 using pva.SuperV.Model.FieldFormatters;
 using pva.SuperV.Model.FieldProcessings;
 using pva.SuperV.Model.HistoryRepositories;
+using pva.SuperV.Model.HistoryRetrieval;
 using pva.SuperV.Model.Instances;
 using pva.SuperV.Model.Projects;
 using Scalar.AspNetCore;
@@ -55,7 +58,8 @@ namespace pva.SuperV.Api
                 .AddSingleton<IFieldDefinitionService, FieldDefinitionService>()
                 .AddSingleton<IFieldProcessingService, FieldProcessingService>()
                 .AddSingleton<IInstanceService, InstanceService>()
-                .AddSingleton<IFieldValueService, FieldValueService>();
+                .AddSingleton<IFieldValueService, FieldValueService>()
+                .AddSingleton<IHistoryValuesService, HistoryValuesService>();
             builder.Services.AddOpenApi(options =>
             {
                 options.AddDocumentTransformer((document, context, cancellationToken) =>
@@ -101,7 +105,8 @@ namespace pva.SuperV.Api
                .MapHistoryRepositoryEndpoints()
                .MapFieldDefinitionEndpoints()
                .MapFieldProcessingEndpoints()
-               .MapInstancesEndpoints();
+               .MapInstancesEndpoints()
+               .MapHistoryValuesEndpoints();
 
             app.Run();
         }
@@ -159,6 +164,11 @@ namespace pva.SuperV.Api
     [JsonSerializable(typeof(UintFieldValueModel))]
     [JsonSerializable(typeof(UlongFieldValueModel))]
     [JsonSerializable(typeof(UshortFieldValueModel))]
+
+    [JsonSerializable(typeof(HistoryRequestModel))]
+    [JsonSerializable(typeof(HistoryRawResultModel))]
+    [JsonSerializable(typeof(List<HistoryFieldModel>))]
+    [JsonSerializable(typeof(List<HistoryRawRowModel>))]
     internal partial class AppJsonSerializerContext : JsonSerializerContext
     {
     }

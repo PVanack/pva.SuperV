@@ -196,7 +196,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             MockedProjectService.BuildProjectAsync("Project")
-                .Throws(new NonWipProjectException("Project"));
+                .ThrowsAsync(new NonWipProjectException("Project"));
 
             // WHEN
             var response = await client.PostAsync("/projects/Project/build", null);

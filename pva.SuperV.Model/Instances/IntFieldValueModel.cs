@@ -6,7 +6,7 @@ namespace pva.SuperV.Model.Instances
     [Description("Int field value")]
     public record IntFieldValueModel(
         [property: Description("Field value.")]
-        int Value,
+        int? Value,
         string? FormattedValue,
         QualityLevel? Quality,
         DateTime? Timestamp)

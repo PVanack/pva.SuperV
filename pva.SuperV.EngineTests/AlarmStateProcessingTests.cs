@@ -7,7 +7,7 @@ namespace pva.SuperV.EngineTests
 {
     public class AlarmStateProcessingTests
     {
-        private const string ProcessingName = $"{ProjectHelpers.ClassName}_AlmProcessing";
+        private const string ProcessingName = $"TestClass_AlmProcessing";
         private const string ValueFieldName = "Value";
         private const string HighHighLimitFieldName = "HighHigh";
         private const string HighLimitFieldName = "High";
@@ -25,7 +25,7 @@ namespace pva.SuperV.EngineTests
 
         public AlarmStateProcessingTests()
         {
-            clazz = new(ProjectHelpers.ClassName);
+            clazz = new("TestClass");
             clazz.FieldDefinitions.Add(ValueFieldName, new FieldDefinition<double>(ValueFieldName, 50));
             clazz.FieldDefinitions.Add(HighHighLimitFieldName, new FieldDefinition<double>(HighHighLimitFieldName, 100));
             clazz.FieldDefinitions.Add(HighLimitFieldName, new FieldDefinition<double>(HighLimitFieldName, 75));

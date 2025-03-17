@@ -5,29 +5,31 @@ namespace pva.SuperV.Model.Instances
 {
     public static class FieldValueMapper
     {
-        public static FieldValueModel ToDto(IField field)
+        public static FieldValueModel ToDto(IField field) => field switch
         {
-            return field switch
-            {
-                Field<bool> boolField => new BoolFieldValueModel(boolField.Value, FormatValue(boolField), boolField.Quality, boolField.Timestamp),
-                Field<DateTime> dateTimeField => new DateTimeFieldValueModel(dateTimeField.Value, FormatValue(dateTimeField), dateTimeField.Quality, dateTimeField.Timestamp),
-                Field<double> doubleField => new DoubleFieldValueModel(doubleField.Value, FormatValue(doubleField), doubleField.Quality, doubleField.Timestamp),
-                Field<float> floatField => new FloatFieldValueModel(floatField.Value, FormatValue(floatField), floatField.Quality, floatField.Timestamp),
-                Field<int> intField => new IntFieldValueModel(intField.Value, FormatValue(intField), intField.Quality, intField.Timestamp),
-                Field<long> longField => new LongFieldValueModel(longField.Value, FormatValue(longField), longField.Quality, longField.Timestamp),
-                Field<short> shortField => new ShortFieldValueModel(shortField.Value, FormatValue(shortField), shortField.Quality, shortField.Timestamp),
-                Field<string> stringField => new StringFieldValueModel(stringField.Value, stringField.Quality, stringField.Timestamp),
-                Field<TimeSpan> timeSpanField => new TimeSpanFieldValueModel(timeSpanField.Value, FormatValue(timeSpanField), timeSpanField.Quality, timeSpanField.Timestamp),
-                Field<uint> uintField => new UintFieldValueModel(uintField.Value, FormatValue(uintField), uintField.Quality, uintField.Timestamp),
-                Field<ulong> ulongField => new UlongFieldValueModel(ulongField.Value, FormatValue(ulongField), ulongField.Quality, ulongField.Timestamp),
-                Field<ushort> ushortField => new UshortFieldValueModel(ushortField.Value, FormatValue(ushortField), ushortField.Quality, ushortField.Timestamp),
-                _ => throw new UnhandledMappingException(nameof(FieldValueMapper), field.Type.ToString())
-            };
+            Field<bool> derivedField => new BoolFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
+            Field<DateTime> derivedField => new DateTimeFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
+            Field<double> derivedField => new DoubleFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
+            Field<float> derivedField => new FloatFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
+            Field<int> derivedField => new IntFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
+            Field<long> derivedField => new LongFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
+            Field<short> derivedField => new ShortFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
+            Field<string> derivedField => new StringFieldValueModel(derivedField.Value, derivedField.Quality, derivedField.Timestamp),
+            Field<TimeSpan> derivedField => new TimeSpanFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
+            Field<uint> derivedField => new UintFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
+            Field<ulong> derivedField => new UlongFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
+            Field<ushort> derivedField => new UshortFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
+            _ => throw new UnhandledMappingException(nameof(FieldValueMapper), field.Type.ToString())
+        };
+
+        public static string? FormatValue<T>(Field<T> field)
+        {
+            return FormatValue(field.FieldDefinition as FieldDefinition<T>, field.Value);
         }
 
-        private static string? FormatValue<T>(Field<T> field)
+        public static string? FormatValue<T>(FieldDefinition<T> fieldDefinition, T? value)
         {
-            return field.FieldDefinition?.Formatter?.ConvertToString(field.Value) ?? null;
+            return fieldDefinition.Formatter?.ConvertToString(value) ?? null;
         }
 
         public static void SetFieldValue(IField field, FieldValueModel value)

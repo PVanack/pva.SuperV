@@ -34,8 +34,11 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
 
-    - name: Run tests with coverage
-      run: dotnet test --no-build --verbosity normal -property:ParallelizeTestCollections=false --collect:"XPlat Code Coverage" --results-directory ./coverage
+    - name: Run Engine tests with coverage
+      run: dotnet test --no-build --verbosity normal -p:TestTfmsInParallel=false -p:ParallelizeTestCollections=false --collect:"XPlat Code Coverage" --results-directory ./coverage pva.SuperV.EngineTests
+
+    - name: Run API tests with coverage
+      run: dotnet test --no-build --verbosity normal -p:TestTfmsInParallel=false -p:ParallelizeTestCollections=false --collect:"XPlat Code Coverage" --results-directory ./coverage pva.SuperV.ApiTests
 
     - name: Generate code coverage summary report
       uses: danielpalme/ReportGenerator-GitHub-Action@5.4.4

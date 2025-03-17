@@ -6,7 +6,7 @@ namespace pva.SuperV.Model.Instances
     [Description("Unsigned long field value")]
     public record UlongFieldValueModel(
         [property: Description("Field value.")]
-        ulong Value,
+        ulong? Value,
         string? FormattedValue,
         QualityLevel? Quality,
         DateTime? Timestamp)

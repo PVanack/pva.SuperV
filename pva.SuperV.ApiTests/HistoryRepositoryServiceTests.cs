@@ -8,7 +8,7 @@ using Shouldly;
 namespace pva.SuperV.ApiTests
 {
     [Collection("Project building")]
-    public class HistoryRepositoryServiceTests
+    public class HistoryRepositoryServiceTests : SuperVTestsBase
     {
         private readonly HistoryRepositoryService historyRepositoryService;
         private readonly RunnableProject runnableProject;
@@ -17,8 +17,8 @@ namespace pva.SuperV.ApiTests
         public HistoryRepositoryServiceTests()
         {
             historyRepositoryService = new();
-            runnableProject = ProjectHelpers.CreateRunnableProject();
-            wipProject = ProjectHelpers.CreateWipProject(NullHistoryStorageEngine.Prefix);
+            runnableProject = CreateRunnableProject();
+            wipProject = CreateWipProject(NullHistoryStorageEngine.Prefix);
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace pva.SuperV.ApiTests
         [Fact]
         public void GetHistoryRepositoryByName_ShouldReturnHistoryRepository()
         {
-            HistoryRepositoryModel expectedHistoryRepository = new(ProjectHelpers.HistoryRepositoryName);
+            HistoryRepositoryModel expectedHistoryRepository = new(HistoryRepositoryName);
             // Act
             HistoryRepositoryModel result = historyRepositoryService.GetHistoryRepository(runnableProject.GetId(), expectedHistoryRepository.Name);
 
@@ -45,7 +45,7 @@ namespace pva.SuperV.ApiTests
         [Fact]
         public void CreateHistoryRepository_ShouldCreateHistoryRepository()
         {
-            HistoryRepositoryModel expectedHistoryRepository = new($"{ProjectHelpers.HistoryRepositoryName}Test");
+            HistoryRepositoryModel expectedHistoryRepository = new($"{HistoryRepositoryName}Test");
             // Act
             HistoryRepositoryModel result = historyRepositoryService.CreateHistoryRepository(wipProject.GetId(), expectedHistoryRepository);
 
@@ -57,7 +57,7 @@ namespace pva.SuperV.ApiTests
         [Fact]
         public void DeleteHistoryRepository_ShouldDeleteHistoryRepository()
         {
-            HistoryRepositoryModel expectedHistoryRepository = new($"{ProjectHelpers.HistoryRepositoryName}");
+            HistoryRepositoryModel expectedHistoryRepository = new($"{HistoryRepositoryName}");
             // Act
             historyRepositoryService.DeleteHistoryRepository(wipProject.GetId(), expectedHistoryRepository.Name);
 

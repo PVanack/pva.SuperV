@@ -2,7 +2,7 @@
 using pva.SuperV.Api.Services.FieldFormatters;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
-using pva.SuperV.Engine.FieldValueFormatters;
+using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.EngineTests;
 using pva.SuperV.Model.FieldFormatters;
 using Shouldly;
@@ -10,7 +10,7 @@ using Shouldly;
 namespace pva.SuperV.ApiTests
 {
     [Collection("Project building")]
-    public class FieldFormatterServiceTests
+    public class FieldFormatterServiceTests : SuperVTestsBase
     {
         private readonly FieldFormatterService _fieldFormatterService;
         private readonly RunnableProject runnableProject;
@@ -19,7 +19,7 @@ namespace pva.SuperV.ApiTests
         public FieldFormatterServiceTests()
         {
             _fieldFormatterService = new();
-            runnableProject = ProjectHelpers.CreateRunnableProject();
+            runnableProject = CreateRunnableProject();
             wipProject = Project.CreateProject(runnableProject);
         }
 
@@ -40,7 +40,7 @@ namespace pva.SuperV.ApiTests
         public void GetProjectFieldFormatters_ShouldReturnListOfProjectFieldFormatters()
         {
             // GIVEN
-            List<FieldFormatterModel> expectedFieldFormatters = [new EnumFormatterModel(ProjectHelpers.AlarmStatesFormatterName, ProjectHelpers.AlarmStatesFormatterValues)];
+            List<FieldFormatterModel> expectedFieldFormatters = [new EnumFormatterModel(AlarmStatesFormatterName, AlarmStatesFormatterValues)];
             // WHEN
             List<FieldFormatterModel> fieldFormatters = _fieldFormatterService.GetFieldFormatters(runnableProject.GetId());
 
@@ -54,7 +54,7 @@ namespace pva.SuperV.ApiTests
         public void GetProjectFieldFormatter_ShouldReturnFieldFormatter()
         {
             // GIVEN
-            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel(ProjectHelpers.AlarmStatesFormatterName, ProjectHelpers.AlarmStatesFormatterValues);
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel(AlarmStatesFormatterName, AlarmStatesFormatterValues);
             // WHEN
             FieldFormatterModel fieldFormatter = _fieldFormatterService.GetFieldFormatter(runnableProject.GetId(), expectedFieldFormatter.Name);
 
@@ -68,7 +68,7 @@ namespace pva.SuperV.ApiTests
         public void CreateProjectFieldFormatter_ShouldCreateFieldFormatter()
         {
             // GIVEN
-            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{ProjectHelpers.AlarmStatesFormatterName}New", ProjectHelpers.AlarmStatesFormatterValues);
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{AlarmStatesFormatterName}New", AlarmStatesFormatterValues);
             // WHEN
             FieldFormatterModel fieldFormatter = _fieldFormatterService.CreateFieldFormatter(wipProject.GetId(), expectedFieldFormatter);
 
@@ -82,7 +82,7 @@ namespace pva.SuperV.ApiTests
         public void DeleteWipProjectFieldFormatter_ShouldDeleteFieldFormatter()
         {
             // GIVEN
-            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{ProjectHelpers.AlarmStatesFormatterName}", ProjectHelpers.AlarmStatesFormatterValues);
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{AlarmStatesFormatterName}", AlarmStatesFormatterValues);
             // WHEN
             _fieldFormatterService.DeleteFieldFormatter(wipProject.GetId(), expectedFieldFormatter.Name);
 
@@ -94,7 +94,7 @@ namespace pva.SuperV.ApiTests
         public void DeleteRunnableProjectFieldFormatter_ShouldThrowException()
         {
             // GIVEN
-            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{ProjectHelpers.AlarmStatesFormatterName}New", ProjectHelpers.AlarmStatesFormatterValues);
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{AlarmStatesFormatterName}New", AlarmStatesFormatterValues);
             // WHEN
             Assert.Throws<NonWipProjectException>(() =>
                 _fieldFormatterService.DeleteFieldFormatter(runnableProject.GetId(), expectedFieldFormatter.Name));

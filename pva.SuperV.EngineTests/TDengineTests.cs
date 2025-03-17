@@ -1,5 +1,6 @@
 ﻿using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.HistoryRetrieval;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
 using Shouldly;
@@ -7,14 +8,14 @@ using Shouldly;
 namespace pva.SuperV.EngineTests
 {
     [Collection("Project building")]
-    public class TDengineTests
+    public class TDengineTests : SuperVTestsBase
     {
         private readonly WipProject wipProject;
         private RunnableProject? runnableProject;
 
         public TDengineTests()
         {
-            wipProject = ProjectHelpers.CreateWipProject(TDengineHistoryStorage.Prefix);
+            wipProject = CreateWipProject(TDengineHistoryStorage.Prefix);
         }
 
         [Fact]
@@ -22,7 +23,7 @@ namespace pva.SuperV.EngineTests
         {
             // GIVEN
             runnableProject = await Project.BuildAsync(wipProject);
-            dynamic? instance = runnableProject.CreateInstance(ProjectHelpers.ClassName, ProjectHelpers.InstanceName);
+            dynamic? instance = runnableProject.CreateInstance(ClassName, InstanceName);
             DateTime testStart = DateTime.UtcNow;
             // WHEN
             instance!.Value.SetValue(50);
@@ -31,8 +32,9 @@ namespace pva.SuperV.EngineTests
             DateTime ts2 = instance!.Value.Timestamp;
 
             // THEN
-            List<string> fields = [ProjectHelpers.ValueFieldName];
-            List<HistoryRow> rows = runnableProject.GetHistoryValues(instance.Name, testStart, DateTime.Now, fields);
+            List<string> fields = [ValueFieldName];
+            HistoryTimeRange query = new(testStart, DateTime.UtcNow);
+            List<HistoryRow> rows = runnableProject.GetHistoryValues(instance.Name, query, fields);
             rows.Count.ShouldBe(2);
             rows[0].Ts.ShouldBe(ts1);
             rows[0].Values.Count.ShouldBe(1);
@@ -46,13 +48,55 @@ namespace pva.SuperV.EngineTests
         }
 
         [Fact]
+        public async Task GivenInstanceWithHistory_WhenGettingStatisticValues_ThenValuesAreReturned()
+        {
+            // GIVEN
+            runnableProject = await Project.BuildAsync(wipProject);
+            dynamic? instance = runnableProject.CreateInstance(ClassName, InstanceName);
+            DateTime testStart = DateTime.UtcNow;
+            // WHEN
+            DateTime ts1 = DateTime.Parse("2025-03-01T00:00:00Z");
+            instance!.Value.SetValue(50, ts1);
+            instance!.Value.SetValue(150, ts1.AddMinutes(15));
+            DateTime ts2 = DateTime.Parse("2025-03-01T01:00:00Z");
+            instance!.Value.SetValue(100, ts2);
+
+            // THEN
+            List<HistoryStatisticFieldName> fields =
+                [
+                new(ValueFieldName, HistoryStatFunction.AVG),
+                new(ValueFieldName, HistoryStatFunction.TWA)
+                ];
+            HistoryStatisticTimeRange query = new(ts1, ts2.AddMinutes(59), new TimeSpan(1, 0, 0), FillMode.LINEAR);
+            List<HistoryStatisticRow> rows = runnableProject.GetHistoryStatistics(instance.Name, query, fields);
+            rows.Count.ShouldBe(2);
+            rows[0].Ts.ShouldBe(ts1.ToUniversalTime());
+            rows[0].StartTime.ShouldBe(ts1.ToUniversalTime());
+            rows[0].EndTime.ShouldBe(ts1.Add(query.Interval).ToUniversalTime());
+            rows[0].Duration.Ticks.ShouldBe(query.Interval.Ticks);
+            rows[0].Values.Count.ShouldBe(2);
+            rows[0].GetValue<int>(0).ShouldBe(100);
+            rows[0].GetValue<int>(1).ShouldBe(118); // Should be 125
+
+            rows[1].Ts.ShouldBe(ts2.ToUniversalTime());
+            rows[1].StartTime.ShouldBe(ts2.ToUniversalTime());
+            rows[1].EndTime.ShouldBe(ts2.Add(query.Interval).ToUniversalTime());
+            rows[1].Duration.Ticks.ShouldBe(query.Interval.Ticks);
+            rows[1].Values.Count.ShouldBe(2);
+            rows[1].GetValue<int>(0).ShouldBe(100);
+            rows[1].GetValue<int>(1).ShouldBe(100);
+
+            instance?.Dispose();
+        }
+
+        [Fact]
         public async Task GivenTimespanFieldUsedInHistorizationProcessing_WhenBuildingProject_ThenExceptionIsThrown()
         {
             // GIVEN
-            Class clazz = wipProject.GetClass(ProjectHelpers.ClassName);
+            Class clazz = wipProject.GetClass(ClassName);
             clazz.AddField(new FieldDefinition<TimeSpan>("TimeSpanField"));
-            wipProject.AddFieldChangePostProcessing(ProjectHelpers.ClassName, ProjectHelpers.ValueFieldName,
-                new HistorizationProcessing<int>("BadHistProcessing", wipProject, clazz, ProjectHelpers.ValueFieldName, ProjectHelpers.HistoryRepositoryName, null, ["TimeSpanField"]));
+            wipProject.AddFieldChangePostProcessing(ClassName, ValueFieldName,
+                new HistorizationProcessing<int>("BadHistProcessing", wipProject, clazz, ValueFieldName, HistoryRepositoryName, null, ["TimeSpanField"]));
             await Assert.ThrowsAsync<UnhandledHistoryFieldTypeException>(async () => await Project.BuildAsync(wipProject));
         }
     }

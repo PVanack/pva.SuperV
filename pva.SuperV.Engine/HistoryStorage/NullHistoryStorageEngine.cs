@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Engine.Processing;
+﻿using pva.SuperV.Engine.HistoryRetrieval;
+using pva.SuperV.Engine.Processing;
 
 namespace pva.SuperV.Engine.HistoryStorage
 {
@@ -54,7 +55,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <param name="instanceName">The instance name.</param>
         /// <param name="timestamp">the timestamp of the values</param>
         /// <param name="fieldsToHistorize">List of fields to be historized.</param>
-        public void HistorizeValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime timestamp, List<IField> fieldsToHistorize)
+        public void HistorizeValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime timestamp, QualityLevel? quality, List<IField> fieldsToHistorize)
         {
         }
 
@@ -64,11 +65,24 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <param name="repositoryStorageId">The history repository ID.</param>
         /// <param name="classTimeSerieId">The time series ID.</param>
         /// <param name="instanceName">The instance name.</param>
-        /// <param name="from">From timestamp.</param>
-        /// <param name="to">To timestamp.</param>
+        /// <param name="timeRange">Query containing time range parameters.</param>
         /// <param name="fields">List of fields to be retrieved. One of them should have the <see cref="HistorizationProcessing{T}"/></param>
         /// <returns>List of history rows.</returns>
-        public List<HistoryRow> GetHistoryValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime from, DateTime to, List<IFieldDefinition> fields)
+        public List<HistoryRow> GetHistoryValues(string repositoryStorageId, string classTimeSerieId, string instanceName, HistoryTimeRange timeRange, List<IFieldDefinition> fields)
+        {
+            return [];
+        }
+
+        /// <summary>
+        /// Gets instance statistic values historized between 2 timestamps.
+        /// </summary>
+        /// <param name="repositoryStorageId">The history repository ID.</param>
+        /// <param name="classTimeSerieId">The time series ID.</param>
+        /// <param name="instanceName">The instance name.</param>
+        /// <param name="timeRange">Query containing time range parameters.</param>
+        /// <param name="fields">List of fields to be retrieved. One of them should have the <see cref="HistorizationProcessing{T}"/></param>
+        /// <returns>List of history rows.</returns>
+        public List<HistoryStatisticRow> GetHistoryStatistics(string repositoryStorageId, string classTimeSerieId, string instanceName, HistoryStatisticTimeRange timeRange, List<HistoryStatisticField> fields)
         {
             return [];
         }
