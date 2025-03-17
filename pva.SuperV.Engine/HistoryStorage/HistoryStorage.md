@@ -4,6 +4,7 @@ pva.SuperV doesn't redefine a history storage backend to store the values to be 
 ## TDengine
 The current history backend used is [TDengine](https://tdengine.com/oss/). It exists as a free version and is really fast.
 It uses SQL as its syntax which is known by most people and this allows to use it from several clients.
+The client driver needs to be installed. They are included [here](/TDengine). However, it's safer to get them from [TDengine](https://docs.tdengine.com/developer-guide/connecting-to-tdengine/#installing-the-client-driver-taosc).
 
 ### Supported data types
 | pva.SuperV field type | TDengine data type |
