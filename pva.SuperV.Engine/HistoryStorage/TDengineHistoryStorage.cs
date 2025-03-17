@@ -1,4 +1,5 @@
 ﻿using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.HistoryRetrieval;
 using pva.SuperV.Engine.Processing;
 using TDengine.Driver;
 using TDengine.Driver.Client;
@@ -200,11 +201,10 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <param name="repositoryStorageId">The history repository ID.</param>
         /// <param name="classTimeSerieId">The time series ID.</param>
         /// <param name="instanceName">The instance name.</param>
-        /// <param name="from">From timestamp.</param>
-        /// <param name="to">To timestamp.</param>
+        /// <param name="timeRange">Time range for querying.</param>
         /// <param name="fields">List of fields to be retrieved. One of them should have the <see cref="HistorizationProcessing{T}"/></param>
         /// <returns>List of history rows.</returns>
-        public List<HistoryRow> GetHistoryValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime from, DateTime to, List<IFieldDefinition> fields)
+        public List<HistoryRow> GetHistoryValues(string repositoryStorageId, string classTimeSerieId, string instanceName, HistoryTimeRange timeRange, List<IFieldDefinition> fields)
         {
             string instanceTableName = instanceName.ToLowerInvariant();
             List<HistoryRow> rows = [];
@@ -213,11 +213,58 @@ namespace pva.SuperV.Engine.HistoryStorage
                 _tdEngineClient!.Exec($"USE {repositoryStorageId};");
                 string fieldNames = fields.Select(field => $"_{field.Name}")
                     .Aggregate((a, b) => $"{a},{b}");
-                string query = $"SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName} WHERE TS between \"{FormatToSqlDate(from)}\" and \"{FormatToSqlDate(to)}\"";
-                using IRows row = _tdEngineClient!.Query(query);
+                string sqlQuery =
+                    $@"
+SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
+ WHERE TS between ""{FormatToSqlDate(timeRange.From)}"" and ""{FormatToSqlDate(timeRange.To)}""
+ ";
+                using IRows row = _tdEngineClient!.Query(sqlQuery);
                 while (row.Read())
                 {
                     rows.Add(new HistoryRow(row, fields));
+                }
+            }
+            catch (Exception e)
+            {
+                throw new TdEngineException($"select from table {instanceTableName} on {_connectionString}", e);
+            }
+            return rows;
+        }
+
+        /// <summary>
+        /// Gets instance statistic values historized between 2 timestamps.
+        /// </summary>
+        /// <param name="repositoryStorageId">The history repository ID.</param>
+        /// <param name="classTimeSerieId">The time series ID.</param>
+        /// <param name="instanceName">The instance name.</param>
+        /// <param name="timeRange">Query containing time range parameters.</param>
+        /// <param name="fields">List of fields to be retrieved. One of them should have the <see cref="HistorizationProcessing{T}"/></param>
+        /// <returns>List of history rows.</returns>
+        public List<HistoryStatisticRow> GetHistoryStatistics(string repositoryStorageId, string classTimeSerieId, string instanceName,
+            HistoryStatisticTimeRange timeRange, List<HistoryStatisticField> fields)
+        {
+            string instanceTableName = instanceName.ToLowerInvariant();
+            List<HistoryStatisticRow> rows = [];
+            try
+            {
+                _tdEngineClient!.Exec($"USE {repositoryStorageId};");
+                string fieldNames = fields.Select(field => $"{field.StatisticFunction}(_{field.Field.Name})")
+                    .Aggregate((a, b) => $"{a},{b}");
+                string fillClause = "";
+                if (timeRange.FillMode is not null)
+                {
+                    fillClause = $"FILL({timeRange.FillMode})";
+                }
+                string sqlQuery =
+                    $@"
+SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {instanceTableName}
+ WHERE TS between ""{FormatToSqlDate(timeRange.From)}"" and ""{FormatToSqlDate(timeRange.To)}""
+ INTERVAL({FormatInterval(timeRange.Interval)}) SLIDING({FormatInterval(timeRange.Interval)}) {fillClause}
+ ";
+                using IRows row = _tdEngineClient!.Query(sqlQuery);
+                while (row.Read())
+                {
+                    rows.Add(new HistoryStatisticRow(row, fields));
                 }
             }
             catch (Exception e)
@@ -235,6 +282,37 @@ namespace pva.SuperV.Engine.HistoryStorage
         private static string FormatToSqlDate(DateTime dateTime)
         {
             return $"{dateTime.ToUniversalTime():yyyy-MM-dd HH:mm:ss.fffK}";
+        }
+
+        private static string FormatInterval(TimeSpan? interval)
+        {
+            if (interval is null || !interval.HasValue || interval.Value.TotalNanoseconds <= 0)
+            {
+                return "";
+            }
+            TimeSpan timespan = interval.Value;
+            string intervalText = "";
+            intervalText += GetIntervalPeriod(timespan.Days / 365, 'y');
+            intervalText += GetIntervalPeriod((timespan.Days % 365) / 30, 'm');
+            intervalText += GetIntervalPeriod(((timespan.Days % 365) % 30) / 7, 'w');
+            intervalText += GetIntervalPeriod(((timespan.Days % 365) % 30) % 7, 'd');
+            intervalText += GetIntervalPeriod(timespan.Hours, 'h');
+            intervalText += GetIntervalPeriod(timespan.Minutes, 'm');
+            intervalText += GetIntervalPeriod(timespan.Seconds, 's');
+            intervalText += GetIntervalPeriod(timespan.Milliseconds, 'a');
+            intervalText += GetIntervalPeriod(timespan.Nanoseconds, 'b');
+            // Remove last comma and space
+            return intervalText.TrimEnd()[..^1];
+        }
+
+        private static string GetIntervalPeriod(int value, char periodLetter)
+        {
+            if (value > 0)
+            {
+                return $"{value}{periodLetter}, ";
+            }
+
+            return "";
         }
 
         /// <summary>

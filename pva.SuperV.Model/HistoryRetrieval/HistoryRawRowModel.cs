@@ -7,12 +7,6 @@ namespace pva.SuperV.Model.HistoryRetrieval
     public record HistoryRawRowModel(
         [property: Description("Timestamp of row.")]
         DateTime Timestamp,
-        [property: Description("Start timestamp of interval of row in case of interpolated values.")]
-        DateTime? StartTime,
-        [property: Description("End timestamp of interval of row in case of interpolated values.")]
-        DateTime? EndTime,
-        [property: Description("Duration of interval of row in case of interpolated values.")]
-        TimeSpan? Duration,
         [property: Description("Quality level of row.")]
         QualityLevel Quality,
         [property: Description("Retrieved values.")]

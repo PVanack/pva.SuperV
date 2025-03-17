@@ -3,7 +3,7 @@ using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using NSubstitute;
 using pva.SuperV.Engine;
-using pva.SuperV.Engine.FieldValueFormatters;
+using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
 
@@ -35,6 +35,7 @@ namespace pva.SuperV.EngineTests
 
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
             Task.Run(async () => await StopTDengineContainerAsync()).Wait();
         }
 

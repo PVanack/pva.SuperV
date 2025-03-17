@@ -6,5 +6,7 @@ namespace pva.SuperV.Api.Services.History
     {
         HistoryRawResultModel GetInstanceRawHistoryValues(string projectId, string instanceName, HistoryRequestModel request);
         HistoryResultModel GetInstanceHistoryValues(string projectId, string instanceName, HistoryRequestModel request);
+        HistoryStatisticsRawResultModel GetInstanceRawHistoryStatistics(string projectId, string instanceName, HistoryStatisticsRequestModel request);
+        HistoryStatisticsResultModel GetInstanceHistoryStatistics(string projectId, string instanceName, HistoryStatisticsRequestModel request);
     }
 }

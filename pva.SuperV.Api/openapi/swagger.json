@@ -2260,7 +2260,7 @@
         }
       }
     },
-    "/history-values/{projectId}/{instanceName}/raw": {
+    "/history/{projectId}/{instanceName}/values/raw": {
       "post": {
         "tags": [
           "pva.SuperV.Api"
@@ -2333,7 +2333,7 @@
         }
       }
     },
-    "/history-values/{projectId}/{instanceName}": {
+    "/history/{projectId}/{instanceName}/values": {
       "post": {
         "tags": [
           "pva.SuperV.Api"
@@ -2379,6 +2379,152 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HistoryResultModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history/{projectId}/{instanceName}/statistics/raw": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets history raw values of instance fields between 2 dates.",
+        "description": "Gets history raw values of instance fields between 2 dates.",
+        "operationId": "GetInstanceStatisticsRawValuesHistory",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "instanceName",
+            "in": "path",
+            "description": "Name of instance",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "History request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HistoryStatisticsRequestModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryStatisticsRawResultModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history/{projectId}/{instanceName}/statistics": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets history statistics of instance fields between 2 dates.",
+        "description": "Gets history statistics of instance fields between 2 dates.",
+        "operationId": "GetInstanceStatisticsHistory",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "instanceName",
+            "in": "path",
+            "description": "Name of instance",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "History request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HistoryStatisticsRequestModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryStatisticsResultModel"
                 }
               }
             }
@@ -3059,7 +3205,8 @@
           },
           "value": {
             "type": "boolean",
-            "description": "Field value."
+            "description": "Field value.",
+            "nullable": true
           },
           "formattedValue": {
             "type": "string",
@@ -3096,7 +3243,8 @@
           "value": {
             "type": "string",
             "description": "Field value.",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "formattedValue": {
             "type": "string",
@@ -3133,7 +3281,8 @@
           "value": {
             "type": "number",
             "description": "Field value.",
-            "format": "double"
+            "format": "double",
+            "nullable": true
           },
           "formattedValue": {
             "type": "string",
@@ -3170,7 +3319,8 @@
           "value": {
             "type": "number",
             "description": "Field value.",
-            "format": "float"
+            "format": "float",
+            "nullable": true
           },
           "formattedValue": {
             "type": "string",
@@ -3207,7 +3357,8 @@
           "value": {
             "type": "integer",
             "description": "Field value.",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "formattedValue": {
             "type": "string",
@@ -3244,7 +3395,8 @@
           "value": {
             "type": "integer",
             "description": "Field value.",
-            "format": "int64"
+            "format": "int64",
+            "nullable": true
           },
           "formattedValue": {
             "type": "string",
@@ -3281,7 +3433,8 @@
           "value": {
             "type": "integer",
             "description": "Field value.",
-            "format": "int16"
+            "format": "int16",
+            "nullable": true
           },
           "formattedValue": {
             "type": "string",
@@ -3316,7 +3469,8 @@
           },
           "value": {
             "type": "string",
-            "description": "Field value."
+            "description": "Field value.",
+            "nullable": true
           },
           "formattedValue": {
             "type": "string",
@@ -3353,7 +3507,8 @@
           "value": {
             "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
             "type": "string",
-            "description": "Field value."
+            "description": "Field value.",
+            "nullable": true
           },
           "formattedValue": {
             "type": "string",
@@ -3390,7 +3545,8 @@
           "value": {
             "type": "integer",
             "description": "Field value.",
-            "format": "uint32"
+            "format": "uint32",
+            "nullable": true
           },
           "formattedValue": {
             "type": "string",
@@ -3427,7 +3583,8 @@
           "value": {
             "type": "integer",
             "description": "Field value.",
-            "format": "uint64"
+            "format": "uint64",
+            "nullable": true
           },
           "formattedValue": {
             "type": "string",
@@ -3464,7 +3621,8 @@
           "value": {
             "type": "integer",
             "description": "Field value.",
-            "format": "uint16"
+            "format": "uint16",
+            "nullable": true
           },
           "formattedValue": {
             "type": "string",
@@ -3616,13 +3774,16 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Name of field"
           },
           "type": {
-            "type": "string"
+            "type": "string",
+            "description": "Type of field"
           },
           "columnIndex": {
             "type": "integer",
+            "description": "Column index of field in rows",
             "format": "int32"
           }
         }
@@ -3651,6 +3812,184 @@
         }
       },
       "HistoryRawRowModel": {
+        "required": [
+          "timestamp",
+          "quality",
+          "fieldValues"
+        ],
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "description": "Timestamp of row.",
+            "format": "date-time"
+          },
+          "quality": {
+            "$ref": "#/components/schemas/QualityLevel"
+          },
+          "fieldValues": {
+            "type": "array",
+            "description": "Retrieved values."
+          }
+        }
+      },
+      "HistoryRepositoryModel": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "HistoryRequestModel": {
+        "required": [
+          "startTime",
+          "endTime",
+          "historyFields"
+        ],
+        "type": "object",
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "description": "Start time of request.",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "description": "End time of request.",
+            "format": "date-time"
+          },
+          "historyFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of fields to be retrieved."
+          }
+        }
+      },
+      "HistoryResultModel": {
+        "required": [
+          "header",
+          "rows"
+        ],
+        "type": "object",
+        "properties": {
+          "header": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoryFieldModel"
+            },
+            "description": "Header containing fields information."
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoryRowModel"
+            },
+            "description": "Rows of history values."
+          }
+        }
+      },
+      "HistoryRowModel": {
+        "required": [
+          "timestamp",
+          "quality",
+          "fieldValues"
+        ],
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "description": "Timestamp of row.",
+            "format": "date-time"
+          },
+          "quality": {
+            "$ref": "#/components/schemas/QualityLevel"
+          },
+          "fieldValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldValueModel"
+            },
+            "description": "Retrieved values."
+          }
+        }
+      },
+      "HistoryStatFunction": {
+        "type": "integer",
+        "description": "Statistic function to be applied to field."
+      },
+      "HistoryStatisticFieldModel": {
+        "required": [
+          "name",
+          "statisticFunction"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of field."
+          },
+          "statisticFunction": {
+            "$ref": "#/components/schemas/HistoryStatFunction"
+          }
+        }
+      },
+      "HistoryStatisticResultFieldModel": {
+        "required": [
+          "statisticFunction",
+          "name",
+          "type",
+          "columnIndex"
+        ],
+        "type": "object",
+        "properties": {
+          "statisticFunction": {
+            "$ref": "#/components/schemas/HistoryStatFunction"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of field"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of field"
+          },
+          "columnIndex": {
+            "type": "integer",
+            "description": "Column index of field in rows",
+            "format": "int32"
+          }
+        }
+      },
+      "HistoryStatisticsRawResultModel": {
+        "required": [
+          "header",
+          "rows"
+        ],
+        "type": "object",
+        "properties": {
+          "header": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoryStatisticResultFieldModel"
+            },
+            "description": "Header containing fields information."
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoryStatisticsRawRowModel"
+            },
+            "description": "Rows of history values."
+          }
+        }
+      },
+      "HistoryStatisticsRawRowModel": {
         "required": [
           "timestamp",
           "startTime",
@@ -3693,18 +4032,7 @@
           }
         }
       },
-      "HistoryRepositoryModel": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          }
-        }
-      },
-      "HistoryRequestModel": {
+      "HistoryStatisticsRequestModel": {
         "required": [
           "startTime",
           "endTime",
@@ -3727,8 +4055,7 @@
           "interpolationInterval": {
             "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
             "type": "string",
-            "description": "Time span of interpolation. If null, indicates to use actual history values.",
-            "nullable": true
+            "description": "Time span of interpolation. If null, indicates to use actual history values."
           },
           "fillMode": {
             "$ref": "#/components/schemas/NullableOfFillMode"
@@ -3736,13 +4063,13 @@
           "historyFields": {
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/HistoryStatisticFieldModel"
             },
             "description": "List of fields to be retrieved."
           }
         }
       },
-      "HistoryResultModel": {
+      "HistoryStatisticsResultModel": {
         "required": [
           "header",
           "rows"
@@ -3752,20 +4079,20 @@
           "header": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/HistoryFieldModel"
+              "$ref": "#/components/schemas/HistoryStatisticResultFieldModel"
             },
             "description": "Header containing fields information."
           },
           "rows": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/HistoryRowModel"
+              "$ref": "#/components/schemas/HistoryStatisticsRowModel"
             },
             "description": "Rows of history values."
           }
         }
       },
-      "HistoryRowModel": {
+      "HistoryStatisticsRowModel": {
         "required": [
           "timestamp",
           "startTime",

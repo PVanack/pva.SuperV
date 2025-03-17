@@ -1,5 +1,6 @@
 ﻿using pva.Helpers.Extensions;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.HistoryRetrieval;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
 using System.Reflection;
@@ -88,48 +89,6 @@ namespace pva.SuperV.Engine
                             hp.UpsertInHistoryStorage(Name!, clazz.Name!));
                 });
             });
-        }
-
-        public List<HistoryRow> GetHistoryValues(string instanceName, DateTime from, DateTime to, List<string> fieldNames)
-        {
-            Instance instance = GetInstance(instanceName);
-            List<IFieldDefinition> fields;
-            HistoryRepository? historyRepository;
-            string? classTimeSerieId;
-            GetHistoryParametersForFields(instance, fieldNames, out fields, out historyRepository, out classTimeSerieId);
-
-            return GetHistoryValues(instanceName, from, to, fields, historyRepository!, classTimeSerieId!);
-        }
-
-        public List<HistoryRow> GetHistoryValues(string instanceName, DateTime from, DateTime to, List<IFieldDefinition> fields, HistoryRepository historyRepository, string classTimeSerieId)
-        {
-            return HistoryStorageEngine!.GetHistoryValues(historyRepository!.HistoryStorageId!, classTimeSerieId!,
-                instanceName, from, to, fields);
-        }
-
-        public void GetHistoryParametersForFields(Instance instance, List<string> fieldNames,
-            out List<IFieldDefinition> fields, out HistoryRepository? historyRepository, out string? classTimeSerieId)
-        {
-            fields = [];
-            historyRepository = null;
-            classTimeSerieId = null;
-            foreach (string fieldName in fieldNames)
-            {
-                IFieldDefinition field = instance.Class.GetField(fieldName);
-                IHistorizationProcessing? hp = field.ValuePostChangeProcessings
-                    .OfType<IHistorizationProcessing>()
-                    .FirstOrDefault();
-                if (hp != null)
-                {
-                    historyRepository = hp.HistoryRepository;
-                    classTimeSerieId = hp.ClassTimeSerieId;
-                }
-                fields.Add(field);
-            }
-            if (historyRepository is null || classTimeSerieId is null)
-            {
-                throw new NoHistoryStorageEngineException();
-            }
         }
 
         private void CreateHistoryRepositories(IHistoryStorageEngine? historyStorageEngine)
@@ -323,6 +282,68 @@ namespace pva.SuperV.Engine
             }
 
             typedField.SetValue(fieldValue, timestamp, qualityLevel);
+        }
+
+        public List<HistoryRow> GetHistoryValues(string instanceName, HistoryTimeRange query, List<string> fieldNames)
+        {
+            Instance instance = GetInstance(instanceName);
+            GetHistoryParametersForFields(instance, fieldNames,
+                out List<IFieldDefinition> fields, out HistoryRepository? historyRepository, out string? classTimeSerieId);
+
+            return GetHistoryValues(instanceName, query, fields, historyRepository!, classTimeSerieId!);
+        }
+
+        public List<HistoryRow> GetHistoryValues(string instanceName, HistoryTimeRange query, List<IFieldDefinition> fields,
+            HistoryRepository historyRepository, string classTimeSerieId)
+        {
+            return HistoryStorageEngine!.GetHistoryValues(historyRepository!.HistoryStorageId!, classTimeSerieId!,
+                instanceName, query, fields);
+        }
+
+        public List<HistoryStatisticRow> GetHistoryStatistics(string instanceName, HistoryStatisticTimeRange query, List<HistoryStatisticFieldName> fieldNames)
+        {
+            Instance instance = GetInstance(instanceName);
+            GetHistoryParametersForFields(instance, [.. fieldNames.Select(field => field.Name)],
+                out List<IFieldDefinition> fields, out HistoryRepository? historyRepository, out string? classTimeSerieId);
+            List<HistoryStatisticField> statFields = [];
+            for (int index = 0; index < fieldNames.Count; index++)
+            {
+                statFields.Add(new(fields[index], fieldNames[index].StatisticFunction));
+            }
+            return GetHistoryStatistics(instanceName, query, statFields, historyRepository!, classTimeSerieId!);
+        }
+
+        public List<HistoryStatisticRow> GetHistoryStatistics(string instanceName, HistoryStatisticTimeRange query, List<HistoryStatisticField> fields,
+            HistoryRepository historyRepository, string classTimeSerieId)
+        {
+            return HistoryStorageEngine!.GetHistoryStatistics(historyRepository!.HistoryStorageId!, classTimeSerieId!,
+                instanceName, query, fields);
+        }
+
+
+        public static void GetHistoryParametersForFields(Instance instance, List<string> fieldNames,
+            out List<IFieldDefinition> fields, out HistoryRepository? historyRepository, out string? classTimeSerieId)
+        {
+            fields = [];
+            historyRepository = null;
+            classTimeSerieId = null;
+            foreach (string fieldName in fieldNames)
+            {
+                IFieldDefinition field = instance.Class.GetField(fieldName);
+                IHistorizationProcessing? hp = field.ValuePostChangeProcessings
+                    .OfType<IHistorizationProcessing>()
+                    .FirstOrDefault();
+                if (hp != null)
+                {
+                    historyRepository = hp.HistoryRepository;
+                    classTimeSerieId = hp.ClassTimeSerieId;
+                }
+                fields.Add(field);
+            }
+            if (historyRepository is null || classTimeSerieId is null)
+            {
+                throw new NoHistoryStorageEngineException();
+            }
         }
     }
 }

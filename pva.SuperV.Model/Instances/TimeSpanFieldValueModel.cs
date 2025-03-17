@@ -6,7 +6,7 @@ namespace pva.SuperV.Model.Instances
     [Description("Time span field value")]
     public record TimeSpanFieldValueModel(
         [property: Description("Field value.")]
-        TimeSpan Value,
+        TimeSpan? Value,
         string? FormattedValue,
         QualityLevel? Quality,
         DateTime? Timestamp)

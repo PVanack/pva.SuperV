@@ -1,4 +1,4 @@
-﻿namespace pva.SuperV.Model.HistoryRetrieval
+﻿namespace pva.SuperV.Engine.HistoryRetrieval
 {
     public enum FillMode
     {
@@ -17,6 +17,14 @@
         /// <summary>
         /// Fill with the next non-NULL value.
         /// </summary>
-        NEXT
+        NEXT,
+        /// <summary>
+        /// Force fill with NULL values
+        /// </summary>
+        NULL_F,
+        /// <summary>
+        /// Force fill with VALUE
+        /// </summary>
+        VALUE_F
     }
 }

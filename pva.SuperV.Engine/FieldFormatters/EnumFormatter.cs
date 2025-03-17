@@ -1,8 +1,7 @@
 ﻿using pva.Helpers.Extensions;
 using pva.SuperV.Engine.Exceptions;
-using pva.SuperV.Engine.FieldFormatters;
 
-namespace pva.SuperV.Engine.FieldValueFormatters
+namespace pva.SuperV.Engine.FieldFormatters
 {
     /// <summary>
     /// Enum formatter for integer fields. Allows to display the string representation according to a list of strings.
