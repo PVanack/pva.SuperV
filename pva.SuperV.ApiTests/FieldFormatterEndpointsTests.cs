@@ -1,5 +1,8 @@
 ﻿using NSubstitute;
+using NSubstitute.ExceptionExtensions;
+using pva.SuperV.Api;
 using pva.SuperV.Api.Services.FieldFormatters;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.FieldFormatters;
 using Shouldly;
 using System.Net.Http.Json;
@@ -60,6 +63,20 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public async Task WhenGettingUnknownProjectFieldFormatters_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            MockedFieldFormatterService.GetFieldFormatters("UnknownProject")
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var response = await client.GetAsync("/field-formatters/UnknownProject");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
         public async Task GivenExistingFieldFormattersInProject_WhenGettingProjectFieldFormatter_ThenFieldFormatterIsReturned()
         {
             // GIVEN
@@ -74,6 +91,20 @@ namespace pva.SuperV.ApiTests
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
             FieldFormatterModel? fieldFormatter = await response.Content.ReadFromJsonAsync<FieldFormatterModel>();
             fieldFormatter.ShouldBeEquivalentTo(expectedFieldFormatter);
+        }
+
+        [Fact]
+        public async Task WhenGettingProjectUnknownFieldFormatter_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            MockedFieldFormatterService.GetFieldFormatter("Project", "UnknownFieldFormatter")
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var response = await client.GetAsync($"/field-formatters/Project/UnknownFieldFormatter");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
         }
 
         [Fact]
@@ -96,7 +127,41 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task GivenWipProject_WhenRemovingEnumFieldFormatter_ThenFieldFormatterIsRemoved()
+        public async Task WhenCreatingEnumFieldFormatterOnUnknownProject_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            Dictionary<int, string> values = new() { { 0, "Off" }, { 1, "ON" } };
+            EnumFormatterModel expectedFieldFormatter = new("FieldFormatter", values);
+            CreateFieldFormatterRequest createRequest = new(expectedFieldFormatter);
+            MockedFieldFormatterService.CreateFieldFormatter("UnknownProject", Arg.Any<FieldFormatterModel>())
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var response = await client.PostAsJsonAsync($"/field-formatters/UnknownProject/", createRequest);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task WhenCreatingEnumFieldFormatterOnNonWipProject_ThenBadRequestIsReturned()
+        {
+            // GIVEN
+            Dictionary<int, string> values = new() { { 0, "Off" }, { 1, "ON" } };
+            EnumFormatterModel expectedFieldFormatter = new("FieldFormatter", values);
+            CreateFieldFormatterRequest createRequest = new(expectedFieldFormatter);
+            MockedFieldFormatterService.CreateFieldFormatter("RunnableProject", Arg.Any<FieldFormatterModel>())
+                .Throws<NonWipProjectException>();
+
+            // WHEN
+            var response = await client.PostAsJsonAsync($"/field-formatters/RunnableProject/", createRequest);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task GivenWipProject_WhenRemovingFieldFormatter_ThenFieldFormatterIsRemoved()
         {
             // GIVEN
 
@@ -105,6 +170,34 @@ namespace pva.SuperV.ApiTests
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task WhenRemovingUnknownFieldFormatter_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            MockedFieldFormatterService.When(fake => fake.DeleteFieldFormatter("Project", "UnknownFieldFormatter"))
+                .Do(call => { throw new UnknownEntityException(); });
+
+            // WHEN
+            var response = await client.DeleteAsync($"/field-formatters/Project/UnknownFieldFormatter");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task WhenRemovingFieldFormatterOnNonWipProject_ThenBadRequestIsReturned()
+        {
+            // GIVEN
+            MockedFieldFormatterService.When(fake => fake.DeleteFieldFormatter("RunnableProject", "FieldFormatter"))
+                .Do(call => { throw new NonWipProjectException(); });
+
+            // WHEN
+            var response = await client.DeleteAsync($"/field-formatters/RunnableProject/FieldFormatter");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
         }
     }
 }

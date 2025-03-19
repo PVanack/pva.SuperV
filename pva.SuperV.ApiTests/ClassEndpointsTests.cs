@@ -1,5 +1,8 @@
 ﻿using NSubstitute;
+using NSubstitute.ExceptionExtensions;
+using pva.SuperV.Api;
 using pva.SuperV.Api.Services.Classes;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Classes;
 using Shouldly;
 using System.Net.Http.Json;
@@ -43,6 +46,20 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public async Task WhenGettingUnknownProjectClasses_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            MockedClassService.GetClasses("UnknownProject")
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var response = await client.GetAsync("/classes/UnknownProject");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
         public async Task GivenExistingClassesInProject_WhenGettingProjectClass_ThenClassIsReturned()
         {
             // GIVEN
@@ -60,6 +77,20 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public async Task WhenGettingProjectUnknownClass_ThenNotFOundIsReturned()
+        {
+            // GIVEN
+            MockedClassService.GetClass("Project1", "UnknownClass")
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var response = await client.GetAsync($"/classes/Project1/UnknownClass");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
         public async Task GivenWipProject_WhenCreatingProjectClass_ThenClassIsCreated()
         {
             // GIVEN
@@ -68,12 +99,42 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedClass);
 
             // WHEN
-            var response = await client.PostAsJsonAsync("/classes/Project1/", expectedClass);
+            var response = await client.PostAsJsonAsync("/classes/Project1", expectedClass);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
             ClassModel? createdClass = await response.Content.ReadFromJsonAsync<ClassModel>();
             createdClass.ShouldBeEquivalentTo(expectedClass);
+        }
+
+        [Fact]
+        public async Task GivenUnknownProjectProject_WhenCreatingProjectClass_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            ClassModel expectedClass = new("Class1", null);
+            MockedClassService.CreateClass("UnknownProject", Arg.Any<ClassModel>())
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var response = await client.PostAsJsonAsync("/classes/UnknownProject", expectedClass);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task GivenNonWipProject_WhenCreatingProjectClass_ThenBadRequestIsReturned()
+        {
+            // GIVEN
+            ClassModel expectedClass = new("Class1", null);
+            MockedClassService.CreateClass("RunnableProject", Arg.Any<ClassModel>())
+                .Throws<NonWipProjectException>();
+
+            // WHEN
+            var response = await client.PostAsJsonAsync("/classes/RunnableProject", expectedClass);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
         }
 
         [Fact]
@@ -87,6 +148,36 @@ namespace pva.SuperV.ApiTests
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task WhenDeletingUnknownProjectClass_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            ClassModel expectedClass = new("Class1", null);
+            MockedClassService.When(fake => fake.DeleteClass("UnknownProject", expectedClass.Name))
+                .Do(call => { throw new UnknownEntityException(); });
+
+            // WHEN
+            var response = await client.DeleteAsync($"/classes/UnknownProject/{expectedClass.Name}");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task WhenDeletingNonWipProjectClass_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            ClassModel expectedClass = new("Class1", null);
+            MockedClassService.When(fake => fake.DeleteClass("RunnableProject", expectedClass.Name))
+                .Do(call => { throw new NonWipProjectException(); });
+
+            // WHEN
+            var response = await client.DeleteAsync($"/classes/RunnableProject/{expectedClass.Name}");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
         }
 
     }

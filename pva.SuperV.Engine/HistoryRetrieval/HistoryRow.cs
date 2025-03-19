@@ -39,18 +39,18 @@ namespace pva.SuperV.Engine.HistoryRetrieval
                 IFieldDefinition field = fields[i];
                 Values.Add(field switch
                 {
-                    FieldDefinition<bool> derivedField => ConvertToBool(field.Name, row.GetValue(i)),
-                    FieldDefinition<DateTime> derivedField => ConvertToDatetime(field.Name, row.GetValue(i)),
-                    FieldDefinition<double> derivedField => ConvertToDouble(field.Name, row.GetValue(i)),
-                    FieldDefinition<float> derivedField => ConvertToFloat(field.Name, row.GetValue(i)),
-                    FieldDefinition<int> derivedField => ConvertToInt(field.Name, row.GetValue(i)),
-                    FieldDefinition<long> derivedField => ConvertToLong(field.Name, row.GetValue(i)),
-                    FieldDefinition<TimeSpan> derivedField => ConvertToTimeSpan(field.Name, row.GetValue(i)),
-                    FieldDefinition<short> derivedField => ConvertToShort(field.Name, row.GetValue(i)),
-                    FieldDefinition<string> derivedField => ConvertToStringt(field.Name, row.GetValue(i)),
-                    FieldDefinition<uint> derivedField => ConvertToUint(field.Name, row.GetValue(i)),
-                    FieldDefinition<ulong> derivedField => ConvertToUlong(field.Name, row.GetValue(i)),
-                    FieldDefinition<ushort> derivedField => ConvertToUshort(field.Name, row.GetValue(i)),
+                    FieldDefinition<bool> => ConvertToBool(field.Name, row.GetValue(i)),
+                    FieldDefinition<DateTime> => ConvertToDatetime(field.Name, row.GetValue(i)),
+                    FieldDefinition<double> => ConvertToDouble(field.Name, row.GetValue(i)),
+                    FieldDefinition<float> => ConvertToFloat(field.Name, row.GetValue(i)),
+                    FieldDefinition<int> => ConvertToInt(field.Name, row.GetValue(i)),
+                    FieldDefinition<long> => ConvertToLong(field.Name, row.GetValue(i)),
+                    FieldDefinition<TimeSpan> => ConvertToTimeSpan(field.Name, row.GetValue(i)),
+                    FieldDefinition<short> => ConvertToShort(field.Name, row.GetValue(i)),
+                    FieldDefinition<string> => ConvertToStringt(field.Name, row.GetValue(i)),
+                    FieldDefinition<uint> => ConvertToUint(field.Name, row.GetValue(i)),
+                    FieldDefinition<ulong> => ConvertToUlong(field.Name, row.GetValue(i)),
+                    FieldDefinition<ushort> => ConvertToUshort(field.Name, row.GetValue(i)),
                     _ => throw new UnhandledMappingException(nameof(HistoryRow), field?.Type.ToString()),
 
                 });

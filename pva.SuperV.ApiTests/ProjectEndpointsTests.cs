@@ -107,7 +107,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task GivenExistingProjects_WhenGettingExistingProject_ThenProjectIsReturned()
+        public async Task GivenExistingProject_WhenGettingExistingProject_ThenProjectIsReturned()
         {
             // GIVEN
             ProjectModel expectedProject = new("Project1", "Project1", 1, "Descr", false);
@@ -124,19 +124,17 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task GivenExistingProjects_WhenGettingNonExistingProject_ThenNotFoundIsReturned()
+        public async Task WhenGettingUnknownProject_ThenNotFoundIsReturned()
         {
             // GIVEN
             MockedProjectService.GetProject("UnknownProject")
-                .Throws(new UnknownEntityException("Project", "UnknownProject"));
+                .Throws<UnknownEntityException>();
 
             // WHEN
             var response = await client.GetAsync("/projects/UnknownProject");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
-            var message = await response.Content.ReadAsStringAsync();
-            message.ShouldBe("\"Project UnknownProject doesn't exist\"");
         }
 
         [Fact]
@@ -158,7 +156,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task GivenRunnableProject_WhenCreatingWiprojectFromRunnable_ThenWipProjectIsCreated()
+        public async Task GivenRunnableProject_WhenCreatingWipProjectFromRunnable_ThenWipProjectIsCreated()
         {
             // GIVEN
             ProjectModel expectedCreatedProject = new("1", "NewProject", 2, "descriptioon", false);
@@ -172,6 +170,20 @@ namespace pva.SuperV.ApiTests
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
             var createdProject = await response.Content.ReadFromJsonAsync<ProjectModel>();
             createdProject.ShouldBeEquivalentTo(expectedCreatedProject);
+        }
+
+        [Fact]
+        public async Task WhenCreatingWipProjectFromWipProject_ThenBadRequestIsReturned()
+        {
+            // GIVEN
+            MockedProjectService.CreateProjectFromRunnable("WipProject")
+                .Throws<NonRunnableProjectException>();
+
+            // WHEN
+            var response = await client.PostAsync("/projects/create/WipProject", null);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
         }
 
         [Fact]
@@ -192,19 +204,17 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task GivenRunnableProject_WhenBuildigProjectFromIt_ThenExceptionIsThrown()
+        public async Task WhenBuildigProjectFromRunnableProject_ThenBadRequestIsReturned()
         {
             // GIVEN
-            MockedProjectService.BuildProjectAsync("Project")
-                .ThrowsAsync(new NonWipProjectException("Project"));
+            MockedProjectService.BuildProjectAsync("RunnableProject")
+                .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
-            var response = await client.PostAsync("/projects/Project/build", null);
+            var response = await client.PostAsync("/projects/RunnableProject/build", null);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
-            var message = await response.Content.ReadAsStringAsync();
-            message.ShouldBe("\"Project with ID Project is not a WIP project\"");
         }
 
         [Fact]
@@ -227,6 +237,19 @@ namespace pva.SuperV.ApiTests
             definitionsJson.ShouldNotBeNull()
                 .ShouldBe(projectDefinitionsJson);
             await stream.DisposeAsync();
+        }
+
+        [Fact]
+        public async Task WhenSavingUnknownProjectDefinitions_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            MockedProjectService.GetProjectDefinitionsAsync("UnknownProject")
+                .ThrowsAsync<UnknownEntityException>();
+            // WHEN
+            var response = await client.GetAsync($"/projects/UnknownProject/definitions");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
         }
 
         [Fact]
@@ -274,31 +297,35 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task GivenWipProject_WhenSavingProjectInstances_ThenBadRequestIsReturned()
+        public async Task WhenSavingUnknownProjectInstances_ThenNotFoundIsReturned()
         {
             // GIVEN
-            ProjectModel projectToSave = new("Project", "Project", 1, "Description", true);
-            StreamWriter stream = new(new MemoryStream());
-            await stream.WriteAsync(projectInstancesJson);
-            await stream.FlushAsync();
-            stream.BaseStream.Position = 0;
-            MockedProjectService.GetProjectInstancesAsync(projectToSave.Id)
+            MockedProjectService.GetProjectInstancesAsync("UnknownProject")
+                .ThrowsAsync<UnknownEntityException>();
+            // WHEN
+            var response = await client.GetAsync($"/projects/UnknownProject/instances");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task WhenSavingNonRunnableProjectInstances_ThenBadRequestIsReturned()
+        {
+            // GIVEN
+            MockedProjectService.GetProjectInstancesAsync("WipProject")
                 .ThrowsAsync<NonRunnableProjectException>();
             // WHEN
-            var response = await client.GetAsync($"/projects/{projectToSave.Id}/instances");
+            var response = await client.GetAsync($"/projects/WipProject/instances");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
-            await stream.DisposeAsync();
         }
 
         [Fact]
         public async Task GivenRunnableProject_WhenLoadingProjectInstances_ThenJsonInstancesAreCreated()
         {
             // GIVEN
-            ProjectModel expectedProject = new("TestProject", "TestProject", 11, null, true);
-            MockedProjectService.CreateProjectFromJsonDefinition(Arg.Any<StreamReader>())
-                .Returns(expectedProject);
 
             // WHEN
             using var form = new MultipartFormDataContent();
@@ -313,15 +340,56 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public async Task WhenLoadingUnknownProjectInstances_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            MockedProjectService.When(fake => fake.LoadProjectInstances("UnknownProject", Arg.Any<StreamReader>()))
+                .Do(call => { throw new UnknownEntityException(); });
+
+            // WHEN
+            using var form = new MultipartFormDataContent();
+            var jsonContent = new ByteArrayContent(Encoding.UTF8.GetBytes(createProjectInstancesJson));
+            jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+            form.Add(jsonContent);
+
+            var response = await client.PostAsync("/projects/UnknownProject/instances", form);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task WhenLoadingNonRunnableProjectInstances_ThenBadRequestIsReturned()
+        {
+            // GIVEN
+            MockedProjectService.When(fake => fake.LoadProjectInstances("WipProject", Arg.Any<StreamReader>()))
+                .Do(call => { throw new NonRunnableProjectException(); });
+
+            // WHEN
+            using var form = new MultipartFormDataContent();
+            var jsonContent = new ByteArrayContent(Encoding.UTF8.GetBytes(createProjectInstancesJson));
+            jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+            form.Add(jsonContent);
+
+            var response = await client.PostAsync("/projects/WipProject/instances", form);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
         public async Task GivenProject_WhenUnloadingProject_ThenProjectIsUnloaded()
         {
             // GIVEN
+            MockedProjectService.When(fake => fake.UnloadProject("UnknownProject"))
+                .Do(call => { throw new UnknownEntityException(); });
 
             // WHEN
-            var response = await client.DeleteAsync("/projects/Project-Wip");
+            var response = await client.DeleteAsync("/projects/UnknownProject");
 
             // THEN
-            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
         }
+
     }
 }

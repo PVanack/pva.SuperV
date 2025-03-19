@@ -81,7 +81,7 @@ namespace pva.SuperV.Engine
         /// </value>
         public Dictionary<string, FieldFormatter> FieldFormatters { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
-        private IHistoryStorageEngine? _historyStorageEngine;
+        private IHistoryStorageEngine? historyStorageEngine;
 
         /// <summary>
         /// The history storage engin connection string.
@@ -97,11 +97,11 @@ namespace pva.SuperV.Engine
         [JsonIgnore]
         public IHistoryStorageEngine? HistoryStorageEngine
         {
-            get => _historyStorageEngine;
+            get => historyStorageEngine;
             set
             {
-                _historyStorageEngine = value;
-                HistoryRepositories.Values.ForEach(historyRepository => historyRepository.HistoryStorageEngine = _historyStorageEngine);
+                historyStorageEngine = value;
+                HistoryRepositories.Values.ForEach(historyRepository => historyRepository.HistoryStorageEngine = historyStorageEngine);
             }
         }
 

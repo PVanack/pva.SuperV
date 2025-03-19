@@ -49,7 +49,7 @@ Projects, when no more used, can be unloaded from memory by calling `Project.Unl
 The engine allows to define [fields](/pva.SuperV.Engine/FiedldDefinitions.cs) of any type,
 but the API needs to have concrete type not generics ones, so changes need to be done in the following files should you 
 want to add a new field type:
-- [Field.SetValue()](/pva.SuperV.Engine/Field.cs)
+- [FieldValueSetter.SetValue()](/pva.SuperV.Engine/FieldValueSetter.cs)
 - [FieldDefinitionMapper](/pva.SuperV.Model/FieldDefinitions/FieldDefinitionMapper.cs)
 - [FieldValueMapper](/pva.SuperV.Model/Instances/FieldValueMapper.cs)
 - [HistoryRowMapper](/pva.SuperV.Model/HistoryRetrieval/HistoryRowMapper.cs)

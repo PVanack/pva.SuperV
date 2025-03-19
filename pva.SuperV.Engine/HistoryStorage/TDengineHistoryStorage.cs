@@ -45,12 +45,12 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <summary>
         /// The connection string to the TDengine backend.
         /// </summary>
-        private readonly string _connectionString;
+        private readonly string connectionString;
 
         /// <summary>
         /// The TDengine clinet.
         /// </summary>
-        private ITDengineClient? _tdEngineClient;
+        private ITDengineClient? tdEngineClient;
 
         /// <summary>
         /// Builds a TDengine connection from connection stirng.
@@ -58,7 +58,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <param name="tdEngineConnectionString">The TDengine connection string.</param>
         public TDengineHistoryStorage(string tdEngineConnectionString)
         {
-            _connectionString = tdEngineConnectionString;
+            connectionString = tdEngineConnectionString;
             Connect();
         }
 
@@ -68,15 +68,15 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <exception cref="TdEngineException"></exception>
         private void Connect()
         {
-            var builder = new ConnectionStringBuilder(_connectionString);
+            var builder = new ConnectionStringBuilder(connectionString);
             try
             {
                 // Open connection with using block, it will close the connection automatically
-                _tdEngineClient = DbDriver.Open(builder);
+                tdEngineClient = DbDriver.Open(builder);
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"connect to {_connectionString}", e);
+                throw new TdEngineException($"connect to {connectionString}", e);
             }
         }
 
@@ -91,11 +91,11 @@ namespace pva.SuperV.Engine.HistoryStorage
             string repositoryName = $"{projectName}{repository.Name}".ToLowerInvariant();
             try
             {
-                _tdEngineClient?.Exec($"CREATE DATABASE IF NOT EXISTS {repositoryName} PRECISION 'ns' KEEP 3650 DURATION 10 BUFFER 16;");
+                tdEngineClient?.Exec($"CREATE DATABASE IF NOT EXISTS {repositoryName} PRECISION 'ns' KEEP 3650 DURATION 10 BUFFER 16;");
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"upsert repository {repositoryName} on {_connectionString}", e);
+                throw new TdEngineException($"upsert repository {repositoryName} on {connectionString}", e);
             }
             return repositoryName;
         }
@@ -110,11 +110,11 @@ namespace pva.SuperV.Engine.HistoryStorage
             string repositoryActualName = $"{projectName}{repositoryName}".ToLowerInvariant();
             try
             {
-                _tdEngineClient?.Exec($"DROP DATABASE {repositoryActualName};");
+                tdEngineClient?.Exec($"DROP DATABASE {repositoryActualName};");
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"delete repository {repositoryActualName} on {_connectionString}", e);
+                throw new TdEngineException($"delete repository {repositoryActualName} on {connectionString}", e);
             }
         }
 
@@ -132,14 +132,14 @@ namespace pva.SuperV.Engine.HistoryStorage
             string tableName = $"{projectName}{className}{historizationProcessing.Name}".ToLowerInvariant();
             try
             {
-                _tdEngineClient?.Exec($"USE {repositoryStorageId};");
+                tdEngineClient?.Exec($"USE {repositoryStorageId};");
                 string fieldNames = "TS TIMESTAMP, QUALITY NCHAR(10),";
                 fieldNames +=
                     historizationProcessing.FieldsToHistorize
                         .Select(field => $"_{field.Name} {GetFieldDbType(field)}")
                         .Aggregate((a, b) => $"{a},{b}");
                 string command = $"CREATE STABLE IF NOT EXISTS {tableName} ({fieldNames}) TAGS (instance varchar(64));";
-                _tdEngineClient?.Exec(command);
+                tdEngineClient?.Exec(command);
             }
             catch (SuperVException)
             {
@@ -147,7 +147,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"upsert class time series {tableName} on {_connectionString}", e);
+                throw new TdEngineException($"upsert class time series {tableName} on {connectionString}", e);
             }
             return tableName;
         }
@@ -163,8 +163,8 @@ namespace pva.SuperV.Engine.HistoryStorage
         public void HistorizeValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime timestamp, QualityLevel? quality, List<IField> fieldsToHistorize)
         {
             string instanceTableName = instanceName.ToLowerInvariant();
-            _tdEngineClient!.Exec($"USE {repositoryStorageId};");
-            using var stmt = _tdEngineClient!.StmtInit();
+            tdEngineClient!.Exec($"USE {repositoryStorageId};");
+            using var stmt = tdEngineClient!.StmtInit();
             try
             {
                 string fieldsPlaceholders = Enumerable.Repeat("?", fieldsToHistorize.Count + 2)
@@ -191,7 +191,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"insert to table {classTimeSerieId} on {_connectionString}", e);
+                throw new TdEngineException($"insert to table {classTimeSerieId} on {connectionString}", e);
             }
         }
 
@@ -210,7 +210,7 @@ namespace pva.SuperV.Engine.HistoryStorage
             List<HistoryRow> rows = [];
             try
             {
-                _tdEngineClient!.Exec($"USE {repositoryStorageId};");
+                tdEngineClient!.Exec($"USE {repositoryStorageId};");
                 string fieldNames = fields.Select(field => $"_{field.Name}")
                     .Aggregate((a, b) => $"{a},{b}");
                 string sqlQuery =
@@ -218,7 +218,7 @@ namespace pva.SuperV.Engine.HistoryStorage
 SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
  WHERE TS between ""{FormatToSqlDate(timeRange.From)}"" and ""{FormatToSqlDate(timeRange.To)}""
  ";
-                using IRows row = _tdEngineClient!.Query(sqlQuery);
+                using IRows row = tdEngineClient!.Query(sqlQuery);
                 while (row.Read())
                 {
                     rows.Add(new HistoryRow(row, fields));
@@ -226,7 +226,7 @@ SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"select from table {instanceTableName} on {_connectionString}", e);
+                throw new TdEngineException($"select from table {instanceTableName} on {connectionString}", e);
             }
             return rows;
         }
@@ -247,7 +247,7 @@ SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
             List<HistoryStatisticRow> rows = [];
             try
             {
-                _tdEngineClient!.Exec($"USE {repositoryStorageId};");
+                tdEngineClient!.Exec($"USE {repositoryStorageId};");
                 string fieldNames = fields.Select(field => $"{field.StatisticFunction}(_{field.Field.Name})")
                     .Aggregate((a, b) => $"{a},{b}");
                 string fillClause = "";
@@ -261,7 +261,7 @@ SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {ins
  WHERE TS between ""{FormatToSqlDate(timeRange.From)}"" and ""{FormatToSqlDate(timeRange.To)}""
  INTERVAL({FormatInterval(timeRange.Interval)}) SLIDING({FormatInterval(timeRange.Interval)}) {fillClause}
  ";
-                using IRows row = _tdEngineClient!.Query(sqlQuery);
+                using IRows row = tdEngineClient!.Query(sqlQuery);
                 while (row.Read())
                 {
                     rows.Add(new HistoryStatisticRow(row, fields));
@@ -269,7 +269,7 @@ SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {ins
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"select from table {instanceTableName} on {_connectionString}", e);
+                throw new TdEngineException($"select from table {instanceTableName} on {connectionString}", e);
             }
             return rows;
         }
@@ -284,13 +284,9 @@ SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {ins
             return $"{dateTime.ToUniversalTime():yyyy-MM-dd HH:mm:ss.fffK}";
         }
 
-        private static string FormatInterval(TimeSpan? interval)
+        private static string FormatInterval(TimeSpan interval)
         {
-            if (interval is null || !interval.HasValue || interval.Value.TotalNanoseconds <= 0)
-            {
-                return "";
-            }
-            TimeSpan timespan = interval.Value;
+            TimeSpan timespan = interval;
             string intervalText = "";
             intervalText += GetIntervalPeriod(timespan.Days / 365, 'y');
             intervalText += GetIntervalPeriod((timespan.Days % 365) / 30, 'm');
@@ -330,7 +326,7 @@ SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {ins
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            _tdEngineClient?.Dispose();
+            tdEngineClient?.Dispose();
         }
 
         /// <summary>

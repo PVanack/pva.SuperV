@@ -21,14 +21,14 @@ namespace pva.SuperV.Api.Services.Projects
             return ProjectMapper.ToDto(wipProject);
         }
 
-        public ProjectModel CreateProjectFromRunnable(string projectId)
+        public ProjectModel CreateProjectFromRunnable(string runnableProjectId)
         {
-            if (GetProjectEntity(projectId) is RunnableProject runnableProject)
+            if (GetProjectEntity(runnableProjectId) is RunnableProject runnableProject)
             {
                 WipProject wipProject = Project.CreateProject(runnableProject);
                 return ProjectMapper.ToDto(wipProject);
             }
-            throw new NonRunnableProjectException(projectId);
+            throw new NonRunnableProjectException(runnableProjectId);
         }
 
         public async Task<ProjectModel> BuildProjectAsync(string projectId)

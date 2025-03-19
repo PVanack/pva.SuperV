@@ -13,6 +13,7 @@ namespace pva.SuperV.EngineTests
     {
         protected const string ProjectName = "TestProject";
         protected const string ClassName = "TestClass";
+        protected const string AllFieldsClassName = "AllFieldsClass";
         protected const string InstanceName = "Instance";
         protected const string ValueFieldName = "Value";
         protected const string AlarmStateFieldName = "AlarmState";
@@ -132,6 +133,20 @@ namespace pva.SuperV.EngineTests
             List<string> fieldsToHistorize = [ValueFieldName];
             HistorizationProcessing<int> historizationProcessing = new("Historization", wipProject, clazz, ValueFieldName, historyRepository.Name, null, fieldsToHistorize);
             wipProject.AddFieldChangePostProcessing(ClassName, ValueFieldName, historizationProcessing);
+
+            _ = wipProject.AddClass(AllFieldsClassName);
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<bool>("BoolField", default));
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<DateTime>("DateTimeField", DateTime.Now));
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<double>("DoubleField", default));
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<float>("FloatField", default));
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<int>("IntField", default));
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<long>("LongField", default));
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<short>("ShortField", default));
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<string>("StringField", ""));
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<TimeSpan>("TimeSpanField", TimeSpan.FromDays(0)));
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<uint>("UintField", default));
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<ulong>("UlongField", default));
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<ushort>("UshortField", default));
             return wipProject;
         }
 

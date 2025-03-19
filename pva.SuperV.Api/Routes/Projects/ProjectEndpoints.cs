@@ -83,7 +83,6 @@ namespace pva.SuperV.Api.Routes.Projects
                 .WithDescription("Loads a project from a definition JSON")
                 .Accepts<IFormFile>("multipart/form-data")
                 .Produces<ProjectModel>(StatusCodes.Status201Created)
-                .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             projectsApi.MapGet("/{runnableProjectId}/instances",

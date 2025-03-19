@@ -20,14 +20,14 @@ namespace pva.SuperV.Engine
         /// The project assembly loader.
         /// </summary>
         [JsonIgnore]
-        private ProjectAssemblyLoader? _projectAssemblyLoader;
+        private ProjectAssemblyLoader? projectAssemblyLoader;
 
         [JsonIgnore]
         public WeakReference? ProjectAssemblyLoaderWeakRef
         {
-            get => _projectAssemblyLoader == null
+            get => projectAssemblyLoader == null
                 ? null
-                : new WeakReference(_projectAssemblyLoader, trackResurrection: true);
+                : new WeakReference(projectAssemblyLoader, trackResurrection: true);
         }
 
         /// <summary>
@@ -73,8 +73,8 @@ namespace pva.SuperV.Engine
         private void SetupProjectAssemblyLoader()
         {
             Task.Run(async () => await ProjectBuilder.BuildAsync(this)).Wait();
-            _projectAssemblyLoader ??= new();
-            _projectAssemblyLoader.LoadFromAssemblyPath(GetAssemblyFileName());
+            projectAssemblyLoader ??= new();
+            projectAssemblyLoader.LoadFromAssemblyPath(GetAssemblyFileName());
         }
 
         private void CreateHistoryClassTimeSeries()
@@ -123,7 +123,7 @@ namespace pva.SuperV.Engine
 
             Class clazz = GetClass(className);
             string classFullName = $"{Name}.V{Version}.{clazz.Name}";
-            Type? classType = _projectAssemblyLoader?.Assemblies.First()?.GetType(classFullName!);
+            Type? classType = projectAssemblyLoader?.Assemblies.First()?.GetType(classFullName!);
 
             Instance? instance = CreateInstance(classType!);
             if (instance is null)
@@ -230,8 +230,8 @@ namespace pva.SuperV.Engine
             Instances.Clear();
             base.Unload();
             Projects.Remove(GetId(), out _);
-            _projectAssemblyLoader?.Unload();
-            _projectAssemblyLoader = null;
+            projectAssemblyLoader?.Unload();
+            projectAssemblyLoader = null;
         }
 
         /// <summary>
@@ -296,6 +296,7 @@ namespace pva.SuperV.Engine
         public List<HistoryRow> GetHistoryValues(string instanceName, HistoryTimeRange query, List<IFieldDefinition> fields,
             HistoryRepository historyRepository, string classTimeSerieId)
         {
+            ValidateTimeRange(query);
             return HistoryStorageEngine!.GetHistoryValues(historyRepository!.HistoryStorageId!, classTimeSerieId!,
                 instanceName, query, fields);
         }
@@ -316,10 +317,27 @@ namespace pva.SuperV.Engine
         public List<HistoryStatisticRow> GetHistoryStatistics(string instanceName, HistoryStatisticTimeRange query, List<HistoryStatisticField> fields,
             HistoryRepository historyRepository, string classTimeSerieId)
         {
+            ValidateTimeRange(query);
             return HistoryStorageEngine!.GetHistoryStatistics(historyRepository!.HistoryStorageId!, classTimeSerieId!,
                 instanceName, query, fields);
         }
 
+        private static void ValidateTimeRange(HistoryTimeRange timeRange)
+        {
+            if (timeRange.From >= timeRange.To)
+            {
+                throw new BadHistoryStartTimeException(timeRange.From, timeRange.To);
+            }
+        }
+
+        private static void ValidateTimeRange(HistoryStatisticTimeRange timeRange)
+        {
+            ValidateTimeRange(timeRange as HistoryTimeRange);
+            if (timeRange.Interval > timeRange.To - timeRange.From)
+            {
+                throw new BadHistoryIntervalException(timeRange.Interval, timeRange.From, timeRange.To);
+            }
+        }
 
         public static void GetHistoryParametersForFields(Instance instance, List<string> fieldNames,
             out List<IFieldDefinition> fields, out HistoryRepository? historyRepository, out string? classTimeSerieId)

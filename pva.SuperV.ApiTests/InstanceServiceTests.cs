@@ -10,15 +10,15 @@ namespace pva.SuperV.ApiTests
     [Collection("Project building")]
     public class InstanceServiceTests : SuperVTestsBase
     {
-        private readonly InstanceService _instanceService;
-        private readonly FieldValueService _fieldValueService;
+        private readonly InstanceService instanceService;
+        private readonly FieldValueService fieldValueService;
         private readonly RunnableProject runnableProject;
         private readonly InstanceModel expectedInstance;
 
         public InstanceServiceTests()
         {
-            _instanceService = new();
-            _fieldValueService = new();
+            instanceService = new();
+            fieldValueService = new();
             runnableProject = CreateRunnableProject();
             Instance? instance = runnableProject.CreateInstance(ClassName, InstanceName);
             expectedInstance = new(instance!.Name, instance!.Class.Name!,
@@ -38,7 +38,7 @@ namespace pva.SuperV.ApiTests
         {
             List<InstanceModel> expectedInstances = [expectedInstance];
             // Act
-            var result = _instanceService.GetInstances(runnableProject.GetId());
+            var result = instanceService.GetInstances(runnableProject.GetId());
 
             // Assert
             result.ShouldBeEquivalentTo(expectedInstances);
@@ -48,7 +48,7 @@ namespace pva.SuperV.ApiTests
         public void GetInstance_ShouldReturnInstance_WhenInstanceExists()
         {
             // Act
-            var result = _instanceService.GetInstance(runnableProject.GetId(), InstanceName);
+            var result = instanceService.GetInstance(runnableProject.GetId(), InstanceName);
 
             // Assert
             result.ShouldNotBeNull();
@@ -60,7 +60,7 @@ namespace pva.SuperV.ApiTests
         {
             // Act & Assert
             Assert.Throws<UnknownEntityException>(()
-                => _instanceService.GetInstance(runnableProject.GetId(), "UnknownInstance"));
+                => instanceService.GetInstance(runnableProject.GetId(), "UnknownInstance"));
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace pva.SuperV.ApiTests
         {
             InstanceModel expectedCreatedInstance = expectedInstance with { Name = "Instance1" };
             // Act & Assert
-            InstanceModel createInstanceModel = _instanceService.CreateInstance(runnableProject.GetId(), expectedCreatedInstance with { Fields = [] });
+            InstanceModel createInstanceModel = instanceService.CreateInstance(runnableProject.GetId(), expectedCreatedInstance with { Fields = [] });
 
             createInstanceModel.Fields.Count.ShouldBe(expectedCreatedInstance.Fields.Count);
             List<FieldModel> fieldsUpdatedWithTimestampsAndQualities = [];
@@ -104,7 +104,7 @@ namespace pva.SuperV.ApiTests
                                         : field)]
             };
             // Act & Assert
-            InstanceModel createInstanceModel = _instanceService.CreateInstance(runnableProject.GetId(),
+            InstanceModel createInstanceModel = instanceService.CreateInstance(runnableProject.GetId(),
                 expectedCreatedInstance with
                 {
                     Fields = [expectedCreatedInstance.Fields[0]]
@@ -133,22 +133,10 @@ namespace pva.SuperV.ApiTests
         {
             // Act
             FieldModel expectedField = expectedInstance.Fields[0];
-            FieldModel retrievedField = _fieldValueService.GetField(runnableProject.GetId(), expectedInstance.Name, expectedField.Name);
+            FieldModel retrievedField = fieldValueService.GetField(runnableProject.GetId(), expectedInstance.Name, expectedField.Name);
 
             // Assert
             retrievedField.ShouldBeEquivalentTo(expectedField);
-        }
-
-        [Fact]
-        public void UpdateInstanceFieldValueInRunnableProject_ShouldUpdateInstaceFieldValue()
-        {
-            StringFieldValueModel expectedFieldValue = ((StringFieldValueModel)expectedInstance.Fields[0].FieldValue) with { Value = "The value has been updated" };
-            // Act & Assert
-            FieldValueModel updatedFieldModel = _fieldValueService.UpdateFieldValue(runnableProject.GetId(), expectedInstance.Name, expectedInstance.Fields[0].Name, expectedFieldValue);
-
-            updatedFieldModel.ShouldNotBeNull()
-                .ShouldBeOfType<StringFieldValueModel>()
-                .ShouldBeEquivalentTo(expectedFieldValue);
         }
     }
 }

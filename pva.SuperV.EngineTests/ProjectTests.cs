@@ -1,7 +1,6 @@
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.FieldFormatters;
-using pva.SuperV.Engine.FieldFormatters;
 using Shouldly;
 
 namespace pva.SuperV.EngineTests

@@ -17,23 +17,19 @@ namespace pva.SuperV.Engine.JsonConverters
         public static string? GetStringPropertyFromUtfReader(ref Utf8JsonReader reader, string propertyName)
         {
             reader.Read();
-            if (reader.TokenType != JsonTokenType.PropertyName)
+            if (reader.TokenType == JsonTokenType.PropertyName)
             {
-                throw new JsonException();
+                string? readPropertyName = reader.GetString();
+                if (readPropertyName == propertyName)
+                {
+                    reader.Read();
+                    if (reader.TokenType == JsonTokenType.String)
+                    {
+                        return reader.GetString();
+                    }
+                }
             }
-
-            string? readPropertyName = reader.GetString();
-            if (readPropertyName != propertyName)
-            {
-                throw new JsonException();
-            }
-
-            reader.Read();
-            if (reader.TokenType != JsonTokenType.String)
-            {
-                throw new JsonException();
-            }
-            return reader.GetString();
+            throw new JsonException();
         }
     }
 }

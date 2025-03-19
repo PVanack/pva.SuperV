@@ -66,6 +66,7 @@ namespace pva.SuperV.Engine.FieldFormatters
         public EnumFormatter(string enumName, Dictionary<int, string> values) : base(enumName, EnumAllowedTypes)
         {
             Values = values;
+            CreateStringsToValuesDictionary();
         }
 
 
@@ -112,7 +113,10 @@ namespace pva.SuperV.Engine.FieldFormatters
                     _ => new Action(() => throw new UnhandledFieldTypeException(field.FieldDefinition!.Name, field.Type))
                 })();
             }
+            else
+            {
+                throw new StringConversionException(field.FieldDefinition!.Name, stringValue, StringsToValues.Keys.ToList());
+            }
         }
-
     }
 }
