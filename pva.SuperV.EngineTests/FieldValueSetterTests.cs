@@ -21,17 +21,15 @@ namespace pva.SuperV.EngineTests
         {
         }
 
-        private static FieldFormatter CreateFormatter()
-            => new EnumFormatter("Formatter", new Dictionary<int, string>() { { 0, "OFF" }, { 1, "ON" }, { -1, "FUZZY" } });
+        private static EnumFormatter CreateFormatter()
+            => new("Formatter", new Dictionary<int, string>() { { 0, "OFF" }, { 1, "ON" }, { -1, "FUZZY" } });
 
         private static Field<T> CreateField<T>(FieldFormatter? fieldFormatter)
+        => new(default)
         {
-            return new(default)
-            {
-                FieldDefinition = new FieldDefinition<T>("Field")
-                { Formatter = fieldFormatter }
-            };
-        }
+            FieldDefinition = new FieldDefinition<T>("Field")
+            { Formatter = fieldFormatter }
+        };
 
         private static void WhenStringValueCanBeConvertedToType_ThenFieldValueIsEqualToValue<T>(ValueToTest<T> valueToTest, FieldFormatter? fieldFormatter = null)
         {

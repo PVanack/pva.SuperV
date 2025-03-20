@@ -115,7 +115,7 @@ namespace pva.SuperV.Engine.FieldFormatters
             }
             else
             {
-                throw new StringConversionException(field.FieldDefinition!.Name, stringValue, StringsToValues.Keys.ToList());
+                throw new StringConversionException(field.FieldDefinition!.Name, stringValue, [.. StringsToValues.Keys]);
             }
         }
     }

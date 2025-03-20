@@ -38,7 +38,7 @@ namespace pva.SuperV.ApiTests
                 new InstanceModel("Instance1", "Class1",
                     [
                         new FieldModel("Field1", typeof(int).ToString(),
-                        new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now))
+                            new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now))
                     ])
                 ];
             MockedInstanceService.GetInstances("Project1")

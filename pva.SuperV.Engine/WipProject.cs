@@ -215,9 +215,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <returns><see cref="RunnableProject"/></returns>
         public RunnableProject CloneAsRunnable()
-        {
-            return new RunnableProject(this);
-        }
+            => new RunnableProject(this);
 
         /// <summary>
         /// Unloads the project.
