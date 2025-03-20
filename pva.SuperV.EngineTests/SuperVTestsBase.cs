@@ -72,7 +72,7 @@ namespace pva.SuperV.EngineTests
             }
         }
 
-        protected async Task StopTDengineContainerAsync()
+        protected async Task<long> StopTDengineContainerAsync()
         {
             if (tdEngineContainer is not null)
             {
@@ -80,7 +80,9 @@ namespace pva.SuperV.EngineTests
                     .ConfigureAwait(false);
                 long exitCode = await tdEngineContainer.GetExitCodeAsync();
                 tdEngineContainer = null;
+                return exitCode;
             }
+            return 0;
         }
 
         protected RunnableProject CreateRunnableProject()
@@ -152,7 +154,7 @@ namespace pva.SuperV.EngineTests
 
         protected void DeleteProject(Project project)
         {
-            Task.Run(async () => await StopTDengineContainerAsync());
+            _ = Task.Run(async () => await StopTDengineContainerAsync()).Result;
 #if DELETE_PROJECT_ASSEMBLY
             string projectAssemblyPath = project.GetAssemblyFileName();
             String projectName = project.Name!;

@@ -6,33 +6,45 @@ using pva.SuperV.EngineTests;
 using pva.SuperV.Model.HistoryRetrieval;
 using pva.SuperV.Model.Instances;
 using Shouldly;
+using Xunit.Abstractions;
 
 namespace pva.SuperV.ApiTests
 {
+    [Collection("Project building")]
     public class HistoryValueServiceTests : SuperVTestsBase
     {
-        // Set it to null to run the tests but only on their own.
-        private const string SkipReason = "Not working when run as part of the whole test project";
-        private readonly HistoryValuesService historyValuesService;
-        private readonly WipProject wipProject;
-        private readonly RunnableProject runnableProject;
+        public class ConsoleWriter(ITestOutputHelper output) : StringWriter
+        {
+            public override void WriteLine(string? value) => output.WriteLine(value);
+        }
 
-        public HistoryValueServiceTests()
+        private readonly HistoryValuesService historyValuesService;
+        private WipProject? wipProject;
+        private RunnableProject? runnableProject;
+
+
+        public HistoryValueServiceTests(ITestOutputHelper output)
         {
             historyValuesService = new();
+            Console.SetOut(new ConsoleWriter(output));
+        }
+
+        private async ValueTask BuildProjectAndCreateInstanceAsync()
+        {
             wipProject = CreateWipProject(TDengineHistoryStorage.Prefix);
-            runnableProject = Task.Run(async () => await Project.BuildAsync(wipProject)).Result;
+            runnableProject = await Project.BuildAsync(wipProject);
             runnableProject.CreateInstance(ClassName, InstanceName);
         }
 
-        [Fact(Skip = SkipReason)]
-        public void GivenInstanceWithHistory_WhenGettingHistoryRawValues_ThenHistoryRawRowsAreReturned()
+        [Fact]
+        public async Task GivenInstanceWithHistory_WhenGettingHistoryRawValues_ThenHistoryRawRowsAreReturned()
         {
             // Given
+            await BuildProjectAndCreateInstanceAsync();
             DateTime timestamp = DateTime.UtcNow;
+            runnableProject!.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
             HistoryRawResultModel expectedHistoryResult = new([new HistoryFieldModel(ValueFieldName, "System.Int32", 0)],
                 [new HistoryRawRowModel(timestamp, QualityLevel.Good, [123456])]);
-            runnableProject.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
 
             // Act
             HistoryRequestModel request = new(timestamp.AddSeconds(-1), DateTime.Now, [ValueFieldName]);
@@ -60,15 +72,16 @@ namespace pva.SuperV.ApiTests
             }
         }
 
-        [Fact(Skip = SkipReason)]
-        public void GivenInstanceWithHistory_WhenGettingHistoryValues_ThenHistoryRowsAreReturned()
+        [Fact]
+        public async Task GivenInstanceWithHistory_WhenGettingHistoryValues_ThenHistoryRowsAreReturned()
         {
             // Given
+            await BuildProjectAndCreateInstanceAsync();
             DateTime timestamp = DateTime.UtcNow;
+            runnableProject!.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
             HistoryResultModel expectedHistoryResult = new([new HistoryFieldModel(ValueFieldName, "System.Int32", 0)],
                 [new HistoryRowModel(timestamp, QualityLevel.Good, [new IntFieldValueModel(123456, null, QualityLevel.Good, timestamp)])]);
 
-            runnableProject.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
             // Act
             HistoryRequestModel request = new(timestamp.AddSeconds(-1), DateTime.Now, [ValueFieldName]);
             HistoryResultModel historyResult = historyValuesService.GetInstanceHistoryValues(runnableProject.GetId(), InstanceName, request);
@@ -78,14 +91,15 @@ namespace pva.SuperV.ApiTests
             historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
         }
 
-        [Fact(Skip = SkipReason)]
-        public void GivenInstanceWithHistory_WhenGettingHistoryRawStatistics_ThenHistoryRawRowsAreReturned()
+        [Fact]
+        public async Task GivenInstanceWithHistory_WhenGettingHistoryRawStatistics_ThenHistoryRawRowsAreReturned()
         {
             // Given
+            await BuildProjectAndCreateInstanceAsync();
             DateTime timestamp = DateTime.UtcNow.Date;
+            runnableProject!.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
             HistoryStatisticsRawResultModel expectedHistoryResult = new([new HistoryStatisticResultFieldModel(ValueFieldName, "System.Int32", 0, HistoryStatFunction.AVG)],
                 [new HistoryStatisticsRawRowModel(timestamp, timestamp, timestamp.AddHours(1), TimeSpan.FromHours(1), QualityLevel.Good, [123456])]);
-            runnableProject.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
 
             // Act
             HistoryStatisticsRequestModel request = new(timestamp, timestamp.AddHours(1), TimeSpan.FromHours(1), FillMode.PREV,
@@ -114,16 +128,17 @@ namespace pva.SuperV.ApiTests
             }
         }
 
-        [Fact(Skip = SkipReason)]
-        public void GivenInstanceWithHistory_WhenGettingHistoryStatistics_ThenHistoryRowsAreReturned()
+        [Fact]
+        public async Task GivenInstanceWithHistory_WhenGettingHistoryStatistics_ThenHistoryRowsAreReturned()
         {
             // Given
+            await BuildProjectAndCreateInstanceAsync();
             DateTime timestamp = DateTime.UtcNow.Date;
+            runnableProject!.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
             HistoryStatisticsResultModel expectedHistoryResult = new([new HistoryStatisticResultFieldModel(ValueFieldName, "System.Int32", 0, HistoryStatFunction.AVG)],
                 [new HistoryStatisticsRowModel(timestamp, timestamp, timestamp.AddHours(1), TimeSpan.FromHours(1), QualityLevel.Good,
                     [new IntFieldValueModel(123456, null, QualityLevel.Good, timestamp)])]);
 
-            runnableProject.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
             // Act
             HistoryStatisticsRequestModel request = new(timestamp, timestamp.AddMinutes(59), TimeSpan.FromHours(1), FillMode.PREV,
                 [new HistoryStatisticFieldModel(ValueFieldName, HistoryStatFunction.AVG)]);
