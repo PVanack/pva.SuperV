@@ -28,6 +28,9 @@ namespace pva.SuperV.EngineTests
             // WHEN
             instance!.Value.SetValue(50);
             DateTime ts1 = instance!.Value.Timestamp;
+#pragma warning disable S2925 // "Thread.Sleep" should not be used in tests
+            Thread.Sleep(50);
+#pragma warning restore S2925 // "Thread.Sleep" should not be used in tests
             instance!.Value.SetValue(110);
             DateTime ts2 = instance!.Value.Timestamp;
 
@@ -89,7 +92,7 @@ namespace pva.SuperV.EngineTests
         }
 
         [Fact]
-        public async Task GivenStatrTimeEqualToEndTime_WhenGettingHistoryValues_ThenExceptionIsThrown()
+        public async Task GivenStartTimeEqualToEndTime_WhenGettingHistoryValues_ThenExceptionIsThrown()
         {
             // GIVEN
             runnableProject = await Project.BuildAsync(wipProject);
