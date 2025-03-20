@@ -13,20 +13,21 @@ namespace pva.SuperV.ApiTests
         private readonly RunnableProject runnableProject;
         private readonly WipProject wipProject;
         private readonly List<FieldDefinitionModel> allFieldsExpectedFieldDefinitions =
-                        [
-                            new BoolFieldDefinitionModel("BoolField", default, null),
-                    new DateTimeFieldDefinitionModel("DateTimeField", default, null),
-                    new DoubleFieldDefinitionModel("DoubleField", default, null),
-                    new FloatFieldDefinitionModel("FloatField", default, null),
-                    new IntFieldDefinitionModel("IntField", default, null),
-                    new LongFieldDefinitionModel("LongField", default, null),
-                    new ShortFieldDefinitionModel("ShortField", default, null),
-                    new StringFieldDefinitionModel("StringField", "", null),
-                    new TimeSpanFieldDefinitionModel("TimeSpanField", TimeSpan.FromDays(0), null),
-                    new UintFieldDefinitionModel("UintField", default, null),
-                    new UlongFieldDefinitionModel("UlongField", default, null),
-                    new UshortFieldDefinitionModel("UshortField", default, null)
-                        ];
+            [
+                new BoolFieldDefinitionModel("BoolField", default, null),
+                new DateTimeFieldDefinitionModel("DateTimeField", default, null),
+                new DoubleFieldDefinitionModel("DoubleField", default, null),
+                new FloatFieldDefinitionModel("FloatField", default, null),
+                new IntFieldDefinitionModel("IntField", default, null),
+                new LongFieldDefinitionModel("LongField", default, null),
+                new ShortFieldDefinitionModel("ShortField", default, null),
+                new StringFieldDefinitionModel("StringField", "", null),
+                new TimeSpanFieldDefinitionModel("TimeSpanField", TimeSpan.FromDays(0), null),
+                new UintFieldDefinitionModel("UintField", default, null),
+                new UlongFieldDefinitionModel("UlongField", default, null),
+                new UshortFieldDefinitionModel("UshortField", default, null),
+                new IntFieldDefinitionModel("IntFieldWithFormat", default, "AlarmStates")
+            ];
 
         public FieldDefinitionServiceTests()
         {

@@ -25,12 +25,13 @@ namespace pva.SuperV.Engine.HistoryStorage
             { typeof(short), "SMALLINT"},
             { typeof(int), "INT" },
             { typeof(long), "BIGINT" },
+            { typeof(TimeSpan), "BIGINT" },
             { typeof(uint), "INT UNSIGNED" },
             { typeof(ulong), "BIGINT UNSIGNED" },
             { typeof(float), "FLOAT" },
             { typeof(double),  "DOUBLE" },
             { typeof(bool), "BOOL" },
-            { typeof(string), "NCHAR" },
+            { typeof(string), "NCHAR(132)" },
             { typeof(sbyte),  "TINYINT" },
             { typeof(byte), "TINYINT UNSIGNED" },
             { typeof(ushort), "SMALLINT UNSIGNED" }
@@ -167,16 +168,20 @@ namespace pva.SuperV.Engine.HistoryStorage
             using var stmt = tdEngineClient!.StmtInit();
             try
             {
+                string fieldToHistorizeNames = fieldsToHistorize.Select(field => $"_{field.FieldDefinition!.Name}")
+                    .Aggregate((a, b) => $"{a},{b}");
                 string fieldsPlaceholders = Enumerable.Repeat("?", fieldsToHistorize.Count + 2)
                     .Aggregate((a, b) => $"{a},{b}");
-                string sql = $"INSERT INTO ? USING {classTimeSerieId} TAGS(?) VALUES ({fieldsPlaceholders});";
+                string sql = $@"INSERT INTO ? USING {classTimeSerieId} (instance) TAGS(?)
+   (TS, QUALITY, {fieldToHistorizeNames}) VALUES ({fieldsPlaceholders});
+";
                 List<object> rowValues = new(fieldsToHistorize.Count + 2)
-                    {
-                        timestamp.ToLocalTime(),
-                        (quality ?? QualityLevel.Good).ToString()
-                    };
+                {
+                    timestamp.ToLocalTime(),
+                    (quality ?? QualityLevel.Good).ToString()
+                };
                 fieldsToHistorize.ForEach(field =>
-                    rowValues.Add(((dynamic)field).Value));
+                    rowValues.Add(ConvertFieldValueToDb(field)));
                 stmt.Prepare(sql);
                 // set table name
                 stmt.SetTableName($"{instanceTableName}");
@@ -193,6 +198,26 @@ namespace pva.SuperV.Engine.HistoryStorage
             {
                 throw new TdEngineException($"insert to table {classTimeSerieId} on {connectionString}", e);
             }
+        }
+
+        private static object ConvertFieldValueToDb(IField field)
+        {
+            return field switch
+            {
+                Field<bool> typedField => typedField.Value,
+                Field<DateTime> typedField => typedField.Value.ToLocalTime(),
+                Field<double> typedField => typedField.Value,
+                Field<float> typedField => typedField.Value,
+                Field<int> typedField => typedField.Value,
+                Field<long> typedField => typedField.Value,
+                Field<short> typedField => typedField.Value,
+                Field<string> typedField => typedField.Value,
+                Field<TimeSpan> typedField => typedField.Value.Ticks,
+                Field<uint> typedField => typedField.Value,
+                Field<ulong> typedField => typedField.Value,
+                Field<ushort> typedField => typedField.Value,
+                _ => throw new UnhandledMappingException(nameof(TDengineHistoryStorage), field.Type.ToString())
+            };
         }
 
         /// <summary>
@@ -332,7 +357,7 @@ SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {ins
         /// <summary>
         /// Gets the TDengine data type for a field definition.
         /// </summary>
-        /// <param name="field">Field fr zhich the TDengine data type should be retrieved.</param>
+        /// <param name="field">Field for which the TDengine data type should be retrieved.</param>
         /// <returns>TDengine data type.</returns>
         /// <exception cref="UnhandledHistoryFieldTypeException"></exception>
         private static string GetFieldDbType(IFieldDefinition field)

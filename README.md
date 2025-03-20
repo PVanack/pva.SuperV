@@ -50,6 +50,7 @@ The engine allows to define [fields](/pva.SuperV.Engine/FiedldDefinitions.cs) of
 but the API needs to have concrete type not generics ones, so changes need to be done in the following files should you 
 want to add a new field type:
 - [FieldValueSetter.SetValue()](/pva.SuperV.Engine/FieldValueSetter.cs)
+- [TDengineHistoryStorage](/pva.SuperV.Engine/HistoryStorage/TDengineHistoryStorage.cs)
 - [FieldDefinitionMapper](/pva.SuperV.Model/FieldDefinitions/FieldDefinitionMapper.cs)
 - [FieldValueMapper](/pva.SuperV.Model/Instances/FieldValueMapper.cs)
 - [HistoryRowMapper](/pva.SuperV.Model/HistoryRetrieval/HistoryRowMapper.cs)

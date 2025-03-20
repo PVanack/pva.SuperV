@@ -35,6 +35,7 @@ namespace pva.SuperV.ApiTests
             BuildFieldModel("UintField", typeof(uint), instance),
             BuildFieldModel("UlongField", typeof(ulong), instance),
             BuildFieldModel("UshortField", typeof(ushort), instance),
+            BuildFieldModel("IntFieldWithFormat", typeof(int), instance)
             ]);
         }
 

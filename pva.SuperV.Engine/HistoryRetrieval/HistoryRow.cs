@@ -76,7 +76,7 @@ namespace pva.SuperV.Engine.HistoryRetrieval
                 ? null
                 : fieldValue switch
                 {
-                    ushort directValue => directValue,
+                    ulong directValue => directValue,
                     double doubleValue => (ulong)Math.Truncate(doubleValue),
                     _ => throw new UnhandledFieldTypeException(fieldName, fieldValue.GetType())
                 };
@@ -88,7 +88,7 @@ namespace pva.SuperV.Engine.HistoryRetrieval
                 ? null
                 : fieldValue switch
                 {
-                    ushort directValue => directValue,
+                    uint directValue => directValue,
                     double doubleValue => (uint)Math.Truncate(doubleValue),
                     _ => throw new UnhandledFieldTypeException(fieldName, fieldValue.GetType())
                 };
@@ -124,6 +124,7 @@ namespace pva.SuperV.Engine.HistoryRetrieval
                 : fieldValue switch
                 {
                     TimeSpan directValue => directValue,
+                    long longValue => TimeSpan.FromTicks(longValue),
                     _ => throw new UnhandledFieldTypeException(fieldName, fieldValue.GetType())
                 };
         }

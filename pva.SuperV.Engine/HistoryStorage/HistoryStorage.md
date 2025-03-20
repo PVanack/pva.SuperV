@@ -8,20 +8,26 @@ The client driver needs to be installed. They are included [here](/TDengine). Ho
 
 ### Supported data types
 | pva.SuperV field type | TDengine data type |
-|----|----|
-| DateTime | TIMESTAMP |
-| short | SMALLINT |
-| int | INT |
-| long | BIGINT |
-| uint | INT UNSIGNED |
-| ulong | BIGINT UNSIGNED |
-| float | FLOAT |
-| double | DOUBLE |
-| bool | BOOL |
-| string | NCHAR |
-| sbyte | TINYINT |
-| byte | TINYINT  |
-| ushort | SMALLINT UNSIGNED |
+|-----------------------|--------------------|
+| bool                  | BOOL               |
+| DateTime *            | TIMESTAMP          |
+| double                | DOUBLE             |
+| float                 | FLOAT              |
+| int                   | INT                |
+| long                  | BIGINT             |
+| short                 | SMALLINT           |
+| string                | NCHAR(132)         |
+| TimeSpan              | BIGINT             |
+| uint                  | INT UNSIGNED       |
+| ulong                 | BIGINT UNSIGNED    |
+| ushort                | SMALLINT UNSIGNED  |
+| sbyte **              | TINYINT            |
+| byte **               | TINYINT            |
+
+\* It seems that adding more than one DateTime field makes the second being stored with a weird value.
+As the timestamp is already a DateTime field, there shouldn't be a DateTime field added.
+
+\*\* Those field types are not used.
 
 ### TDengine connection string
 The connection string to be used for pva.SuperV has the following form: TDengine:host=\[*hostname*\]*;port=6030;username=\[*username*\];password=\[*password*\].

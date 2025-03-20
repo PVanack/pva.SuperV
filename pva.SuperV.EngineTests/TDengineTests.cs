@@ -54,13 +54,13 @@ namespace pva.SuperV.EngineTests
 
 
         [Fact]
-        public async Task GivenTimespanFieldUsedInHistorizationProcessing_WhenBuildingProject_ThenExceptionIsThrown()
+        public async Task GivenUnhandledFieldUsedInHistorizationProcessing_WhenBuildingProject_ThenExceptionIsThrown()
         {
             // GIVEN
             Class clazz = wipProject.GetClass(ClassName);
-            clazz.AddField(new FieldDefinition<TimeSpan>("TimeSpanField"));
+            clazz.AddField(new FieldDefinition<List<int>>("ListInt"));
             wipProject.AddFieldChangePostProcessing(ClassName, ValueFieldName,
-                new HistorizationProcessing<int>("BadHistProcessing", wipProject, clazz, ValueFieldName, HistoryRepositoryName, null, ["TimeSpanField"]));
+                new HistorizationProcessing<int>("BadHistProcessing", wipProject, clazz, ValueFieldName, HistoryRepositoryName, null, ["ListInt"]));
             await Assert.ThrowsAsync<UnhandledHistoryFieldTypeException>(async () => await Project.BuildAsync(wipProject));
         }
 

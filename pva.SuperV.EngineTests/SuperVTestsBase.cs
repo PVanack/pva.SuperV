@@ -13,7 +13,6 @@ namespace pva.SuperV.EngineTests
     {
         protected const string ProjectName = "TestProject";
         protected const string ClassName = "TestClass";
-        protected const string AllFieldsClassName = "AllFieldsClass";
         protected const string InstanceName = "Instance";
         protected const string ValueFieldName = "Value";
         protected const string AlarmStateFieldName = "AlarmState";
@@ -24,6 +23,8 @@ namespace pva.SuperV.EngineTests
         protected const string LowLowLimitFieldName = "LowLowlimit";
         protected const string BaseClassName = "TestBaseClass";
         protected const string BaseClassFieldName = "InheritedField";
+        protected const string AllFieldsClassName = "AllFieldsClass";
+        protected const string AllFieldsInstanceName = "AllFieldsInstance";
         protected const string HistoryRepositoryName = "HistoryRepository";
         protected static Dictionary<int, string> AlarmStatesFormatterValues = new() {
                 { -2, "LowLow" },
@@ -136,7 +137,7 @@ namespace pva.SuperV.EngineTests
             HistorizationProcessing<int> historizationProcessing = new("Historization", wipProject, clazz, ValueFieldName, historyRepository.Name, null, fieldsToHistorize);
             wipProject.AddFieldChangePostProcessing(ClassName, ValueFieldName, historizationProcessing);
 
-            _ = wipProject.AddClass(AllFieldsClassName);
+            Class allFieldsClass = wipProject.AddClass(AllFieldsClassName);
             wipProject.AddField(AllFieldsClassName, new FieldDefinition<bool>("BoolField", default));
             wipProject.AddField(AllFieldsClassName, new FieldDefinition<DateTime>("DateTimeField", default));
             wipProject.AddField(AllFieldsClassName, new FieldDefinition<double>("DoubleField", default));
@@ -149,6 +150,25 @@ namespace pva.SuperV.EngineTests
             wipProject.AddField(AllFieldsClassName, new FieldDefinition<uint>("UintField", default));
             wipProject.AddField(AllFieldsClassName, new FieldDefinition<ulong>("UlongField", default));
             wipProject.AddField(AllFieldsClassName, new FieldDefinition<ushort>("UshortField", default));
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<int>("IntFieldWithFormat", default), AlarmStatesFormatterName);
+            wipProject.AddFieldChangePostProcessing(AllFieldsClassName, "IntFieldWithFormat",
+                new HistorizationProcessing<int>("Historization", wipProject, allFieldsClass, "IntFieldWithFormat", historyRepository.Name, null,
+                    [
+                        "BoolField",
+                        //"DateTimeField",
+                        "DoubleField",
+                        "FloatField",
+                        "IntField",
+                        "LongField",
+                        "ShortField",
+                        "StringField",
+                        "TimeSpanField",
+                        "UintField",
+                        "UlongField",
+                        "UshortField",
+                        "IntFieldWithFormat"
+                    ]
+                ));
             return wipProject;
         }
 

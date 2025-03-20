@@ -29,18 +29,19 @@ namespace pva.SuperV.ApiTests
             Console.SetOut(new ConsoleWriter(output));
         }
 
-        private async ValueTask BuildProjectAndCreateInstanceAsync()
+        private async ValueTask BuildProjectAndCreateInstancesAsync()
         {
             wipProject = CreateWipProject(TDengineHistoryStorage.Prefix);
             runnableProject = await Project.BuildAsync(wipProject);
             runnableProject.CreateInstance(ClassName, InstanceName);
+            runnableProject.CreateInstance(AllFieldsClassName, AllFieldsInstanceName);
         }
 
         [Fact]
         public async Task GivenInstanceWithHistory_WhenGettingHistoryRawValues_ThenHistoryRawRowsAreReturned()
         {
             // Given
-            await BuildProjectAndCreateInstanceAsync();
+            await BuildProjectAndCreateInstancesAsync();
             DateTime timestamp = DateTime.UtcNow;
             runnableProject!.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
             HistoryRawResultModel expectedHistoryResult = new([new HistoryFieldModel(ValueFieldName, "System.Int32", 0)],
@@ -76,7 +77,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenInstanceWithHistory_WhenGettingHistoryValues_ThenHistoryRowsAreReturned()
         {
             // Given
-            await BuildProjectAndCreateInstanceAsync();
+            await BuildProjectAndCreateInstancesAsync();
             DateTime timestamp = DateTime.UtcNow;
             runnableProject!.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
             HistoryResultModel expectedHistoryResult = new([new HistoryFieldModel(ValueFieldName, "System.Int32", 0)],
@@ -92,10 +93,89 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public async Task GivenAllFieldsInstanceWithHistory_WhenGettingHistoryValues_ThenHistoryRowsAreReturned()
+        {
+            // Given
+            await BuildProjectAndCreateInstancesAsync();
+            DateTime timestamp = DateTime.UtcNow;
+            runnableProject!.SetInstanceValue<bool>(AllFieldsInstanceName, "BoolField", true, timestamp);
+            //runnableProject!.SetInstanceValue<DateTime>(AllFieldsInstanceName, "DateTimeField", timestamp, timestamp);
+            runnableProject!.SetInstanceValue<double>(AllFieldsInstanceName, "DoubleField", 123.456, timestamp);
+            runnableProject!.SetInstanceValue<float>(AllFieldsInstanceName, "FloatField", 12.345f, timestamp);
+            runnableProject!.SetInstanceValue<int>(AllFieldsInstanceName, "IntField", 123456, timestamp);
+            runnableProject!.SetInstanceValue<long>(AllFieldsInstanceName, "LongField", 654321, timestamp);
+            runnableProject!.SetInstanceValue<short>(AllFieldsInstanceName, "ShortField", 1234, timestamp);
+            runnableProject!.SetInstanceValue<string>(AllFieldsInstanceName, "StringField", "Hi from pva.SuperV!", timestamp);
+            runnableProject!.SetInstanceValue<TimeSpan>(AllFieldsInstanceName, "TimeSpanField", TimeSpan.FromDays(1), timestamp);
+            runnableProject!.SetInstanceValue<uint>(AllFieldsInstanceName, "UintField", 123, timestamp);
+            runnableProject!.SetInstanceValue<ulong>(AllFieldsInstanceName, "UlongField", 321456, timestamp);
+            runnableProject!.SetInstanceValue<ushort>(AllFieldsInstanceName, "UshortField", 1456, timestamp);
+            runnableProject!.SetInstanceValue<int>(AllFieldsInstanceName, "IntFieldWithFormat", 1, timestamp);
+
+            HistoryResultModel expectedHistoryResult = new(
+                [
+                    new HistoryFieldModel("BoolField", "System.Boolean", 0),
+                    //new HistoryFieldModel("DateTimeField", "System.DateTime", 1),
+                    new HistoryFieldModel("DoubleField", "System.Double", 1),
+                    new HistoryFieldModel("FloatField", "System.Single", 2),
+                    new HistoryFieldModel("IntField", "System.Int32", 3),
+                    new HistoryFieldModel("LongField", "System.Int64", 4),
+                    new HistoryFieldModel("ShortField", "System.Int16", 5),
+                    new HistoryFieldModel("StringField", "System.String", 6),
+                    new HistoryFieldModel("TimeSpanField", "System.TimeSpan", 7),
+                    new HistoryFieldModel("UintField", "System.UInt32", 8),
+                    new HistoryFieldModel("UlongField", "System.UInt64", 9),
+                    new HistoryFieldModel("UshortField", "System.UInt16", 10),
+                    new HistoryFieldModel("IntFieldWithFormat", "System.Int32", 11),
+                ],
+                [
+                    new HistoryRowModel(timestamp, QualityLevel.Good,
+                    [
+                        new BoolFieldValueModel(true, null, QualityLevel.Good, timestamp),
+                        //new DateTimeFieldValueModel(timestamp, null, QualityLevel.Good, timestamp),
+                        new DoubleFieldValueModel(123.456, null, QualityLevel.Good, timestamp),
+                        new FloatFieldValueModel(12.345f, null, QualityLevel.Good, timestamp),
+                        new IntFieldValueModel(123456, null, QualityLevel.Good, timestamp),
+                        new LongFieldValueModel(654321, null, QualityLevel.Good, timestamp),
+                        new ShortFieldValueModel(1234, null, QualityLevel.Good, timestamp),
+                        new StringFieldValueModel("Hi from pva.SuperV!", QualityLevel.Good, timestamp),
+                        new TimeSpanFieldValueModel(TimeSpan.FromDays(1), null, QualityLevel.Good, timestamp),
+                        new UintFieldValueModel(123, null, QualityLevel.Good, timestamp),
+                        new UlongFieldValueModel(321456, null, QualityLevel.Good, timestamp),
+                        new UshortFieldValueModel(1456, null, QualityLevel.Good, timestamp),
+                        new IntFieldValueModel(1, "High", QualityLevel.Good, timestamp),
+                    ])
+                ]);
+
+            // Act
+            HistoryRequestModel request = new(timestamp.AddSeconds(-1), DateTime.Now,
+                [
+                    "BoolField",
+                    //"DateTimeField",
+                    "DoubleField",
+                    "FloatField",
+                    "IntField",
+                    "LongField",
+                    "ShortField",
+                    "StringField",
+                    "TimeSpanField",
+                    "UintField",
+                    "UlongField",
+                    "UshortField",
+                    "IntFieldWithFormat"
+                ]);
+            HistoryResultModel historyResult = historyValuesService.GetInstanceHistoryValues(runnableProject.GetId(), AllFieldsInstanceName, request);
+
+            // Assert
+            // This doesn' work, as comparison of the object values use Object Equals().
+            historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
+        }
+
+        [Fact]
         public async Task GivenInstanceWithHistory_WhenGettingHistoryRawStatistics_ThenHistoryRawRowsAreReturned()
         {
             // Given
-            await BuildProjectAndCreateInstanceAsync();
+            await BuildProjectAndCreateInstancesAsync();
             DateTime timestamp = DateTime.UtcNow.Date;
             runnableProject!.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
             HistoryStatisticsRawResultModel expectedHistoryResult = new([new HistoryStatisticResultFieldModel(ValueFieldName, "System.Int32", 0, HistoryStatFunction.AVG)],
@@ -132,7 +212,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenInstanceWithHistory_WhenGettingHistoryStatistics_ThenHistoryRowsAreReturned()
         {
             // Given
-            await BuildProjectAndCreateInstanceAsync();
+            await BuildProjectAndCreateInstancesAsync();
             DateTime timestamp = DateTime.UtcNow.Date;
             runnableProject!.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
             HistoryStatisticsResultModel expectedHistoryResult = new([new HistoryStatisticResultFieldModel(ValueFieldName, "System.Int32", 0, HistoryStatFunction.AVG)],
