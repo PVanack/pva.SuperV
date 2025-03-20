@@ -20,17 +20,27 @@ namespace pva.SuperV.ApiTests
             instanceService = new();
             fieldValueService = new();
             runnableProject = CreateRunnableProject();
-            Instance? instance = runnableProject.CreateInstance(ClassName, InstanceName);
+            Instance? instance = runnableProject.CreateInstance(AllFieldsClassName, InstanceName);
             expectedInstance = new(instance!.Name, instance!.Class.Name!,
             [
-                new FieldModel(BaseClassFieldName, typeof(string).ToString(), FieldValueMapper.ToDto(instance!.GetField(BaseClassFieldName))),
-                new FieldModel(ValueFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(ValueFieldName))),
-                new FieldModel(HighHighLimitFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(HighHighLimitFieldName))),
-                new FieldModel(HighLimitFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(HighLimitFieldName))),
-                new FieldModel(LowLimitFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(LowLimitFieldName))),
-                new FieldModel(LowLowLimitFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(LowLowLimitFieldName))),
-                new FieldModel(AlarmStateFieldName, typeof(int).ToString(), FieldValueMapper.ToDto(instance!.GetField(AlarmStateFieldName)))
+            BuildFieldModel("BoolField", typeof(bool), instance),
+            BuildFieldModel("DateTimeField", typeof(DateTime), instance),
+            BuildFieldModel("DoubleField", typeof(double), instance),
+            BuildFieldModel("FloatField", typeof(float), instance),
+            BuildFieldModel("IntField", typeof(int), instance),
+            BuildFieldModel("LongField", typeof(long), instance),
+            BuildFieldModel("ShortField", typeof(short), instance),
+            BuildFieldModel("StringField", typeof(string), instance),
+            BuildFieldModel("TimeSpanField", typeof(TimeSpan), instance),
+            BuildFieldModel("UintField", typeof(uint), instance),
+            BuildFieldModel("UlongField", typeof(ulong), instance),
+            BuildFieldModel("UshortField", typeof(ushort), instance),
             ]);
+        }
+
+        private static FieldModel BuildFieldModel(string fieldName, Type fieldType, Instance instance)
+        {
+            return new FieldModel(fieldName, fieldType.ToString(), FieldValueMapper.ToDto(instance!.GetField(fieldName)));
         }
 
         [Fact]
@@ -100,7 +110,7 @@ namespace pva.SuperV.ApiTests
                 Fields = [.. expectedInstance.Fields
                             .Select(field
                                 => field.Name.Equals(expectedInstance.Fields[0].Name)
-                                        ? field with { FieldValue = new StringFieldValueModel("ExpectedString", QualityLevel.Bad, DateTime.Now) }
+                                        ? field with { FieldValue = new BoolFieldValueModel(false, null, QualityLevel.Bad, DateTime.Now) }
                                         : field)]
             };
             // Act & Assert

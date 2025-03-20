@@ -3185,8 +3185,7 @@
           },
           "value": {
             "type": "boolean",
-            "description": "Field value.",
-            "nullable": true
+            "description": "Field value."
           },
           "formattedValue": {
             "type": "string",
@@ -3223,8 +3222,7 @@
           "value": {
             "type": "string",
             "description": "Field value.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           },
           "formattedValue": {
             "type": "string",
@@ -3261,8 +3259,7 @@
           "value": {
             "type": "number",
             "description": "Field value.",
-            "format": "double",
-            "nullable": true
+            "format": "double"
           },
           "formattedValue": {
             "type": "string",
@@ -3299,8 +3296,7 @@
           "value": {
             "type": "number",
             "description": "Field value.",
-            "format": "float",
-            "nullable": true
+            "format": "float"
           },
           "formattedValue": {
             "type": "string",
@@ -3337,8 +3333,7 @@
           "value": {
             "type": "integer",
             "description": "Field value.",
-            "format": "int32",
-            "nullable": true
+            "format": "int32"
           },
           "formattedValue": {
             "type": "string",
@@ -3375,8 +3370,7 @@
           "value": {
             "type": "integer",
             "description": "Field value.",
-            "format": "int64",
-            "nullable": true
+            "format": "int64"
           },
           "formattedValue": {
             "type": "string",
@@ -3413,8 +3407,7 @@
           "value": {
             "type": "integer",
             "description": "Field value.",
-            "format": "int16",
-            "nullable": true
+            "format": "int16"
           },
           "formattedValue": {
             "type": "string",
@@ -3487,8 +3480,7 @@
           "value": {
             "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
             "type": "string",
-            "description": "Field value.",
-            "nullable": true
+            "description": "Field value."
           },
           "formattedValue": {
             "type": "string",
@@ -3525,8 +3517,7 @@
           "value": {
             "type": "integer",
             "description": "Field value.",
-            "format": "uint32",
-            "nullable": true
+            "format": "uint32"
           },
           "formattedValue": {
             "type": "string",
@@ -3563,8 +3554,7 @@
           "value": {
             "type": "integer",
             "description": "Field value.",
-            "format": "uint64",
-            "nullable": true
+            "format": "uint64"
           },
           "formattedValue": {
             "type": "string",
@@ -3601,8 +3591,7 @@
           "value": {
             "type": "integer",
             "description": "Field value.",
-            "format": "uint16",
-            "nullable": true
+            "format": "uint16"
           },
           "formattedValue": {
             "type": "string",

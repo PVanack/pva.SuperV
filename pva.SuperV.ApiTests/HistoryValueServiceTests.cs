@@ -88,7 +88,7 @@ namespace pva.SuperV.ApiTests
             runnableProject.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
 
             // Act
-            HistoryStatisticsRequestModel request = new(timestamp, timestamp.AddMinutes(59), TimeSpan.FromHours(1), FillMode.PREV,
+            HistoryStatisticsRequestModel request = new(timestamp, timestamp.AddHours(1), TimeSpan.FromHours(1), FillMode.PREV,
                 [new HistoryStatisticFieldModel(ValueFieldName, HistoryStatFunction.AVG)]);
             HistoryStatisticsRawResultModel historyResult = historyValuesService.GetInstanceRawHistoryStatistics(runnableProject.GetId(), InstanceName, request);
 

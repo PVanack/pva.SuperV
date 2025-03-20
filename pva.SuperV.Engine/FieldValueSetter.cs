@@ -7,7 +7,7 @@ namespace pva.SuperV.Engine
     {
         public static void SetValue<T1>(IField field, T1 value, DateTime? timestamp, QualityLevel? quality)
         {
-            if (field.Type == typeof(T1))
+            if (field.Type.IsAssignableFrom(value?.GetType()))
             {
                 ((Field<T1>)field).SetValue(value, timestamp, quality);
                 return;

@@ -136,7 +136,7 @@ namespace pva.SuperV.EngineTests
 
             _ = wipProject.AddClass(AllFieldsClassName);
             wipProject.AddField(AllFieldsClassName, new FieldDefinition<bool>("BoolField", default));
-            wipProject.AddField(AllFieldsClassName, new FieldDefinition<DateTime>("DateTimeField", DateTime.Now));
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<DateTime>("DateTimeField", default));
             wipProject.AddField(AllFieldsClassName, new FieldDefinition<double>("DoubleField", default));
             wipProject.AddField(AllFieldsClassName, new FieldDefinition<float>("FloatField", default));
             wipProject.AddField(AllFieldsClassName, new FieldDefinition<int>("IntField", default));

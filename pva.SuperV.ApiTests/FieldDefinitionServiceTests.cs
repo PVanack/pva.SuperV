@@ -12,6 +12,21 @@ namespace pva.SuperV.ApiTests
         private readonly FieldDefinitionService fieldDefinitionService;
         private readonly RunnableProject runnableProject;
         private readonly WipProject wipProject;
+        private readonly List<FieldDefinitionModel> allFieldsExpectedFieldDefinitions =
+                        [
+                            new BoolFieldDefinitionModel("BoolField", default, null),
+                    new DateTimeFieldDefinitionModel("DateTimeField", default, null),
+                    new DoubleFieldDefinitionModel("DoubleField", default, null),
+                    new FloatFieldDefinitionModel("FloatField", default, null),
+                    new IntFieldDefinitionModel("IntField", default, null),
+                    new LongFieldDefinitionModel("LongField", default, null),
+                    new ShortFieldDefinitionModel("ShortField", default, null),
+                    new StringFieldDefinitionModel("StringField", "", null),
+                    new TimeSpanFieldDefinitionModel("TimeSpanField", TimeSpan.FromDays(0), null),
+                    new UintFieldDefinitionModel("UintField", default, null),
+                    new UlongFieldDefinitionModel("UlongField", default, null),
+                    new UshortFieldDefinitionModel("UshortField", default, null)
+                        ];
 
         public FieldDefinitionServiceTests()
         {
@@ -24,17 +39,14 @@ namespace pva.SuperV.ApiTests
         public void GetClassFieldDefinitions_ShouldReturnListOfClassFieldDefinitions()
         {
             // GIVEN
-            List<FieldDefinitionModel> expectedFieldDefinitions =
-                [
-                    new StringFieldDefinitionModel(BaseClassFieldName, "InheritedField", null)
-                ];
+
             // WHEN
-            List<FieldDefinitionModel> fieldDefinitions = fieldDefinitionService.GetFields(runnableProject.GetId(), BaseClassName);
+            List<FieldDefinitionModel> fieldDefinitions = fieldDefinitionService.GetFields(runnableProject.GetId(), AllFieldsClassName);
 
             // THEN
             fieldDefinitions
                 .ShouldNotBeNull()
-                .ShouldBeEquivalentTo(expectedFieldDefinitions);
+                .ShouldBeEquivalentTo(allFieldsExpectedFieldDefinitions);
         }
 
         [Fact]
@@ -56,10 +68,8 @@ namespace pva.SuperV.ApiTests
         public void CreateClassFieldDefinition_ShouldCreateClassFieldDefinition()
         {
             // GIVEN
-            List<FieldDefinitionModel> expectedFieldDefinitions =
-                [
-                new StringFieldDefinitionModel($"{BaseClassFieldName}Added", "", null)
-                ];
+            List<FieldDefinitionModel> expectedFieldDefinitions = allFieldsExpectedFieldDefinitions;
+
             // WHEN
             List<FieldDefinitionModel> createdFieldDefinitions = fieldDefinitionService.CreateFields(wipProject.GetId(), BaseClassName, expectedFieldDefinitions);
 

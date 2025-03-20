@@ -317,6 +317,11 @@ namespace pva.SuperV.Engine
         public List<HistoryStatisticRow> GetHistoryStatistics(string instanceName, HistoryStatisticTimeRange query, List<HistoryStatisticField> fields,
             HistoryRepository historyRepository, string classTimeSerieId)
         {
+            // if query range is a multiple of interval, remove 1 microsecond to end time (To) to avoid returning a new interval starting at To and ending at To + interval.
+            if ((query.To - query.From).Ticks % query.Interval.Ticks == 0)
+            {
+                query = query with { To = query.To.AddMicroseconds(-1) };
+            }
             ValidateTimeRange(query);
             return HistoryStorageEngine!.GetHistoryStatistics(historyRepository!.HistoryStorageId!, classTimeSerieId!,
                 instanceName, query, fields);
@@ -333,7 +338,7 @@ namespace pva.SuperV.Engine
         private static void ValidateTimeRange(HistoryStatisticTimeRange timeRange)
         {
             ValidateTimeRange(timeRange as HistoryTimeRange);
-            if (timeRange.Interval > timeRange.To - timeRange.From)
+            if (timeRange.Interval.Add(TimeSpan.FromMinutes(-1)) > timeRange.To - timeRange.From)
             {
                 throw new BadHistoryIntervalException(timeRange.Interval, timeRange.From, timeRange.To);
             }
