@@ -70,9 +70,9 @@ namespace pva.SuperV.EngineTests
             // WHEN
             DateTime startTime = DateTime.Now;
             DateTime ts1 = DateTime.Now;
-            instance!.Value.SetValue(50, ts1);
+            instance!.Value.SetValue(50, ts1, QualityLevel.Good);
             DateTime ts2 = DateTime.Now;
-            instance!.Value.SetValue(100, ts2);
+            instance!.Value.SetValue(100, ts2, QualityLevel.Good);
 
             // THEN
             HistoryTimeRange query = new(ts1, ts2.AddMinutes(59));
@@ -114,10 +114,10 @@ namespace pva.SuperV.EngineTests
             dynamic? instance = runnableProject.CreateInstance(ClassName, InstanceName);
             // WHEN
             DateTime ts1 = DateTime.Parse("2025-03-01T00:00:00Z");
-            instance!.Value.SetValue(50, ts1);
-            instance!.Value.SetValue(150, ts1.AddMinutes(15));
+            instance!.Value.SetValue(50, ts1, QualityLevel.Good);
+            instance!.Value.SetValue(150, ts1.AddMinutes(15), QualityLevel.Good);
             DateTime ts2 = DateTime.Parse("2025-03-01T01:00:00Z");
-            instance!.Value.SetValue(100, ts2);
+            instance!.Value.SetValue(100, ts2, QualityLevel.Good);
 
             // THEN
             List<HistoryStatisticFieldName> fields =

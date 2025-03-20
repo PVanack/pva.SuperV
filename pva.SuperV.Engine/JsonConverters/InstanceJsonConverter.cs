@@ -43,45 +43,30 @@ namespace pva.SuperV.Engine.JsonConverters
         /// <exception cref="InstanceCreationException"></exception>
         public override IInstance? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType == JsonTokenType.StartObject)
+            JsonHelpers.ReadTokenType(ref reader, JsonTokenType.StartObject, false);
+            string? instanceClass = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Class");
+            string? instanceName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
+            JsonHelpers.ReadTokenType(ref reader, JsonTokenType.PropertyName);
+            try
             {
-                string? instanceClass = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Class");
-                string? instanceName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
-                reader.Read();
-                if (reader.TokenType == JsonTokenType.PropertyName)
-                {
-                    try
-                    {
-                        IInstance? instance = LoadedProject.CreateInstance(instanceClass!, instanceName!);
-                        DeserialiweFields(ref reader, options, instance!);
-                        return instance;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new InstanceCreationException(instanceName!, instanceClass!, ex);
-                    }
-                }
+                IInstance? instance = LoadedProject.CreateInstance(instanceClass!, instanceName!);
+                DeserializeFields(ref reader, options, instance!);
+                return instance;
             }
-            throw new JsonException();
+            catch (Exception ex)
+            {
+                throw new InstanceCreationException(instanceName!, instanceClass!, ex);
+            }
         }
 
-        private static void DeserialiweFields(ref Utf8JsonReader reader, JsonSerializerOptions options, IInstance instance)
+        private static void DeserializeFields(ref Utf8JsonReader reader, JsonSerializerOptions options, IInstance instance)
         {
-            reader.Read();
-            if (reader.TokenType == JsonTokenType.StartArray)
+            JsonHelpers.ReadTokenType(ref reader, JsonTokenType.StartArray);
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
             {
-                while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
-                {
-                    reader = DeserializeField(reader, options, instance);
-                }
-
-                reader.Read();
-                if (reader.TokenType == JsonTokenType.EndObject)
-                {
-                    return;
-                }
+                reader = DeserializeField(reader, options, instance);
             }
-            throw new JsonException();
+            JsonHelpers.ReadTokenType(ref reader, JsonTokenType.EndObject);
         }
 
         private static Utf8JsonReader DeserializeField(Utf8JsonReader reader, JsonSerializerOptions options, IInstance instance)
@@ -146,8 +131,7 @@ namespace pva.SuperV.Engine.JsonConverters
                 writer.WritePropertyName("Value");
                 if (!FieldConverters.TryGetValue(fieldType!, out dynamic? fieldConverter))
                 {
-                    fieldConverter =
-                        JsonSerializerOptions.Default.GetConverter(fieldType);
+                    fieldConverter = JsonSerializerOptions.Default.GetConverter(fieldType);
                     FieldConverters.Add(fieldType, fieldConverter);
                 }
                 fieldConverter.Write(writer, ((dynamic)v).Value, options);

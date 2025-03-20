@@ -105,26 +105,6 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="newValue">The value to be set.</param>
         /// <param name="timestamp">The timestamp of value.</param>
-        public void SetValue(T newValue, DateTime? timestamp)
-        {
-            SetValue(newValue, timestamp ?? DateTime.Now, QualityLevel.Good);
-        }
-
-        /// <summary>
-        /// Sets the value and associated quality with a <see cref="DateTime.UtcNow"/> timestamp .
-        /// </summary>
-        /// <param name="newValue">The value to be set.</param>
-        /// <param name="quality">The quality of value.</param>
-        public void SetValue(T newValue, QualityLevel? quality)
-        {
-            SetValue(newValue, DateTime.UtcNow, quality ?? QualityLevel.Good);
-        }
-
-        /// <summary>
-        /// Sets the value and associated timestamp with a <see cref="QualityLevel.Good"/>.
-        /// </summary>
-        /// <param name="newValue">The value to be set.</param>
-        /// <param name="timestamp">The timestamp of value.</param>
         /// <param name="quality">The quality of value.</param>
         public void SetValue(T newValue, DateTime? timestamp, QualityLevel? quality)
         {
