@@ -118,7 +118,7 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedFieldFormatter);
 
             // WHEN
-            var response = await client.PostAsJsonAsync($"/field-formatters/Project/", createRequest);
+            var response = await client.PostAsJsonAsync($"/field-formatters/Project", createRequest);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
@@ -137,7 +137,7 @@ namespace pva.SuperV.ApiTests
                 .Throws<UnknownEntityException>();
 
             // WHEN
-            var response = await client.PostAsJsonAsync($"/field-formatters/UnknownProject/", createRequest);
+            var response = await client.PostAsJsonAsync($"/field-formatters/UnknownProject", createRequest);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -154,7 +154,7 @@ namespace pva.SuperV.ApiTests
                 .Throws<NonWipProjectException>();
 
             // WHEN
-            var response = await client.PostAsJsonAsync($"/field-formatters/RunnableProject/", createRequest);
+            var response = await client.PostAsJsonAsync($"/field-formatters/RunnableProject", createRequest);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);

@@ -77,7 +77,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task WhenGettingProjectUnknownClass_ThenNotFOundIsReturned()
+        public async Task WhenGettingProjectUnknownClass_ThenNotFoundIsReturned()
         {
             // GIVEN
             MockedClassService.GetClass("Project1", "UnknownClass")
