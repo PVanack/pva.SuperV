@@ -44,8 +44,16 @@ namespace pva.SuperV.ApiTests
             await BuildProjectAndCreateInstancesAsync();
             DateTime timestamp = DateTime.UtcNow;
             runnableProject!.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
-            HistoryRawResultModel expectedHistoryResult = new([new HistoryFieldModel(ValueFieldName, "System.Int32", 0)],
-                [new HistoryRawRowModel(timestamp, QualityLevel.Good, [123456])]);
+            HistoryRawResultModel expectedHistoryResult = new(
+                [
+                    new HistoryFieldModel(ValueFieldName, "System.Int32", 0)
+                ],
+                [
+                    new HistoryRawRowModel(timestamp, QualityLevel.Good,
+                        [
+                            123456
+                        ])
+                ]);
 
             // Act
             HistoryRequestModel request = new(timestamp.AddSeconds(-1), DateTime.Now, [ValueFieldName]);
@@ -66,9 +74,101 @@ namespace pva.SuperV.ApiTests
                 actualRow.FieldValues.Count.ShouldBe(expectedRow.FieldValues.Count);
                 for (int fieldIndex = 0; fieldIndex < actualRow.FieldValues.Count; fieldIndex++)
                 {
-                    int actualValue = (int)actualRow.FieldValues[fieldIndex];
-                    int expectedValue = (int)expectedRow.FieldValues[fieldIndex];
-                    actualValue.ShouldBe(expectedValue);
+                    CheckHistoryValue(actualRow.FieldValues[fieldIndex], expectedRow.FieldValues[fieldIndex]);
+                }
+            }
+        }
+
+        [Fact]
+        public async Task GivenAllFieldsInstanceWithHistory_WhenGettingHistoryRawValues_ThenHistoryRowsAreReturned()
+        {
+            // Given
+            await BuildProjectAndCreateInstancesAsync();
+            DateTime timestamp = DateTime.UtcNow;
+            runnableProject!.SetInstanceValue<bool>(AllFieldsInstanceName, "BoolField", true, timestamp);
+            //runnableProject!.SetInstanceValue<DateTime>(AllFieldsInstanceName, "DateTimeField", timestamp, timestamp);
+            runnableProject!.SetInstanceValue<double>(AllFieldsInstanceName, "DoubleField", 123.456, timestamp);
+            runnableProject!.SetInstanceValue<float>(AllFieldsInstanceName, "FloatField", 12.345f, timestamp);
+            runnableProject!.SetInstanceValue<int>(AllFieldsInstanceName, "IntField", 123456, timestamp);
+            runnableProject!.SetInstanceValue<long>(AllFieldsInstanceName, "LongField", 654321, timestamp);
+            runnableProject!.SetInstanceValue<short>(AllFieldsInstanceName, "ShortField", 1234, timestamp);
+            runnableProject!.SetInstanceValue<string>(AllFieldsInstanceName, "StringField", "Hi from pva.SuperV!", timestamp);
+            runnableProject!.SetInstanceValue<TimeSpan>(AllFieldsInstanceName, "TimeSpanField", TimeSpan.FromDays(1), timestamp);
+            runnableProject!.SetInstanceValue<uint>(AllFieldsInstanceName, "UintField", 123, timestamp);
+            runnableProject!.SetInstanceValue<ulong>(AllFieldsInstanceName, "UlongField", 321456, timestamp);
+            runnableProject!.SetInstanceValue<ushort>(AllFieldsInstanceName, "UshortField", 1456, timestamp);
+            runnableProject!.SetInstanceValue<int>(AllFieldsInstanceName, "IntFieldWithFormat", 1, timestamp);
+
+            HistoryRawResultModel expectedHistoryResult = new(
+                [
+                    new HistoryFieldModel("BoolField", "System.Boolean", 0),
+                    //new HistoryFieldModel("DateTimeField", "System.DateTime", 1),
+                    new HistoryFieldModel("DoubleField", "System.Double", 1),
+                    new HistoryFieldModel("FloatField", "System.Single", 2),
+                    new HistoryFieldModel("IntField", "System.Int32", 3),
+                    new HistoryFieldModel("LongField", "System.Int64", 4),
+                    new HistoryFieldModel("ShortField", "System.Int16", 5),
+                    new HistoryFieldModel("StringField", "System.String", 6),
+                    new HistoryFieldModel("TimeSpanField", "System.TimeSpan", 7),
+                    new HistoryFieldModel("UintField", "System.UInt32", 8),
+                    new HistoryFieldModel("UlongField", "System.UInt64", 9),
+                    new HistoryFieldModel("UshortField", "System.UInt16", 10),
+                    new HistoryFieldModel("IntFieldWithFormat", "System.Int32", 11),
+                ],
+                [
+                    new HistoryRawRowModel(timestamp, QualityLevel.Good,
+                    [
+                        true,
+                        //new DateTimeFieldValueModel(timestamp, null, QualityLevel.Good, timestamp),
+                        123.456,
+                        12.345f,
+                        123456,
+                        654321L,
+                        (short)1234,
+                        "Hi from pva.SuperV!",
+                        TimeSpan.FromDays(1),
+                        (uint)123,
+                        (ulong)321456,
+                        (ushort)1456,
+                        1,
+                    ])
+                ]);
+
+            // Act
+            HistoryRequestModel request = new(timestamp.AddSeconds(-1), DateTime.Now,
+                [
+                    "BoolField",
+                    //"DateTimeField",
+                    "DoubleField",
+                    "FloatField",
+                    "IntField",
+                    "LongField",
+                    "ShortField",
+                    "StringField",
+                    "TimeSpanField",
+                    "UintField",
+                    "UlongField",
+                    "UshortField",
+                    "IntFieldWithFormat"
+                ]);
+            HistoryRawResultModel historyResult = historyValuesService.GetInstanceRawHistoryValues(runnableProject.GetId(), AllFieldsInstanceName, request);
+
+            // Assert
+            // This doesn' work, as comparison of the object values uses Object Equals().
+            //historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
+            // As a workaround, we compare each element :-(
+            historyResult!.Header.ShouldBeEquivalentTo(expectedHistoryResult.Header);
+            historyResult!.Rows.Count.ShouldBe(expectedHistoryResult.Rows.Count);
+            for (int rowIndex = 0; rowIndex < expectedHistoryResult.Rows.Count; rowIndex++)
+            {
+                var actualRow = historyResult!.Rows[rowIndex];
+                var expectedRow = expectedHistoryResult.Rows[rowIndex];
+                actualRow.Timestamp.ShouldBe(expectedRow.Timestamp);
+                actualRow.Quality.ShouldBe(expectedRow.Quality);
+                actualRow.FieldValues.Count.ShouldBe(expectedRow.FieldValues.Count);
+                for (int fieldIndex = 0; fieldIndex < actualRow.FieldValues.Count; fieldIndex++)
+                {
+                    CheckHistoryValue(actualRow.FieldValues[fieldIndex], expectedRow.FieldValues[fieldIndex]);
                 }
             }
         }
@@ -88,7 +188,6 @@ namespace pva.SuperV.ApiTests
             HistoryResultModel historyResult = historyValuesService.GetInstanceHistoryValues(runnableProject.GetId(), InstanceName, request);
 
             // Assert
-            // This doesn' work, as comparison of the object values use Object Equals().
             historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
         }
 
@@ -99,7 +198,7 @@ namespace pva.SuperV.ApiTests
             await BuildProjectAndCreateInstancesAsync();
             DateTime timestamp = DateTime.UtcNow;
             runnableProject!.SetInstanceValue<bool>(AllFieldsInstanceName, "BoolField", true, timestamp);
-            //runnableProject!.SetInstanceValue<DateTime>(AllFieldsInstanceName, "DateTimeField", timestamp, timestamp);
+            runnableProject!.SetInstanceValue<DateTime>(AllFieldsInstanceName, "DateTimeField", timestamp, timestamp);
             runnableProject!.SetInstanceValue<double>(AllFieldsInstanceName, "DoubleField", 123.456, timestamp);
             runnableProject!.SetInstanceValue<float>(AllFieldsInstanceName, "FloatField", 12.345f, timestamp);
             runnableProject!.SetInstanceValue<int>(AllFieldsInstanceName, "IntField", 123456, timestamp);
@@ -167,7 +266,6 @@ namespace pva.SuperV.ApiTests
             HistoryResultModel historyResult = historyValuesService.GetInstanceHistoryValues(runnableProject.GetId(), AllFieldsInstanceName, request);
 
             // Assert
-            // This doesn' work, as comparison of the object values use Object Equals().
             historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
         }
 
@@ -201,9 +299,7 @@ namespace pva.SuperV.ApiTests
                 actualRow.FieldValues.Count.ShouldBe(expectedRow.FieldValues.Count);
                 for (int fieldIndex = 0; fieldIndex < actualRow.FieldValues.Count; fieldIndex++)
                 {
-                    int actualValue = (int)actualRow.FieldValues[fieldIndex];
-                    int expectedValue = (int)expectedRow.FieldValues[fieldIndex];
-                    actualValue.ShouldBe(expectedValue);
+                    CheckHistoryValue(actualRow.FieldValues[fieldIndex], expectedRow.FieldValues[fieldIndex]);
                 }
             }
         }
@@ -225,8 +321,28 @@ namespace pva.SuperV.ApiTests
             HistoryStatisticsResultModel historyResult = historyValuesService.GetInstanceHistoryStatistics(runnableProject.GetId(), InstanceName, request);
 
             // Assert
-            // This doesn' work, as comparison of the object values use Object Equals().
             historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
+        }
+
+        private static void CheckHistoryValue(object actualValue, object expectedValue)
+        {
+            actualValue.ShouldBeOfType(expectedValue.GetType());
+            (actualValue switch
+            {
+                bool typedActual => new Action(() => typedActual.ShouldBe((bool)expectedValue)),
+                DateTime typedActual => new Action(() => typedActual.ShouldBe((DateTime)expectedValue)),
+                double typedActual => new Action(() => typedActual.ShouldBe((double)expectedValue)),
+                float typedActual => new Action(() => typedActual.ShouldBe((float)expectedValue)),
+                int typedActual => new Action(() => typedActual.ShouldBe((int)expectedValue)),
+                long typedActual => new Action(() => typedActual.ShouldBe((long)expectedValue)),
+                short typedActual => new Action(() => typedActual.ShouldBe((short)expectedValue)),
+                string typedActual => new Action(() => typedActual.ShouldBe((string)expectedValue)),
+                TimeSpan typedActual => new Action(() => typedActual.ShouldBe((TimeSpan)expectedValue)),
+                uint typedActual => new Action(() => typedActual.ShouldBe((uint)expectedValue)),
+                ulong typedActual => new Action(() => typedActual.ShouldBe((ulong)expectedValue)),
+                ushort typedActual => new Action(() => typedActual.ShouldBe((ushort)expectedValue)),
+                _ => throw new NotImplementedException(),
+            })();
         }
     }
 }

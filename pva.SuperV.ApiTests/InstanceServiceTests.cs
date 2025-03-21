@@ -23,19 +23,19 @@ namespace pva.SuperV.ApiTests
             Instance? instance = runnableProject.CreateInstance(AllFieldsClassName, InstanceName);
             expectedInstance = new(instance!.Name, instance!.Class.Name!,
             [
-            BuildFieldModel("BoolField", typeof(bool), instance),
-            BuildFieldModel("DateTimeField", typeof(DateTime), instance),
-            BuildFieldModel("DoubleField", typeof(double), instance),
-            BuildFieldModel("FloatField", typeof(float), instance),
-            BuildFieldModel("IntField", typeof(int), instance),
-            BuildFieldModel("LongField", typeof(long), instance),
-            BuildFieldModel("ShortField", typeof(short), instance),
-            BuildFieldModel("StringField", typeof(string), instance),
-            BuildFieldModel("TimeSpanField", typeof(TimeSpan), instance),
-            BuildFieldModel("UintField", typeof(uint), instance),
-            BuildFieldModel("UlongField", typeof(ulong), instance),
-            BuildFieldModel("UshortField", typeof(ushort), instance),
-            BuildFieldModel("IntFieldWithFormat", typeof(int), instance)
+                BuildFieldModel("BoolField", typeof(bool), instance),
+                BuildFieldModel("DateTimeField", typeof(DateTime), instance),
+                BuildFieldModel("DoubleField", typeof(double), instance),
+                BuildFieldModel("FloatField", typeof(float), instance),
+                BuildFieldModel("IntField", typeof(int), instance),
+                BuildFieldModel("LongField", typeof(long), instance),
+                BuildFieldModel("ShortField", typeof(short), instance),
+                BuildFieldModel("StringField", typeof(string), instance),
+                BuildFieldModel("TimeSpanField", typeof(TimeSpan), instance),
+                BuildFieldModel("UintField", typeof(uint), instance),
+                BuildFieldModel("UlongField", typeof(ulong), instance),
+                BuildFieldModel("UshortField", typeof(ushort), instance),
+                BuildFieldModel("IntFieldWithFormat", typeof(int), instance)
             ]);
         }
 
