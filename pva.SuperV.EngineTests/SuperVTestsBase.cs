@@ -1,7 +1,6 @@
 ﻿//#define DELETE_PROJECT_ASSEMBLY
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
-using NSubstitute;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Engine.HistoryStorage;
@@ -110,7 +109,7 @@ namespace pva.SuperV.EngineTests
             WipProject wipProject = Project.CreateProject(ProjectName, connectionString);
             if (String.IsNullOrEmpty(historyEngineType))
             {
-                IHistoryStorageEngine historyStorageEngine = Substitute.For<IHistoryStorageEngine>();
+                IHistoryStorageEngine historyStorageEngine = new NullHistoryStorageEngine();
                 wipProject.HistoryStorageEngine = historyStorageEngine;
             }
             HistoryRepository historyRepository = new(HistoryRepositoryName);
