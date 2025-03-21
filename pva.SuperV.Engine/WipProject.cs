@@ -47,6 +47,8 @@ namespace pva.SuperV.Engine
             runnableProject.Classes
                 .ForEach((k, v) => Classes.Add(k, v.Clone()));
             FieldFormatters = new(runnableProject.FieldFormatters);
+            HistoryRepositories = new(runnableProject.HistoryRepositories);
+            HistoryStorageEngine = runnableProject.HistoryStorageEngine;
             ToLoadInstances = new(runnableProject.Instances, StringComparer.OrdinalIgnoreCase);
         }
 
