@@ -72,6 +72,14 @@ namespace pva.SuperV.Model.FieldProcessings
             {
                 return CreateHistorizationProcessing<ulong>(project, clazz, historizationProcessingModel);
             }
+            else if (fieldDefinition.Type == typeof(double))
+            {
+                return CreateHistorizationProcessing<double>(project, clazz, historizationProcessingModel);
+            }
+            else if (fieldDefinition.Type == typeof(float))
+            {
+                return CreateHistorizationProcessing<float>(project, clazz, historizationProcessingModel);
+            }
             throw new UnhandledMappingException(nameof(FieldProcessingMapper), fieldDefinition.Type.ToString());
         }
 
