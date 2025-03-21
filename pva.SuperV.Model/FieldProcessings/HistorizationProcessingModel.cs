@@ -1,7 +1,10 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace pva.SuperV.Model.FieldProcessings
 {
+    [Description("Historization field processing")]
+    [ExcludeFromCodeCoverage]
     public record HistorizationProcessingModel(
         string Name,
         string TrigerringFieldName,

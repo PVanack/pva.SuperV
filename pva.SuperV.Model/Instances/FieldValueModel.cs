@@ -1,9 +1,11 @@
 ﻿using pva.SuperV.Engine;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Model.Instances
 {
+    [ExcludeFromCodeCoverage]
     [JsonDerivedType(typeof(BoolFieldValueModel), typeDiscriminator: nameof(BoolFieldValueModel))]
     [JsonDerivedType(typeof(DateTimeFieldValueModel), typeDiscriminator: nameof(DateTimeFieldValueModel))]
     [JsonDerivedType(typeof(DoubleFieldValueModel), typeDiscriminator: nameof(DoubleFieldValueModel))]

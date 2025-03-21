@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace pva.SuperV.Model.FieldProcessings
 {
     [Description("Alarm state processing.")]
+    [ExcludeFromCodeCoverage]
     public record AlarmStateProcessingModel(
         string Name,
         string TrigerringFieldName,

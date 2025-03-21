@@ -2207,7 +2207,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/FieldValueModel"
+                "$ref": "#/components/schemas/FieldValueModel2"
               }
             }
           },
@@ -2560,7 +2560,7 @@
         "type": "object",
         "properties": {
           "fieldFormatter": {
-            "$ref": "#/components/schemas/FieldFormatterModel"
+            "$ref": "#/components/schemas/FieldFormatterModel2"
           }
         }
       },
@@ -3060,6 +3060,24 @@
           }
         }
       },
+      "FieldFormatterModel2": {
+        "required": [
+          "$type"
+        ],
+        "type": "object",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/FieldFormatterModelEnumFormatterModel"
+          }
+        ],
+        "description": "Definition of field formatter",
+        "discriminator": {
+          "propertyName": "$type",
+          "mapping": {
+            "EnumFormatterModel": "#/components/schemas/FieldFormatterModelEnumFormatterModel"
+          }
+        }
+      },
       "FieldFormatterModelEnumFormatterModel": {
         "required": [
           "values",
@@ -3098,7 +3116,8 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Field name"
           },
           "type": {
             "type": "string"
@@ -3109,6 +3128,68 @@
         }
       },
       "FieldValueModel": {
+        "required": [
+          "$type"
+        ],
+        "type": "object",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/FieldValueModelBoolFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelDateTimeFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelDoubleFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelFloatFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelIntFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelLongFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelShortFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelStringFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelTimeSpanFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelUintFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelUlongFieldValueModel"
+          },
+          {
+            "$ref": "#/components/schemas/FieldValueModelUshortFieldValueModel"
+          }
+        ],
+        "description": "Field value",
+        "discriminator": {
+          "propertyName": "$type",
+          "mapping": {
+            "BoolFieldValueModel": "#/components/schemas/FieldValueModelBoolFieldValueModel",
+            "DateTimeFieldValueModel": "#/components/schemas/FieldValueModelDateTimeFieldValueModel",
+            "DoubleFieldValueModel": "#/components/schemas/FieldValueModelDoubleFieldValueModel",
+            "FloatFieldValueModel": "#/components/schemas/FieldValueModelFloatFieldValueModel",
+            "IntFieldValueModel": "#/components/schemas/FieldValueModelIntFieldValueModel",
+            "LongFieldValueModel": "#/components/schemas/FieldValueModelLongFieldValueModel",
+            "ShortFieldValueModel": "#/components/schemas/FieldValueModelShortFieldValueModel",
+            "StringFieldValueModel": "#/components/schemas/FieldValueModelStringFieldValueModel",
+            "TimeSpanFieldValueModel": "#/components/schemas/FieldValueModelTimeSpanFieldValueModel",
+            "UintFieldValueModel": "#/components/schemas/FieldValueModelUintFieldValueModel",
+            "UlongFieldValueModel": "#/components/schemas/FieldValueModelUlongFieldValueModel",
+            "UshortFieldValueModel": "#/components/schemas/FieldValueModelUshortFieldValueModel"
+          }
+        }
+      },
+      "FieldValueModel2": {
         "required": [
           "$type"
         ],
@@ -3882,7 +3963,7 @@
           "fieldValues": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/FieldValueModel"
+              "$ref": "#/components/schemas/FieldValueModel2"
             },
             "description": "Retrieved values."
           }
@@ -4101,7 +4182,7 @@
           "fieldValues": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/FieldValueModel"
+              "$ref": "#/components/schemas/FieldValueModel2"
             },
             "description": "Retrieved values."
           }

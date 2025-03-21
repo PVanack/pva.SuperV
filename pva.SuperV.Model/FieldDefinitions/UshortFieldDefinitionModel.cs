@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace pva.SuperV.Model.FieldDefinitions
 {
     [Description("Unsigned short field definition.")]
+    [ExcludeFromCodeCoverage]
     public record UshortFieldDefinitionModel(
             string Name,
             [property: Description("Default value")] ushort DefaultValue,

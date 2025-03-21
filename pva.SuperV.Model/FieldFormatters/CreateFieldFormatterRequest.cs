@@ -1,6 +1,14 @@
-﻿namespace pva.SuperV.Model.FieldFormatters
+﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+
+namespace pva.SuperV.Model.FieldFormatters
 {
-    public record CreateFieldFormatterRequest(FieldFormatterModel FieldFormatter)
+    [Description("Field formatter creation request")]
+    [ExcludeFromCodeCoverage]
+
+    public record CreateFieldFormatterRequest(
+        [property:Description("Definition of field formatter")]
+        FieldFormatterModel FieldFormatter)
     {
     }
 }

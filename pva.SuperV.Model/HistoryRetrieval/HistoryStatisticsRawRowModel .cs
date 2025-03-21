@@ -1,9 +1,11 @@
 ﻿using pva.SuperV.Engine;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace pva.SuperV.Model.HistoryRetrieval
 {
     [Description("Row of field values from history")]
+    [ExcludeFromCodeCoverage]
     public record HistoryStatisticsRawRowModel(
         [property: Description("Timestamp of row.")]
         DateTime Timestamp,

@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace pva.SuperV.Model.FieldDefinitions
 {
     [Description("Field definition")]
+    [ExcludeFromCodeCoverage]
     [JsonDerivedType(typeof(BoolFieldDefinitionModel), typeDiscriminator: nameof(BoolFieldDefinitionModel))]
     [JsonDerivedType(typeof(DateTimeFieldDefinitionModel), typeDiscriminator: nameof(DateTimeFieldDefinitionModel))]
     [JsonDerivedType(typeof(DoubleFieldDefinitionModel), typeDiscriminator: nameof(DoubleFieldDefinitionModel))]
