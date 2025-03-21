@@ -1,7 +1,9 @@
 ﻿using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using pva.Helpers.Extensions;
 using pva.SuperV.Api.Services.History;
 using pva.SuperV.Engine;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.HistoryRetrieval;
 using pva.SuperV.Model.Instances;
 using Shouldly;
@@ -69,7 +71,37 @@ namespace pva.SuperV.ApiTests
                     Assert.True(actualValue.IsEqualTo(expectedValue));
                 }
             }
+        }
 
+        [Fact]
+        public async Task WhenGettingHistoryRawValuesOnUnknownInstance_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            HistoryRequestModel request = new(DateTime.Now.AddHours(-1), DateTime.Now, ["Field1"]);
+            MockedHistoryValuesService.GetInstanceRawHistoryValues("Project", "UnknownInstance", Arg.Any<HistoryRequestModel>())
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var result = await client.PostAsJsonAsync("/history/Project/UnknownInstance/values/raw", request);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task WhenGettingHistoryRawValuesWithStartTimeEqualToEndTime_ThenBadRequestReturned()
+        {
+            // GIVEN
+            DateTime endTime = DateTime.UtcNow;
+            HistoryRequestModel request = new(endTime, endTime, ["Field1"]);
+            MockedHistoryValuesService.GetInstanceRawHistoryValues("Project", "Instance", Arg.Any<HistoryRequestModel>())
+                .Throws<BadHistoryStartTimeException>();
+
+            // WHEN
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/values/raw", request);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
         }
 
         [Fact]
@@ -93,7 +125,38 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task GivenInstanceWithHistoryValues_WhenGettingHistoryStatistics_ThenHistoryRawStatisticsAreReturned()
+        public async Task WhenGettingHistoryValuesOnUnknownInstance_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            HistoryRequestModel request = new(DateTime.Now.AddHours(-1), DateTime.Now, ["Field1"]);
+            MockedHistoryValuesService.GetInstanceHistoryValues("Project", "UnknownInstance", Arg.Any<HistoryRequestModel>())
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var result = await client.PostAsJsonAsync("/history/Project/UnknownInstance/values", request);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task WhenGettingHistoryValuesWithStartTimeEqualToEndTime_ThenBadRequestReturned()
+        {
+            // GIVEN
+            DateTime endTime = DateTime.Now;
+            HistoryRequestModel request = new(endTime, endTime, ["Field1"]);
+            MockedHistoryValuesService.GetInstanceHistoryValues("Project", "Instance", Arg.Any<HistoryRequestModel>())
+                .Throws<BadHistoryStartTimeException>();
+
+            // WHEN
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/values", request);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task GivenInstanceWithHistoryValues_WhenGettingHistoryRawStatistics_ThenHistoryRawStatisticsAreReturned()
         {
             // GIVEN
             DateTime rowTimestamp = DateTime.Now;
@@ -133,7 +196,57 @@ namespace pva.SuperV.ApiTests
                     Assert.True(actualValue.IsEqualTo(expectedValue));
                 }
             }
+        }
 
+        [Fact]
+        public async Task WhenGettingHistoryRawStatisticsOnUnknownInstance_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            HistoryStatisticsRequestModel request = new(DateTime.Now.AddHours(-1), DateTime.Now, TimeSpan.FromHours(1), Engine.HistoryRetrieval.FillMode.PREV,
+                [new HistoryStatisticFieldModel("Field1", Engine.HistoryRetrieval.HistoryStatFunction.AVG)]);
+            MockedHistoryValuesService.GetInstanceRawHistoryStatistics("Project", "UnknownInstance", Arg.Any<HistoryStatisticsRequestModel>())
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var result = await client.PostAsJsonAsync("/history/Project/UnknownInstance/statistics/raw", request);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task WhenGettingHistoryRawStatisticsWithStartTimeEqualToEndTime_ThenBadRequestReturned()
+        {
+            // GIVEN
+            DateTime endTime = DateTime.UtcNow;
+            HistoryStatisticsRequestModel request = new(endTime, endTime, TimeSpan.FromHours(1), Engine.HistoryRetrieval.FillMode.PREV,
+                [new HistoryStatisticFieldModel("Field1", Engine.HistoryRetrieval.HistoryStatFunction.AVG)]);
+            MockedHistoryValuesService.GetInstanceRawHistoryStatistics("Project", "Instance", Arg.Any<HistoryStatisticsRequestModel>())
+                .Throws<BadHistoryStartTimeException>();
+
+            // WHEN
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics/raw", request);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task WhenGettingHistoryRawStatisticsWithIntervalToStartTimeMinusEndTime_ThenBadRequestReturned()
+        {
+            // GIVEN
+            DateTime endTime = DateTime.UtcNow;
+            DateTime startTime = endTime.AddHours(-1);
+            HistoryStatisticsRequestModel request = new(startTime, endTime, TimeSpan.FromDays(1), Engine.HistoryRetrieval.FillMode.PREV,
+                [new HistoryStatisticFieldModel("Field1", Engine.HistoryRetrieval.HistoryStatFunction.AVG)]);
+            MockedHistoryValuesService.GetInstanceRawHistoryStatistics("Project", "Instance", Arg.Any<HistoryStatisticsRequestModel>())
+                .Throws<BadHistoryIntervalException>();
+
+            // WHEN
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics/raw", request);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
         }
 
         [Fact]
@@ -155,6 +268,57 @@ namespace pva.SuperV.ApiTests
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
             HistoryStatisticsResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryStatisticsResultModel>();
             historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
+        }
+
+        [Fact]
+        public async Task WhenGettingHistoryStatisticsOnUnknownInstance_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            HistoryStatisticsRequestModel request = new(DateTime.Now.AddHours(-1), DateTime.Now, TimeSpan.FromHours(1), Engine.HistoryRetrieval.FillMode.PREV,
+                [new HistoryStatisticFieldModel("Field1", Engine.HistoryRetrieval.HistoryStatFunction.AVG)]);
+            MockedHistoryValuesService.GetInstanceHistoryStatistics("Project", "UnknownInstance", Arg.Any<HistoryStatisticsRequestModel>())
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var result = await client.PostAsJsonAsync("/history/Project/UnknownInstance/statistics", request);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task WhenGettingHistoryStatisticsWithStartTimeEqualToEndTime_ThenBadRequestReturned()
+        {
+            // GIVEN
+            DateTime endTime = DateTime.UtcNow;
+            HistoryStatisticsRequestModel request = new(endTime, endTime, TimeSpan.FromHours(1), Engine.HistoryRetrieval.FillMode.PREV,
+                [new HistoryStatisticFieldModel("Field1", Engine.HistoryRetrieval.HistoryStatFunction.AVG)]);
+            MockedHistoryValuesService.GetInstanceHistoryStatistics("Project", "Instance", Arg.Any<HistoryStatisticsRequestModel>())
+                .Throws<BadHistoryStartTimeException>();
+
+            // WHEN
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics", request);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task WhenGettingHistoryStatisticsWithIntervalToStartTimeMinusEndTime_ThenBadRequestReturned()
+        {
+            // GIVEN
+            DateTime endTime = DateTime.UtcNow;
+            DateTime startTime = endTime.AddHours(-1);
+            HistoryStatisticsRequestModel request = new(startTime, endTime, TimeSpan.FromDays(1), Engine.HistoryRetrieval.FillMode.PREV,
+                [new HistoryStatisticFieldModel("Field1", Engine.HistoryRetrieval.HistoryStatFunction.AVG)]);
+            MockedHistoryValuesService.GetInstanceHistoryStatistics("Project", "Instance", Arg.Any<HistoryStatisticsRequestModel>())
+                .Throws<BadHistoryIntervalException>();
+
+            // WHEN
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics", request);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
         }
     }
 }

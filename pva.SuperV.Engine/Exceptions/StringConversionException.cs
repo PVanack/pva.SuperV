@@ -10,6 +10,11 @@ namespace pva.SuperV.Engine.Exceptions
         {
         }
 
+        public StringConversionException(string fieldName, string? stringValue, List<string>? possibleValues)
+            : base($"Can't convert {stringValue} for {fieldName}. Possible values are {possibleValues?.Aggregate((a, b) => $"{a},{b}")}")
+        {
+        }
+
         [ExcludeFromCodeCoverage]
         public StringConversionException()
         {

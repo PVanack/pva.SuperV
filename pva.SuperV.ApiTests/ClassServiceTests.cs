@@ -10,13 +10,13 @@ namespace pva.SuperV.ApiTests
     [Collection("Project building")]
     public class ClassServiceTests : SuperVTestsBase
     {
-        private readonly ClassService _classService;
+        private readonly ClassService classService;
         private readonly RunnableProject runnableProject;
         private readonly WipProject wipProject;
 
         public ClassServiceTests()
         {
-            _classService = new();
+            classService = new();
             runnableProject = CreateRunnableProject();
             wipProject = CreateWipProject(null);
         }
@@ -25,19 +25,20 @@ namespace pva.SuperV.ApiTests
         public void GetClasses_ShouldReturnListOfClasses()
         {
             // Act
-            var result = _classService.GetClasses(runnableProject.GetId());
+            var result = classService.GetClasses(runnableProject.GetId());
 
             // Assert
-            result.Count.ShouldBe(2);
+            result.Count.ShouldBe(3);
             result.ShouldContain(c => c.Name == ClassName);
             result.ShouldContain(c => c.Name == BaseClassName);
+            result.ShouldContain(c => c.Name == AllFieldsClassName);
         }
 
         [Fact]
         public void GetClass_ShouldReturnClass_WhenClassExists()
         {
             // Act
-            var result = _classService.GetClass(runnableProject.GetId(), ClassName);
+            var result = classService.GetClass(runnableProject.GetId(), ClassName);
 
             // Assert
             result.ShouldNotBeNull();
@@ -49,7 +50,7 @@ namespace pva.SuperV.ApiTests
         {
             // Act & Assert
             Assert.Throws<UnknownEntityException>(()
-                => _classService.GetClass(runnableProject.GetId(), "UnknownClass"));
+                => classService.GetClass(runnableProject.GetId(), "UnknownClass"));
         }
 
         [Fact]
@@ -57,7 +58,7 @@ namespace pva.SuperV.ApiTests
         {
             ClassModel expectedClass = new("NewClass", null);
             // Act & Assert
-            ClassModel createClassModel = _classService.CreateClass(wipProject.GetId(), expectedClass);
+            ClassModel createClassModel = classService.CreateClass(wipProject.GetId(), expectedClass);
 
             createClassModel.ShouldNotBeNull()
                 .ShouldBeEquivalentTo(expectedClass);
@@ -68,7 +69,7 @@ namespace pva.SuperV.ApiTests
         {
             ClassModel expectedClass = new("NewClass", null);
             // Act
-            _classService.DeleteClass(wipProject.GetId(), expectedClass.Name);
+            classService.DeleteClass(wipProject.GetId(), expectedClass.Name);
 
             // Assert
             wipProject.Classes.ShouldNotContainKey(expectedClass.Name);

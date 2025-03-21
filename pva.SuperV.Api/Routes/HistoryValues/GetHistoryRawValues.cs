@@ -5,7 +5,7 @@ using pva.SuperV.Model.HistoryRetrieval;
 
 namespace pva.SuperV.Api.Routes.HistoryValues
 {
-    internal class GetHistoryRawValues
+    internal static class GetHistoryRawValues
     {
         internal static Results<Ok<HistoryRawResultModel>, NotFound<string>, BadRequest<string>> Handle(IHistoryValuesService historyValuesService, string projectId, string instanceName, HistoryRequestModel request)
         {

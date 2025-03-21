@@ -1,5 +1,8 @@
 ﻿using NSubstitute;
+using NSubstitute.ExceptionExtensions;
+using pva.SuperV.Api;
 using pva.SuperV.Api.Services.FieldProcessings;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.FieldProcessings;
 using Shouldly;
 using System.Net.Http.Json;
@@ -60,6 +63,20 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public async Task WhenGettingFieldProcessingsOnUnknownField_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            MockedFieldProcessingService.GetFieldProcessings("Project1", "Class1", "UnknownFieldName")
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var response = await client.GetAsync("/field-processings/Project1/Class1/UnknownFieldName");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
         public async Task GivenExistingFieldProcessingsOnField_WhenGettingFieldProcessing_ThenFieldProcessingIsReturned()
         {
             // GIVEN
@@ -83,6 +100,20 @@ namespace pva.SuperV.ApiTests
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
             FieldValueProcessingModel? retrievedFieldProcessing = await response.Content.ReadFromJsonAsync<FieldValueProcessingModel>();
             retrievedFieldProcessing.ShouldBeEquivalentTo(expectedFieldProcessing);
+        }
+
+        [Fact]
+        public async Task WhenGettingUnknownFieldProcessing_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            MockedFieldProcessingService.GetFieldProcessing("Project1", "Class1", "TrigerringFieldName", "UnknownFieldProcessing")
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var response = await client.GetAsync($"/field-processings/Project1/Class1/TrigerringFieldName/UnknownFieldProcessing");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
         }
 
         [Fact]
@@ -111,7 +142,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task GivenWipProject_WhenDeletingFieldProcessing_ThenFieldProcessingIsDeleted()
+        public async Task WhenCreatingFieldProcessingOnUnknownField_ThenNotFoundIsReturned()
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new AlarmStateProcessingModel("AlarmStateProcessing",
@@ -123,12 +154,77 @@ namespace pva.SuperV.ApiTests
                         null,
                         "AlarmStateFieldName",
                         null);
+            MockedFieldProcessingService.CreateFieldProcessing("Project1", "Class1", "UnknownFieldName", Arg.Any<FieldValueProcessingModel>())
+                .Throws<UnknownEntityException>();
 
             // WHEN
-            var response = await client.DeleteAsync($"/field-processings/Project1/Class1/TrigerringFieldName/{expectedFieldProcessing.Name}");
+            var response = await client.PostAsJsonAsync("/field-processings/Project1/Class1/UnknownFieldName", expectedFieldProcessing);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task WhenCreatingFieldProcessingOnNonWipProject_ThenBadRequestIsReturned()
+        {
+            // GIVEN
+            FieldValueProcessingModel expectedFieldProcessing = new AlarmStateProcessingModel("AlarmStateProcessing",
+                        "TrigerringFieldName",
+                        null,
+                        "HighLimitFieldName",
+                        "LowLimitFieldName",
+                        null,
+                        null,
+                        "AlarmStateFieldName",
+                        null);
+            MockedFieldProcessingService.CreateFieldProcessing("RunnableProject", "Class1", "TrigerringFieldName", Arg.Any<FieldValueProcessingModel>())
+                .Throws<NonWipProjectException>();
+
+            // WHEN
+            var response = await client.PostAsJsonAsync("/field-processings/RunnableProject/Class1/TrigerringFieldName", expectedFieldProcessing);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task GivenWipProject_WhenDeletingFieldProcessing_ThenFieldProcessingIsDeleted()
+        {
+            // GIVEN
+
+            // WHEN
+            var response = await client.DeleteAsync($"/field-processings/Project1/Class1/TrigerringFieldName/FieldProcessingName");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task WhenDeletingUnknownFieldProcessing_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            MockedFieldProcessingService.When(fake => fake.DeleteFieldProcessing("Project1", "Class1", "TrigerringFieldName", "UnknownFieldProcessingName"))
+                .Do(call => { throw new UnknownEntityException(); });
+
+            // WHEN
+            var response = await client.DeleteAsync($"/field-processings/Project1/Class1/TrigerringFieldName/UnknownFieldProcessingName");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task WhenDeletingFieldProcessingOnNonWipProject_ThenBadRequestIsReturned()
+        {
+            // GIVEN
+            MockedFieldProcessingService.When(fake => fake.DeleteFieldProcessing("RunnableProject", "Class1", "TrigerringFieldName", "FieldProcessingName"))
+                .Do(call => { throw new NonWipProjectException(); });
+
+            // WHEN
+            var response = await client.DeleteAsync($"/field-processings/RunnableProject/Class1/TrigerringFieldName/FieldProcessingName");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
         }
     }
 }

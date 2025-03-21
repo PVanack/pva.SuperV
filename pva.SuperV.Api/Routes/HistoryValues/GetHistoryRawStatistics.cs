@@ -5,16 +5,12 @@ using pva.SuperV.Model.HistoryRetrieval;
 
 namespace pva.SuperV.Api.Routes.HistoryValues
 {
-    internal class GetHistoryRawStatistics
+    internal static class GetHistoryRawStatistics
     {
         internal static Results<Ok<HistoryStatisticsRawResultModel>, NotFound<string>, BadRequest<string>> Handle(IHistoryValuesService historyValuesService, string projectId, string instanceName, HistoryStatisticsRequestModel request)
         {
             try
             {
-                if (request.StartTime >= request.EndTime)
-                {
-                    return TypedResults.BadRequest("Start time needs to be before end time");
-                }
                 HistoryStatisticsRawResultModel value = historyValuesService.GetInstanceRawHistoryStatistics(projectId, instanceName, request);
                 return TypedResults.Ok(value);
             }

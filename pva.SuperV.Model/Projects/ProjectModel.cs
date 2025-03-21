@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace pva.SuperV.Model.Projects
 {
@@ -9,6 +10,7 @@ namespace pva.SuperV.Model.Projects
     /// <param name="Version"></param>
     /// <param name="Description"></param>
     [Description("SuperV project")]
+    [ExcludeFromCodeCoverage]
     public record ProjectModel(
         [property : Description("Id of the project.")]
         string Id,

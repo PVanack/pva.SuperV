@@ -21,12 +21,12 @@ namespace pva.SuperV.Engine.HistoryStorage
                 return null;
             }
 
-            if (connectionString.StartsWith(NullHistoryStorageEngine.Prefix))
+            else if (connectionString.StartsWith(NullHistoryStorageEngine.Prefix))
             {
                 return new NullHistoryStorageEngine();
             }
 
-            if (connectionString.StartsWith(TDengineHistoryStorage.Prefix))
+            else if (connectionString.StartsWith(TDengineHistoryStorage.Prefix))
             {
                 string tdEngineConnectionString = connectionString.Replace($"{TDengineHistoryStorage.Prefix}:", "").Trim();
                 return new TDengineHistoryStorage(tdEngineConnectionString);

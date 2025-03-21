@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace pva.SuperV.Model.FieldDefinitions
 {
     [Description("Long field definition.")]
+    [ExcludeFromCodeCoverage]
     public record LongFieldDefinitionModel(
             string Name,
             [property: Description("Default value")] long DefaultValue,

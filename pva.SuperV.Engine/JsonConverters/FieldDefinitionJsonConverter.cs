@@ -29,40 +29,17 @@ namespace pva.SuperV.Engine.JsonConverters
         /// <exception cref="JsonException"></exception>
         public override IFieldDefinition Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType != JsonTokenType.StartObject)
-            {
-                throw new JsonException();
-            }
-
+            JsonHelpers.ReadTokenType(ref reader, JsonTokenType.StartObject, false);
             string? fieldTypeString = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Type");
-
             string? fieldName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
 
-            reader.Read();
-            if (reader.TokenType != JsonTokenType.PropertyName)
-            {
-                throw new JsonException();
-            }
+            JsonHelpers.ReadTokenType(ref reader, JsonTokenType.PropertyName);
+            JsonHelpers.ReadPropertyName(ref reader, "DefaultValue");
 
-            string? readPropertyName = reader.GetString();
-            if (readPropertyName != "DefaultValue")
-            {
-                throw new JsonException();
-            }
-            reader.Read();
             Type? fieldType = Type.GetType(fieldTypeString!);
             dynamic? defaultValue = JsonSerializer.Deserialize(ref reader, fieldType!, options);
-            reader.Read();
-            if (reader.TokenType != JsonTokenType.PropertyName)
-            {
-                throw new JsonException();
-            }
-
-            readPropertyName = reader.GetString();
-            if (readPropertyName != "ValuePostChangeProcessings")
-            {
-                throw new JsonException();
-            }
+            JsonHelpers.ReadTokenType(ref reader, JsonTokenType.PropertyName);
+            JsonHelpers.ReadPropertyName(ref reader, "ValuePostChangeProcessings");
             List<IFieldValueProcessing>? fieldValueProcessings = JsonSerializer.Deserialize<List<IFieldValueProcessing>>(ref reader, options);
 
             FieldFormatter? fieldFormatter = null;
@@ -77,10 +54,7 @@ namespace pva.SuperV.Engine.JsonConverters
                 reader.Read();
             }
 
-            if (reader.TokenType != JsonTokenType.EndObject)
-            {
-                throw new JsonException();
-            }
+            JsonHelpers.ReadTokenType(ref reader, JsonTokenType.EndObject, false);
 
             IFieldDefinition fieldDefinition = CreateInstance(fieldType!, fieldName, defaultValue);
             fieldDefinition.ValuePostChangeProcessings = fieldValueProcessings!;

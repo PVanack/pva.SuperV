@@ -72,23 +72,17 @@ namespace pva.SuperV.Model.FieldProcessings
             {
                 return CreateHistorizationProcessing<ulong>(project, clazz, historizationProcessingModel);
             }
-            else
-            {
-                throw new UnhandledMappingException(nameof(FieldProcessingMapper), fieldDefinition.Type.ToString());
-            }
+            throw new UnhandledMappingException(nameof(FieldProcessingMapper), fieldDefinition.Type.ToString());
         }
 
         private static HistorizationProcessing<T> CreateHistorizationProcessing<T>(Project project, Class clazz, HistorizationProcessingModel historizationProcessingModel)
-        {
-            return new HistorizationProcessing<T>(
-                historizationProcessingModel.Name,
-                project,
-                clazz,
-                historizationProcessingModel.TrigerringFieldName,
-                historizationProcessingModel.HistoryRepositoryName,
-                historizationProcessingModel.TimestampFieldName,
-                historizationProcessingModel.FieldsToHistorize);
-        }
+            => new(historizationProcessingModel.Name,
+                    project,
+                    clazz,
+                    historizationProcessingModel.TrigerringFieldName,
+                    historizationProcessingModel.HistoryRepositoryName,
+                    historizationProcessingModel.TimestampFieldName,
+                    historizationProcessingModel.FieldsToHistorize);
 
         private static IAlarmStateProcessing CreateAlarmStateProcessing(Class clazz, IFieldDefinition fieldDefinition, AlarmStateProcessingModel alarmStateProcessingModel)
         {
@@ -131,18 +125,15 @@ namespace pva.SuperV.Model.FieldProcessings
         }
 
         private static AlarmStateProcessing<T> CreateAlarmState<T>(Class clazz, AlarmStateProcessingModel alarmStateProcessingModel) where T : INumber<T>
-        {
-            return new AlarmStateProcessing<T>(
-                alarmStateProcessingModel.Name,
-                clazz,
-                alarmStateProcessingModel.TrigerringFieldName,
-                alarmStateProcessingModel.HighHighLimitFieldName,
-                alarmStateProcessingModel.HighLimitFieldName,
-                alarmStateProcessingModel.LowLimitFieldName,
-                alarmStateProcessingModel.LowLowLimitFieldName,
-                alarmStateProcessingModel.DeadbandFieldName,
-                alarmStateProcessingModel.AlarmStateFieldName,
-                alarmStateProcessingModel.AckStateFieldName);
-        }
+            => new(alarmStateProcessingModel.Name,
+                    clazz,
+                    alarmStateProcessingModel.TrigerringFieldName,
+                    alarmStateProcessingModel.HighHighLimitFieldName,
+                    alarmStateProcessingModel.HighLimitFieldName,
+                    alarmStateProcessingModel.LowLimitFieldName,
+                    alarmStateProcessingModel.LowLowLimitFieldName,
+                    alarmStateProcessingModel.DeadbandFieldName,
+                    alarmStateProcessingModel.AlarmStateFieldName,
+                    alarmStateProcessingModel.AckStateFieldName);
     }
 }

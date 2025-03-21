@@ -14,26 +14,33 @@ namespace pva.SuperV.Engine.JsonConverters
         /// <param name="propertyName">Name of the property.</param>
         /// <returns>Value of property from Json</returns>
         /// <exception cref="JsonException"></exception>
-        public static string? GetStringPropertyFromUtfReader(ref Utf8JsonReader reader, string propertyName)
+        public static string? GetStringPropertyFromUtfReader(ref Utf8JsonReader reader, string propertyName, bool readFromReader = true)
         {
-            reader.Read();
-            if (reader.TokenType != JsonTokenType.PropertyName)
-            {
-                throw new JsonException();
-            }
+            ReadTokenType(ref reader, JsonTokenType.PropertyName, readFromReader);
+            ReadPropertyName(ref reader, propertyName);
+            ReadTokenType(ref reader, JsonTokenType.String);
+            return reader.GetString();
+        }
 
+        public static void ReadTokenType(ref Utf8JsonReader reader, JsonTokenType tokenType, bool readFromReader = true)
+        {
+            if (readFromReader)
+            {
+                reader.Read();
+            }
+            if (reader.TokenType != tokenType)
+            {
+                throw new JsonException($"Expected {tokenType} token type. Got {reader.TokenType}");
+            }
+        }
+
+        public static void ReadPropertyName(ref Utf8JsonReader reader, string propertyName)
+        {
             string? readPropertyName = reader.GetString();
             if (readPropertyName != propertyName)
             {
-                throw new JsonException();
+                throw new JsonException($"Expected {propertyName}. Got {readPropertyName}");
             }
-
-            reader.Read();
-            if (reader.TokenType != JsonTokenType.String)
-            {
-                throw new JsonException();
-            }
-            return reader.GetString();
         }
     }
 }

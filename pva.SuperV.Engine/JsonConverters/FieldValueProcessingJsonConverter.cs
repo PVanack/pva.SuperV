@@ -28,21 +28,16 @@ namespace pva.SuperV.Engine.JsonConverters
         /// <exception cref="JsonException"></exception>
         public override IFieldValueProcessing Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType != JsonTokenType.StartObject)
-            {
-                throw new JsonException();
-            }
+            JsonHelpers.ReadTokenType(ref reader, JsonTokenType.StartObject, false);
 
             string? fieldValueProcessingTypeString = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Type");
             string? fieldValueProcessingName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
 
             List<object> ctorArguments = ReadParameters(ref reader, options);
             Type? fieldType = Type.GetType(fieldValueProcessingTypeString!);
-            reader.Read();
-            if (reader.TokenType != JsonTokenType.EndObject)
-            {
-                throw new JsonException();
-            }
+
+            JsonHelpers.ReadTokenType(ref reader, JsonTokenType.EndObject);
+
             IFieldValueProcessing fieldValueProcessing = CreateInstance(fieldType!);
             fieldValueProcessing.Name = fieldValueProcessingName!;
             fieldValueProcessing.CtorArguments = ctorArguments;
@@ -52,53 +47,26 @@ namespace pva.SuperV.Engine.JsonConverters
         private static List<object> ReadParameters(ref Utf8JsonReader reader, JsonSerializerOptions options)
         {
             List<object> ctorArguments = [];
-            reader.Read();
-            if (reader.TokenType != JsonTokenType.PropertyName)
-            {
-                throw new JsonException();
-            }
+            JsonHelpers.ReadTokenType(ref reader, JsonTokenType.PropertyName);
+            JsonHelpers.ReadPropertyName(ref reader, "Params");
 
-            string? readPropertyName = reader.GetString();
-            if (readPropertyName != "Params")
-            {
-                throw new JsonException();
-            }
-            reader.Read();
-            if (reader.TokenType != JsonTokenType.StartArray)
-            {
-                throw new JsonException();
-            }
+            JsonHelpers.ReadTokenType(ref reader, JsonTokenType.StartArray);
             while (reader.Read())
             {
                 if (reader.TokenType == JsonTokenType.EndArray)
                 {
                     return ctorArguments;
                 }
-                if (reader.TokenType != JsonTokenType.StartObject)
-                {
-                    throw new JsonException();
-                }
+                JsonHelpers.ReadTokenType(ref reader, JsonTokenType.StartObject, false);
                 string? paramTypeString = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Type");
 
-                reader.Read();
-                if (reader.TokenType != JsonTokenType.PropertyName)
-                {
-                    throw new JsonException();
-                }
+                JsonHelpers.ReadTokenType(ref reader, JsonTokenType.PropertyName);
+                JsonHelpers.ReadPropertyName(ref reader, "Value");
 
-                readPropertyName = reader.GetString();
-                if (readPropertyName != "Value")
-                {
-                    throw new JsonException();
-                }
                 reader.Read();
                 Type? paramType = Type.GetType(paramTypeString!);
                 dynamic? argValue = JsonSerializer.Deserialize(ref reader, paramType!, options);
-                reader.Read();
-                if (reader.TokenType != JsonTokenType.EndObject)
-                {
-                    throw new JsonException();
-                }
+                JsonHelpers.ReadTokenType(ref reader, JsonTokenType.EndObject);
                 ctorArguments.Add(argValue);
             }
             return ctorArguments;

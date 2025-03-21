@@ -72,7 +72,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void CreateFieldProcessing_ShouldCreateFieldProcessing()
+        public void CreateAlarmStateFieldProcessing_ShouldCreateAlarmStateFieldProcessing()
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new AlarmStateProcessingModel("ValueAlarmStateAdded",
@@ -83,6 +83,26 @@ namespace pva.SuperV.ApiTests
                     LowLowLimitFieldName, null,
                     AlarmStateFieldName,
                     null);
+            // WHEN
+            FieldValueProcessingModel FieldProcessing = fieldProcessingService.CreateFieldProcessing(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
+
+            // THEN
+            FieldProcessing
+                .ShouldNotBeNull()
+                .ShouldBeEquivalentTo(expectedFieldProcessing);
+        }
+
+        [Fact]
+        public void CreateHistorizationFieldProcessing_ShouldCreateHistorizationFieldProcessing()
+        {
+            // GIVEN
+            FieldValueProcessingModel expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
+                    ValueFieldName,
+                    HistoryRepositoryName,
+                    null,
+                    [
+                        ValueFieldName,
+                    ]);
             // WHEN
             FieldValueProcessingModel FieldProcessing = fieldProcessingService.CreateFieldProcessing(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
 

@@ -42,7 +42,7 @@ namespace pva.SuperV.EngineTests
                 Arg.Do<List<IField>>(arg => actualHistorizedFields = arg));
 
             // WHEN
-            valueField.SetValue(100.0, valueTs);
+            valueField.SetValue(100.0, valueTs, QualityLevel.Good);
             historizationProcessing.ProcessValue(instance, valueField, true, 50.0, valueField.Value);
 
             // THEN

@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace pva.SuperV.Model.HistoryRetrieval
 {
     [Description("History field model")]
+    [ExcludeFromCodeCoverage]
     public record HistoryFieldModel(
         [property:Description("Name of field")]
         string Name,
