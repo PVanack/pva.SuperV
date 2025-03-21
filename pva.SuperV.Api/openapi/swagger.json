@@ -2669,7 +2669,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2702,7 +2702,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2735,7 +2735,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2768,7 +2768,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2801,7 +2801,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2834,7 +2834,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2867,7 +2867,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2900,7 +2900,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2933,7 +2933,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2966,7 +2966,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2999,7 +2999,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -3032,7 +3032,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
