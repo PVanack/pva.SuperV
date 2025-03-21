@@ -31,7 +31,7 @@ Scenario: Create project
 		| AckState      | int    | 0             | AckStates   |
 	And Alarm state processing "AlarmState" is created on field "Value" of class "TheClass" of project "Project-WIP"
 		| HighHigh limit field | High limit field | Low limit field | LowLow limit field | Deadband field | AlarmState field | AckState field |
-		| HighHighLimit        | HighLimit        | LowLimit        | LowLowLimit        |               | AlarmState       | AckState       |
+		| HighHighLimit        | HighLimit        | LowLimit        | LowLowLimit        |                | AlarmState       | AckState       |
 	And Historization processing "ValueHistorization" is created on field "Value" of class "TheClass" of project "Project-WIP"
 		| History repository | Timestamp field | Field to historize |
 		| HistoryRepository  |                 |                    |
@@ -40,3 +40,6 @@ Scenario: Create project
 		|                    |                 | AckState           |
 
 	And Runnable project is built from WIP project "Project-WIP"
+	And Instance "AnInstance" is created with class "TheClass" in project "Project"
+		| Name  | Type   | Value |
+		| Value | double | 50    |

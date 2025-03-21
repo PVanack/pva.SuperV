@@ -265,6 +265,17 @@ await this.FeatureBackgroundAsync();
 #line 42
  await testRunner.AndAsync("Runnable project is built from WIP project \"Project-WIP\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
+                global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
+                            "Name",
+                            "Type",
+                            "Value"});
+                table7.AddRow(new string[] {
+                            "Value",
+                            "double",
+                            "50"});
+#line 43
+ await testRunner.AndAsync("Instance \"AnInstance\" is created with class \"TheClass\" in project \"Project\"", ((string)(null)), table7, "And ");
+#line hidden
             }
             await this.ScenarioCleanupAsync();
         }
