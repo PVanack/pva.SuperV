@@ -39,6 +39,20 @@ Scenario: Create project
 		|                    |                 | AlarmState         |
 		|                    |                 | AckState           |
 
+	And Class "AllFieldsClass" is created in project "Project-WIP" with the following fields
+		| Name     | Type     | Default value        | Format |
+		| Bool     | bool     | true                 |        |
+		| DateTime | DateTime | 2025-03-01T00:00:00Z |        |
+		| Double   | double   | 12.3                 |        |
+		| Float    | float    | 3.21                 |        |
+		| Int      | int      | 134567               |        |
+		| Long     | long     | 9876543              |        |
+		| Short    | short    | 32767                |        |
+		| String   | string   | Hi from SuperV!      |        |
+		| TimeSpan | TimeSpan | 01:02:59             |        |
+		| Uint     | uint     | 123456               |        |
+		| Ulong    | ulong    | 98123456             |        |
+		| Ushort   | ushort   | 32767                |        |
 	And Runnable project is built from WIP project "Project-WIP"
 	And Instance "AnInstance" is created with class "TheClass" in project "Project"
 		| Name  | Type   | Value |
@@ -56,3 +70,36 @@ Scenario: Create project
 		| HighHighLimit | double | 99    |                 |
 		| LowLowLimit   | double | 1     |                 |
 		| AckState      | int    | 1     | Unack           |
+
+	Given Instance "AllFieldsInstance" is created with class "AllFieldsClass" in project "Project"
+		| Name | Type | Value |
+
+	And Instance "AllFieldsInstance" fields values are updated in project "Project"
+		| Name     | Type     | Value                |
+		| Bool     | bool     | true                 |
+		| DateTime | DateTime | 2025-03-01T00:00:00Z |
+		| Double   | double   | 12.3                 |
+		| Float    | float    | 3.21                 |
+		| Int      | int      | 134567               |
+		| Long     | long     | 9876543              |
+		| Short    | short    | 32767                |
+		| String   | string   | Hi from SuperV!      |
+		| TimeSpan | TimeSpan | 01:02:59             |
+		| Uint     | uint     | 123456               |
+		| Ulong    | ulong    | 98123456             |
+		| Ushort   | ushort   | 32767                |
+
+	Then Instance "AllFieldsInstance" fields have expected values in project "Project"
+		| Name     | Type     | Value                |
+		| Bool     | bool     | true                 |
+		| DateTime | DateTime | 2025-03-01T00:00:00Z |
+		| Double   | double   | 12.3                 |
+		| Float    | float    | 3.21                 |
+		| Int      | int      | 134567               |
+		| Long     | long     | 9876543              |
+		| Short    | short    | 32767                |
+		| String   | string   | Hi from SuperV!      |
+		| TimeSpan | TimeSpan | 01:02:59             |
+		| Uint     | uint     | 123456               |
+		| Ulong    | ulong    | 98123456             |
+		| Ushort   | ushort   | 32767                |

@@ -262,19 +262,77 @@ await this.FeatureBackgroundAsync();
  await testRunner.AndAsync("Historization processing \"ValueHistorization\" is created on field \"Value\" of clas" +
                         "s \"TheClass\" of project \"Project-WIP\"", ((string)(null)), table6, "And ");
 #line hidden
-#line 42
- await testRunner.AndAsync("Runnable project is built from WIP project \"Project-WIP\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
                 global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
                             "Name",
                             "Type",
-                            "Value"});
+                            "Default value",
+                            "Format"});
                 table7.AddRow(new string[] {
-                            "Value",
+                            "Bool",
+                            "bool",
+                            "true",
+                            ""});
+                table7.AddRow(new string[] {
+                            "DateTime",
+                            "DateTime",
+                            "2025-03-01T00:00:00Z",
+                            ""});
+                table7.AddRow(new string[] {
+                            "Double",
                             "double",
-                            "50"});
-#line 43
- await testRunner.AndAsync("Instance \"AnInstance\" is created with class \"TheClass\" in project \"Project\"", ((string)(null)), table7, "And ");
+                            "12.3",
+                            ""});
+                table7.AddRow(new string[] {
+                            "Float",
+                            "float",
+                            "3.21",
+                            ""});
+                table7.AddRow(new string[] {
+                            "Int",
+                            "int",
+                            "134567",
+                            ""});
+                table7.AddRow(new string[] {
+                            "Long",
+                            "long",
+                            "9876543",
+                            ""});
+                table7.AddRow(new string[] {
+                            "Short",
+                            "short",
+                            "32767",
+                            ""});
+                table7.AddRow(new string[] {
+                            "String",
+                            "string",
+                            "Hi from SuperV!",
+                            ""});
+                table7.AddRow(new string[] {
+                            "TimeSpan",
+                            "TimeSpan",
+                            "01:02:59",
+                            ""});
+                table7.AddRow(new string[] {
+                            "Uint",
+                            "uint",
+                            "123456",
+                            ""});
+                table7.AddRow(new string[] {
+                            "Ulong",
+                            "ulong",
+                            "98123456",
+                            ""});
+                table7.AddRow(new string[] {
+                            "Ushort",
+                            "ushort",
+                            "32767",
+                            ""});
+#line 42
+ await testRunner.AndAsync("Class \"AllFieldsClass\" is created in project \"Project-WIP\" with the following fie" +
+                        "lds", ((string)(null)), table7, "And ");
+#line hidden
+#line 56
+ await testRunner.AndAsync("Runnable project is built from WIP project \"Project-WIP\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
                 global::Reqnroll.Table table8 = new global::Reqnroll.Table(new string[] {
                             "Name",
@@ -284,48 +342,177 @@ await this.FeatureBackgroundAsync();
                             "Value",
                             "double",
                             "50"});
-                table8.AddRow(new string[] {
-                            "HighHighLimit",
-                            "double",
-                            "99"});
-                table8.AddRow(new string[] {
-                            "LowLowLimit",
-                            "double",
-                            "1"});
-                table8.AddRow(new string[] {
-                            "AckState",
-                            "string",
-                            "Unack"});
-#line 46
- await testRunner.AndAsync("Instance \"AnInstance\" fields values are updated in project \"Project\"", ((string)(null)), table8, "And ");
+#line 57
+ await testRunner.AndAsync("Instance \"AnInstance\" is created with class \"TheClass\" in project \"Project\"", ((string)(null)), table8, "And ");
 #line hidden
                 global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
                             "Name",
                             "Type",
+                            "Value"});
+                table9.AddRow(new string[] {
+                            "Value",
+                            "double",
+                            "50"});
+                table9.AddRow(new string[] {
+                            "HighHighLimit",
+                            "double",
+                            "99"});
+                table9.AddRow(new string[] {
+                            "LowLowLimit",
+                            "double",
+                            "1"});
+                table9.AddRow(new string[] {
+                            "AckState",
+                            "string",
+                            "Unack"});
+#line 60
+ await testRunner.AndAsync("Instance \"AnInstance\" fields values are updated in project \"Project\"", ((string)(null)), table9, "And ");
+#line hidden
+                global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
+                            "Name",
+                            "Type",
                             "Value",
                             "Formatted value"});
-                table9.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "Value",
                             "double",
                             "50",
                             ""});
-                table9.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "HighHighLimit",
                             "double",
                             "99",
                             ""});
-                table9.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "LowLowLimit",
                             "double",
                             "1",
                             ""});
-                table9.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "AckState",
                             "int",
                             "1",
                             "Unack"});
-#line 53
- await testRunner.ThenAsync("Instance \"AnInstance\" fields have expected values in project \"Project\"", ((string)(null)), table9, "Then ");
+#line 67
+ await testRunner.ThenAsync("Instance \"AnInstance\" fields have expected values in project \"Project\"", ((string)(null)), table10, "Then ");
+#line hidden
+                global::Reqnroll.Table table11 = new global::Reqnroll.Table(new string[] {
+                            "Name",
+                            "Type",
+                            "Value"});
+#line 74
+ await testRunner.GivenAsync("Instance \"AllFieldsInstance\" is created with class \"AllFieldsClass\" in project \"P" +
+                        "roject\"", ((string)(null)), table11, "Given ");
+#line hidden
+                global::Reqnroll.Table table12 = new global::Reqnroll.Table(new string[] {
+                            "Name",
+                            "Type",
+                            "Value"});
+                table12.AddRow(new string[] {
+                            "Bool",
+                            "bool",
+                            "true"});
+                table12.AddRow(new string[] {
+                            "DateTime",
+                            "DateTime",
+                            "2025-03-01T00:00:00Z"});
+                table12.AddRow(new string[] {
+                            "Double",
+                            "double",
+                            "12.3"});
+                table12.AddRow(new string[] {
+                            "Float",
+                            "float",
+                            "3.21"});
+                table12.AddRow(new string[] {
+                            "Int",
+                            "int",
+                            "134567"});
+                table12.AddRow(new string[] {
+                            "Long",
+                            "long",
+                            "9876543"});
+                table12.AddRow(new string[] {
+                            "Short",
+                            "short",
+                            "32767"});
+                table12.AddRow(new string[] {
+                            "String",
+                            "string",
+                            "Hi from SuperV!"});
+                table12.AddRow(new string[] {
+                            "TimeSpan",
+                            "TimeSpan",
+                            "01:02:59"});
+                table12.AddRow(new string[] {
+                            "Uint",
+                            "uint",
+                            "123456"});
+                table12.AddRow(new string[] {
+                            "Ulong",
+                            "ulong",
+                            "98123456"});
+                table12.AddRow(new string[] {
+                            "Ushort",
+                            "ushort",
+                            "32767"});
+#line 77
+ await testRunner.AndAsync("Instance \"AllFieldsInstance\" fields values are updated in project \"Project\"", ((string)(null)), table12, "And ");
+#line hidden
+                global::Reqnroll.Table table13 = new global::Reqnroll.Table(new string[] {
+                            "Name",
+                            "Type",
+                            "Value"});
+                table13.AddRow(new string[] {
+                            "Bool",
+                            "bool",
+                            "true"});
+                table13.AddRow(new string[] {
+                            "DateTime",
+                            "DateTime",
+                            "2025-03-01T00:00:00Z"});
+                table13.AddRow(new string[] {
+                            "Double",
+                            "double",
+                            "12.3"});
+                table13.AddRow(new string[] {
+                            "Float",
+                            "float",
+                            "3.21"});
+                table13.AddRow(new string[] {
+                            "Int",
+                            "int",
+                            "134567"});
+                table13.AddRow(new string[] {
+                            "Long",
+                            "long",
+                            "9876543"});
+                table13.AddRow(new string[] {
+                            "Short",
+                            "short",
+                            "32767"});
+                table13.AddRow(new string[] {
+                            "String",
+                            "string",
+                            "Hi from SuperV!"});
+                table13.AddRow(new string[] {
+                            "TimeSpan",
+                            "TimeSpan",
+                            "01:02:59"});
+                table13.AddRow(new string[] {
+                            "Uint",
+                            "uint",
+                            "123456"});
+                table13.AddRow(new string[] {
+                            "Ulong",
+                            "ulong",
+                            "98123456"});
+                table13.AddRow(new string[] {
+                            "Ushort",
+                            "ushort",
+                            "32767"});
+#line 92
+ await testRunner.ThenAsync("Instance \"AllFieldsInstance\" fields have expected values in project \"Project\"", ((string)(null)), table13, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
