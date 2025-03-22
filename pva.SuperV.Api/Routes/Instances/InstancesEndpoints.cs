@@ -72,7 +72,7 @@ namespace pva.SuperV.Api.Routes.Instances
                 .WithDisplayName("GetField")
                 .WithSummary("Gets the field of an instance from a project by its name")
                 .WithDescription("Gets the field of an instance from a project by its name")
-                .Produces(StatusCodes.Status200OK)
+                .Produces<FieldModel>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
@@ -87,7 +87,7 @@ namespace pva.SuperV.Api.Routes.Instances
                 .WithDisplayName("UpdateFieldValue")
                 .WithSummary("Updates the value of a field of an instance from a project by its name")
                 .WithDescription("Updates the value of a field of an instance from a project by its name")
-                .Produces(StatusCodes.Status200OK)
+                .Produces<FieldValueModel>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 

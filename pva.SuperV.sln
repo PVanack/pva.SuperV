@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.ApiTests", "pva.
 		{C1374A7E-7E2F-41B2-842E-D05EF1D890B7} = {C1374A7E-7E2F-41B2-842E-D05EF1D890B7}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.TestsScenarios", "pva.SuperV.TestsScenarios\pva.SuperV.TestsScenarios.csproj", "{68620CA5-55E1-46C4-95BC-D5D23A7D32FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{39700329-AD78-44DC-A582-2245299BABC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39700329-AD78-44DC-A582-2245299BABC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39700329-AD78-44DC-A582-2245299BABC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68620CA5-55E1-46C4-95BC-D5D23A7D32FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68620CA5-55E1-46C4-95BC-D5D23A7D32FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68620CA5-55E1-46C4-95BC-D5D23A7D32FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68620CA5-55E1-46C4-95BC-D5D23A7D32FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

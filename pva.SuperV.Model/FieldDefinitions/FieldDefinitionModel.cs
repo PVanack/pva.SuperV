@@ -20,7 +20,7 @@ namespace pva.SuperV.Model.FieldDefinitions
     [JsonDerivedType(typeof(UshortFieldDefinitionModel), typeDiscriminator: nameof(UshortFieldDefinitionModel))]
     public abstract record FieldDefinitionModel(
         [property: Description("Name of field")] string Name,
-        [property: Description("Type of field")] string Type,
+        [property: Description("Type of field")] string FieldType,
         [property: Description("Field value formatter")] string? ValueFormatter)
     {
     }
