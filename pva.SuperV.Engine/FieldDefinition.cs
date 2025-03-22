@@ -111,9 +111,10 @@ namespace pva.SuperV.Engine
                 return defaultValue switch
                 {
                     bool boolValue => boolValue ? "true" : "false",
-                    float floatValue => $"{floatValue}F",
                     DateTime dateTimeValue => $"new {typeof(T)}({dateTimeValue.Ticks.ToString(CultureInfo.InvariantCulture)}L)",
                     TimeSpan timespanValue => $"new {typeof(T)}({timespanValue.Ticks.ToString(CultureInfo.InvariantCulture)}L)",
+                    float floatValue => $"{floatValue.ToString(CultureInfo.InvariantCulture)}F",
+                    double doubleValue => $"{doubleValue.ToString(CultureInfo.InvariantCulture)}",
                     _ => defaultValue!.ToString(),
                 };
             }
