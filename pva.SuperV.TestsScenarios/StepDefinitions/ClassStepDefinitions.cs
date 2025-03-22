@@ -7,12 +7,8 @@ using System.Net.Http.Json;
 namespace pva.SuperV.TestsScenarios.StepDefinitions
 {
     [Binding]
-    public class ClassStepDefinitions : BaseStepDefinition
+    public class ClassStepDefinitions(ScenarioContext scenarioContext) : BaseStepDefinition(scenarioContext)
     {
-        public ClassStepDefinitions(ScenarioContext scenarioContext) : base(scenarioContext)
-        {
-        }
-
         [Given("Class {string} is created in project {string} with the following fields")]
         public async ValueTask CreateClassWithFields(string className, string projectId, DataTable fields)
         {

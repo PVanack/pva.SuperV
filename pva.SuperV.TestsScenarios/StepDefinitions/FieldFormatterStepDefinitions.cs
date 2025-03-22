@@ -6,16 +6,12 @@ using System.Net.Http.Json;
 namespace pva.SuperV.TestsScenarios.StepDefinitions
 {
     [Binding]
-    public class FieldFormatterStepDefinitions : BaseStepDefinition
+    public class FieldFormatterStepDefinitions(ScenarioContext scenarioContext) : BaseStepDefinition(scenarioContext)
     {
-        public FieldFormatterStepDefinitions(ScenarioContext scenarioContext) : base(scenarioContext)
-        {
-        }
-
         [Given("Enum formatter {string} is created in project {string}")]
         public async ValueTask EnumFormatterIsCreated(string enumFormatterName, string projectId, DataTable enumValues)
         {
-            Dictionary<int, string> values = new();
+            Dictionary<int, string> values = [];
             enumValues.Rows.ForEach(row =>
             {
                 int intValue = int.Parse(row["Value"]);

@@ -7,12 +7,8 @@ using System.Net.Http.Json;
 namespace pva.SuperV.TestsScenarios.StepDefinitions
 {
     [Binding]
-    public class ProjectStepDefinitions : BaseStepDefinition
+    public class ProjectStepDefinitions(ScenarioContext scenarioContext) : BaseStepDefinition(scenarioContext)
     {
-        public ProjectStepDefinitions(ScenarioContext scenarioContext) : base(scenarioContext)
-        {
-        }
-
         [Given("An empty WIP project {string} is created  with {string} description and {string} as history storage")]
         public async ValueTask CreateProject(string projectName, string description, string? historyStorageType)
         {

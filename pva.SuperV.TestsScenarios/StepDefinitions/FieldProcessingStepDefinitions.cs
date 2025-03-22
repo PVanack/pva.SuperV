@@ -5,12 +5,8 @@ using System.Net.Http.Json;
 namespace pva.SuperV.TestsScenarios.StepDefinitions
 {
     [Binding]
-    public class FieldProcessingStepDefinitions : BaseStepDefinition
+    public class FieldProcessingStepDefinitions(ScenarioContext scenarioContext) : BaseStepDefinition(scenarioContext)
     {
-        public FieldProcessingStepDefinitions(ScenarioContext scenarioContext) : base(scenarioContext)
-        {
-        }
-
         [Given("Alarm state processing {string} is created on field {string} of class {string} of project {string}")]
         public async ValueTask AlarmStateProcessingIsCreated(string processingName, string triggeringFieldName, string className, string projectId, DataTable parameters)
         {
