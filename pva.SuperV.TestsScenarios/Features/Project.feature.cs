@@ -276,6 +276,57 @@ await this.FeatureBackgroundAsync();
 #line 43
  await testRunner.AndAsync("Instance \"AnInstance\" is created with class \"TheClass\" in project \"Project\"", ((string)(null)), table7, "And ");
 #line hidden
+                global::Reqnroll.Table table8 = new global::Reqnroll.Table(new string[] {
+                            "Name",
+                            "Type",
+                            "Value"});
+                table8.AddRow(new string[] {
+                            "Value",
+                            "double",
+                            "50"});
+                table8.AddRow(new string[] {
+                            "HighHighLimit",
+                            "double",
+                            "99"});
+                table8.AddRow(new string[] {
+                            "LowLowLimit",
+                            "double",
+                            "1"});
+                table8.AddRow(new string[] {
+                            "AckState",
+                            "string",
+                            "Unack"});
+#line 46
+ await testRunner.AndAsync("Instance \"AnInstance\" fields values are updated in project \"Project\"", ((string)(null)), table8, "And ");
+#line hidden
+                global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
+                            "Name",
+                            "Type",
+                            "Value",
+                            "Formatted value"});
+                table9.AddRow(new string[] {
+                            "Value",
+                            "double",
+                            "50",
+                            ""});
+                table9.AddRow(new string[] {
+                            "HighHighLimit",
+                            "double",
+                            "99",
+                            ""});
+                table9.AddRow(new string[] {
+                            "LowLowLimit",
+                            "double",
+                            "1",
+                            ""});
+                table9.AddRow(new string[] {
+                            "AckState",
+                            "int",
+                            "1",
+                            "Unack"});
+#line 53
+ await testRunner.ThenAsync("Instance \"AnInstance\" fields have expected values in project \"Project\"", ((string)(null)), table9, "Then ");
+#line hidden
             }
             await this.ScenarioCleanupAsync();
         }

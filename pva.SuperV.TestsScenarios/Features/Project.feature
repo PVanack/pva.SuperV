@@ -43,3 +43,16 @@ Scenario: Create project
 	And Instance "AnInstance" is created with class "TheClass" in project "Project"
 		| Name  | Type   | Value |
 		| Value | double | 50    |
+	And Instance "AnInstance" fields values are updated in project "Project"
+		| Name          | Type   | Value |
+		| Value         | double | 50    |
+		| HighHighLimit | double | 99    |
+		| LowLowLimit   | double | 1     |
+		| AckState      | string | Unack |
+
+	Then Instance "AnInstance" fields have expected values in project "Project"
+		| Name          | Type   | Value | Formatted value |
+		| Value         | double | 50    |                 |
+		| HighHighLimit | double | 99    |                 |
+		| LowLowLimit   | double | 1     |                 |
+		| AckState      | int    | 1     | Unack           |

@@ -1,6 +1,6 @@
-﻿using pva.Helpers.Extensions;
-using pva.SuperV.Model.Classes;
+﻿using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.FieldDefinitions;
+using Reqnroll.Assist;
 using Shouldly;
 using System.Net.Http.Json;
 
@@ -33,41 +33,37 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
 
         private async Task Createfields(string projectId, string className, DataTable fields)
         {
-            List<FieldDefinitionModel> expectedFieldDefinitions = [];
-            fields.Rows.ForEach(row =>
-            {
-                string fieldName = row["Name"];
-                string defaultValue = row["Default value"];
-                string? format = row["Format"];
-                if (String.IsNullOrEmpty(format))
-                {
-                    format = null;
-                }
-                expectedFieldDefinitions.Add(
-                    row["Type"].ToLower() switch
-                    {
-                        "bool" => new BoolFieldDefinitionModel(fieldName, bool.Parse(defaultValue), format),
-                        "datetime" => new DateTimeFieldDefinitionModel(fieldName, DateTime.Parse(defaultValue), format),
-                        "double" => new DoubleFieldDefinitionModel(fieldName, double.Parse(defaultValue), format),
-                        "int" => new IntFieldDefinitionModel(fieldName, int.Parse(defaultValue), format),
-                        "long" => new DoubleFieldDefinitionModel(fieldName, long.Parse(defaultValue), format),
-                        "short" => new ShortFieldDefinitionModel(fieldName, short.Parse(defaultValue), format),
-                        "string" => new StringFieldDefinitionModel(fieldName, defaultValue, format),
-                        "timespan" => new TimeSpanFieldDefinitionModel(fieldName, TimeSpan.Parse(defaultValue), format),
-                        "uint" => new UintFieldDefinitionModel(fieldName, uint.Parse(defaultValue), format),
-                        "ulong" => new UlongFieldDefinitionModel(fieldName, ulong.Parse(defaultValue), format),
-                        "ushort" => new UshortFieldDefinitionModel(fieldName, ushort.Parse(defaultValue), format),
-                        _ => throw new NotImplementedException(),
-                    });
-            });
-
-            // WHEN
+            List<FieldDefinitionModel> expectedFieldDefinitions =
+                [.. fields.Rows.Select(row => BuildFieldDefinitionModel(row))];
             var response = await Client.PostAsJsonAsync($"/fields/{projectId}/{className}", expectedFieldDefinitions);
-
-            // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
             FieldDefinitionModel[]? createdFieldDefinitions = await response.Content.ReadFromJsonAsync<FieldDefinitionModel[]>();
             createdFieldDefinitions.ShouldBeEquivalentTo(expectedFieldDefinitions.ToArray());
+        }
+
+        private static FieldDefinitionModel BuildFieldDefinitionModel(DataTableRow row)
+        {
+            string fieldName = row["Name"];
+            string? format = row["Format"];
+            if (String.IsNullOrEmpty(format))
+            {
+                format = null;
+            }
+            return row["Type"].ToLower() switch
+            {
+                "bool" => new BoolFieldDefinitionModel(fieldName, row.GetBoolean("Default value"), format),
+                "datetime" => new DateTimeFieldDefinitionModel(fieldName, row.GetDateTime("Default value"), format),
+                "double" => new DoubleFieldDefinitionModel(fieldName, row.GetDouble("Default value"), format),
+                "int" => new IntFieldDefinitionModel(fieldName, row.GetInt32("Default value"), format),
+                "long" => new DoubleFieldDefinitionModel(fieldName, row.GetInt64("Default value"), format),
+                "short" => new ShortFieldDefinitionModel(fieldName, short.CreateChecked(row.GetInt32("Default value")), format),
+                "string" => new StringFieldDefinitionModel(fieldName, row["Default value"], format),
+                "timespan" => new TimeSpanFieldDefinitionModel(fieldName, TimeSpan.Parse(row["Default value"]), format),
+                "uint" => new UintFieldDefinitionModel(fieldName, uint.CreateChecked(row.GetInt32("Default value")), format),
+                "ulong" => new UlongFieldDefinitionModel(fieldName, ulong.CreateChecked(row.GetInt64("Default value")), format),
+                "ushort" => new UshortFieldDefinitionModel(fieldName, ushort.CreateChecked(row.GetInt32("Default value")), format),
+                _ => throw new NotImplementedException(),
+            };
         }
     }
 }
