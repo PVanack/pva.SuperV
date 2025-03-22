@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Model.Instances;
+﻿using pva.SuperV.Engine;
+using pva.SuperV.Model.Instances;
 using Reqnroll.Assist;
 using Shouldly;
 using System.Net.Http.Json;
@@ -60,7 +61,17 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                 // Clear type as they are not exactly correct
                 updatedField = updatedField with { Type = "" };
                 // Set Timestamp with the one from retrieved value
-                expectedField = expectedField with { Type = "", FieldValue = expectedField.FieldValue with { Timestamp = updatedField.FieldValue.Timestamp } };
+                expectedField = expectedField with
+                {
+                    Type = "",
+                    FieldValue = expectedField.FieldValue
+                        with
+                    {
+                        Timestamp = expectedField.FieldValue.Timestamp == null
+                            ? updatedField.FieldValue.Timestamp
+                            : expectedField.FieldValue.Timestamp
+                    }
+                };
                 updatedField.ShouldBeEquivalentTo(expectedField);
             }
         }
@@ -78,20 +89,26 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             string? formattedValue = row.TryGetValue("Formatted value", out formattedValue) && !String.IsNullOrEmpty(formattedValue)
                     ? formattedValue
                     : null;
+            QualityLevel qualityLevel = row.TryGetValue("Quality", out string qualityString) && !String.IsNullOrEmpty(qualityString)
+                ? Enum.Parse<QualityLevel>(qualityString)
+                : QualityLevel.Good;
+            DateTime? timestamp = row.TryGetValue("Timestamp", out string timestampString) && !String.IsNullOrEmpty(timestampString)
+                ? DateTime.Parse(timestampString)
+                : null;
             return fieldType.ToLower() switch
             {
-                "bool" => new BoolFieldValueModel(row.GetBoolean("Value"), formattedValue, Engine.QualityLevel.Good, DateTime.Now),
-                "datetime" => new DateTimeFieldValueModel(row.GetDateTime("Value"), formattedValue, Engine.QualityLevel.Good, DateTime.Now),
-                "double" => new DoubleFieldValueModel(row.GetDouble("Value"), formattedValue, Engine.QualityLevel.Good, DateTime.Now),
-                "float" => new FloatFieldValueModel(row.GetSingle("Value"), formattedValue, Engine.QualityLevel.Good, DateTime.Now),
-                "int" => new IntFieldValueModel(row.GetInt32("Value"), formattedValue, Engine.QualityLevel.Good, DateTime.Now),
-                "long" => new DoubleFieldValueModel(row.GetInt64("Value"), formattedValue, Engine.QualityLevel.Good, DateTime.Now),
-                "short" => new ShortFieldValueModel(short.CreateChecked(row.GetInt32("Value")), formattedValue, Engine.QualityLevel.Good, DateTime.Now),
-                "string" => new StringFieldValueModel(row["Value"], Engine.QualityLevel.Good, DateTime.Now),
-                "timespan" => new TimeSpanFieldValueModel(TimeSpan.Parse(row["Value"]), formattedValue, Engine.QualityLevel.Good, DateTime.Now),
-                "uint" => new UintFieldValueModel(uint.CreateChecked(row.GetInt32("Value")), formattedValue, Engine.QualityLevel.Good, DateTime.Now),
-                "ulong" => new UlongFieldValueModel(ulong.CreateChecked(row.GetInt64("Value")), formattedValue, Engine.QualityLevel.Good, DateTime.Now),
-                "ushort" => new UshortFieldValueModel(ushort.CreateChecked(row.GetInt32("Value")), formattedValue, Engine.QualityLevel.Good, DateTime.Now),
+                "bool" => new BoolFieldValueModel(row.GetBoolean("Value"), formattedValue, qualityLevel, timestamp),
+                "datetime" => new DateTimeFieldValueModel(row.GetDateTime("Value"), formattedValue, qualityLevel, timestamp),
+                "double" => new DoubleFieldValueModel(row.GetDouble("Value"), formattedValue, qualityLevel, timestamp),
+                "float" => new FloatFieldValueModel(row.GetSingle("Value"), formattedValue, qualityLevel, timestamp),
+                "int" => new IntFieldValueModel(row.GetInt32("Value"), formattedValue, qualityLevel, timestamp),
+                "long" => new DoubleFieldValueModel(row.GetInt64("Value"), formattedValue, qualityLevel, timestamp),
+                "short" => new ShortFieldValueModel(short.CreateChecked(row.GetInt32("Value")), formattedValue, qualityLevel, timestamp),
+                "string" => new StringFieldValueModel(row["Value"], qualityLevel, timestamp),
+                "timespan" => new TimeSpanFieldValueModel(TimeSpan.Parse(row["Value"]), formattedValue, qualityLevel, timestamp),
+                "uint" => new UintFieldValueModel(uint.CreateChecked(row.GetInt32("Value")), formattedValue, qualityLevel, timestamp),
+                "ulong" => new UlongFieldValueModel(ulong.CreateChecked(row.GetInt64("Value")), formattedValue, qualityLevel, timestamp),
+                "ushort" => new UshortFieldValueModel(ushort.CreateChecked(row.GetInt32("Value")), formattedValue, qualityLevel, timestamp),
                 _ => throw new NotImplementedException(),
             };
         }
