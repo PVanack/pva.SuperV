@@ -1,4 +1,5 @@
 ﻿using pva.SuperV.Engine;
+using pva.SuperV.Engine.HistoryRetrieval;
 using pva.SuperV.Model.HistoryRetrieval;
 using pva.SuperV.Model.Instances;
 using Reqnroll.Assist;
@@ -79,6 +80,86 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
         }
 
+        [Then("Querying raw history statistics of instance {string} in project {string} between {string} and {string} with {string} interval returns fields statistic values")]
+        public async ValueTask RawHistorizedFieldsShouldHaveExpectedStaticsticValues(string instanceName, string projectId, string fromString, string toString, string intervalString, DataTable fields)
+        {
+            List<string> fieldNames = [];
+            List<HistoryStatisticFieldModel> fieldNamesWithFunction = [];
+            List<HistoryStatFunction> fieldStatistics = [];
+            List<string> fieldActualTypes = [];
+            Dictionary<string, string> fieldTypes = [];
+            foreach (var header in fields.Header)
+            {
+                if (header != "StartTs" && header != "EndTs" && header != "Quality")
+                {
+                    string[] parts = header.Split(',');
+                    fieldNames.Add(parts[0]);
+                    fieldTypes.Add(header, parts[1]);
+                    fieldActualTypes.Add(GetActualFieldType(parts[1]));
+                    HistoryStatFunction fieldStatistic = Enum.Parse<HistoryStatFunction>(parts[2]);
+                    fieldStatistics.Add(fieldStatistic);
+                    fieldNamesWithFunction.Add(new HistoryStatisticFieldModel(parts[0], fieldStatistic));
+                }
+            }
+            HistoryStatisticsRawResultModel expectedHistoryResult = new(BuildHistoryStatisticsHeader(fieldNames, fieldActualTypes, fieldStatistics),
+                BuildHistoryStatisticsRawRowValues(fields.Rows, fieldTypes, fieldStatistics));
+            HistoryStatisticsRequestModel request = new(DateTime.Parse(fromString).ToUniversalTime(), DateTime.Parse(toString).ToUniversalTime(), TimeSpan.Parse(intervalString),
+                FillMode.PREV, fieldNamesWithFunction);
+            var result = await Client.PostAsJsonAsync($"/history/{projectId}/{instanceName}/statistics/raw", request);
+
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            HistoryStatisticsRawResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryStatisticsRawResultModel>();
+            // This doesn' work, as comparison of the object values use Object Equals().
+            //historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
+            // As a workaround, we compare each element :-(
+            historyResult!.Header.ShouldBeEquivalentTo(expectedHistoryResult.Header);
+            historyResult!.Rows.Count.ShouldBe(expectedHistoryResult.Rows.Count);
+            for (int rowIndex = 0; rowIndex < expectedHistoryResult.Rows.Count; rowIndex++)
+            {
+                var actualRow = historyResult!.Rows[rowIndex];
+                var expectedRow = expectedHistoryResult.Rows[rowIndex];
+                actualRow.Timestamp.ShouldBe(expectedRow.Timestamp);
+                actualRow.Quality.ShouldBe(expectedRow.Quality);
+                actualRow.FieldValues.Count.ShouldBe(expectedRow.FieldValues.Count);
+                for (int fieldIndex = 0; fieldIndex < actualRow.FieldValues.Count; fieldIndex++)
+                {
+                    CheckRawValue(actualRow.FieldValues[fieldIndex], expectedRow.FieldValues[fieldIndex]);
+                }
+            }
+        }
+
+        [Then("Querying history statistics of instance {string} in project {string} between {string} and {string} with {string} interval returns fields statistic values")]
+        public async ValueTask HistorizedFieldsShouldHaveExpectedStaticsticValues(string instanceName, string projectId, string fromString, string toString, string intervalString, DataTable fields)
+        {
+            List<string> fieldNames = [];
+            List<HistoryStatisticFieldModel> fieldNamesWithFunction = [];
+            List<HistoryStatFunction> fieldStatistics = [];
+            List<string> fieldActualTypes = [];
+            Dictionary<string, string> fieldTypes = [];
+            foreach (var header in fields.Header)
+            {
+                if (header != "StartTs" && header != "EndTs" && header != "Quality")
+                {
+                    string[] parts = header.Split(',');
+                    fieldNames.Add(parts[0]);
+                    fieldTypes.Add(header, parts[1]);
+                    fieldActualTypes.Add(GetActualFieldType(parts[1]));
+                    HistoryStatFunction fieldStatistic = Enum.Parse<HistoryStatFunction>(parts[2]);
+                    fieldStatistics.Add(fieldStatistic);
+                    fieldNamesWithFunction.Add(new HistoryStatisticFieldModel(parts[0], fieldStatistic));
+                }
+            }
+            HistoryStatisticsResultModel expectedHistoryResult = new(BuildHistoryStatisticsHeader(fieldNames, fieldActualTypes, fieldStatistics),
+                BuildHistoryStatisticsRowValues(fields.Rows, fieldTypes));
+            HistoryStatisticsRequestModel request = new(DateTime.Parse(fromString).ToUniversalTime(), DateTime.Parse(toString).ToUniversalTime(), TimeSpan.Parse(intervalString),
+                FillMode.PREV, fieldNamesWithFunction);
+            var result = await Client.PostAsJsonAsync($"/history/{projectId}/{instanceName}/statistics", request);
+
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            HistoryStatisticsResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryStatisticsResultModel>();
+            historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
+        }
+
         private static void CheckRawValue(object actualValue, object expectedValue)
         {
             if (actualValue is null)
@@ -123,10 +204,9 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                         QualityLevel rowQuality = Enum.Parse<QualityLevel>(row["Quality"]);
                         return new HistoryRowModel(rowTimestamp, rowQuality,
                             [.. fieldTypes.Select(entry
-                                => BuildHistoryValue(row, entry.Key, entry.Value, rowTimestamp, rowQuality))]
-
-                );
-                })
+                                => BuildHistoryValue(row, entry.Key, entry.Value, rowTimestamp, rowQuality))
+                            ]);
+                    })
                 ];
 
         private static List<HistoryRawRowModel> BuildHistoryRawRowValues(DataTableRows rows, Dictionary<string, string> fieldTypes)
@@ -189,5 +269,46 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                         => new HistoryFieldModel(fieldName, fieldTypes[index], index++)
                     )];
         }
+        private static List<HistoryStatisticsRawRowModel> BuildHistoryStatisticsRawRowValues(DataTableRows rows, Dictionary<string, string> fieldTypes, List<HistoryStatFunction> fieldStatistics)
+
+            => [..rows.Select(row
+                =>
+                    {
+                        DateTime startTs = DateTime.Parse(row["StartTs"]).ToUniversalTime();
+                        DateTime endTs = DateTime.Parse(row["EndTs"]).ToUniversalTime();
+                        return new HistoryStatisticsRawRowModel(startTs, startTs, endTs, endTs - startTs, Enum.Parse<QualityLevel>(row["Quality"]),
+                                    [.. fieldTypes.Select(entry
+                                        => BuildHistoryRawValue(row, entry.Key, entry.Value))]
+                                    );
+                    }
+                )];
+
+        private static List<HistoryStatisticResultFieldModel> BuildHistoryStatisticsHeader(List<string> fieldNames, List<string> fieldTypes, List<HistoryStatFunction> fieldStatistics)
+        {
+            int index = 0;
+            return [.. fieldNames.Select(fieldName =>
+                        {
+                            int columnIndex = index;
+                            index++;
+                            return new HistoryStatisticResultFieldModel(fieldName, fieldTypes[columnIndex], columnIndex, fieldStatistics[columnIndex]);
+                        }
+                    )];
+        }
+
+        private static List<HistoryStatisticsRowModel> BuildHistoryStatisticsRowValues(DataTableRows rows, Dictionary<string, string> fieldTypes)
+            => [.. rows.Select(row
+                =>
+                    {
+                        DateTime startTs = DateTime.Parse(row["StartTs"]).ToUniversalTime();
+                        DateTime endTs = DateTime.Parse(row["EndTs"]).ToUniversalTime();
+                        DateTime rowTimestamp = DateTime.Parse(row["StartTs"]).ToUniversalTime();
+                        QualityLevel rowQuality = Enum.Parse<QualityLevel>(row["Quality"]);
+                        return new HistoryStatisticsRowModel(startTs, startTs, endTs, endTs - startTs, rowQuality,
+                            [.. fieldTypes.Select(entry
+                                => BuildHistoryValue(row, entry.Key, entry.Value, rowTimestamp, rowQuality))
+                            ]);
+                    })
+                ];
+
     }
 }
