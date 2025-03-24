@@ -64,7 +64,9 @@ namespace pva.SuperV.Api.Services.History
                 int fieldIndex = 0;
                 List<HistoryStatisticField> statisticFields = [.. fields.Select(fieldDefinition =>
                 {
-                    return new HistoryStatisticField(fieldDefinition, request.HistoryFields[fieldIndex].StatisticFunction);
+                    int savedFieldIndex = fieldIndex;
+                    fieldIndex++;
+                    return new HistoryStatisticField(fieldDefinition, request.HistoryFields[savedFieldIndex].StatisticFunction);
                 })];
 
                 List<HistoryStatisticRow> rows = runnableProject.GetHistoryStatistics(instanceName, query, statisticFields, historyRepository!, classTimeSerieId!);
@@ -87,7 +89,9 @@ namespace pva.SuperV.Api.Services.History
                 int fieldIndex = 0;
                 List<HistoryStatisticField> statisticFields = [.. fields.Select(fieldDefinition =>
                 {
-                    return new HistoryStatisticField(fieldDefinition, request.HistoryFields[fieldIndex].StatisticFunction);
+                    int savedFieldIndex = fieldIndex;
+                    fieldIndex++;
+                    return new HistoryStatisticField(fieldDefinition, request.HistoryFields[savedFieldIndex].StatisticFunction);
                 })];
 
                 List<HistoryStatisticRow> rows = runnableProject.GetHistoryStatistics(instanceName, query, statisticFields, historyRepository!, classTimeSerieId!);
