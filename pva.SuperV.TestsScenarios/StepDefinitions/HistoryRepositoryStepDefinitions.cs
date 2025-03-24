@@ -12,6 +12,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
         {
             HistoryRepositoryModel expectedHistoryRepository = new(historyRepositoryName);
             var result = await Client.PostAsJsonAsync($"/history-repositories/{projectId}", expectedHistoryRepository);
+
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
             HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>();
             historyRepository.ShouldBeEquivalentTo(expectedHistoryRepository);

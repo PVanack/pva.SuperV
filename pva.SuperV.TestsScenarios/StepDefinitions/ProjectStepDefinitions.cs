@@ -16,11 +16,15 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             if (!String.IsNullOrEmpty(historyStorageType) && historyStorageType.Equals(TDengineHistoryStorage.Prefix))
             {
                 // TODO: Start TDengine container
-                historyStorageConnectionString = NullHistoryStorageEngine.Prefix;
+                string tdEngineConnectionString = await StartTDengineContainerAsync();
+                historyStorageConnectionString = $"{TDengineHistoryStorage.Prefix}:{tdEngineConnectionString}";
+
             }
             var response = await Client.PostAsJsonAsync("/projects/create", new CreateProjectRequest(projectName, description, historyStorageConnectionString));
+
             response.StatusCode.ShouldBe(HttpStatusCode.Created);
             response.Content.ShouldNotBeNull();
+
             ProjectModel? createdProject = await response.Content.ReadFromJsonAsync<ProjectModel>();
             createdProject.ShouldNotBeNull();
         }
@@ -29,6 +33,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
         public async ValueTask BuildRunnableProjectFromWipProject(string wipProjectId)
         {
             var response = await Client.PostAsync($"/projects/{wipProjectId}/build", null);
+
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
             ProjectModel? builtProject = await response.Content.ReadFromJsonAsync<ProjectModel>();
             builtProject.ShouldNotBeNull();

@@ -16,7 +16,6 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             InstanceModel expectedInstance = new(instanceName, className, instanceFieds);
             var response = await Client.PostAsJsonAsync($"/instances/{projectId}/", expectedInstance);
 
-            // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
         }
 
@@ -30,7 +29,6 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                 FieldValueModel expectedFieldValue = BuildFieldValueModel(row, fieldType);
                 var response = await Client.PutAsJsonAsync($"/instances/{projectId}/{instanceName}/{fieldName}/value", expectedFieldValue);
 
-                // THEN
                 response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
                 FieldValueModel? updatedValue = await response.Content.ReadFromJsonAsync<FieldValueModel>();
                 if (updatedValue!.GetType() == expectedFieldValue.GetType())
@@ -55,7 +53,6 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                 FieldModel expectedField = BuildFieldModel(row);
                 var response = await Client.GetAsync($"/instances/{projectId}/{instanceName}/{fieldName}/value");
 
-                // THEN
                 response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
                 FieldModel? updatedField = await response.Content.ReadFromJsonAsync<FieldModel>();
                 // Clear type as they are not exactly correct

@@ -20,6 +20,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
         {
             ClassModel expectedClass = new(className, baseClassName);
             var response = await Client.PostAsJsonAsync($"/classes/{projectId}", expectedClass);
+
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
             ClassModel? createdClass = await response.Content.ReadFromJsonAsync<ClassModel>();
             createdClass.ShouldBeEquivalentTo(expectedClass);
@@ -32,6 +33,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             List<FieldDefinitionModel> expectedFieldDefinitions =
                 [.. fields.Rows.Select(row => BuildFieldDefinitionModel(row))];
             var response = await Client.PostAsJsonAsync($"/fields/{projectId}/{className}", expectedFieldDefinitions);
+
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
             FieldDefinitionModel[]? createdFieldDefinitions = await response.Content.ReadFromJsonAsync<FieldDefinitionModel[]>();
             createdFieldDefinitions.ShouldBeEquivalentTo(expectedFieldDefinitions.ToArray());

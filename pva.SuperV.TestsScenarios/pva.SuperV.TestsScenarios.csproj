@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\pva.SuperV.Api\pva.SuperV.Api.csproj" />
+    <ProjectReference Include="..\pva.SuperV.ApiTests\pva.SuperV.ApiTests.csproj" />
     <ProjectReference Include="..\pva.SuperV.Model\pva.SuperV.Model.csproj" />
   </ItemGroup>
 

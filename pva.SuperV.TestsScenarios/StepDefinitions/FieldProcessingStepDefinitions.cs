@@ -21,6 +21,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                 GetFieldFromParameters(parametersRow, "AlarmState field"),
                 GetFieldFromParameters(parametersRow, "AckState field", false));
             var response = await Client.PostAsJsonAsync($"/field-processings/{projectId}/{className}/{triggeringFieldName}", expectedFieldProcessing);
+
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
             FieldValueProcessingModel? createdFieldProcessing = await response.Content.ReadFromJsonAsync<FieldValueProcessingModel>();
             createdFieldProcessing.ShouldBeEquivalentTo(expectedFieldProcessing);
@@ -41,6 +42,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                 GetFieldFromParameters(parametersRow, "Timestamp field", false),
                 fieldsToHistorize);
             var response = await Client.PostAsJsonAsync($"/field-processings/{projectId}/{className}/{triggeringFieldName}", expectedFieldProcessing);
+
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
             FieldValueProcessingModel? createdFieldProcessing = await response.Content.ReadFromJsonAsync<FieldValueProcessingModel>();
             createdFieldProcessing.ShouldBeEquivalentTo(expectedFieldProcessing);
