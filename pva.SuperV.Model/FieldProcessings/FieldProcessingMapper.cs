@@ -48,29 +48,13 @@ namespace pva.SuperV.Model.FieldProcessings
 
         private static IHistorizationProcessing CreateHistoryProcessing(Project project, Class clazz, IFieldDefinition fieldDefinition, HistorizationProcessingModel historizationProcessingModel)
         {
-            if (fieldDefinition.Type == typeof(short))
+            if (fieldDefinition.Type == typeof(bool))
             {
-                return CreateHistorizationProcessing<short>(project, clazz, historizationProcessingModel);
+                return CreateHistorizationProcessing<bool>(project, clazz, historizationProcessingModel);
             }
-            else if (fieldDefinition.Type == typeof(ushort))
+            else if (fieldDefinition.Type == typeof(DateTime))
             {
-                return CreateHistorizationProcessing<ushort>(project, clazz, historizationProcessingModel);
-            }
-            else if (fieldDefinition.Type == typeof(int))
-            {
-                return CreateHistorizationProcessing<int>(project, clazz, historizationProcessingModel);
-            }
-            else if (fieldDefinition.Type == typeof(uint))
-            {
-                return CreateHistorizationProcessing<uint>(project, clazz, historizationProcessingModel);
-            }
-            else if (fieldDefinition.Type == typeof(long))
-            {
-                return CreateHistorizationProcessing<long>(project, clazz, historizationProcessingModel);
-            }
-            else if (fieldDefinition.Type == typeof(ulong))
-            {
-                return CreateHistorizationProcessing<ulong>(project, clazz, historizationProcessingModel);
+                return CreateHistorizationProcessing<DateTime>(project, clazz, historizationProcessingModel);
             }
             else if (fieldDefinition.Type == typeof(double))
             {
@@ -79,6 +63,38 @@ namespace pva.SuperV.Model.FieldProcessings
             else if (fieldDefinition.Type == typeof(float))
             {
                 return CreateHistorizationProcessing<float>(project, clazz, historizationProcessingModel);
+            }
+            else if (fieldDefinition.Type == typeof(int))
+            {
+                return CreateHistorizationProcessing<int>(project, clazz, historizationProcessingModel);
+            }
+            else if (fieldDefinition.Type == typeof(long))
+            {
+                return CreateHistorizationProcessing<long>(project, clazz, historizationProcessingModel);
+            }
+            else if (fieldDefinition.Type == typeof(short))
+            {
+                return CreateHistorizationProcessing<short>(project, clazz, historizationProcessingModel);
+            }
+            else if (fieldDefinition.Type == typeof(string))
+            {
+                return CreateHistorizationProcessing<string>(project, clazz, historizationProcessingModel);
+            }
+            else if (fieldDefinition.Type == typeof(TimeSpan))
+            {
+                return CreateHistorizationProcessing<TimeSpan>(project, clazz, historizationProcessingModel);
+            }
+            else if (fieldDefinition.Type == typeof(uint))
+            {
+                return CreateHistorizationProcessing<uint>(project, clazz, historizationProcessingModel);
+            }
+            else if (fieldDefinition.Type == typeof(ulong))
+            {
+                return CreateHistorizationProcessing<ulong>(project, clazz, historizationProcessingModel);
+            }
+            else if (fieldDefinition.Type == typeof(ushort))
+            {
+                return CreateHistorizationProcessing<ushort>(project, clazz, historizationProcessingModel);
             }
             throw new UnhandledMappingException(nameof(FieldProcessingMapper), fieldDefinition.Type.ToString());
         }

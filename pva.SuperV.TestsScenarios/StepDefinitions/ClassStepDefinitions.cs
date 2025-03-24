@@ -54,7 +54,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                 "double" => new DoubleFieldDefinitionModel(fieldName, row.GetDouble("Default value"), format),
                 "float" => new FloatFieldDefinitionModel(fieldName, row.GetSingle("Default value"), format),
                 "int" => new IntFieldDefinitionModel(fieldName, row.GetInt32("Default value"), format),
-                "long" => new DoubleFieldDefinitionModel(fieldName, row.GetInt64("Default value"), format),
+                "long" => new LongFieldDefinitionModel(fieldName, row.GetInt64("Default value"), format),
                 "short" => new ShortFieldDefinitionModel(fieldName, short.CreateChecked(row.GetInt32("Default value")), format),
                 "string" => new StringFieldDefinitionModel(fieldName, row["Default value"], format),
                 "timespan" => new TimeSpanFieldDefinitionModel(fieldName, TimeSpan.Parse(row["Default value"]), format),

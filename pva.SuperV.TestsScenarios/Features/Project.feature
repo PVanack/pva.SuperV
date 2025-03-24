@@ -40,19 +40,37 @@ Scenario: Create project
 		|                    |                 | AckState           |
 
 	And Class "AllFieldsClass" is created in project "Project-WIP" with the following fields
-		| Name     | Type     | Default value        | Format |
-		| Bool     | bool     | true                 |        |
-		| DateTime | DateTime | 2025-03-01T00:00:00Z |        |
-		| Double   | double   | 12.3                 |        |
-		| Float    | float    | 3.21                 |        |
-		| Int      | int      | 134567               |        |
-		| Long     | long     | 9876543              |        |
-		| Short    | short    | 32767                |        |
-		| String   | string   | Hi from SuperV!      |        |
-		| TimeSpan | TimeSpan | 01:02:59             |        |
-		| Uint     | uint     | 123456               |        |
-		| Ulong    | ulong    | 98123456             |        |
-		| Ushort   | ushort   | 32767                |        |
+		| Name           | Type     | Default value        | Format |
+		| Bool           | bool     | true                 |        |
+		| DateTime       | DateTime | 2025-03-01T00:00:00Z |        |
+		| Double         | double   | 12.3                 |        |
+		| Float          | float    | 3.21                 |        |
+		| Int            | int      | 134567               |        |
+		| Long           | long     | 9876543              |        |
+		| Short          | short    | 32767                |        |
+		| String         | string   | Hi from SuperV!      |        |
+		| TimeSpan       | TimeSpan | 01:02:59             |        |
+		| Uint           | uint     | 123456               |        |
+		| Ulong          | ulong    | 98123456             |        |
+		| Ushort         | ushort   | 32767                |        |
+		| HistoryTrigger | bool     | false                |        |
+
+	And Historization processing "ValueHistorization" is created on field "HistoryTrigger" of class "AllFieldsClass" of project "Project-WIP"
+		| History repository | Timestamp field | Field to historize |
+		| HistoryRepository  |                 |                    |
+		|                    |                 | Bool               |
+		|                    |                 | Double             |
+		|                    |                 | Float              |
+		|                    |                 | Int                |
+		|                    |                 | Long               |
+		|                    |                 | Short              |
+		|                    |                 | String             |
+		|                    |                 | TimeSpan           |
+		|                    |                 | Uint               |
+		|                    |                 | Ulong              |
+		|                    |                 | Ushort             |
+		|                    |                 | HistoryTrigger     |
+
 	And Runnable project is built from WIP project "Project-WIP"
 	And Instance "AnInstance" is created with class "TheClass" in project "Project"
 		| Name  | Type   | Value |
@@ -103,3 +121,45 @@ Scenario: Create project
 		| Uint     | uint     | 123456               |
 		| Ulong    | ulong    | 98123456             |
 		| Ushort   | ushort   | 32767                |
+
+	Given Instance "AllFieldsInstance" fields values are updated in project "Project"
+		| Name           | Type     | Value                | Quality | Timestamp            |
+		| Bool           | bool     | true                 | Good    | 2025-03-01T00:00:00Z |
+		| DateTime       | DateTime | 2025-03-01T00:00:00Z | Good    | 2025-03-01T00:00:00Z |
+		| Double         | double   | 12.3                 | Good    | 2025-03-01T00:00:00Z |
+		| Float          | float    | 3.21                 | Good    | 2025-03-01T00:00:00Z |
+		| Int            | int      | 134567               | Good    | 2025-03-01T00:00:00Z |
+		| Long           | long     | 9876543              | Good    | 2025-03-01T00:00:00Z |
+		| Short          | short    | 32767                | Good    | 2025-03-01T00:00:00Z |
+		| String         | string   | Hi from SuperV!      | Good    | 2025-03-01T00:00:00Z |
+		| TimeSpan       | TimeSpan | 01:02:59             | Good    | 2025-03-01T00:00:00Z |
+		| Uint           | uint     | 123456               | Good    | 2025-03-01T00:00:00Z |
+		| Ulong          | ulong    | 98123456             | Good    | 2025-03-01T00:00:00Z |
+		| Ushort         | ushort   | 32767                | Good    | 2025-03-01T00:00:00Z |
+		| HistoryTrigger | bool     | false                | Good    | 2025-03-01T00:00:00Z |
+
+	And Instance "AllFieldsInstance" fields values are updated in project "Project"
+		| Name           | Type     | Value                | Quality | Timestamp            |
+		| Bool           | bool     | false                | Good    | 2025-03-01T00:59:59Z |
+		| DateTime       | DateTime | 2025-03-01T00:59:59Z | Good    | 2025-03-01T00:59:59Z |
+		| Double         | double   | 3.12                 | Good    | 2025-03-01T00:59:59Z |
+		| Float          | float    | 21.3                 | Good    | 2025-03-01T00:59:59Z |
+		| Int            | int      | 5654321              | Good    | 2025-03-01T00:59:59Z |
+		| Long           | long     | 3456789              | Good    | 2025-03-01T00:59:59Z |
+		| Short          | short    | -32767               | Good    | 2025-03-01T00:59:59Z |
+		| String         | string   | Bye from SuperV!     | Good    | 2025-03-01T00:59:59Z |
+		| TimeSpan       | TimeSpan | 02:03:01             | Good    | 2025-03-01T00:59:59Z |
+		| Uint           | uint     | 654321               | Good    | 2025-03-01T00:59:59Z |
+		| Ulong          | ulong    | 654789               | Good    | 2025-03-01T00:59:59Z |
+		| Ushort         | ushort   | 12768                | Good    | 2025-03-01T00:59:59Z |
+		| HistoryTrigger | bool     | false                | Good    | 2025-03-01T00:59:59Z |
+
+	Then Querying raw history values of instance "AllFieldsInstance" in project "Project" between "2025-03-01T00:00:00Z" and "2025-03-01T01:00:00Z" returns fields history values
+		| Ts                   | Quality | Bool,bool | Double,double | Float,float | Int,int | Long,long | Short,short | String,string    | TimeSpan,TimeSpan | Uint,uint | Ulong,ulong | Ushort,ushort | HistoryTrigger,bool |
+		| 2025-03-01T00:00:00Z | Good    | true      | 12.3          | 3.21        | 134567  | 9876543   | 32767       | Hi from SuperV!  | 01:02:59          | 123456    | 98123456    | 32767         | false               |
+		| 2025-03-01T00:59:59Z | Good    | false     | 3.12          | 21.3        | 5654321 | 3456789   | -32767      | Bye from SuperV! | 02:03:01          | 654321    | 654789      | 12768         | false               |
+
+	Then Querying history values of instance "AllFieldsInstance" in project "Project" between "2025-03-01T00:00:00Z" and "2025-03-01T01:00:00Z" returns fields history values
+		| Ts                   | Quality | Bool,bool | Double,double | Float,float | Int,int | Long,long | Short,short | String,string    | TimeSpan,TimeSpan | Uint,uint | Ulong,ulong | Ushort,ushort | HistoryTrigger,bool |
+		| 2025-03-01T00:00:00Z | Good    | true      | 12.3          | 3.21        | 134567  | 9876543   | 32767       | Hi from SuperV!  | 01:02:59          | 123456    | 98123456    | 32767         | false               |
+		| 2025-03-01T00:59:59Z | Good    | false     | 3.12          | 21.3        | 5654321 | 3456789   | -32767      | Bye from SuperV! | 02:03:01          | 654321    | 654789      | 12768         | false               |

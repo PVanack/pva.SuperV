@@ -1,6 +1,5 @@
 ﻿using pva.SuperV.Engine;
 using pva.SuperV.Model.Instances;
-using Reqnroll.Assist;
 using Shouldly;
 using System.Net.Http.Json;
 
@@ -73,7 +72,6 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             }
         }
 
-
         private static FieldModel BuildFieldModel(DataTableRow row)
         {
             string fieldName = row["Name"];
@@ -90,24 +88,9 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                 ? Enum.Parse<QualityLevel>(qualityString)
                 : QualityLevel.Good;
             DateTime? timestamp = row.TryGetValue("Timestamp", out string timestampString) && !String.IsNullOrEmpty(timestampString)
-                ? DateTime.Parse(timestampString)
+                ? DateTime.Parse(timestampString).ToUniversalTime()
                 : null;
-            return fieldType.ToLower() switch
-            {
-                "bool" => new BoolFieldValueModel(row.GetBoolean("Value"), formattedValue, qualityLevel, timestamp),
-                "datetime" => new DateTimeFieldValueModel(row.GetDateTime("Value"), formattedValue, qualityLevel, timestamp),
-                "double" => new DoubleFieldValueModel(row.GetDouble("Value"), formattedValue, qualityLevel, timestamp),
-                "float" => new FloatFieldValueModel(row.GetSingle("Value"), formattedValue, qualityLevel, timestamp),
-                "int" => new IntFieldValueModel(row.GetInt32("Value"), formattedValue, qualityLevel, timestamp),
-                "long" => new DoubleFieldValueModel(row.GetInt64("Value"), formattedValue, qualityLevel, timestamp),
-                "short" => new ShortFieldValueModel(short.CreateChecked(row.GetInt32("Value")), formattedValue, qualityLevel, timestamp),
-                "string" => new StringFieldValueModel(row["Value"], qualityLevel, timestamp),
-                "timespan" => new TimeSpanFieldValueModel(TimeSpan.Parse(row["Value"]), formattedValue, qualityLevel, timestamp),
-                "uint" => new UintFieldValueModel(uint.CreateChecked(row.GetInt32("Value")), formattedValue, qualityLevel, timestamp),
-                "ulong" => new UlongFieldValueModel(ulong.CreateChecked(row.GetInt64("Value")), formattedValue, qualityLevel, timestamp),
-                "ushort" => new UshortFieldValueModel(ushort.CreateChecked(row.GetInt32("Value")), formattedValue, qualityLevel, timestamp),
-                _ => throw new NotImplementedException(),
-            };
+            return BuildFieldValueModel(row, "Value", fieldType, formattedValue, qualityLevel, timestamp);
         }
     }
 }
