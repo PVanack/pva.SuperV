@@ -246,7 +246,7 @@ SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
                 using IRows row = tdEngineClient!.Query(sqlQuery);
                 while (row.Read())
                 {
-                    rows.Add(new HistoryRow(row, fields));
+                    rows.Add(new HistoryRow(row, fields, true));
                 }
             }
             catch (Exception e)

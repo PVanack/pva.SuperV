@@ -276,8 +276,8 @@ namespace pva.SuperV.ApiTests
             await BuildProjectAndCreateInstancesAsync();
             DateTime timestamp = DateTime.UtcNow.Date;
             runnableProject!.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
-            HistoryStatisticsRawResultModel expectedHistoryResult = new([new HistoryStatisticResultFieldModel(ValueFieldName, "System.Int32", 0, HistoryStatFunction.AVG)],
-                [new HistoryStatisticsRawRowModel(timestamp, timestamp, timestamp.AddHours(1), TimeSpan.FromHours(1), QualityLevel.Good, [123456])]);
+            HistoryStatisticsRawResultModel expectedHistoryResult = new([new HistoryStatisticResultFieldModel(ValueFieldName, "System.Double", 0, HistoryStatFunction.AVG)],
+                [new HistoryStatisticsRawRowModel(timestamp, timestamp, timestamp.AddHours(1), TimeSpan.FromHours(1), QualityLevel.Good, [123456.0])]);
 
             // Act
             HistoryStatisticsRequestModel request = new(timestamp, timestamp.AddHours(1), TimeSpan.FromHours(1), FillMode.PREV,
@@ -311,9 +311,9 @@ namespace pva.SuperV.ApiTests
             await BuildProjectAndCreateInstancesAsync();
             DateTime timestamp = DateTime.UtcNow.Date;
             runnableProject!.SetInstanceValue<int>(InstanceName, ValueFieldName, 123456, timestamp);
-            HistoryStatisticsResultModel expectedHistoryResult = new([new HistoryStatisticResultFieldModel(ValueFieldName, "System.Int32", 0, HistoryStatFunction.AVG)],
+            HistoryStatisticsResultModel expectedHistoryResult = new([new HistoryStatisticResultFieldModel(ValueFieldName, "System.Double", 0, HistoryStatFunction.AVG)],
                 [new HistoryStatisticsRowModel(timestamp, timestamp, timestamp.AddHours(1), TimeSpan.FromHours(1), QualityLevel.Good,
-                    [new IntFieldValueModel(123456, null, QualityLevel.Good, timestamp)])]);
+                    [new DoubleFieldValueModel(123456.0, null, QualityLevel.Good, timestamp)])]);
 
             // Act
             HistoryStatisticsRequestModel request = new(timestamp, timestamp.AddMinutes(59), TimeSpan.FromHours(1), FillMode.PREV,
