@@ -27,7 +27,7 @@ namespace pva.SuperV.Engine.HistoryRetrieval
         /// Builds a row from a TDengine row.
         /// </summary>
         /// <param name="row">TDengine row</param>
-        public HistoryRow(IRows row, List<IFieldDefinition> fields)
+        public HistoryRow(IRows row, List<IFieldDefinition> fields, bool keepFieldType)
         {
             Ts = ((DateTime)row.GetValue(row.FieldCount - 2)).ToUniversalTime();
             string qualityValueString = (string)row.GetValue(row.FieldCount - 1);
@@ -36,24 +36,31 @@ namespace pva.SuperV.Engine.HistoryRetrieval
                 : QualityLevel.Uncertain;
             for (int i = 0; i < fields.Count; i++)
             {
-                IFieldDefinition field = fields[i];
-                Values.Add(field switch
+                if (keepFieldType)
                 {
-                    FieldDefinition<bool> => ConvertToBool(field.Name, row.GetValue(i)),
-                    FieldDefinition<DateTime> => ConvertToDatetime(field.Name, row.GetValue(i)),
-                    FieldDefinition<double> => ConvertToDouble(field.Name, row.GetValue(i)),
-                    FieldDefinition<float> => ConvertToFloat(field.Name, row.GetValue(i)),
-                    FieldDefinition<int> => ConvertToInt(field.Name, row.GetValue(i)),
-                    FieldDefinition<long> => ConvertToLong(field.Name, row.GetValue(i)),
-                    FieldDefinition<TimeSpan> => ConvertToTimeSpan(field.Name, row.GetValue(i)),
-                    FieldDefinition<short> => ConvertToShort(field.Name, row.GetValue(i)),
-                    FieldDefinition<string> => ConvertToStringt(field.Name, row.GetValue(i)),
-                    FieldDefinition<uint> => ConvertToUint(field.Name, row.GetValue(i)),
-                    FieldDefinition<ulong> => ConvertToUlong(field.Name, row.GetValue(i)),
-                    FieldDefinition<ushort> => ConvertToUshort(field.Name, row.GetValue(i)),
-                    _ => throw new UnhandledMappingException(nameof(HistoryRow), field?.Type.ToString()),
+                    IFieldDefinition field = fields[i];
+                    Values.Add(field switch
+                    {
+                        FieldDefinition<bool> => ConvertToBool(field.Name, row.GetValue(i)),
+                        FieldDefinition<DateTime> => ConvertToDatetime(field.Name, row.GetValue(i)),
+                        FieldDefinition<double> => ConvertToDouble(field.Name, row.GetValue(i)),
+                        FieldDefinition<float> => ConvertToFloat(field.Name, row.GetValue(i)),
+                        FieldDefinition<int> => ConvertToInt(field.Name, row.GetValue(i)),
+                        FieldDefinition<long> => ConvertToLong(field.Name, row.GetValue(i)),
+                        FieldDefinition<TimeSpan> => ConvertToTimeSpan(field.Name, row.GetValue(i)),
+                        FieldDefinition<short> => ConvertToShort(field.Name, row.GetValue(i)),
+                        FieldDefinition<string> => ConvertToStringt(field.Name, row.GetValue(i)),
+                        FieldDefinition<uint> => ConvertToUint(field.Name, row.GetValue(i)),
+                        FieldDefinition<ulong> => ConvertToUlong(field.Name, row.GetValue(i)),
+                        FieldDefinition<ushort> => ConvertToUshort(field.Name, row.GetValue(i)),
+                        _ => throw new UnhandledMappingException(nameof(HistoryRow), field?.Type.ToString()),
 
-                });
+                    });
+                }
+                else
+                {
+                    Values.Add(row.GetValue(i));
+                }
             }
         }
 

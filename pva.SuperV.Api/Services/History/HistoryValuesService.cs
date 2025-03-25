@@ -64,12 +64,14 @@ namespace pva.SuperV.Api.Services.History
                 int fieldIndex = 0;
                 List<HistoryStatisticField> statisticFields = [.. fields.Select(fieldDefinition =>
                 {
-                    return new HistoryStatisticField(fieldDefinition, request.HistoryFields[fieldIndex].StatisticFunction);
+                    int savedFieldIndex = fieldIndex;
+                    fieldIndex++;
+                    return new HistoryStatisticField(fieldDefinition, request.HistoryFields[savedFieldIndex].StatisticFunction);
                 })];
 
                 List<HistoryStatisticRow> rows = runnableProject.GetHistoryStatistics(instanceName, query, statisticFields, historyRepository!, classTimeSerieId!);
 
-                return new HistoryStatisticsRawResultModel(BuildStatisticsHeader(request, fields), HistoryRowMapper.ToRawDto(rows));
+                return new HistoryStatisticsRawResultModel(BuildStatisticsHeader(request, fields, rows), HistoryRowMapper.ToRawDto(rows));
 
             }
             throw new NonRunnableProjectException(projectId);
@@ -87,23 +89,29 @@ namespace pva.SuperV.Api.Services.History
                 int fieldIndex = 0;
                 List<HistoryStatisticField> statisticFields = [.. fields.Select(fieldDefinition =>
                 {
-                    return new HistoryStatisticField(fieldDefinition, request.HistoryFields[fieldIndex].StatisticFunction);
+                    int savedFieldIndex = fieldIndex;
+                    fieldIndex++;
+                    return new HistoryStatisticField(fieldDefinition, request.HistoryFields[savedFieldIndex].StatisticFunction);
                 })];
 
                 List<HistoryStatisticRow> rows = runnableProject.GetHistoryStatistics(instanceName, query, statisticFields, historyRepository!, classTimeSerieId!);
 
-                return new HistoryStatisticsResultModel(BuildStatisticsHeader(request, fields), HistoryRowMapper.ToDto(rows, fields));
+                return new HistoryStatisticsResultModel(BuildStatisticsHeader(request, fields, rows), HistoryRowMapper.ToDto(rows, fields));
 
             }
             throw new NonRunnableProjectException(projectId);
         }
 
-        private static List<HistoryStatisticResultFieldModel> BuildStatisticsHeader(HistoryStatisticsRequestModel request, List<IFieldDefinition> fields)
+        private static List<HistoryStatisticResultFieldModel> BuildStatisticsHeader(HistoryStatisticsRequestModel request, List<IFieldDefinition> fields, List<HistoryStatisticRow> rows)
         {
+            HistoryStatisticRow? firstRow = rows.FirstOrDefault();
             int fieldIndex = 0;
             return [.. fields.Select(fieldDefinition =>
                 {
-                    HistoryStatisticResultFieldModel historyStatisticResultFieldModel = new(fieldDefinition.Name, fieldDefinition.Type.ToString(), fieldIndex, request.HistoryFields[fieldIndex].StatisticFunction);
+                    HistoryStatisticResultFieldModel historyStatisticResultFieldModel = new(fieldDefinition.Name,
+                        firstRow != null && firstRow.Values[fieldIndex] != null
+                        ? firstRow.Values[fieldIndex].GetType().ToString()
+                        : fieldDefinition.Type.ToString(), fieldIndex, request.HistoryFields[fieldIndex].StatisticFunction);
                     fieldIndex++;
                     return historyStatisticResultFieldModel;
                 })];

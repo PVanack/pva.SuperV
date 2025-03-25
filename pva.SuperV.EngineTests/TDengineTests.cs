@@ -135,16 +135,16 @@ namespace pva.SuperV.EngineTests
             rows[0].EndTime.ShouldBe(ts1.Add(query.Interval).ToUniversalTime());
             rows[0].Duration.Ticks.ShouldBe(query.Interval.Ticks);
             rows[0].Values.Count.ShouldBe(2);
-            rows[0].GetValue<int>(0).ShouldBe(100);
-            rows[0].GetValue<int>(1).ShouldBe(118); // Should be 125
+            rows[0].GetValue<double>(0).ShouldBe(100);
+            rows[0].GetValue<double>(1).ShouldBe(118.74999999999827); // Should be 125
 
             rows[1].Ts.ShouldBe(ts2.ToUniversalTime());
             rows[1].StartTime.ShouldBe(ts2.ToUniversalTime());
             rows[1].EndTime.ShouldBe(ts2.Add(query.Interval).ToUniversalTime());
             rows[1].Duration.Ticks.ShouldBe(query.Interval.Ticks);
             rows[1].Values.Count.ShouldBe(2);
-            rows[1].GetValue<int>(0).ShouldBe(100);
-            rows[1].GetValue<int>(1).ShouldBe(100);
+            rows[1].GetValue<double>(0).ShouldBe(100);
+            rows[1].GetValue<double>(1).ShouldBe(100);
 
             instance?.Dispose();
         }

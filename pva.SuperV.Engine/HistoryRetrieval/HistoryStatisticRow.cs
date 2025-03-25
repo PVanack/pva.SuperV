@@ -10,7 +10,7 @@ namespace pva.SuperV.Engine.HistoryRetrieval
     /// </remarks>
     /// <param name="row">TDengine row</param>
     public class HistoryStatisticRow(IRows row, List<HistoryStatisticField> fields)
-        : HistoryRow(row, [.. fields.Select(field => field.Field)])
+        : HistoryRow(row, [.. fields.Select(field => field.Field)], false)
     {
         /// <summary>
         /// Start time of interval if an interval was specified.

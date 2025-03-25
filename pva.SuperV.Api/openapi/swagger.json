@@ -2142,7 +2142,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldModel"
+                }
+              }
+            }
           },
           "404": {
             "description": "Not Found",
@@ -2215,7 +2222,14 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldValueModel2"
+                }
+              }
+            }
           },
           "404": {
             "description": "Not Found",
@@ -2669,7 +2683,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2702,7 +2716,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2735,7 +2749,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2768,7 +2782,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2801,7 +2815,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2834,7 +2848,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2867,7 +2881,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2900,7 +2914,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2933,7 +2947,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2966,7 +2980,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -2999,7 +3013,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
@@ -3032,7 +3046,7 @@
             "type": "string",
             "description": "Name of field"
           },
-          "type": {
+          "fieldType": {
             "type": "string",
             "description": "Type of field"
           },
