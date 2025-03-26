@@ -241,7 +241,7 @@ namespace pva.SuperV.Engine.HistoryStorage
                 string sqlQuery =
                     $@"
 SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
- WHERE TS between ""{FormatToSqlDate(timeRange.From)}"" and ""{FormatToSqlDate(timeRange.To)}""
+ WHERE TS between ""{FormatToSqlDate(timeRange.From)}"" and ""{FormatToSqlDate(timeRange.To)}"";
  ";
                 using IRows row = tdEngineClient!.Query(sqlQuery);
                 while (row.Read())
@@ -284,7 +284,7 @@ SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
                     $@"
 SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {instanceTableName}
  WHERE TS between ""{FormatToSqlDate(timeRange.From)}"" and ""{FormatToSqlDate(timeRange.To)}""
- INTERVAL({FormatInterval(timeRange.Interval)}) SLIDING({FormatInterval(timeRange.Interval)}) {fillClause}
+ INTERVAL({FormatInterval(timeRange.Interval)}) SLIDING({FormatInterval(timeRange.Interval)}) {fillClause};
  ";
                 using IRows row = tdEngineClient!.Query(sqlQuery);
                 while (row.Read())

@@ -1,10 +1,12 @@
 ﻿//#define DELETE_PROJECT_ASSEMBLY
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
+using pva.Helpers.Extensions;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
+using System.Net.NetworkInformation;
 
 namespace pva.SuperV.EngineTests
 {
@@ -37,7 +39,25 @@ namespace pva.SuperV.EngineTests
         public void Dispose()
         {
             GC.SuppressFinalize(this);
-            Task.Run(async () => await StopTDengineContainerAsync()).Wait();
+            _ = Task.Run(async () => await StopTDengineContainerAsync()).Result;
+            Project.Projects.Values.ForEach(project
+                => project.Dispose());
+        }
+
+        private static void WaitForPort(int port)
+        {
+            const int MaxWaitIndex = 50;
+            IPGlobalProperties ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
+            int index = 0;
+            while (index < MaxWaitIndex && ipGlobalProperties.GetActiveTcpConnections().Any(pr => pr.LocalEndPoint.Port == port && pr.State == TcpState.Established))
+            {
+                Thread.Sleep(100);
+                index++;
+            }
+            if (index == MaxWaitIndex)
+            {
+                throw new ApplicationException($"Port 6030 is in use after {MaxWaitIndex * 100} msecs");
+            }
         }
 
         protected async Task<string> StartTDengineContainerAsync()
@@ -46,6 +66,7 @@ namespace pva.SuperV.EngineTests
             {
                 if (tdEngineContainer is null)
                 {
+                    WaitForPort(6030);
                     tdEngineContainer = new ContainerBuilder()
                         .WithImage("tdengine/tdengine:latest")
                         .WithPortBinding(6030, false)
@@ -79,6 +100,7 @@ namespace pva.SuperV.EngineTests
                 await tdEngineContainer.StopAsync()
                     .ConfigureAwait(false);
                 long exitCode = await tdEngineContainer.GetExitCodeAsync();
+                WaitForPort(6030);
                 tdEngineContainer = null;
                 return exitCode;
             }
@@ -87,7 +109,7 @@ namespace pva.SuperV.EngineTests
 
         protected RunnableProject CreateRunnableProject()
         {
-            return CreateRunnableProject("");
+            return CreateRunnableProject(NullHistoryStorageEngine.Prefix);
         }
 
         public RunnableProject CreateRunnableProject(string? historyEngineType)
@@ -99,11 +121,15 @@ namespace pva.SuperV.EngineTests
 
         protected WipProject CreateWipProject(string? historyEngineType)
         {
-            string? connectionString = historyEngineType;
+            string? connectionString;
             if (!String.IsNullOrEmpty(historyEngineType) && historyEngineType.Equals(TDengineHistoryStorage.Prefix))
             {
                 string tdEngineConnectionString = Task.Run(async () => await StartTDengineContainerAsync()).Result;
                 connectionString = $"{TDengineHistoryStorage.Prefix}:{tdEngineConnectionString}";
+            }
+            else
+            {
+                connectionString = NullHistoryStorageEngine.Prefix;
             }
 
             WipProject wipProject = Project.CreateProject(ProjectName, connectionString);

@@ -59,7 +59,7 @@ namespace pva.SuperV.Engine
             HistoryStorageEngineConnectionString = wipProject.HistoryStorageEngineConnectionString;
             HistoryStorageEngine = wipProject.HistoryStorageEngine;
             HistoryRepositories = new(wipProject.HistoryRepositories);
-            CreateHistoryRepositories(wipProject.HistoryStorageEngine);
+            CreateHistoryRepositories(HistoryStorageEngine);
             CreateHistoryClassTimeSeries();
             SetupProjectAssemblyLoader();
             RecreateInstances(wipProject);
@@ -103,7 +103,10 @@ namespace pva.SuperV.Engine
             }
 
             HistoryRepositories.Values.ForEach(repository =>
-                repository.UpsertRepository(Name!, historyStorageEngine));
+            {
+                repository.HistoryStorageEngine = historyStorageEngine;
+                repository.UpsertRepository(Name!, historyStorageEngine);
+            });
         }
 
         /// <summary>
@@ -228,6 +231,7 @@ namespace pva.SuperV.Engine
             Instances.Values.ForEach(instance =>
                 instance.Dispose());
             Instances.Clear();
+            HistoryStorageEngine?.Dispose();
             base.Unload();
             Projects.Remove(GetId(), out _);
             projectAssemblyLoader?.Unload();
