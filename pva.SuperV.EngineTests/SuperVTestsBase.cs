@@ -1,6 +1,7 @@
 ﻿//#define DELETE_PROJECT_ASSEMBLY
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
+using pva.Helpers.Extensions;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Engine.HistoryStorage;
@@ -39,6 +40,8 @@ namespace pva.SuperV.EngineTests
         {
             GC.SuppressFinalize(this);
             _ = Task.Run(async () => await StopTDengineContainerAsync()).Result;
+            Project.Projects.Values.ForEach(project
+                => project.Dispose());
         }
 
         private static void WaitForPort(int port)
@@ -46,7 +49,7 @@ namespace pva.SuperV.EngineTests
             const int MaxWaitIndex = 50;
             IPGlobalProperties ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
             int index = 0;
-            while (index < MaxWaitIndex && ipGlobalProperties.GetActiveTcpConnections().Any(pr => pr.LocalEndPoint.Port == port))
+            while (index < MaxWaitIndex && ipGlobalProperties.GetActiveTcpConnections().Any(pr => pr.LocalEndPoint.Port == port && pr.State == TcpState.Established))
             {
                 Thread.Sleep(100);
                 index++;
@@ -97,6 +100,7 @@ namespace pva.SuperV.EngineTests
                 await tdEngineContainer.StopAsync()
                     .ConfigureAwait(false);
                 long exitCode = await tdEngineContainer.GetExitCodeAsync();
+                WaitForPort(6030);
                 tdEngineContainer = null;
                 return exitCode;
             }
@@ -105,7 +109,7 @@ namespace pva.SuperV.EngineTests
 
         protected RunnableProject CreateRunnableProject()
         {
-            return CreateRunnableProject("");
+            return CreateRunnableProject(NullHistoryStorageEngine.Prefix);
         }
 
         public RunnableProject CreateRunnableProject(string? historyEngineType)
@@ -117,11 +121,15 @@ namespace pva.SuperV.EngineTests
 
         protected WipProject CreateWipProject(string? historyEngineType)
         {
-            string? connectionString = historyEngineType;
+            string? connectionString;
             if (!String.IsNullOrEmpty(historyEngineType) && historyEngineType.Equals(TDengineHistoryStorage.Prefix))
             {
                 string tdEngineConnectionString = Task.Run(async () => await StartTDengineContainerAsync()).Result;
                 connectionString = $"{TDengineHistoryStorage.Prefix}:{tdEngineConnectionString}";
+            }
+            else
+            {
+                connectionString = NullHistoryStorageEngine.Prefix;
             }
 
             WipProject wipProject = Project.CreateProject(ProjectName, connectionString);

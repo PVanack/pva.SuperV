@@ -40,7 +40,7 @@ namespace pva.SuperV.ApiTests
         }
 
         private static FieldModel BuildFieldModel(string fieldName, Type fieldType, Instance instance)
-            => new FieldModel(fieldName, fieldType.ToString(), FieldValueMapper.ToDto(instance!.GetField(fieldName)));
+            => new(fieldName, fieldType.ToString(), FieldValueMapper.ToDto(instance!.GetField(fieldName)));
 
         [Fact]
         public void GetInstances_ShouldReturnListOfInstances()
