@@ -40,6 +40,9 @@ jobs:
     - name: Run API tests with coverage
       run: dotnet test --no-build --verbosity normal -p:TestTfmsInParallel=false -p:ParallelizeTestCollections=false --collect:"XPlat Code Coverage" --results-directory ./coverage pva.SuperV.ApiTests
 
+    - name: Run Reqnroll scenarios with coverage
+      run: dotnet test --no-build --verbosity normal -p:TestTfmsInParallel=false -p:ParallelizeTestCollections=false --collect:"XPlat Code Coverage" --results-directory ./coverage pva.SuperV.TestsScenarios
+
     - name: Generate code coverage summary report
       uses: danielpalme/ReportGenerator-GitHub-Action@5.4.4
       with:
