@@ -5,6 +5,7 @@ using pva.SuperV.Engine;
 using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
+using System.Net.NetworkInformation;
 
 namespace pva.SuperV.EngineTests
 {
@@ -37,7 +38,23 @@ namespace pva.SuperV.EngineTests
         public void Dispose()
         {
             GC.SuppressFinalize(this);
-            Task.Run(async () => await StopTDengineContainerAsync()).Wait();
+            _ = Task.Run(async () => await StopTDengineContainerAsync()).Result;
+        }
+
+        private static void WaitForPort(int port)
+        {
+            const int MaxWaitIndex = 50;
+            IPGlobalProperties ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
+            int index = 0;
+            while (index < MaxWaitIndex && ipGlobalProperties.GetActiveTcpConnections().Any(pr => pr.LocalEndPoint.Port == port))
+            {
+                Thread.Sleep(100);
+                index++;
+            }
+            if (index == MaxWaitIndex)
+            {
+                throw new ApplicationException($"Port 6030 is in use after {MaxWaitIndex * 100} msecs");
+            }
         }
 
         protected async Task<string> StartTDengineContainerAsync()
@@ -46,6 +63,7 @@ namespace pva.SuperV.EngineTests
             {
                 if (tdEngineContainer is null)
                 {
+                    WaitForPort(6030);
                     tdEngineContainer = new ContainerBuilder()
                         .WithImage("tdengine/tdengine:latest")
                         .WithPortBinding(6030, false)
