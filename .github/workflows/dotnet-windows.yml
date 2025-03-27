@@ -26,7 +26,7 @@ jobs:
         dotnet-version: 9.0.x
 
     - name: Install TDengine driver 
-      run: .\TDengine\Dengine-client-3.3.6.0-Windows-x64.exe /verysilent
+      run: .\TDengine\TDengine-client-3.3.6.0-Windows-x64.exe /verysilent
 
     - name: Restore dependencies
       run: dotnet restore
