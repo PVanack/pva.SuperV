@@ -68,6 +68,7 @@ namespace pva.SuperV.EngineTests
                 {
                     WaitForPort(6030);
                     tdEngineContainer = new ContainerBuilder()
+                        .WithCreateParameterModifier(cmd => cmd.Platform = "linux/amd64")
                         .WithImage("tdengine/tdengine:latest")
                         .WithPortBinding(6030, false)
                         .WithWaitStrategy(
