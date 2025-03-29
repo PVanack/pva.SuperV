@@ -1,6 +1,34 @@
-![Ubuntu build](https://github.com/PVanack/pva.SuperV/actions/workflows/dotnet-ubuntu.yml/badge.svg?event=push)
-# The pva.SuperV project
-This project aims at creating a dynamic "real time" database along with processings and historization of values.
+﻿<a name="readme-top"></a>
+<!--
+*** Thanks for using Document My Project. (https://github.com/luisvent/document_my_project) 
+*** If you have a suggestion that would make this better, please fork  
+*** the repo and create a pull request or simply open an issue.
+*** Don't forget to give the project a star!
+-->
+
+<p align="center"><a href="https://github.com///graphs/contributors"><img src="https://img.shields.io/github/contributors/PVanack/pva.SuperV.svg?style=for-the-badge" alt="Contributors"></a>
+        <a href="https://github.com///network/members"><img src="https://img.shields.io/github/forks/PVanack/pva.SuperV.svg?style=for-the-badge" alt="Forks"></a>
+        <a href="https://github.com///stargazers"><img src="https://img.shields.io/github/stars/PVanack/pva.SuperV.svg?style=for-the-badge" alt="Stargazers"></a>
+        <a href="https://github.com///issues"><img src="https://img.shields.io/github/issues/PVanack/pva.SuperV/.svg?style=for-the-badge" alt="Issues"></a></p><br/>
+
+
+<div align="center">
+
+
+
+# pva.SuperV
+
+pva.SuperV solution aims at creating a dynamic "real time" database along with processings and historization of values.
+
+</div>
+
+
+<!-- LINKS_PLACEHOLDER -->
+
+<!-- TABLE_CONTENT_PLACEHOLDER -->
+
+## About the Project
+
 It's organized through [projects](/pva.SuperV.Engine/Project.cs)
 which could be either [WIP](/pva.SuperV.Engine/WipProject.cs)
 (i.e. with structure can be modified) (WIP stands for Work In Progress) or
@@ -67,3 +95,48 @@ Current handled types are the following:
 - uint
 - ulong
 - ushort
+
+
+![Ubuntu build](https://github.com/PVanack/pva.SuperV/actions/workflows/dotnet-ubuntu.yml/badge.svg?event=push)
+
+## Technical Stack
+- [![C#][C#-badge]][C#-url] - All programming is done in C#
+- [![TDengine][TDengine-badge]][TDengine-url] - TDengine OSS is used as the data historian
+
+[C#-badge]: https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp
+[C#-url]: https://dotnet.microsoft.com/
+[TDengine-badge]: https://eujqw4hwudm.exactdn.com/wp-content/uploads/29.01-01-logo-white.svg
+[TDengine-url]: https://tdengine.com/oss/
+
+## ️Setup
+
+### Installation
+
+To install this project, follow these steps:
+
+1. Install
+
+
+
+
+## About the Author
+
+**Patrice VANACKER**
+
+This project was created by Patrice VANACKER. Connect with me on [GitHub](https://github.com/pVanack)  to learn more about my projects and professional background.
+
+
+## License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+
+<p align="right"><a href="#readme-top">(Back to top)</a></p>
+
+---
+ <div align="center">Built with ❤️ with <a href="https://github.com/luisvent/document_my_project">Document My Project</a></div>
+
+
+
+
+
