@@ -31,9 +31,9 @@ pva.SuperV solution aims at creating a dynamic "real time" database along with p
 
 It's organized through [projects](/pva.SuperV.Engine/Project.cs)
 which could be either [WIP](/pva.SuperV.Engine/WipProject.cs)
-(i.e. with structure can be modified) (WIP stands for Work In Progress) or
+(i.e. with structure which can be modified, but no instances created) (WIP stands for Work In Progress) or
 [runnable](/pva.SuperV.Engine/RunnableProject.cs) (i.e. with a readonly
-structure, but where instances of classes can be created).
+structure, but where instances of classes can be created, updated or deleted).
 Along fields in classes, [processing](/pva.SuperV.Engine/Processing/FieldValueProcessing.cs) can be added to process value changes.
 
 ![Structure diagram](/drawings/Structure.drawio.png)
@@ -44,7 +44,7 @@ The solution is composed of the following projects:
 - The [REST API](/pva.SuperV.Api) which allows to access the engine from clients.
 
 ## SuperV project workflow
-Project creation workflow using the engine library is as follows (the same can be achieved using the [REST API with those calls](/pva.SuperV.Api/pva.SuperV.Api.http):
+Project creation workflow using the engine library is as follows (the same can be achieved using the [REST API with those calls](/pva.SuperV.Api/pva.SuperV.Api.http)):
 - Create an empty WIP (Work In Progress) project through `Project.CreateProject(String projectName)` or `CreateProject(string projectName, string? historyStorageEngineConnectionString)`. For the historyStorageConnectionString, see [history storage](pva.SuperV.Engine/HistoryStorage/HistoryStorage.md)
 - Add history repositories to project if required with `wipProject.AddHistoryRepository(HistoryRepository historyRepository)` if a history storage engine has been defined when creating the project.
 - Add field formatters to project if required with `wipProject.AddFieldFormatter(FieldFormatter fieldFormatter)` where fieldFormatter can be be one of the following:
@@ -65,11 +65,11 @@ they are defined against.
 `runnableProject.SetInstanceValue<T>(string instanceName, string fieldName, T value)` overloads.
 - If changes to the structure of a runnable project need to be done, a new WIP project must be created by calling
 `Project.CreateProject(runnableProject)`. This WIP project's structure can then modified by going through the above workflow.
-- Projects structure can be saved to and restored from file by calling `ProjectStorage,SaveProjectDefinition<T>(T project)` and
-`ProjectStorage,LoadProjectDefinition<T>(string filename)`.
+- Projects structure can be saved to and restored from file by calling `ProjectStorage.SaveProjectDefinition<T>(T project)` and
+`ProjectStorage.LoadProjectDefinition<T>(string filename)`.
 Runnable projects instances can be saved to and restored from file by calling
-`ProjectStorage,SaveProjectInstances(RunnableProject runnableProject)` and
-`ProjectStorage,LoadProjectInstances(RunnableProject runnableProject, string filename)`.
+`ProjectStorage.SaveProjectInstances(RunnableProject runnableProject)` and
+`ProjectStorage.LoadProjectInstances(RunnableProject runnableProject, string filename)`.
 
 Projects, when no more used, can be unloaded from memory by calling `Project.Unload(Project project)`.
 
@@ -101,12 +101,10 @@ Current handled types are the following:
 
 ## Technical Stack
 - [![C#][C#-badge]][C#-url] - All programming is done in C#
-- [![TDengine][TDengine-badge]][TDengine-url] - TDengine OSS is used as the data historian
+- <a href="https://tdengine.com/oss/"><img src="https://eujqw4hwudm.exactdn.com/wp-content/uploads/29.01-01-logo-white.svg" width="100" height="25"></a> - TDengine OSS is used as the data historian
 
 [C#-badge]: https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp
 [C#-url]: https://dotnet.microsoft.com/
-[TDengine-badge]: https://eujqw4hwudm.exactdn.com/wp-content/uploads/29.01-01-logo-white.svg
-[TDengine-url]: https://tdengine.com/oss/
 
 ## ️Setup
 
@@ -128,7 +126,7 @@ This project was created by Patrice VANACKER. Connect with me on [GitHub](https:
 
 ## License
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+This project is licensed under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
 
 
 <p align="right"><a href="#readme-top">(Back to top)</a></p>
