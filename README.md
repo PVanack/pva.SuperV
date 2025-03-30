@@ -6,10 +6,10 @@
 *** Don't forget to give the project a star!
 -->
 
-<p align="center"><a href="https://github.com///graphs/contributors"><img src="https://img.shields.io/github/contributors/PVanack/pva.SuperV.svg?style=for-the-badge" alt="Contributors"></a>
-        <a href="https://github.com///network/members"><img src="https://img.shields.io/github/forks/PVanack/pva.SuperV.svg?style=for-the-badge" alt="Forks"></a>
-        <a href="https://github.com///stargazers"><img src="https://img.shields.io/github/stars/PVanack/pva.SuperV.svg?style=for-the-badge" alt="Stargazers"></a>
-        <a href="https://github.com///issues"><img src="https://img.shields.io/github/issues/PVanack/pva.SuperV/.svg?style=for-the-badge" alt="Issues"></a></p><br/>
+<p align="center"><a href="https://github.com/PVanack/pva.SuperV/graphs/contributors"><img src="https://img.shields.io/github/contributors/PVanack/pva.SuperV.svg?style=for-the-badge" alt="Contributors"></a>
+        <a href="https://github.com/PVanack/pva.SuperV/network/members"><img src="https://img.shields.io/github/forks/PVanack/pva.SuperV.svg?style=for-the-badge" alt="Forks"></a>
+        <a href="https://github.com/PVanack/pva.SuperV/stargazers"><img src="https://img.shields.io/github/stars/PVanack/pva.SuperV.svg?style=for-the-badge" alt="Stargazers"></a>
+        <a href="https://github.com/PVanack/pva.SuperV/issues"><img src="https://img.shields.io/github/issues/PVanack/pva.SuperV.svg?style=for-the-badge" alt="Issues"></a></p><br/>
 
 
 <div align="center">
