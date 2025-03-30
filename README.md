@@ -1,11 +1,39 @@
-![Ubuntu build](https://github.com/PVanack/pva.SuperV/actions/workflows/dotnet-ubuntu.yml/badge.svg?event=push)
-# The pva.SuperV project
-This project aims at creating a dynamic "real time" database along with processings and historization of values.
+﻿<a name="readme-top"></a>
+<!--
+*** Thanks for using Document My Project. (https://github.com/luisvent/document_my_project) 
+*** If you have a suggestion that would make this better, please fork  
+*** the repo and create a pull request or simply open an issue.
+*** Don't forget to give the project a star!
+-->
+
+<p align="center"><a href="https://github.com/PVanack/pva.SuperV/graphs/contributors"><img src="https://img.shields.io/github/contributors/PVanack/pva.SuperV.svg?style=for-the-badge" alt="Contributors"></a>
+        <a href="https://github.com/PVanack/pva.SuperV/network/members"><img src="https://img.shields.io/github/forks/PVanack/pva.SuperV.svg?style=for-the-badge" alt="Forks"></a>
+        <a href="https://github.com/PVanack/pva.SuperV/stargazers"><img src="https://img.shields.io/github/stars/PVanack/pva.SuperV.svg?style=for-the-badge" alt="Stargazers"></a>
+        <a href="https://github.com/PVanack/pva.SuperV/issues"><img src="https://img.shields.io/github/issues/PVanack/pva.SuperV.svg?style=for-the-badge" alt="Issues"></a></p><br/>
+
+
+<div align="center">
+
+
+
+# pva.SuperV
+
+pva.SuperV solution aims at creating a dynamic "real time" database along with processings and historization of values.
+
+</div>
+
+
+<!-- LINKS_PLACEHOLDER -->
+
+<!-- TABLE_CONTENT_PLACEHOLDER -->
+
+## About the Project
+
 It's organized through [projects](/pva.SuperV.Engine/Project.cs)
 which could be either [WIP](/pva.SuperV.Engine/WipProject.cs)
-(i.e. with structure can be modified) (WIP stands for Work In Progress) or
+(i.e. with structure which can be modified, but no instances created) (WIP stands for Work In Progress) or
 [runnable](/pva.SuperV.Engine/RunnableProject.cs) (i.e. with a readonly
-structure, but where instances of classes can be created).
+structure, but where instances of classes can be created, updated or deleted).
 Along fields in classes, [processing](/pva.SuperV.Engine/Processing/FieldValueProcessing.cs) can be added to process value changes.
 
 ![Structure diagram](/drawings/Structure.drawio.png)
@@ -16,7 +44,7 @@ The solution is composed of the following projects:
 - The [REST API](/pva.SuperV.Api) which allows to access the engine from clients.
 
 ## SuperV project workflow
-Project creation workflow using the engine library is as follows (the same can be achieved using the [REST API with those calls](/pva.SuperV.Api/pva.SuperV.Api.http):
+Project creation workflow using the engine library is as follows (the same can be achieved using the [REST API with those calls](/pva.SuperV.Api/pva.SuperV.Api.http)):
 - Create an empty WIP (Work In Progress) project through `Project.CreateProject(String projectName)` or `CreateProject(string projectName, string? historyStorageEngineConnectionString)`. For the historyStorageConnectionString, see [history storage](pva.SuperV.Engine/HistoryStorage/HistoryStorage.md)
 - Add history repositories to project if required with `wipProject.AddHistoryRepository(HistoryRepository historyRepository)` if a history storage engine has been defined when creating the project.
 - Add field formatters to project if required with `wipProject.AddFieldFormatter(FieldFormatter fieldFormatter)` where fieldFormatter can be be one of the following:
@@ -37,11 +65,11 @@ they are defined against.
 `runnableProject.SetInstanceValue<T>(string instanceName, string fieldName, T value)` overloads.
 - If changes to the structure of a runnable project need to be done, a new WIP project must be created by calling
 `Project.CreateProject(runnableProject)`. This WIP project's structure can then modified by going through the above workflow.
-- Projects structure can be saved to and restored from file by calling `ProjectStorage,SaveProjectDefinition<T>(T project)` and
-`ProjectStorage,LoadProjectDefinition<T>(string filename)`.
+- Projects structure can be saved to and restored from file by calling `ProjectStorage.SaveProjectDefinition<T>(T project)` and
+`ProjectStorage.LoadProjectDefinition<T>(string filename)`.
 Runnable projects instances can be saved to and restored from file by calling
-`ProjectStorage,SaveProjectInstances(RunnableProject runnableProject)` and
-`ProjectStorage,LoadProjectInstances(RunnableProject runnableProject, string filename)`.
+`ProjectStorage.SaveProjectInstances(RunnableProject runnableProject)` and
+`ProjectStorage.LoadProjectInstances(RunnableProject runnableProject, string filename)`.
 
 Projects, when no more used, can be unloaded from memory by calling `Project.Unload(Project project)`.
 
@@ -67,3 +95,46 @@ Current handled types are the following:
 - uint
 - ulong
 - ushort
+
+
+![Ubuntu build](https://github.com/PVanack/pva.SuperV/actions/workflows/dotnet-ubuntu.yml/badge.svg?event=push)
+
+## Technical Stack
+- [![C#][C#-badge]][C#-url] - All programming is done in C#
+- <a href="https://tdengine.com/oss/"><img src="https://eujqw4hwudm.exactdn.com/wp-content/uploads/29.01-01-logo-white.svg" width="100" height="25"></a> - TDengine OSS is used as the data historian
+
+[C#-badge]: https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp
+[C#-url]: https://dotnet.microsoft.com/
+
+## ️Setup
+
+### Installation
+
+To install this project, follow these steps:
+
+1. Install
+
+
+
+
+## About the Author
+
+**Patrice VANACKER**
+
+This project was created by Patrice VANACKER. Connect with me on [GitHub](https://github.com/pVanack)  to learn more about my projects and professional background.
+
+
+## License
+
+This project is licensed under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
+
+
+<p align="right"><a href="#readme-top">(Back to top)</a></p>
+
+---
+ <div align="center">Built with ❤️ with <a href="https://github.com/luisvent/document_my_project">Document My Project</a></div>
+
+
+
+
+
