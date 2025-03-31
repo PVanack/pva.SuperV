@@ -1,7 +1,9 @@
-﻿using pva.SuperV.Engine;
+﻿using Newtonsoft.Json;
+using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.FieldFormatters;
 using Shouldly;
+using Xunit.Abstractions;
 
 namespace pva.SuperV.EngineTests
 {
@@ -17,19 +19,43 @@ namespace pva.SuperV.EngineTests
             Assert.Throws<UnhandledFieldTypeException>(()
                 => FieldValueSetter.SetValue(field, "", DateTime.Now, QualityLevel.Good));
         }
-        public record ValueToTest<T>(string StringValue, T ExpectedValue)
+        public record ValueToTest<T> : IXunitSerializable
         {
+            public string StringValue { get; set; } = String.Empty;
+            public T? ExpectedValue { get; set; } = default;
+            public ValueToTest()
+            {
+            }
+
+            public ValueToTest(string stringValue, T expectedValue)
+            {
+                this.StringValue = stringValue;
+                this.ExpectedValue = expectedValue;
+            }
+
+            public void Deserialize(IXunitSerializationInfo info)
+            {
+                StringValue = info.GetValue<string>(nameof(StringValue));
+                ExpectedValue = JsonConvert.DeserializeObject<T>(info.GetValue<string>(nameof(ExpectedValue)));
+            }
+
+            public void Serialize(IXunitSerializationInfo info)
+            {
+                info.AddValue(nameof(StringValue), StringValue);
+                var json = JsonConvert.SerializeObject(ExpectedValue);
+                info.AddValue(nameof(ExpectedValue), json);
+            }
         }
 
         private static EnumFormatter CreateFormatter()
             => new("Formatter", new Dictionary<int, string>() { { 0, "OFF" }, { 1, "ON" }, { -1, "FUZZY" } });
 
         private static Field<T> CreateField<T>(FieldFormatter? fieldFormatter)
-        => new(default)
-        {
-            FieldDefinition = new FieldDefinition<T>("Field")
-            { Formatter = fieldFormatter }
-        };
+            => new(default)
+            {
+                FieldDefinition = new FieldDefinition<T>("Field")
+                { Formatter = fieldFormatter }
+            };
 
         private static void WhenStringValueCanBeConvertedToType_ThenFieldValueIsEqualToValue<T>(ValueToTest<T> valueToTest, FieldFormatter? fieldFormatter = null)
         {
@@ -50,8 +76,8 @@ namespace pva.SuperV.EngineTests
             public static TheoryData<ValueToTest<bool>> GetValidValues()
                  =>
                     [
-                     new ValueToTest<bool>("true", true),
-                 new ValueToTest<bool>("false", false)
+                        new ValueToTest<bool>("true", true),
+                        new ValueToTest<bool>("false", false)
                     ];
             [Theory]
             [MemberData(nameof(GetValidValues))]

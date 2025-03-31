@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Model.FieldProcessings;
+﻿using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Model.FieldProcessings;
 using Shouldly;
 using System.Net.Http.Json;
 
@@ -50,8 +51,9 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
 
         private static string GetFieldFromParameters(DataTableRow row, string columnName)
         {
-            return GetFieldFromParameters(row, columnName, true);
+            return GetFieldFromParameters(row, columnName, true) ?? throw new UnknownEntityException("Field", columnName);
         }
+
         private static string? GetFieldFromParameters(DataTableRow row, string columnName, bool mandatory)
         {
             string fieldValue = row[columnName];

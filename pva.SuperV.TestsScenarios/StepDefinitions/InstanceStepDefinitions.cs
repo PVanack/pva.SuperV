@@ -54,6 +54,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
 
                 response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
                 FieldModel? updatedField = await response.Content.ReadFromJsonAsync<FieldModel>();
+                updatedField.ShouldNotBeNull();
                 // Clear type as they are not exactly correct
                 updatedField = updatedField with { Type = "" };
                 // Set Timestamp with the one from retrieved value
@@ -88,7 +89,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                 ? Enum.Parse<QualityLevel>(qualityString)
                 : QualityLevel.Good;
             DateTime? timestamp = row.TryGetValue("Timestamp", out string timestampString) && !String.IsNullOrEmpty(timestampString)
-                ? DateTime.Parse(timestampString).ToUniversalTime()
+                ? ParseDateTime(timestampString)
                 : null;
             return BuildFieldValueModel(row, "Value", fieldType, formattedValue, qualityLevel, timestamp);
         }
