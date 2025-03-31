@@ -13,10 +13,10 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Name of class. Access done through <see cref="Name"/>.
         /// </summary>
-        private string? _name;
+        private string _name = string.Empty;
 
         /// <summary>Gets or sets the name of the class.</summary>
-        public string? Name
+        public string Name
         {
             get { return _name; }
             set
@@ -152,7 +152,18 @@ namespace pva.SuperV.Engine
         /// <param name="fieldName">Name of the field to be removed.</param>
         public void RemoveField(string fieldName)
         {
+            VerifyFieldNotUsedInProcessings(fieldName);
             FieldDefinitions.Remove(fieldName);
+        }
+        private void VerifyFieldNotUsedInProcessings(string fieldName)
+        {
+            List<String> fieldsUsedInProcessing = [.. FieldDefinitions.Values
+                    .Where(field => !field.Name.Equals(fieldName) && field.ValuePostChangeProcessings.Any(valueProcessing => valueProcessing.IsFieldUsed(fieldName)))
+                    .Select(field => field.Name)];
+            if (fieldsUsedInProcessing.Count > 0)
+            {
+                throw new EntityInUseException("Field", fieldName, Name, fieldsUsedInProcessing);
+            }
         }
 
         /// <summary>
@@ -163,7 +174,7 @@ namespace pva.SuperV.Engine
         {
             StringBuilder codeBuilder = new();
             StringBuilder ctorBuilder = new($"public {Name}() {{");
-            string baseClass = BaseClass is null ? "Instance" : BaseClass.Name!;
+            string baseClass = BaseClass is null ? "Instance" : BaseClass.Name;
             codeBuilder.AppendLine($"public class {Name} : {baseClass} {{");
             FieldDefinitions
                 .ForEach((k, v) =>
@@ -183,10 +194,27 @@ namespace pva.SuperV.Engine
         /// <returns>A new <see cref="Class"/> clone of class instance.</returns>
         internal Class Clone()
         {
-            var clazz = new Class(Name!, BaseClass);
+            var clazz = new Class(Name, BaseClass);
             FieldDefinitions
                 .ForEach((k, v) => clazz.FieldDefinitions.Add(k, v.Clone()));
             return clazz;
         }
+
+        internal void RemoveFieldChangePostProcessing(string fieldName, string processingName)
+        {
+            if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
+            {
+                IFieldValueProcessing? processing = fieldDefinition.ValuePostChangeProcessings
+                    .FirstOrDefault(fieldProcessing => fieldProcessing.Name.Equals(processingName));
+                if (processing is not null)
+                {
+                    fieldDefinition.ValuePostChangeProcessings.Remove(processing);
+                    return;
+                }
+                throw new UnknownEntityException("Field processing", processingName);
+            }
+            throw new UnknownEntityException("Field", fieldName);
+        }
+
     }
 }

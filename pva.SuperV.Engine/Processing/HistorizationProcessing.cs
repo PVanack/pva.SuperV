@@ -101,7 +101,7 @@ namespace pva.SuperV.Engine.Processing
         public override void BuildAfterDeserialization(Project project, Class clazz)
         {
             string trigerringFieldName = GetCtorArgument<string>(0)!;
-            string historyRepositorydName = GetCtorArgument<string>(1)!;
+            string historyRepositoryName = GetCtorArgument<string>(1)!;
             string? timestampFieldName = GetCtorArgument<string?>(2);
             List<string> fieldsToHistorize = [];
             for (int index = 3; index < CtorArguments.Count - 1; index++)
@@ -109,8 +109,15 @@ namespace pva.SuperV.Engine.Processing
                 fieldsToHistorize.Add(GetCtorArgument<string>(index)!);
             }
             ClassTimeSerieId = GetCtorArgument<string?>(CtorArguments.Count - 1);
-            ValidateParameters(project, clazz, trigerringFieldName, historyRepositorydName, timestampFieldName, fieldsToHistorize);
+            ValidateParameters(project, clazz, trigerringFieldName, historyRepositoryName, timestampFieldName, fieldsToHistorize);
         }
+
+        public bool IsUsingRepository(string historyRepositoryName)
+            => HistoryRepository is not null && HistoryRepository.Name.Equals(historyRepositoryName);
+
+        public override bool IsFieldUsed(string fieldName)
+            => (TimestampFieldDefinition is not null && TimestampFieldDefinition.Name.Equals(fieldName))
+                || FieldsToHistorize.Any(field => field.Name.Equals(fieldName));
 
         /// <summary>
         /// Upserts the time series in history storage.

@@ -21,7 +21,7 @@ namespace pva.SuperV.ApiTests
             fieldValueService = new();
             runnableProject = CreateRunnableProject();
             Instance? instance = runnableProject.CreateInstance(AllFieldsClassName, InstanceName);
-            expectedInstance = new(instance!.Name, instance!.Class.Name!,
+            expectedInstance = new(instance!.Name, instance!.Class.Name,
             [
                 BuildFieldModel("BoolField", typeof(bool), instance),
                 BuildFieldModel("DateTimeField", typeof(DateTime), instance),

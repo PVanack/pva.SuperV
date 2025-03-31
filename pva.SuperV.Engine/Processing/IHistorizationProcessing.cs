@@ -27,6 +27,8 @@ namespace pva.SuperV.Engine.Processing
         /// </summary>
         string? ClassTimeSerieId { get; set; }
 
+        bool IsUsingRepository(string historyRepositoryName);
+
         /// <summary>
         /// Upserts the time series in history storage.
         /// </summary>

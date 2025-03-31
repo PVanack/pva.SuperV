@@ -169,8 +169,22 @@ namespace pva.SuperV.Engine
         /// <param name="fieldFormatterName">Name of the field formatter.</param>
         public bool RemoveFieldFormatter(string fieldFormatterName)
         {
-            // TODO: Remove field formatter from field Definitions referencing it.
+            VerifyFieldFormatterNotUsed(fieldFormatterName);
             return FieldFormatters.Remove(fieldFormatterName);
+        }
+
+        private void VerifyFieldFormatterNotUsed(string fieldFormatterName)
+        {
+            Classes.Values.ForEach(clazz =>
+            {
+                List<String> fieldsUsingFormatter = [.. clazz.FieldDefinitions.Values
+                    .Where(field => field.Formatter is not null && field.Formatter.Name.Equals(fieldFormatterName))
+                    .Select(field => field.Name)];
+                if (fieldsUsingFormatter.Count > 0)
+                {
+                    throw new EntityInUseException("Field formatter", fieldFormatterName, clazz.Name, fieldsUsingFormatter);
+                }
+            });
         }
 
         /// <summary>
@@ -183,6 +197,12 @@ namespace pva.SuperV.Engine
         {
             Class clazz = GetClass(className);
             clazz.AddFieldChangePostProcessing(fieldName, fieldValueProcessing);
+        }
+
+        public void RemoveFieldChangePostProcessing(string className, string fieldName, string processingName)
+        {
+            Class clazz = GetClass(className);
+            clazz.RemoveFieldChangePostProcessing(fieldName, processingName);
         }
 
         public override string GetId()
@@ -212,8 +232,26 @@ namespace pva.SuperV.Engine
         /// <param name="historyRepositoryName">Name of the history repository.</param>
         public void RemoveHistoryRepository(string historyRepositoryName)
         {
+            VerifyHistoryRepositoryNotUsed(historyRepositoryName);
             HistoryRepositories.Remove(historyRepositoryName);
         }
+
+        private void VerifyHistoryRepositoryNotUsed(string historyRepositoryName)
+        {
+            Classes.Values.ForEach(clazz =>
+            {
+                List<String> fieldsUsingHistoryRepository = [.. clazz.FieldDefinitions.Values
+                    .Where(field => field.ValuePostChangeProcessings
+                        .OfType<IHistorizationProcessing>()
+                        .Any(historyValueProcessing => historyValueProcessing.IsUsingRepository(historyRepositoryName)))
+                    .Select(field => field.Name)];
+                if (fieldsUsingHistoryRepository.Count > 0)
+                {
+                    throw new EntityInUseException("History Repository", historyRepositoryName, clazz.Name, fieldsUsingHistoryRepository);
+                }
+            });
+        }
+
 
         /// <summary>
         /// Clones as <see cref="RunnableProject"/>.

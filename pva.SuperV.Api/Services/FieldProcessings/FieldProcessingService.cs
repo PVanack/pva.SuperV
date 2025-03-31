@@ -40,17 +40,7 @@ namespace pva.SuperV.Api.Services.FieldProcessings
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
-                IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(wipProject, className, fieldName);
-                IFieldValueProcessing? processing = fieldDefinition.ValuePostChangeProcessings
-                    .FirstOrDefault(field => field.Name.Equals(processingName));
-                if (processing is not null)
-                {
-                    fieldDefinition.ValuePostChangeProcessings.Remove(processing);
-                }
-                else
-                {
-                    throw new UnknownEntityException("FieldValueProcessing", processingName);
-                }
+                wipProject.RemoveFieldChangePostProcessing(className, fieldName, processingName);
                 return;
             }
             throw new NonWipProjectException(projectId);

@@ -209,7 +209,7 @@ namespace pva.SuperV.Engine
                 {
                     string instanceName = k;
                     Instance oldInstance = v;
-                    Instance? newInstance = CreateInstance(oldInstance.Class.Name!, instanceName);
+                    Instance? newInstance = CreateInstance(oldInstance.Class.Name, instanceName);
                     Dictionary<string, IField> newFields = new(newInstance!.Fields.Count);
                     newInstance.Fields
                         .ForEach((k1, v2) =>
