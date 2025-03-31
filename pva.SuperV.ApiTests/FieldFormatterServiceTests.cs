@@ -83,11 +83,24 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{AlarmStatesFormatterName}", AlarmStatesFormatterValues);
+            wipProject.GetClass(ClassName).GetField(AlarmStateFieldName).Formatter = null;
+            wipProject.GetClass(AllFieldsClassName).GetField("IntFieldWithFormat").Formatter = null;
+
             // WHEN
             _fieldFormatterService.DeleteFieldFormatter(wipProject.GetId(), expectedFieldFormatter.Name);
 
             // THEN
             Assert.Throws<UnknownEntityException>(() => wipProject.GetFormatter(expectedFieldFormatter.Name));
+        }
+
+        [Fact]
+        public void DeleteInUseWipProjectFieldFormatter_ThrowsException()
+        {
+            // GIVEN
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{AlarmStatesFormatterName}", AlarmStatesFormatterValues);
+
+            // WHEN/THEN
+            Assert.Throws<EntityInUseException>(() => _fieldFormatterService.DeleteFieldFormatter(wipProject.GetId(), expectedFieldFormatter.Name));
         }
 
         [Fact]

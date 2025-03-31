@@ -71,6 +71,8 @@
         /// <param name="currentValue">The current value of field.</param>
         public abstract void ProcessValue(IInstance instance, Field<T> changedField, bool valueChanged, T previousValue, T currentValue);
 
+        public abstract bool IsFieldUsed(string fieldName);
+
         /// <summary>
         /// Gets a field definition from a class.
         /// </summary>

@@ -168,6 +168,17 @@ namespace pva.SuperV.Engine.Processing
             AckStateField = GetFieldDefinition<int>(clazz, ackStateFieldName)!;
         }
 
+        public override bool IsFieldUsed(string fieldName)
+        => IsFieldUsed(HighHighLimitField, fieldName) || IsFieldUsed(HighLimitField, fieldName) ||
+            IsFieldUsed(LowLimitField, fieldName) || IsFieldUsed(LowLowLimitField, fieldName) ||
+            IsFieldUsed(DeadbandField, fieldName) ||
+            IsFieldUsed(AlarmStateField, fieldName) || IsFieldUsed(AckStateField, fieldName);
+
+        private static bool IsFieldUsed(IFieldDefinition? field, string fieldName)
+        {
+            return (field is not null && field.Name.Equals(fieldName));
+        }
+
         /// <summary>
         /// Processes the value change.
         /// </summary>

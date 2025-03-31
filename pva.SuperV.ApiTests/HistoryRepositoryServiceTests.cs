@@ -1,6 +1,8 @@
 ﻿using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Engine;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
+using pva.SuperV.Engine.Processing;
 using pva.SuperV.EngineTests;
 using pva.SuperV.Model.HistoryRepositories;
 using Shouldly;
@@ -58,11 +60,29 @@ namespace pva.SuperV.ApiTests
         public void DeleteHistoryRepository_ShouldDeleteHistoryRepository()
         {
             HistoryRepositoryModel expectedHistoryRepository = new($"{HistoryRepositoryName}");
+            IFieldDefinition valueField = wipProject.GetClass(ClassName).GetField(ValueFieldName);
+            List<IHistorizationProcessing> historizationProcessings = valueField.ValuePostChangeProcessings.OfType<IHistorizationProcessing>()
+                .ToList();
+            historizationProcessings.ForEach(historizationProcessing => valueField.ValuePostChangeProcessings.Remove(historizationProcessing));
+            IFieldDefinition intFieldWithFormatField = wipProject.GetClass(AllFieldsClassName).GetField("IntFieldWithFormat");
+            historizationProcessings = intFieldWithFormatField.ValuePostChangeProcessings.OfType<IHistorizationProcessing>()
+                .ToList();
+            historizationProcessings.ForEach(historizationProcessing => intFieldWithFormatField.ValuePostChangeProcessings.Remove(historizationProcessing));
+
             // Act
             historyRepositoryService.DeleteHistoryRepository(wipProject.GetId(), expectedHistoryRepository.Name);
 
             // Assert
             wipProject.HistoryRepositories.ShouldNotContainKey(expectedHistoryRepository.Name);
+        }
+
+        [Fact]
+        public void DeleteInUseHistoryRepository_ThrowsException()
+        {
+            HistoryRepositoryModel expectedHistoryRepository = new($"{HistoryRepositoryName}");
+
+            // Act
+            Assert.Throws<EntityInUseException>(() => historyRepositoryService.DeleteHistoryRepository(wipProject.GetId(), expectedHistoryRepository.Name));
         }
     }
 }

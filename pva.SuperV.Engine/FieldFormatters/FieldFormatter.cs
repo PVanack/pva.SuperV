@@ -9,9 +9,9 @@ namespace pva.SuperV.Engine.FieldFormatters
     [JsonDerivedType(typeof(EnumFormatter), typeDiscriminator: "Enum")]
     public abstract class FieldFormatter
     {
-        private readonly string? _name;
+        private readonly string _name = String.Empty;
 
-        public string? Name
+        public string Name
         {
             get => _name;
             init

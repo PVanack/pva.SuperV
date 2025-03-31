@@ -39,5 +39,6 @@ namespace pva.SuperV.Engine.Processing
         /// <param name="project">The project.</param>
         /// <param name="clazz">The clazz.</param>
         void BuildAfterDeserialization(Project project, Class clazz);
+        bool IsFieldUsed(string fieldName);
     }
 }
