@@ -30,7 +30,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             }
             HistoryRawResultModel expectedHistoryResult = new(BuildHistoryHeader(fieldNames, fieldActualTypes),
                 BuildHistoryRawRowValues(fields.Rows, fieldTypes));
-            HistoryRequestModel request = new(DateTime.Parse(fromString).ToUniversalTime(), DateTime.Parse(toString).ToUniversalTime(), fieldNames);
+            HistoryRequestModel request = new(ParseDateTime(fromString), ParseDateTime(toString), fieldNames);
             var result = await Client.PostAsJsonAsync($"/history/{projectId}/{instanceName}/values/raw", request);
 
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
@@ -72,7 +72,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             }
             HistoryResultModel expectedHistoryResult = new(BuildHistoryHeader(fieldNames, fieldActualTypes),
                 BuildHistoryRowValues(fields.Rows, fieldTypes));
-            HistoryRequestModel request = new(DateTime.Parse(fromString).ToUniversalTime(), DateTime.Parse(toString).ToUniversalTime(), fieldNames);
+            HistoryRequestModel request = new(ParseDateTime(fromString), ParseDateTime(toString), fieldNames);
             var result = await Client.PostAsJsonAsync($"/history/{projectId}/{instanceName}/values", request);
 
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
@@ -102,8 +102,8 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                 }
             }
             HistoryStatisticsRawResultModel expectedHistoryResult = new(BuildHistoryStatisticsHeader(fieldNames, fieldActualTypes, fieldStatistics),
-                BuildHistoryStatisticsRawRowValues(fields.Rows, fieldTypes, fieldStatistics));
-            HistoryStatisticsRequestModel request = new(DateTime.Parse(fromString).ToUniversalTime(), DateTime.Parse(toString).ToUniversalTime(), TimeSpan.Parse(intervalString),
+                BuildHistoryStatisticsRawRowValues(fields.Rows, fieldTypes));
+            HistoryStatisticsRequestModel request = new(ParseDateTime(fromString), ParseDateTime(toString), ParseTimeSpan(intervalString),
                 FillMode.PREV, fieldNamesWithFunction);
             var result = await Client.PostAsJsonAsync($"/history/{projectId}/{instanceName}/statistics/raw", request);
 
@@ -151,7 +151,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             }
             HistoryStatisticsResultModel expectedHistoryResult = new(BuildHistoryStatisticsHeader(fieldNames, fieldActualTypes, fieldStatistics),
                 BuildHistoryStatisticsRowValues(fields.Rows, fieldTypes));
-            HistoryStatisticsRequestModel request = new(DateTime.Parse(fromString).ToUniversalTime(), DateTime.Parse(toString).ToUniversalTime(), TimeSpan.Parse(intervalString),
+            HistoryStatisticsRequestModel request = new(ParseDateTime(fromString), ParseDateTime(toString), ParseTimeSpan(intervalString),
                 FillMode.PREV, fieldNamesWithFunction);
             var result = await Client.PostAsJsonAsync($"/history/{projectId}/{instanceName}/statistics", request);
 
@@ -185,7 +185,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                         long => jsonElement.Value.GetInt64(),
                         short => jsonElement.Value.GetInt16(),
                         string => jsonElement.Value.GetString(),
-                        TimeSpan => TimeSpan.Parse(jsonElement.Value.GetString()),
+                        TimeSpan => ParseTimeSpan(jsonElement.Value.GetString()),
                         uint => jsonElement.Value.GetUInt32(),
                         ulong => jsonElement.Value.GetUInt64(),
                         ushort => jsonElement.Value.GetUInt16(),
@@ -200,7 +200,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             => [.. rows.Select(row
                 =>
                     {
-                        DateTime rowTimestamp = DateTime.Parse(row["Ts"]).ToUniversalTime();
+                        DateTime rowTimestamp = ParseDateTime(row["Ts"]);
                         QualityLevel rowQuality = Enum.Parse<QualityLevel>(row["Quality"]);
                         return new HistoryRowModel(rowTimestamp, rowQuality,
                             [.. fieldTypes.Select(entry
@@ -211,7 +211,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
 
         private static List<HistoryRawRowModel> BuildHistoryRawRowValues(DataTableRows rows, Dictionary<string, string> fieldTypes)
             => [.. rows.Select(row
-                => new HistoryRawRowModel(DateTime.Parse(row["Ts"]).ToUniversalTime(), Enum.Parse<QualityLevel>(row["Quality"]),
+                => new HistoryRawRowModel(ParseDateTime(row["Ts"]), Enum.Parse<QualityLevel>(row["Quality"]),
                         [.. fieldTypes.Select(entry
                             => BuildHistoryRawValue(row, entry.Key, entry.Value))]
                         )
@@ -234,7 +234,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                 "long" => row.GetInt64(cellName),
                 "short" => short.CreateChecked(row.GetInt32(cellName)),
                 "string" => row[cellName],
-                "timespan" => TimeSpan.Parse(row[cellName]),
+                "timespan" => ParseTimeSpan(row[cellName]),
                 "uint" => uint.CreateChecked(row.GetInt32(cellName)),
                 "ulong" => ulong.CreateChecked(row.GetInt64(cellName)),
                 "ushort" => ushort.CreateChecked(row.GetInt32(cellName)),
@@ -247,7 +247,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             return fieldType.ToLower() switch
             {
                 "bool" => new bool().GetType().ToString(),
-                "datetime" => new DateTime().GetType().ToString(),
+                "datetime" => DateTime.Now.GetType().ToString(),
                 "double" => new double().GetType().ToString(),
                 "float" => new float().GetType().ToString(),
                 "int" => new int().GetType().ToString(),
@@ -262,20 +262,20 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             };
         }
 
-        private List<HistoryFieldModel> BuildHistoryHeader(List<string> fieldNames, List<string> fieldTypes)
+        private static List<HistoryFieldModel> BuildHistoryHeader(List<string> fieldNames, List<string> fieldTypes)
         {
             int index = 0;
             return [.. fieldNames.Select(fieldName
                         => new HistoryFieldModel(fieldName, fieldTypes[index], index++)
                     )];
         }
-        private static List<HistoryStatisticsRawRowModel> BuildHistoryStatisticsRawRowValues(DataTableRows rows, Dictionary<string, string> fieldTypes, List<HistoryStatFunction> fieldStatistics)
+        private static List<HistoryStatisticsRawRowModel> BuildHistoryStatisticsRawRowValues(DataTableRows rows, Dictionary<string, string> fieldTypes)
 
             => [..rows.Select(row
                 =>
                     {
-                        DateTime startTs = DateTime.Parse(row["StartTs"]).ToUniversalTime();
-                        DateTime endTs = DateTime.Parse(row["EndTs"]).ToUniversalTime();
+                        DateTime startTs = ParseDateTime(row["StartTs"]);
+                        DateTime endTs = ParseDateTime(row["EndTs"]);
                         return new HistoryStatisticsRawRowModel(startTs, startTs, endTs, endTs - startTs, Enum.Parse<QualityLevel>(row["Quality"]),
                                     [.. fieldTypes.Select(entry
                                         => BuildHistoryRawValue(row, entry.Key, entry.Value))]
@@ -299,9 +299,9 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             => [.. rows.Select(row
                 =>
                     {
-                        DateTime startTs = DateTime.Parse(row["StartTs"]).ToUniversalTime();
-                        DateTime endTs = DateTime.Parse(row["EndTs"]).ToUniversalTime();
-                        DateTime rowTimestamp = DateTime.Parse(row["StartTs"]).ToUniversalTime();
+                        DateTime startTs = ParseDateTime(row["StartTs"]);
+                        DateTime endTs = ParseDateTime(row["EndTs"]);
+                        DateTime rowTimestamp = ParseDateTime(row["StartTs"]);
                         QualityLevel rowQuality = Enum.Parse<QualityLevel>(row["Quality"]);
                         return new HistoryStatisticsRowModel(startTs, startTs, endTs, endTs - startTs, rowQuality,
                             [.. fieldTypes.Select(entry

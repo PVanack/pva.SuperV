@@ -12,7 +12,7 @@
         /// <value>
         /// The name.
         /// </value>
-        public string Name { get; set; }
+        public string Name { get; set; } = String.Empty;
 
         /// <summary>
         /// Gets or sets the constructor arguments.

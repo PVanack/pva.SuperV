@@ -208,3 +208,5 @@ Scenario: Create project
 #		| StartTs              | EndTs                | Quality | Float,float,MAX | Int,int,MAX | Long,long,MAX | Short,short,MAX | String,string,MAX | TimeSpan,TimeSpan,MAX | Uint,uint,MAX | Ulong,ulong,MAX | Ushort,ushort,MAX | HistoryTrigger,int,MAX |
 #		| 2025-03-01T00:00:00Z | 2025-03-01T00:00:00Z | Good    | 3.21            | 134567      | 9876543       | 32767           | Hi from SuperV!   | 01:02:59              | 123456        | 98123456        | 32767             | 1                      |
 #		| 2025-03-01T00:59:59Z | 2025-03-01T00:00:00Z | Good    | 21.3            | 5654321     | 3456789       | -32767          | Bye from SuperV!  | 02:03:01              | 654321        | 654789          | 12768             | 1                      |
+
+	Then TDengine is stopped if running

@@ -1,22 +1,15 @@
 ﻿namespace pva.SuperV.TestsScenarios.StepDefinitions
 {
     [Binding]
-    public class WebApplicationStepDefinitions
+    public class WebApplicationStepDefinitions(ScenarioContext ScenarioContext)
     {
-        private readonly ScenarioContext scenarioContext;
-
-        public WebApplicationStepDefinitions(ScenarioContext scenarioContext)
-        {
-            this.scenarioContext = scenarioContext;
-        }
-
         [Given("REST application is started")]
         public void RestApplicationIsStarted()
         {
             TestProjectApplication testProjectApplication = new();
-            scenarioContext.Add(ScenarioContextExtensions.RestApplication, testProjectApplication);
+            ScenarioContext.Add(ScenarioContextExtensions.RestApplication, testProjectApplication);
             HttpClient client = testProjectApplication.CreateClient();
-            scenarioContext.Add(ScenarioContextExtensions.WebClient, client);
+            ScenarioContext.Add(ScenarioContextExtensions.WebClient, client);
         }
     }
 }

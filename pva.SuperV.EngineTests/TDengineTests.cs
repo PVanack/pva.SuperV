@@ -115,10 +115,10 @@ namespace pva.SuperV.EngineTests
             runnableProject = await Project.BuildAsync(wipProject);
             dynamic? instance = runnableProject.CreateInstance(ClassName, InstanceName);
             // WHEN
-            DateTime ts1 = DateTime.Parse("2025-03-01T00:00:00Z");
+            DateTime ts1 = ParseDateTime("2025-03-01T00:00:00Z");
             instance!.Value.SetValue(50, ts1, QualityLevel.Good);
             instance!.Value.SetValue(150, ts1.AddMinutes(15), QualityLevel.Good);
-            DateTime ts2 = DateTime.Parse("2025-03-01T01:00:00Z");
+            DateTime ts2 = ParseDateTime("2025-03-01T01:00:00Z");
             instance!.Value.SetValue(100, ts2, QualityLevel.Good);
 
             // THEN

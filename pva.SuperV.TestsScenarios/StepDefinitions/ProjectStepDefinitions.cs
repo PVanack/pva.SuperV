@@ -38,5 +38,12 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             ProjectModel? builtProject = await response.Content.ReadFromJsonAsync<ProjectModel>();
             builtProject.ShouldNotBeNull();
         }
+
+        [StepDefinition("TDengine is stopped if running")]
+        public async ValueTask ThenTDengineIsStoppedIfRunning()
+        {
+            _ = await StopTDengineContainerAsync().ConfigureAwait(false);
+        }
+
     }
 }

@@ -6,6 +6,7 @@ using pva.SuperV.Engine;
 using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
+using System.Globalization;
 using System.Net.NetworkInformation;
 
 namespace pva.SuperV.EngineTests
@@ -27,7 +28,7 @@ namespace pva.SuperV.EngineTests
         protected const string AllFieldsClassName = "AllFieldsClass";
         protected const string AllFieldsInstanceName = "AllFieldsInstance";
         protected const string HistoryRepositoryName = "HistoryRepository";
-        protected static Dictionary<int, string> AlarmStatesFormatterValues = new() {
+        protected static Dictionary<int, string> AlarmStatesFormatterValues { get; } = new() {
                 { -2, "LowLow" },
                 { -1, "Low" },
                 { 0, "OK" },
@@ -38,10 +39,10 @@ namespace pva.SuperV.EngineTests
 
         public void Dispose()
         {
-            GC.SuppressFinalize(this);
-            _ = Task.Run(async () => await StopTDengineContainerAsync()).Result;
             Project.Projects.Values.ForEach(project
                 => project.Dispose());
+            _ = Task.Run(async () => await StopTDengineContainerAsync()).Result;
+            GC.SuppressFinalize(this);
         }
 
         private static void WaitForPort(int port)
@@ -62,35 +63,28 @@ namespace pva.SuperV.EngineTests
 
         protected async Task<string> StartTDengineContainerAsync()
         {
-            try
+            if (tdEngineContainer is null)
             {
-                if (tdEngineContainer is null)
-                {
-                    WaitForPort(6030);
-                    tdEngineContainer = new ContainerBuilder()
-                        .WithImage("tdengine/tdengine:latest")
-                        .WithPortBinding(6030, false)
-                        .WithWaitStrategy(
-                            Wait.ForUnixContainer()
-                                .UntilPortIsAvailable(6030)
-                        //                            .UntilPortIsAvailable(6041)
-                        //                            .UntilPortIsAvailable(6043)
-                        //                            .UntilPortIsAvailable(6060)
-                        )
-                        .Build();
+                WaitForPort(6030);
+                tdEngineContainer = new ContainerBuilder()
+                    .WithImage("tdengine/tdengine:latest")
+                    .WithPortBinding(6030, false)
+                    .WithWaitStrategy(
+                        Wait.ForUnixContainer()
+                            .UntilPortIsAvailable(6030)
+                    //                            .UntilPortIsAvailable(6041)
+                    //                            .UntilPortIsAvailable(6043)
+                    //                            .UntilPortIsAvailable(6060)
+                    )
+                    .Build();
 
-                    // Start the container.
-                    await tdEngineContainer.StartAsync()
-                      .ConfigureAwait(false);
-                    // Wait to make sure the processes in container are ready and running.
-                    Thread.Sleep(500);
-                }
-                return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
+                // Start the container.
+                await tdEngineContainer.StartAsync()
+                  .ConfigureAwait(false);
+                // Wait to make sure the processes in container are ready and running.
+                Thread.Sleep(500);
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
         }
 
         protected async Task<long> StopTDengineContainerAsync()
@@ -224,6 +218,17 @@ namespace pva.SuperV.EngineTests
                 Console.WriteLine($"Project {projectName} not deleted");
             }
 #endif
+        }
+
+        protected static DateTime ParseDateTime(string fromString)
+        {
+            return DateTime.Parse(fromString, CultureInfo.InvariantCulture.DateTimeFormat).ToUniversalTime();
+        }
+
+        protected static TimeSpan ParseTimeSpan(string? intervalString)
+        {
+            ArgumentNullException.ThrowIfNull(intervalString);
+            return TimeSpan.Parse(intervalString, CultureInfo.InvariantCulture.DateTimeFormat);
         }
     }
 }
