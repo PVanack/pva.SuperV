@@ -71,7 +71,7 @@ namespace pva.SuperV.EngineTests
                     .WithPortBinding(6030, false)
                     .WithWaitStrategy(
                         Wait.ForUnixContainer()
-                            .UntilPortIsAvailable(6030, waitStrategy => waitStrategy.WithTimeout(TimeSpan.FromSeconds(15)))
+                    //                            .UntilPortIsAvailable(6030, waitStrategy => waitStrategy.WithTimeout(TimeSpan.FromSeconds(15)))
                     //                            .UntilPortIsAvailable(6041)
                     //                            .UntilPortIsAvailable(6043)
                     //                            .UntilPortIsAvailable(6060)
@@ -84,7 +84,18 @@ namespace pva.SuperV.EngineTests
                     await tdEngineContainer.StartAsync()
                       .ConfigureAwait(false);
                     // Wait to make sure the processes in container are ready and running.
-                    Thread.Sleep(500);
+                    bool connected = false;
+                    int index = 0;
+                    while (!connected && index < 10)
+                    {
+                        SystemCommand.Run($"taos -k -h {tdEngineContainer.Hostname} -P 6030 ", out string output, out string error);
+                        connected = !output.StartsWith("0: unavailable");
+                        if (!connected)
+                        {
+                            Thread.Sleep(500);
+                            index++;
+                        }
+                    }
                 }
                 catch (Exception)
                 {
