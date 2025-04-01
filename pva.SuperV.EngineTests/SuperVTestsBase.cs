@@ -71,7 +71,7 @@ namespace pva.SuperV.EngineTests
                     .WithPortBinding(6030, false)
                     .WithWaitStrategy(
                         Wait.ForUnixContainer()
-                            .UntilPortIsAvailable(6030)
+                            .UntilPortIsAvailable(6030, waitStrategy => waitStrategy.WithTimeout(TimeSpan.FromSeconds(15)))
                     //                            .UntilPortIsAvailable(6041)
                     //                            .UntilPortIsAvailable(6043)
                     //                            .UntilPortIsAvailable(6060)
