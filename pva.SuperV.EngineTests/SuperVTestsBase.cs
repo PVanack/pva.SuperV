@@ -67,7 +67,7 @@ namespace pva.SuperV.EngineTests
             {
                 WaitForPort(6030);
                 tdEngineContainer = new ContainerBuilder()
-                    .WithImage("tdengine/tdengine:latest")
+                    .WithImage("tdengine/tdengine:3.3.6.0")
                     .WithPortBinding(6030, false)
                     .WithWaitStrategy(
                         Wait.ForUnixContainer()
