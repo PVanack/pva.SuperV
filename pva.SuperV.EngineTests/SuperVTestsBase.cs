@@ -93,6 +93,7 @@ namespace pva.SuperV.EngineTests
                 }
                 return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
             }
+        }
 
         protected async Task<long> StopTDengineContainerAsync()
         {
