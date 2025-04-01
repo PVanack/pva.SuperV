@@ -64,14 +64,14 @@ namespace pva.SuperV.EngineTests
 
         private static void WhenStringValueCanBeConvertedToType_ThenFieldValueIsEqualToValue<T>(ValueToTest<T> valueToTest, FieldFormatter? fieldFormatter = null)
         {
-            Field<T> field = CreateField<T>(valueToTest.InitialValue, fieldFormatter);
+            Field<T> field = CreateField<T>(valueToTest.InitialValue!, fieldFormatter);
             FieldValueSetter.SetValue(field, valueToTest.StringValue, DateTime.Now, QualityLevel.Good);
             field.Value.ShouldBe(valueToTest.ExpectedValue);
         }
 
         private static void WhenStringValueCannotBeConvertedToType_ThenExceptionIsThrown<T>(string invalidStringValue, FieldFormatter? fieldFormatter = null)
         {
-            Field<T> field = CreateField<T>(default, fieldFormatter);
+            Field<T> field = CreateField<T>(default!, fieldFormatter);
             Assert.Throws<StringConversionException>(()
                 => FieldValueSetter.SetValue(field, invalidStringValue, DateTime.Now, QualityLevel.Good));
         }
