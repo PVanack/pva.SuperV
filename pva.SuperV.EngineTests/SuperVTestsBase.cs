@@ -86,9 +86,11 @@ namespace pva.SuperV.EngineTests
                     // Wait to make sure the processes in container are ready and running.
                     bool connected = false;
                     int index = 0;
+                    string output = String.Empty;
+                    string error = String.Empty;
                     while (!connected && index < 10)
                     {
-                        SystemCommand.Run($"taos -k -h {tdEngineContainer.Hostname} -P {tdEngineContainer.GetMappedPublicPort(6030)} ", out string output, out string error);
+                        SystemCommand.Run($"taos -k -h {tdEngineContainer.Hostname} -P {tdEngineContainer.GetMappedPublicPort(6030)} ", out output, out error);
                         connected = output.StartsWith("2: service ok");
                         if (!connected)
                         {
@@ -98,7 +100,7 @@ namespace pva.SuperV.EngineTests
                     }
                     if (!connected)
                     {
-                        throw new ApplicationException("Can't connect to TDengine container");
+                        throw new ApplicationException($"Can't connect to TDengine container! Out: {output}. Error: {error}");
                     }
                 }
                 catch (Exception)
