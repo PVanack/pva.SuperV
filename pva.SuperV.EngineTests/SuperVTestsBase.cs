@@ -88,8 +88,8 @@ namespace pva.SuperV.EngineTests
                     int index = 0;
                     while (!connected && index < 10)
                     {
-                        SystemCommand.Run($"taos -k -h {tdEngineContainer.Hostname} -P 6030 ", out string output, out string error);
-                        connected = !output.StartsWith("0: unavailable");
+                        SystemCommand.Run($"taos -k -h {tdEngineContainer.Hostname} -P {tdEngineContainer.GetMappedPublicPort(6030)} ", out string output, out string error);
+                        connected = output.StartsWith("2: service ok");
                         if (!connected)
                         {
                             Thread.Sleep(500);
