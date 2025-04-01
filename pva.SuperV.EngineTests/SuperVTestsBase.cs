@@ -79,13 +79,20 @@ namespace pva.SuperV.EngineTests
                     .Build();
 
                 // Start the container.
-                await tdEngineContainer.StartAsync()
-                  .ConfigureAwait(false);
-                // Wait to make sure the processes in container are ready and running.
-                Thread.Sleep(500);
+                try
+                {
+                    await tdEngineContainer.StartAsync()
+                      .ConfigureAwait(false);
+                    // Wait to make sure the processes in container are ready and running.
+                    Thread.Sleep(500);
+                }
+                catch (Exception)
+                {
+                    await StopTDengineContainerAsync();
+                    throw;
+                }
+                return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
             }
-            return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
-        }
 
         protected async Task<long> StopTDengineContainerAsync()
         {
