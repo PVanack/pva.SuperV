@@ -61,12 +61,10 @@ namespace pva.SuperV.ApiTests
         {
             HistoryRepositoryModel expectedHistoryRepository = new($"{HistoryRepositoryName}");
             IFieldDefinition valueField = wipProject.GetClass(ClassName).GetField(ValueFieldName);
-            List<IHistorizationProcessing> historizationProcessings = valueField.ValuePostChangeProcessings.OfType<IHistorizationProcessing>()
-                .ToList();
+            List<IHistorizationProcessing> historizationProcessings = [.. valueField.ValuePostChangeProcessings.OfType<IHistorizationProcessing>()];
             historizationProcessings.ForEach(historizationProcessing => valueField.ValuePostChangeProcessings.Remove(historizationProcessing));
             IFieldDefinition intFieldWithFormatField = wipProject.GetClass(AllFieldsClassName).GetField("IntFieldWithFormat");
-            historizationProcessings = intFieldWithFormatField.ValuePostChangeProcessings.OfType<IHistorizationProcessing>()
-                .ToList();
+            historizationProcessings = [.. intFieldWithFormatField.ValuePostChangeProcessings.OfType<IHistorizationProcessing>()];
             historizationProcessings.ForEach(historizationProcessing => intFieldWithFormatField.ValuePostChangeProcessings.Remove(historizationProcessing));
 
             // Act

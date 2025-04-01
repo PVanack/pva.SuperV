@@ -105,12 +105,14 @@ namespace pva.SuperV.Api.Services.History
         private static List<HistoryStatisticResultFieldModel> BuildStatisticsHeader(HistoryStatisticsRequestModel request, List<IFieldDefinition> fields, List<HistoryStatisticRow> rows)
         {
             HistoryStatisticRow? firstRow = rows.FirstOrDefault();
+            ArgumentNullException.ThrowIfNull(firstRow);
             int fieldIndex = 0;
             return [.. fields.Select(fieldDefinition =>
                 {
+                    object? valueAsObject = firstRow.Values[fieldIndex];
                     HistoryStatisticResultFieldModel historyStatisticResultFieldModel = new(fieldDefinition.Name,
-                        firstRow != null && firstRow.Values[fieldIndex] != null
-                        ? firstRow.Values[fieldIndex].GetType().ToString()
+                        firstRow is not null && valueAsObject is not null
+                        ? valueAsObject.GetType().ToString()
                         : fieldDefinition.Type.ToString(), fieldIndex, request.HistoryFields[fieldIndex].StatisticFunction);
                     fieldIndex++;
                     return historyStatisticResultFieldModel;
