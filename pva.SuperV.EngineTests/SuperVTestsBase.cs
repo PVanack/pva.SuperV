@@ -96,6 +96,10 @@ namespace pva.SuperV.EngineTests
                             index++;
                         }
                     }
+                    if (!connected)
+                    {
+                        throw new ApplicationException("Can't connect to TDengine container");
+                    }
                 }
                 catch (Exception)
                 {

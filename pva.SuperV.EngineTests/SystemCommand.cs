@@ -4,7 +4,7 @@ namespace pva.SuperV.EngineTests
 {
     public static class SystemCommand
     {
-        public static void Run(string command, out string output, out string error, string directory = null)
+        public static void Run(string command, out string output, out string error, string? directory = null)
         {
             string commandInterpreter = String.Empty;
             string actualCommand = command;
