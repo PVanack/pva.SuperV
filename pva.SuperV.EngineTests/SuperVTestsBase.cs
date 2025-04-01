@@ -90,7 +90,7 @@ namespace pva.SuperV.EngineTests
                     string error = String.Empty;
                     while (!connected && index < 10)
                     {
-                        SystemCommand.Run($"taos -k -h {tdEngineContainer.Hostname} -P {tdEngineContainer.GetMappedPublicPort(6030)} ", out output, out error);
+                        SystemCommand.Run("taos", $"-k -h {tdEngineContainer.Hostname} -P {tdEngineContainer.GetMappedPublicPort(6030)}", out output, out error);
                         connected = output.StartsWith("2: service ok");
                         if (!connected)
                         {

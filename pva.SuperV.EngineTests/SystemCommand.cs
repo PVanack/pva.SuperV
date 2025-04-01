@@ -4,29 +4,30 @@ namespace pva.SuperV.EngineTests
 {
     public static class SystemCommand
     {
-        public static void Run(string command, out string output, out string error, string? directory = null)
+        public static void Run(string command, string args, out string output, out string error, string? directory = null)
         {
-            string commandInterpreter = String.Empty;
-            string actualCommand = command;
+            string actualCommand = String.Empty;
+            string arguments = command;
             if (OperatingSystem.IsWindows())
             {
-                commandInterpreter = "cmd.exe";
-                actualCommand = $"/c {actualCommand}";
+                actualCommand = "cmd.exe";
+                arguments = $"/c {command} {args}";
             }
             else if (OperatingSystem.IsLinux())
             {
-                commandInterpreter = "/bin/bash";
+                actualCommand = command;
+                arguments = args;
             }
             using Process process = new()
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = commandInterpreter,
+                    FileName = actualCommand,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     RedirectStandardInput = true,
-                    Arguments = actualCommand,
+                    Arguments = arguments,
                     CreateNoWindow = true,
                     WorkingDirectory = directory ?? string.Empty,
                 }
