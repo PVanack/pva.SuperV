@@ -1,7 +1,7 @@
 ﻿using pva.SuperV.Engine.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 
-namespace pva.SuperV.Api
+namespace pva.SuperV.Api.Exceptions
 {
     /// <summary>Exception thrown when trying to build from a non runnable project.</summary>
     public class NonRunnableProjectException : SuperVException

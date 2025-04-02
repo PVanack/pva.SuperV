@@ -1,6 +1,6 @@
 ﻿using NSubstitute;
 using NSubstitute.ExceptionExtensions;
-using pva.SuperV.Api;
+using pva.SuperV.Api.Exceptions;
 using pva.SuperV.Api.Services.FieldProcessings;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.FieldProcessings;
