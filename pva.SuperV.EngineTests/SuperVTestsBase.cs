@@ -101,7 +101,6 @@ namespace pva.SuperV.EngineTests
                     .WithPortBinding(6060)
                     .WithWaitStrategy(
                         Wait.ForUnixContainer()
-                            .UntilPortIsAvailable(6030, waitStrategy => waitStrategy.WithTimeout(TimeSpan.FromSeconds(15)))
                     )
                     .Build();
 
@@ -122,7 +121,7 @@ namespace pva.SuperV.EngineTests
             return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
         }
 
-        private void WaitForTDengineToBeReady()
+        private async ValueTask WaitForTDengineToBeReady()
         {
             bool connected = false;
             int index = 0;
@@ -140,7 +139,8 @@ namespace pva.SuperV.EngineTests
             }
             if (!connected)
             {
-                throw new ApplicationException($"Can't connect to TDengine container {tdEngineContainer!.Hostname}! Out: {output}. Error: {error}");
+                var logs = await tdEngineContainer.GetLogsAsync();
+                throw new ApplicationException($"Can't connect to TDengine container {tdEngineContainer!.Hostname}! Out: {logs.Stdout}. Error: {logs.Stderr}");
             }
         }
 
