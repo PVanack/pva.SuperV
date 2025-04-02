@@ -68,13 +68,40 @@ namespace pva.SuperV.EngineTests
                 WaitForPort(6030);
                 tdEngineContainer = new ContainerBuilder()
                     .WithImage("tdengine/tdengine:3.3.6.0")
-                    .WithPortBinding(6030, false)
+                    .WithPortBinding(6030)
+                    .WithPortBinding(6031)
+                    .WithPortBinding(6032)
+                    .WithPortBinding(6033)
+                    .WithPortBinding(6034)
+                    .WithPortBinding(6035)
+                    .WithPortBinding(6036)
+                    .WithPortBinding(6037)
+                    .WithPortBinding(6038)
+                    .WithPortBinding(6039)
+                    .WithPortBinding(6040)
+                    .WithPortBinding(6041)
+                    .WithPortBinding(6042)
+                    .WithPortBinding(6043)
+                    .WithPortBinding(6044)
+                    .WithPortBinding(6045)
+                    .WithPortBinding(6046)
+                    .WithPortBinding(6047)
+                    .WithPortBinding(6048)
+                    .WithPortBinding(6049)
+                    .WithPortBinding(6050)
+                    .WithPortBinding(6051)
+                    .WithPortBinding(6052)
+                    .WithPortBinding(6053)
+                    .WithPortBinding(6054)
+                    .WithPortBinding(6055)
+                    .WithPortBinding(6056)
+                    .WithPortBinding(6057)
+                    .WithPortBinding(6058)
+                    .WithPortBinding(6059)
+                    .WithPortBinding(6060)
                     .WithWaitStrategy(
                         Wait.ForUnixContainer()
-                    //                            .UntilPortIsAvailable(6030, waitStrategy => waitStrategy.WithTimeout(TimeSpan.FromSeconds(15)))
-                    //                            .UntilPortIsAvailable(6041)
-                    //                            .UntilPortIsAvailable(6043)
-                    //                            .UntilPortIsAvailable(6060)
+                            .UntilPortIsAvailable(6030, waitStrategy => waitStrategy.WithTimeout(TimeSpan.FromSeconds(15)))
                     )
                     .Build();
 
@@ -84,24 +111,7 @@ namespace pva.SuperV.EngineTests
                     await tdEngineContainer.StartAsync()
                       .ConfigureAwait(false);
                     // Wait to make sure the processes in container are ready and running.
-                    bool connected = false;
-                    int index = 0;
-                    string output = String.Empty;
-                    string error = String.Empty;
-                    while (!connected && index < 10)
-                    {
-                        SystemCommand.Run("taos", $"-k -h {tdEngineContainer.Hostname} -P {tdEngineContainer.GetMappedPublicPort(6030)}", out output, out error);
-                        connected = output.StartsWith("2: service ok");
-                        if (!connected)
-                        {
-                            Thread.Sleep(500);
-                            index++;
-                        }
-                    }
-                    if (!connected)
-                    {
-                        throw new ApplicationException($"Can't connect to TDengine container! Out: {output}. Error: {error}");
-                    }
+                    WaitForTDengineToBeReady();
                 }
                 catch (Exception)
                 {
@@ -110,6 +120,28 @@ namespace pva.SuperV.EngineTests
                 }
             }
             return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
+        }
+
+        private void WaitForTDengineToBeReady()
+        {
+            bool connected = false;
+            int index = 0;
+            string output = String.Empty;
+            string error = String.Empty;
+            while (!connected && index < 10)
+            {
+                SystemCommand.Run("taos", $"-k -h {tdEngineContainer!.Hostname} -P {tdEngineContainer.GetMappedPublicPort(6030)}", out output, out error);
+                connected = output.StartsWith("2: service ok");
+                if (!connected)
+                {
+                    Thread.Sleep(500);
+                    index++;
+                }
+            }
+            if (!connected)
+            {
+                throw new ApplicationException($"Can't connect to TDengine container {tdEngineContainer!.Hostname}! Out: {output}. Error: {error}");
+            }
         }
 
         protected async Task<long> StopTDengineContainerAsync()
