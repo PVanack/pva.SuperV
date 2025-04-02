@@ -59,6 +59,31 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
             throw new NonWipProjectException(projectId);
         }
 
+        public FieldDefinitionModel UpdateField(string projectId, string className, string fieldName, FieldDefinitionModel updateRequest)
+        {
+            if (GetProjectEntity(projectId) is WipProject wipProject)
+            {
+                Class clazz = GetClassEntity(wipProject, className);
+                if (updateRequest.Name == null || updateRequest.Name.Equals(fieldName))
+                {
+                    IFieldDefinition fieldDefinition = clazz.GetField(fieldName);
+                    IFieldDefinition fieldDefinitionUpdate = FieldDefinitionMapper.FromDto(updateRequest);
+                    if (fieldDefinitionUpdate.Type == fieldDefinition.Type)
+                    {
+                        FieldFormatter? fieldFormatter = null;
+                        if (updateRequest.ValueFormatter is not null)
+                        {
+                            fieldFormatter = wipProject.GetFormatter(updateRequest.ValueFormatter);
+                        }
+                        return FieldDefinitionMapper.ToDto(clazz.UpdateField(fieldName, fieldDefinitionUpdate, fieldFormatter));
+                    }
+                    throw new EntityPropertyNotChangeableException("field", "Type");
+                }
+                throw new EntityPropertyNotChangeableException("field", "Name");
+            }
+            throw new NonWipProjectException(projectId);
+        }
+
         public void DeleteField(string projectId, string className, string fieldName)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)

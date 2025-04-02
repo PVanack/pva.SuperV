@@ -719,6 +719,77 @@
       }
     },
     "/classes/{wipProjectId}/{className}": {
+      "put": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Updates a class in a WIP project",
+        "description": "Updates a class in a WIP project",
+        "operationId": "UpdateClass",
+        "parameters": [
+          {
+            "name": "wipProjectId",
+            "in": "path",
+            "description": "ID of WIP project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class to be updated",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Class update request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClassModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "tags": [
           "pva.SuperV.Api"
@@ -1498,6 +1569,89 @@
       }
     },
     "/fields/{wipProjectId}/{className}/{fieldName}": {
+      "put": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Updates field definition in a class of a WIP project",
+        "description": "Uodates field definition in a class of a WIP project",
+        "operationId": "UpdateFieldDefinition",
+        "parameters": [
+          {
+            "name": "wipProjectId",
+            "in": "path",
+            "description": "ID of WIP project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldName",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Field update request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldDefinitionModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FieldDefinitionModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "tags": [
           "pva.SuperV.Api"

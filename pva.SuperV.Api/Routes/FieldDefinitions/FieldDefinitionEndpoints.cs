@@ -51,6 +51,21 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
+            fieldDefinitionsApi.MapPut("/{wipProjectId}/{className}/{fieldName}",
+                (IFieldDefinitionService fieldDefinitionService,
+                [Description("ID of WIP project")] string wipProjectId,
+                [Description("Name of class")] string className,
+                [Description("Name of class")] string fieldName,
+                [Description("Field update request")][FromBody] FieldDefinitionModel updateRequest)
+                    => UpdateFieldDefinition.Handle(fieldDefinitionService, wipProjectId, className, fieldName, updateRequest))
+                .WithName("UpdateFieldDefinition")
+                .WithDisplayName("UpdateFieldDefinition")
+                .WithSummary("Updates field definition in a class of a WIP project")
+                .WithDescription("Uodates field definition in a class of a WIP project")
+                .Produces<List<FieldDefinitionModel>>(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
+
             fieldDefinitionsApi.MapDelete("/{wipProjectId}/{className}/{fieldName}",
                 (IFieldDefinitionService fieldDefinitionService,
                 [Description("ID of WIP project")] string wipProjectId,

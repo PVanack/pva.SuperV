@@ -220,6 +220,53 @@ public class FieldDefinitionEndpointsTests
     }
 
     [Fact]
+    public async Task GivenClassWithField_WhenUpdatingClassFieldDefinition_ThenFieldDefinitionIsUpdated()
+    {
+        // GIVEN
+        FieldDefinitionModel expectedFieldDefinition = new IntFieldDefinitionModel("IntField", default, null);
+        MockedFieldDefinitionService.UpdateField("Project", "Class", expectedFieldDefinition.Name, Arg.Any<FieldDefinitionModel>())
+            .Returns(expectedFieldDefinition);
+
+        // WHEN
+        var response = await client.PutAsJsonAsync($"/fields/Project/Class/{expectedFieldDefinition.Name}", expectedFieldDefinition);
+
+        // THEN
+        response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+        FieldDefinitionModel? updatedFieldDefinition = await response.Content.ReadFromJsonAsync<FieldDefinitionModel>();
+        updatedFieldDefinition.ShouldBeEquivalentTo(expectedFieldDefinition);
+    }
+
+    [Fact]
+    public async Task WhenUpdatingUnknownClassFieldDefinition_ThenNotFoundIsReturned()
+    {
+        // GIVEN
+        FieldDefinitionModel expectedFieldDefinition = new IntFieldDefinitionModel("UnknownField", default, null);
+        MockedFieldDefinitionService.UpdateField("Project", "Class", expectedFieldDefinition.Name, Arg.Any<FieldDefinitionModel>())
+            .Throws<UnknownEntityException>();
+
+        // WHEN
+        var response = await client.PutAsJsonAsync($"/fields/Project/Class/{expectedFieldDefinition.Name}", expectedFieldDefinition);
+
+        // THEN
+        response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task WhenUpdatingFieldDefinitionOnRunnableProject_ThenBadRequestIsReturned()
+    {
+        // GIVEN
+        FieldDefinitionModel expectedFieldDefinition = new IntFieldDefinitionModel("IntField", default, null);
+        MockedFieldDefinitionService.UpdateField("RunnableProject", "Class", expectedFieldDefinition.Name, Arg.Any<FieldDefinitionModel>())
+            .Throws<NonWipProjectException>();
+
+        // WHEN
+        var response = await client.PutAsJsonAsync($"/fields/RunnableProject/Class/{expectedFieldDefinition.Name}", expectedFieldDefinition);
+
+        // THEN
+        response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
     public async Task GivenClassWithFieldDefinition_WhenDeletingClassFieldDefinition_ThenFieldDefinitionIsDeleted()
     {
         // GIVEN

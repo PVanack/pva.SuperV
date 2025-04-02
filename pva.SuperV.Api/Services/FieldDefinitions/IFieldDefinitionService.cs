@@ -8,5 +8,6 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
         void DeleteField(string projectId, string className, string fieldName);
         FieldDefinitionModel GetField(string projectId, string className, string fieldName);
         List<FieldDefinitionModel> GetFields(string projectId, string className);
+        FieldDefinitionModel UpdateField(string projectId, string className, string fieldName, FieldDefinitionModel updateRequest);
     }
 }

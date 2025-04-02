@@ -102,6 +102,7 @@ namespace pva.SuperV.EngineTests
                     .WithExtraHost("buildkitsandbox", "127.0.0.1")
                     .WithWaitStrategy(
                         Wait.ForUnixContainer()
+                        .UntilPortIsAvailable(6030, strategy => strategy.WithTimeout(TimeSpan.FromSeconds(15)))
                     )
                     .Build();
 

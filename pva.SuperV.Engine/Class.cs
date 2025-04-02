@@ -216,5 +216,14 @@ namespace pva.SuperV.Engine
             throw new UnknownEntityException("Field", fieldName);
         }
 
+        public IFieldDefinition? UpdateField(string fieldName, IFieldDefinition fieldDefinition, FieldFormatter? fieldFormatter)
+        {
+            if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? _))
+            {
+                FieldDefinitions[fieldName] = fieldDefinition;
+                return fieldDefinition;
+            }
+            throw new UnknownEntityException("Field", fieldName);
+        }
     }
 }
