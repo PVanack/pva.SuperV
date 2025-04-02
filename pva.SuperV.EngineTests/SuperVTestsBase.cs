@@ -149,12 +149,10 @@ namespace pva.SuperV.EngineTests
         {
             if (tdEngineContainer is not null)
             {
-                var logs = await tdEngineContainer!.GetLogsAsync();
                 await tdEngineContainer.StopAsync()
                     .ConfigureAwait(false);
                 long exitCode = await tdEngineContainer.GetExitCodeAsync();
                 WaitForPort(6030);
-                throw new ApplicationException($"Can't connect to TDengine container {tdEngineContainer!.Hostname}! Out: {logs.Stdout}. Error: {logs.Stderr}");
                 tdEngineContainer = null;
                 return exitCode;
             }
