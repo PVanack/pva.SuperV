@@ -99,6 +99,7 @@ namespace pva.SuperV.EngineTests
                     .WithPortBinding(6058)
                     .WithPortBinding(6059)
                     .WithPortBinding(6060)
+                    .WithExtraHost("buildkitsandbox", "127.0.0.1")
                     .WithWaitStrategy(
                         Wait.ForUnixContainer()
                     )
