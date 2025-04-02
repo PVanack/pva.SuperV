@@ -115,8 +115,7 @@ namespace pva.SuperV.EngineTests
                 catch (Exception)
                 {
                     await StopTDengineContainerAsync();
-                    throw new ApplicationException($"Can't connect to TDengine container {tdEngineContainer!.Hostname}! Out: {logs.Stdout}. Error: {logs.Stderr}");
-                    //throw;
+                    throw;
                 }
             }
             return $"host={tdEngineContainer.Hostname};port={tdEngineContainer.GetMappedPublicPort(6030)};username=root;password=taosdata";
