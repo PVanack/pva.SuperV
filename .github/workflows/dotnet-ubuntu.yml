@@ -22,9 +22,6 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Setup Pages
-      uses: actions/configure-pages@v5
-
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -60,21 +57,24 @@ jobs:
         title: pva.SuperV
         tag: '${{ github.workflow}}_${{ github.run_id }}'
 
+    - name: Setup Pages
+      if: github.ref == 'refs/heads/master'
+      uses: actions/configure-pages@v5
+
     - name: Upload coverage report to GitHub Pages
-      id: deployment
       if: github.ref == 'refs/heads/master'
       uses: actions/upload-pages-artifact@v3
       with: 
-        path: ./codeCoverage
+        path: ./codeCoverage    
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/master'
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v3
+  # deploy:
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   if: github.ref == 'refs/heads/master'
+  #   steps:
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v3
