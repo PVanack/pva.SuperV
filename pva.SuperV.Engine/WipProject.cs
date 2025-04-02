@@ -94,6 +94,29 @@ namespace pva.SuperV.Engine
         }
 
         /// <summary>
+        /// Updates a class.
+        /// </summary>
+        /// <param name="className">Name of class to be updated</param>
+        /// <param name="baseClassName">Base class name</param>
+        /// <returns>Updated class.</returns>
+        /// <exception cref="UnknownEntityException"></exception>
+        public Class UpdateClass(string className, string? baseClassName)
+        {
+            if (Classes.TryGetValue(className, out Class? clazz))
+            {
+                Class? baseClass = null;
+                if (!String.IsNullOrEmpty(baseClassName) && !Classes.TryGetValue(className, out baseClass))
+                {
+                    throw new UnknownEntityException("Class", baseClassName);
+                }
+                clazz.BaseClassName = baseClassName;
+                clazz.BaseClass = baseClass;
+                return clazz;
+            }
+            throw new UnknownEntityException("Class", className);
+        }
+
+        /// <summary>
         /// Removes a class from project.
         /// </summary>
         /// <param name="className">Name of the class.</param>
