@@ -12,13 +12,12 @@ namespace pva.SuperV.ApiTests
     {
         private readonly FieldValueService fieldValueService;
         private readonly RunnableProject runnableProject;
-        private readonly Instance? instance;
 
         public FieldValueServiceTests()
         {
             fieldValueService = new();
             runnableProject = CreateRunnableProject();
-            instance = runnableProject.CreateInstance(AllFieldsClassName, AllFieldsInstanceName);
+            _ = runnableProject.CreateInstance(AllFieldsClassName, AllFieldsInstanceName);
         }
 
         [Fact]
