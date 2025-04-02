@@ -20,6 +20,9 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+    - name: Setup Pages
+      uses: actions/configure-pages@v5
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -45,7 +48,6 @@ jobs:
 
     - name: Generate code coverage summary report
       uses: danielpalme/ReportGenerator-GitHub-Action@5.4.4
-      
       with:
         verbosity: Info
         reports: './coverage/*/coverage.cobertura.xml'
@@ -56,6 +58,7 @@ jobs:
         tag: '${{ github.workflow}}_${{ github.run_id }}'
 
     - name: Upload coverage report to GitHub Pages
+      id: deployment
       uses: actions/upload-pages-artifact@v4
       with: 
         path: ./codeCoverage
