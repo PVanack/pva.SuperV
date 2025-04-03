@@ -246,6 +246,12 @@ namespace pva.SuperV.Engine
             clazz.AddFieldChangePostProcessing(fieldName, fieldValueProcessing);
         }
 
+        public void UpdateFieldChangePostProcessing(string className, string fieldName, string processingName, IFieldValueProcessing fieldProcessing)
+        {
+            Class clazz = GetClass(className);
+            clazz.UpdateFieldChangePostProcessing(fieldName, processingName, fieldProcessing);
+        }
+
         public void RemoveFieldChangePostProcessing(string className, string fieldName, string processingName)
         {
             Class clazz = GetClass(className);

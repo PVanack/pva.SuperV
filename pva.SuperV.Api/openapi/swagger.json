@@ -1940,6 +1940,168 @@
         }
       }
     },
+    "/field-processings/{wipProjectId}/{className}/{fieldName}/{processingName}": {
+      "put": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Updates a field processing in a class of a WIP project",
+        "description": "Updates a field processing in a class of a WIP project",
+        "operationId": "UpdateProcessing",
+        "parameters": [
+          {
+            "name": "wipProjectId",
+            "in": "path",
+            "description": "ID of WIP project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldName",
+            "in": "path",
+            "description": "Name of field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "processingName",
+            "in": "path",
+            "description": "Name of field processing",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Field processing update request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldValueProcessingModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldDefinitionModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Deletes a field processing from a class of a WIP project by its name",
+        "description": "Deletes a field processing from a class of a WIP project by its name",
+        "operationId": "DeleteProcessing",
+        "parameters": [
+          {
+            "name": "wipProjectId",
+            "in": "path",
+            "description": "ID of WIP project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldName",
+            "in": "path",
+            "description": "Name of field",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "processingName",
+            "in": "path",
+            "description": "Name of processing",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/field-processings/{wipProjectId}/{className}/{fieldName}": {
       "post": {
         "tags": [
@@ -1998,79 +2160,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/field-processings/{wipProjectId}/{className}/{fieldName}/{processingName}": {
-      "delete": {
-        "tags": [
-          "pva.SuperV.Api"
-        ],
-        "summary": "Deletes a field processing from a class of a WIP project by its name",
-        "description": "Deletes a field processing from a class of a WIP project by its name",
-        "operationId": "DeleteProcessing",
-        "parameters": [
-          {
-            "name": "wipProjectId",
-            "in": "path",
-            "description": "ID of WIP project",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "className",
-            "in": "path",
-            "description": "Name of class",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "fieldName",
-            "in": "path",
-            "description": "Name of field",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "processingName",
-            "in": "path",
-            "description": "Name of processing",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
           },
           "404": {
             "description": "Not Found",

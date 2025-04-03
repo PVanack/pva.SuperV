@@ -103,10 +103,14 @@ namespace pva.SuperV.Engine
             return field;
         }
 
-        internal void AddFieldChangePostProcessing(string fieldName, IFieldValueProcessing fieldValueProcessing)
+        public IFieldDefinition UpdateField(string fieldName, IFieldDefinition fieldDefinition, FieldFormatter? fieldFormatter)
         {
-            IFieldDefinition? fieldDefinition = GetField(fieldName);
-            fieldDefinition!.ValuePostChangeProcessings.Add(fieldValueProcessing!);
+            if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldToUpdate))
+            {
+                fieldToUpdate.Update(fieldDefinition, fieldFormatter);
+                return fieldToUpdate;
+            }
+            throw new UnknownEntityException("Field", fieldName);
         }
 
         /// <summary>
@@ -156,6 +160,42 @@ namespace pva.SuperV.Engine
             FieldDefinitions.Remove(fieldName);
         }
 
+        internal void AddFieldChangePostProcessing(string fieldName, IFieldValueProcessing fieldValueProcessing)
+        {
+            IFieldDefinition? fieldDefinition = GetField(fieldName);
+            fieldDefinition!.ValuePostChangeProcessings.Add(fieldValueProcessing!);
+        }
+
+        internal void UpdateFieldChangePostProcessing(string fieldName, string processingName, IFieldValueProcessing fieldProcessing)
+        {
+            IFieldDefinition? fieldDefinition = GetField(fieldName);
+            IFieldValueProcessing? fieldValueProcessingToUpdate = fieldDefinition?.ValuePostChangeProcessings
+                .FirstOrDefault(valueProcessing => valueProcessing.Name == processingName);
+            if (fieldValueProcessingToUpdate != null)
+            {
+                fieldDefinition!.ValuePostChangeProcessings.Remove(fieldValueProcessingToUpdate);
+                fieldDefinition!.ValuePostChangeProcessings.Add(fieldProcessing);
+                return;
+            }
+            throw new UnknownEntityException("Field processing", processingName);
+        }
+
+        internal void RemoveFieldChangePostProcessing(string fieldName, string processingName)
+        {
+            if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
+            {
+                IFieldValueProcessing? processing = fieldDefinition.ValuePostChangeProcessings
+                    .FirstOrDefault(fieldProcessing => fieldProcessing.Name.Equals(processingName));
+                if (processing is not null)
+                {
+                    fieldDefinition.ValuePostChangeProcessings.Remove(processing);
+                    return;
+                }
+                throw new UnknownEntityException("Field processing", processingName);
+            }
+            throw new UnknownEntityException("Field", fieldName);
+        }
+
         private void VerifyFieldNotUsedInProcessings(string fieldName)
         {
             List<String> fieldsUsedInProcessing = [.. FieldDefinitions.Values
@@ -199,32 +239,6 @@ namespace pva.SuperV.Engine
             FieldDefinitions
                 .ForEach((k, v) => clazz.FieldDefinitions.Add(k, v.Clone()));
             return clazz;
-        }
-
-        internal void RemoveFieldChangePostProcessing(string fieldName, string processingName)
-        {
-            if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
-            {
-                IFieldValueProcessing? processing = fieldDefinition.ValuePostChangeProcessings
-                    .FirstOrDefault(fieldProcessing => fieldProcessing.Name.Equals(processingName));
-                if (processing is not null)
-                {
-                    fieldDefinition.ValuePostChangeProcessings.Remove(processing);
-                    return;
-                }
-                throw new UnknownEntityException("Field processing", processingName);
-            }
-            throw new UnknownEntityException("Field", fieldName);
-        }
-
-        public IFieldDefinition UpdateField(string fieldName, IFieldDefinition fieldDefinition, FieldFormatter? fieldFormatter)
-        {
-            if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldToUpdate))
-            {
-                fieldToUpdate.Update(fieldDefinition, fieldFormatter);
-                return fieldToUpdate;
-            }
-            throw new UnknownEntityException("Field", fieldName);
         }
     }
 }

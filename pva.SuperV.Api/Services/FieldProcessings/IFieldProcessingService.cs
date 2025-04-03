@@ -8,5 +8,6 @@ namespace pva.SuperV.Api.Services.FieldProcessings
         void DeleteFieldProcessing(string projectId, string className, string fieldName, string processingName);
         FieldValueProcessingModel GetFieldProcessing(string projectId, string className, string fieldName, string processingName);
         List<FieldValueProcessingModel> GetFieldProcessings(string projectId, string className, string fieldName);
+        FieldValueProcessingModel UpdateFieldProcessing(string projectId, string className, string fieldName, string processingName, FieldValueProcessingModel createRequest);
     }
 }

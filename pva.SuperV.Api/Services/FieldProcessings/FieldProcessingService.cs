@@ -37,6 +37,19 @@ namespace pva.SuperV.Api.Services.FieldProcessings
             throw new NonWipProjectException(projectId);
         }
 
+        public FieldValueProcessingModel UpdateFieldProcessing(string projectId, string className, string fieldName, string processingName, FieldValueProcessingModel createRequest)
+        {
+            if (GetProjectEntity(projectId) is WipProject wipProject)
+            {
+                Class clazz = GetClassEntity(wipProject, className);
+                IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(clazz, fieldName);
+                IFieldValueProcessing fieldProcessing = FieldProcessingMapper.FromDto(wipProject, clazz, fieldDefinition, createRequest);
+                wipProject.UpdateFieldChangePostProcessing(className, fieldName, processingName, fieldProcessing);
+                return FieldProcessingMapper.ToDto(fieldProcessing);
+            }
+            throw new NonWipProjectException(projectId);
+        }
+
         public void DeleteFieldProcessing(string projectId, string className, string fieldName, string processingName)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
