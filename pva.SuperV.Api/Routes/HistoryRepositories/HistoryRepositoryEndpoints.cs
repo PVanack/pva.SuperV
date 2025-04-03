@@ -47,6 +47,20 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
+            historyRepositoriesApi.MapPut("/{wipProjectId}/{historyRepositoryName}",
+                (IHistoryRepositoryService historyRepositoryService,
+                [Description("ID of WIP project")] string wipProjectId,
+                [Description("Name of history repository")] string historyRepositoryName,
+                [Description("History repository update request")] HistoryRepositoryModel historyRepositoryUpdateRequest)
+                    => UpdateHistoryRepository.Handle(historyRepositoryService, wipProjectId, historyRepositoryName, historyRepositoryUpdateRequest))
+                .WithName("UpdateHistoryRepository")
+                .WithDisplayName("UpdateHistoryRepository")
+                .WithSummary("Updates a history repository in a WIP project")
+                .WithDescription("Updates a history repository in a WIP project")
+                .Produces<HistoryRepositoryModel>(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
+
             historyRepositoriesApi.MapDelete("/{wipProjectId}/{historyRepositoryName}",
                 (IHistoryRepositoryService historyRepositoryService,
                 [Description("ID of WIP project")] string wipProjectId,

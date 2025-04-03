@@ -8,5 +8,6 @@ namespace pva.SuperV.Api.Services.HistoryRepositories
         void DeleteHistoryRepository(string projectId, string historyRepositoryName);
         List<HistoryRepositoryModel> GetHistoryRepositories(string projectId);
         HistoryRepositoryModel GetHistoryRepository(string projectId, string historyRepositoryName);
+        HistoryRepositoryModel UpdateHistoryRepository(string projectId, string historyRepositoryName, HistoryRepositoryModel historyRepositoryUpdateRequest);
     }
 }

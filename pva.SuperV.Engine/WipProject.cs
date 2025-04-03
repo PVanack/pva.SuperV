@@ -279,6 +279,16 @@ namespace pva.SuperV.Engine
             HistoryRepositories.Add(historyRepository.Name, historyRepository);
         }
 
+        public void UpdateHistoryRepository(string historyRepositoryName, HistoryRepository historyRepository)
+        {
+            if (HistoryRepositories.TryGetValue(historyRepositoryName, out HistoryRepository? _))
+            {
+                HistoryRepositories[historyRepositoryName] = historyRepository;
+                return;
+            }
+            throw new UnknownEntityException("History repository", historyRepositoryName);
+        }
+
         /// <summary>
         /// Removes a history repository.
         /// </summary>

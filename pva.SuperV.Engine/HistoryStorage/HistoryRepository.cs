@@ -69,12 +69,5 @@ namespace pva.SuperV.Engine.HistoryStorage
         {
             HistoryStorageEngine?.HistorizeValues(HistoryStorageId!, classTimeSerieId, instance.Name, timestamp, quality, fieldsToHistorize);
         }
-
-        internal HistoryRepository Clone(IHistoryStorageEngine? historyStorageEngine)
-            => new(Name)
-            {
-                HistoryStorageEngine = historyStorageEngine,
-                HistoryStorageId = HistoryStorageId
-            };
     }
 }

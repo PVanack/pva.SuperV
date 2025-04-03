@@ -27,9 +27,20 @@ namespace pva.SuperV.Api.Services.HistoryRepositories
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
-                HistoryRepository historyRepository = new(historyRepositoryCreateRequest.Name);
+                HistoryRepository historyRepository = HistoryRepositoryMapper.FromDto(historyRepositoryCreateRequest);
                 wipProject.AddHistoryRepository(historyRepository);
                 return HistoryRepositoryMapper.ToDto(historyRepository);
+            }
+            throw new NonWipProjectException(projectId);
+        }
+
+        public HistoryRepositoryModel UpdateHistoryRepository(string projectId, string historyRepositoryName, HistoryRepositoryModel historyRepositoryUpdateRequest)
+        {
+            if (GetProjectEntity(projectId) is WipProject wipProject)
+            {
+                HistoryRepository historyRepositoryUpdate = HistoryRepositoryMapper.FromDto(historyRepositoryUpdateRequest);
+                wipProject.UpdateHistoryRepository(historyRepositoryName, historyRepositoryUpdate);
+                return HistoryRepositoryMapper.ToDto(historyRepositoryUpdate);
             }
             throw new NonWipProjectException(projectId);
         }

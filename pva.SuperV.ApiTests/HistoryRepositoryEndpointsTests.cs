@@ -134,6 +134,53 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public async Task GivenProject_WhenUpdatingHistoryRepository_ThenHistoryRepositoryIsUpdated()
+        {
+            // GIVEN
+            HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
+            MockedHistoryRepositoryService.UpdateHistoryRepository("Project", expectedHistoryRepository.Name, expectedHistoryRepository)
+                .Returns(expectedHistoryRepository);
+
+            // WHEN
+            var result = await client.PutAsJsonAsync($"/history-repositories/Project/{expectedHistoryRepository.Name}", expectedHistoryRepository);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>();
+            historyRepository.ShouldBeEquivalentTo(expectedHistoryRepository);
+        }
+
+        [Fact]
+        public async Task WhenUpdatingHistoryRepositoryOnUnknownProject_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
+            MockedHistoryRepositoryService.UpdateHistoryRepository("UnknownProject", expectedHistoryRepository.Name, expectedHistoryRepository)
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var result = await client.PutAsJsonAsync($"/history-repositories/UnknownProject/{expectedHistoryRepository.Name}", expectedHistoryRepository);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task WhenUpdatingHistoryRepositoryOnNonWipProject_ThenBadRequestIsReturned()
+        {
+            // GIVEN
+            HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
+            MockedHistoryRepositoryService.UpdateHistoryRepository("RunnableProject", expectedHistoryRepository.Name, expectedHistoryRepository)
+                .Throws<NonWipProjectException>();
+
+            // WHEN
+            var result = await client.PutAsJsonAsync($"/history-repositories/RunnableProject/{expectedHistoryRepository.Name}", expectedHistoryRepository);
+
+            // THEN
+            result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
         public async Task GivenProjectWithHistoryRepository_WhenDeletingHistoryRepository_ThenHistoryRepositoryIsDeleted()
         {
             // GIVEN

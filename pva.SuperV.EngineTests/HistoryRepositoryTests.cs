@@ -19,6 +19,22 @@ public class HistoryRepositoryTests
     }
 
     [Fact]
+    public void GivenProjectWithHistoryRepository_WhenAddingRepository_ThenRepositoryIsAdded()
+    {
+        // GIVEN
+        var historyStorageEngineMock = Substitute.For<IHistoryStorageEngine>();
+        WipProject wipProject = Project.CreateProject("TestProject");
+        wipProject.HistoryStorageEngine = historyStorageEngineMock;
+
+        // WHEN
+        HistoryRepository historyRepository = new("TestRepository");
+        wipProject.AddHistoryRepository(historyRepository);
+
+        // THEN
+        wipProject.HistoryRepositories.ShouldContainKey("TestRepository");
+    }
+
+    [Fact]
     public void GivenProjectWithHistoryRepository_WhenAddingRepositoryWithSameName_ThenExceptionIsThrown()
     {
         // GIVEN
@@ -31,6 +47,38 @@ public class HistoryRepositoryTests
         // WHEN
         HistoryRepository historyRepositoryOther = new("TestRepository");
         Assert.Throws<EntityAlreadyExistException>(() => wipProject.AddHistoryRepository(historyRepositoryOther));
+    }
+
+    [Fact]
+    public void GivenProjectWithHistoryRepository_WhenUpdatingRepository_ThenRepositoryIsUpdated()
+    {
+        // GIVEN
+        var historyStorageEngineMock = Substitute.For<IHistoryStorageEngine>();
+        WipProject wipProject = Project.CreateProject("TestProject");
+        wipProject.HistoryStorageEngine = historyStorageEngineMock;
+        HistoryRepository historyRepository = new("TestRepository");
+        wipProject.AddHistoryRepository(historyRepository);
+
+        // WHEN
+        historyRepository = new("TestRepository");
+        wipProject.UpdateHistoryRepository(historyRepository.Name, historyRepository);
+
+        // THEN
+        wipProject.HistoryRepositories.ShouldContainKey("TestRepository");
+        wipProject.HistoryRepositories[historyRepository.Name].ShouldBe(historyRepository);
+    }
+
+    [Fact]
+    public void GivenProjectWithHistoryRepository_WhenUpdatingRepositoryWithUnknownName_ThenExceptionIsThrown()
+    {
+        // GIVEN
+        var historyStorageEngineMock = Substitute.For<IHistoryStorageEngine>();
+        WipProject wipProject = Project.CreateProject("TestProject");
+        wipProject.HistoryStorageEngine = historyStorageEngineMock;
+
+        // WHEN/THEN
+        HistoryRepository historyRepository = new("TestRepository");
+        Assert.Throws<UnknownEntityException>(() => wipProject.UpdateHistoryRepository(historyRepository.Name, historyRepository));
     }
 
     [Fact]

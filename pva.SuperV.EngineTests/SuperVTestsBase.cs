@@ -125,6 +125,7 @@ namespace pva.SuperV.EngineTests
 
         private async ValueTask WaitForTDengineToBeReady()
         {
+            Thread.Sleep(500);
             bool connected = false;
             int index = 0;
             while (!connected && index < 10)
