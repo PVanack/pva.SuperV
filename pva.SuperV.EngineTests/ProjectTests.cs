@@ -135,7 +135,7 @@ namespace pva.SuperV.EngineTests
             project.AddFieldFormatter(formatter);
 
             // WHEN
-            FieldFormatter foundFormatter = project.GetFormatter(AlarmStatesFormatterName);
+            FieldFormatter? foundFormatter = project.GetFormatter(AlarmStatesFormatterName);
 
             // THEN
             foundFormatter.ShouldNotBeNull()
