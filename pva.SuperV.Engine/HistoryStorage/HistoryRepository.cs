@@ -10,7 +10,7 @@ namespace pva.SuperV.Engine.HistoryStorage
     public class HistoryRepository(string name)
     {
         /// <summary>
-        /// Gets or sets the name.
+        /// Gets the history repository name.
         /// </summary>
         /// <value>
         /// The name.
@@ -69,12 +69,5 @@ namespace pva.SuperV.Engine.HistoryStorage
         {
             HistoryStorageEngine?.HistorizeValues(HistoryStorageId!, classTimeSerieId, instance.Name, timestamp, quality, fieldsToHistorize);
         }
-
-        internal HistoryRepository Clone(IHistoryStorageEngine? historyStorageEngine)
-            => new(Name)
-            {
-                HistoryStorageEngine = historyStorageEngine,
-                HistoryStorageId = HistoryStorageId
-            };
     }
 }

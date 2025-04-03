@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Engine;
+﻿using pva.SuperV.Api.Exceptions;
+using pva.SuperV.Engine;
 using pva.SuperV.Model.Classes;
 
 namespace pva.SuperV.Api.Services.Classes
@@ -19,6 +20,19 @@ namespace pva.SuperV.Api.Services.Classes
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 return ClassMapper.ToDto(wipProject.AddClass(createRequest!.Name, createRequest!.BaseClassName));
+            }
+            throw new NonWipProjectException(projectId);
+        }
+
+        public ClassModel UpdateClass(string projectId, string className, ClassModel updateRequest)
+        {
+            if (GetProjectEntity(projectId) is WipProject wipProject)
+            {
+                if (updateRequest.Name == null || updateRequest.Name.Equals(className))
+                {
+                    return ClassMapper.ToDto(wipProject.UpdateClass(className, updateRequest!.BaseClassName));
+                }
+                throw new EntityPropertyNotChangeableException("class", "Name");
             }
             throw new NonWipProjectException(projectId);
         }

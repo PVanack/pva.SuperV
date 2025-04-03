@@ -14,6 +14,11 @@
 
 <div align="center">
 
+![Ubuntu build](https://github.com/PVanack/pva.SuperV/actions/workflows/dotnet-ubuntu.yml/badge.svg?event=push)
+[![Code coverage][Coverage-badge]][Coverage-url]
+
+[Coverage-badge]: https://pvanack.github.io/pva.SuperV/badge_combined.svg
+[Coverage-url]: https://pvanack.github.io/pva.SuperV/index.html
 
 
 # pva.SuperV
@@ -96,12 +101,6 @@ Current handled types are the following:
 - ulong
 - ushort
 
-
-![Ubuntu build](https://github.com/PVanack/pva.SuperV/actions/workflows/dotnet-ubuntu.yml/badge.svg?event=push)
-[![Code coverage][Coverage-badge]][Coverage-url]
-
-[Coverage-badge]: https://pvanack.github.io/pva.SuperV/badge_combined.svg
-[Coverage-url]: https://pvanack.github.io/pva.SuperV/index.html
 
 ## Technical Stack
 - [![C#][C#-badge]][C#-url] - All programming is done in C#

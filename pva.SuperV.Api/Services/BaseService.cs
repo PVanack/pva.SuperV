@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Engine;
+﻿using pva.SuperV.Api.Exceptions;
+using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 
 namespace pva.SuperV.Api.Services

@@ -1,4 +1,6 @@
-﻿using pva.SuperV.Engine;
+﻿using pva.SuperV.Api.Exceptions;
+using pva.SuperV.Engine;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Api.Services.Projects
@@ -29,6 +31,18 @@ namespace pva.SuperV.Api.Services.Projects
                 return ProjectMapper.ToDto(wipProject);
             }
             throw new NonRunnableProjectException(runnableProjectId);
+        }
+
+        public ProjectModel UpdateProject(string projectId, UpdateProjectRequest updateProjectRequest)
+        {
+            Project? projectToUpdate = GetProjectEntity(projectId);
+            if (projectToUpdate is not null)
+            {
+                projectToUpdate.Description = updateProjectRequest.Description;
+                projectToUpdate.HistoryStorageEngineConnectionString = updateProjectRequest.HistoryStorageConnectionString;
+                return ProjectMapper.ToDto(projectToUpdate);
+            }
+            throw new UnknownEntityException("Project", projectId);
         }
 
         public async Task<ProjectModel> BuildProjectAsync(string projectId)

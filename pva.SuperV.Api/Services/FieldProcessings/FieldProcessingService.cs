@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Engine;
+﻿using pva.SuperV.Api.Exceptions;
+using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.Processing;
 using pva.SuperV.Model.FieldProcessings;
@@ -31,6 +32,19 @@ namespace pva.SuperV.Api.Services.FieldProcessings
                 IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(clazz, fieldName);
                 IFieldValueProcessing fieldProcessing = FieldProcessingMapper.FromDto(wipProject, clazz, fieldDefinition, createRequest);
                 wipProject.AddFieldChangePostProcessing(className, fieldName, fieldProcessing);
+                return FieldProcessingMapper.ToDto(fieldProcessing);
+            }
+            throw new NonWipProjectException(projectId);
+        }
+
+        public FieldValueProcessingModel UpdateFieldProcessing(string projectId, string className, string fieldName, string processingName, FieldValueProcessingModel createRequest)
+        {
+            if (GetProjectEntity(projectId) is WipProject wipProject)
+            {
+                Class clazz = GetClassEntity(wipProject, className);
+                IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(clazz, fieldName);
+                IFieldValueProcessing fieldProcessing = FieldProcessingMapper.FromDto(wipProject, clazz, fieldDefinition, createRequest);
+                wipProject.UpdateFieldChangePostProcessing(className, fieldName, processingName, fieldProcessing);
                 return FieldProcessingMapper.ToDto(fieldProcessing);
             }
             throw new NonWipProjectException(projectId);

@@ -6,5 +6,7 @@ namespace pva.SuperV.Model.HistoryRepositories
     {
         public static HistoryRepositoryModel ToDto(HistoryRepository repository)
             => new(repository.Name);
+        public static HistoryRepository FromDto(HistoryRepositoryModel repositoryModel)
+            => new(repositoryModel.Name);
     }
 }

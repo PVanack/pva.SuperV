@@ -1,6 +1,6 @@
 ﻿using NSubstitute;
 using NSubstitute.ExceptionExtensions;
-using pva.SuperV.Api;
+using pva.SuperV.Api.Exceptions;
 using pva.SuperV.Api.Services.FieldProcessings;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.FieldProcessings;
@@ -182,6 +182,77 @@ namespace pva.SuperV.ApiTests
 
             // WHEN
             var response = await client.PostAsJsonAsync("/field-processings/RunnableProject/Class1/TrigerringFieldName", expectedFieldProcessing);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task GivenWipProject_WhenUpdatingFieldProcessing_ThenFieldProcessingIsUpdated()
+        {
+            // GIVEN
+            FieldValueProcessingModel expectedFieldProcessing = new AlarmStateProcessingModel("AlarmStateProcessing",
+                        "TrigerringFieldName",
+                        null,
+                        "HighLimitFieldName",
+                        "LowLimitFieldName",
+                        null,
+                        null,
+                        "AlarmStateFieldName",
+                        null);
+            MockedFieldProcessingService.UpdateFieldProcessing("Project1", "Class1", "TrigerringFieldName", expectedFieldProcessing.Name, Arg.Any<FieldValueProcessingModel>())
+                .Returns(expectedFieldProcessing);
+
+            // WHEN
+            var response = await client.PutAsJsonAsync($"/field-processings/Project1/Class1/TrigerringFieldName/{expectedFieldProcessing.Name}", expectedFieldProcessing);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            FieldValueProcessingModel? createdFieldProcessing = await response.Content.ReadFromJsonAsync<FieldValueProcessingModel>();
+            createdFieldProcessing.ShouldBeEquivalentTo(expectedFieldProcessing);
+        }
+
+        [Fact]
+        public async Task WhenUpdatingFieldProcessingOnUnknownField_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            FieldValueProcessingModel expectedFieldProcessing = new AlarmStateProcessingModel("AlarmStateProcessing",
+                        "TrigerringFieldName",
+                        null,
+                        "HighLimitFieldName",
+                        "LowLimitFieldName",
+                        null,
+                        null,
+                        "AlarmStateFieldName",
+                        null);
+            MockedFieldProcessingService.UpdateFieldProcessing("Project1", "Class1", "UnknownFieldName", expectedFieldProcessing.Name, Arg.Any<FieldValueProcessingModel>())
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var response = await client.PutAsJsonAsync($"/field-processings/Project1/Class1/UnknownFieldName/{expectedFieldProcessing.Name}", expectedFieldProcessing);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task WhenUpdatingFieldProcessingOnNonWipProject_ThenBadRequestIsReturned()
+        {
+            // GIVEN
+            FieldValueProcessingModel expectedFieldProcessing = new AlarmStateProcessingModel("AlarmStateProcessing",
+                        "TrigerringFieldName",
+                        null,
+                        "HighLimitFieldName",
+                        "LowLimitFieldName",
+                        null,
+                        null,
+                        "AlarmStateFieldName",
+                        null);
+            MockedFieldProcessingService.UpdateFieldProcessing("RunnableProject", "Class1", "TrigerringFieldName", expectedFieldProcessing.Name, Arg.Any<FieldValueProcessingModel>())
+                .Throws<NonWipProjectException>();
+
+            // WHEN
+            var response = await client.PutAsJsonAsync($"/field-processings/RunnableProject/Class1/TrigerringFieldName/{expectedFieldProcessing.Name}", expectedFieldProcessing);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);

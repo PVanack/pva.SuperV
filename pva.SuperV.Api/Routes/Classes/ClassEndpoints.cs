@@ -48,6 +48,20 @@ namespace pva.SuperV.Api.Routes.Classes
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
+            classesApi.MapPut("/{wipProjectId}/{className}",
+                (IClassService classService,
+                [Description("ID of WIP project")] string wipProjectId,
+                [Description("Name of class to be updated")] string className,
+                [Description("Class update request")][FromBody] ClassModel createRequest)
+                    => UpdateClass.Handle(classService, wipProjectId, className, createRequest))
+                .WithName("UpdateClass")
+                .WithDisplayName("UpdateClass")
+                .WithSummary("Updates a class in a WIP project")
+                .WithDescription("Updates a class in a WIP project")
+                .Produces<ClassModel>(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
+
             classesApi.MapDelete("/{wipProjectId}/{className}",
                 (IClassService classService,
                 [Description("ID of WIP project")] string wipProjectId,

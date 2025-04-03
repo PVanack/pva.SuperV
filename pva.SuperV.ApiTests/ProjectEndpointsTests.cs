@@ -1,6 +1,6 @@
 ﻿using NSubstitute;
 using NSubstitute.ExceptionExtensions;
-using pva.SuperV.Api;
+using pva.SuperV.Api.Exceptions;
 using pva.SuperV.Api.Services.Projects;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Projects;
@@ -153,6 +153,24 @@ namespace pva.SuperV.ApiTests
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
             var createdProject = await response.Content.ReadFromJsonAsync<ProjectModel>();
             createdProject.ShouldBeEquivalentTo(expectedCreatedProject);
+        }
+
+        [Fact]
+        public async Task GivenExistingProject_WhenUpdatingProject_ThenProjectIsUpdated()
+        {
+            // GIVEN
+            UpdateProjectRequest updateProjectRequest = new("NewProject", "Description");
+            ProjectModel expectedUpdatedProject = new("1", "NewProject", 1, "descriptioon", false);
+            MockedProjectService.UpdateProject(expectedUpdatedProject.Name, updateProjectRequest)
+                .Returns(expectedUpdatedProject);
+
+            // WHEN
+            var response = await client.PutAsJsonAsync($"/projects/{expectedUpdatedProject.Name}", updateProjectRequest);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            var updatedProject = await response.Content.ReadFromJsonAsync<ProjectModel>();
+            updatedProject.ShouldBeEquivalentTo(expectedUpdatedProject);
         }
 
         [Fact]

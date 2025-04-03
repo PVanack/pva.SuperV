@@ -94,6 +94,29 @@ namespace pva.SuperV.Engine
         }
 
         /// <summary>
+        /// Updates a class.
+        /// </summary>
+        /// <param name="className">Name of class to be updated</param>
+        /// <param name="baseClassName">Base class name</param>
+        /// <returns>Updated class.</returns>
+        /// <exception cref="UnknownEntityException"></exception>
+        public Class UpdateClass(string className, string? baseClassName)
+        {
+            if (Classes.TryGetValue(className, out Class? clazz))
+            {
+                Class? baseClass = null;
+                if (!String.IsNullOrEmpty(baseClassName) && !Classes.TryGetValue(className, out baseClass))
+                {
+                    throw new UnknownEntityException("Class", baseClassName);
+                }
+                clazz.BaseClassName = baseClassName;
+                clazz.BaseClass = baseClass;
+                return clazz;
+            }
+            throw new UnknownEntityException("Class", className);
+        }
+
+        /// <summary>
         /// Removes a class from project.
         /// </summary>
         /// <param name="className">Name of the class.</param>
@@ -129,12 +152,20 @@ namespace pva.SuperV.Engine
         /// <param name="field">The field.</param>
         /// <param name="formatterName">Name of the formatter.</param>
         /// <returns></returns>
-        public IFieldDefinition AddField(string className, IFieldDefinition field, string formatterName)
+        public IFieldDefinition AddField(string className, IFieldDefinition field, string? formatterName)
         {
             Class clazz = GetClass(className);
-            FieldFormatter formatter = GetFormatter(formatterName);
-            formatter.ValidateAllowedType(field.Type);
+            FieldFormatter? formatter = GetFormatter(formatterName);
+            formatter?.ValidateAllowedType(field.Type);
             return clazz.AddField(field, formatter);
+        }
+
+        public IFieldDefinition UpdateField(string className, string fieldName, IFieldDefinition field, string? formatterName)
+        {
+            Class clazz = GetClass(className);
+            FieldFormatter? formatter = GetFormatter(formatterName);
+            formatter?.ValidateAllowedType(field.Type);
+            return clazz.UpdateField(fieldName, field, formatter);
         }
 
         /// <summary>
@@ -162,6 +193,22 @@ namespace pva.SuperV.Engine
 
             FieldFormatters.Add(fieldFormatter.Name!, fieldFormatter);
         }
+
+        public void UpdateFieldFormatter(string fieldFormatterName, FieldFormatter fieldFormatter)
+        {
+            FieldFormatter? existingFormatter = GetFormatter(fieldFormatterName);
+            if (existingFormatter != null)
+            {
+                if (existingFormatter.GetType() == fieldFormatter.GetType())
+                {
+                    FieldFormatters[fieldFormatterName] = fieldFormatter;
+                    return;
+                }
+                throw new WrongFieldTypeException(fieldFormatterName, existingFormatter.GetType(), fieldFormatter.GetType());
+            }
+            throw new UnknownEntityException("Field formatter", fieldFormatterName);
+        }
+
 
         /// <summary>
         /// Removes a field formatter.
@@ -199,6 +246,12 @@ namespace pva.SuperV.Engine
             clazz.AddFieldChangePostProcessing(fieldName, fieldValueProcessing);
         }
 
+        public void UpdateFieldChangePostProcessing(string className, string fieldName, string processingName, IFieldValueProcessing fieldProcessing)
+        {
+            Class clazz = GetClass(className);
+            clazz.UpdateFieldChangePostProcessing(fieldName, processingName, fieldProcessing);
+        }
+
         public void RemoveFieldChangePostProcessing(string className, string fieldName, string processingName)
         {
             Class clazz = GetClass(className);
@@ -224,6 +277,16 @@ namespace pva.SuperV.Engine
 
             historyRepository.HistoryStorageEngine = HistoryStorageEngine;
             HistoryRepositories.Add(historyRepository.Name, historyRepository);
+        }
+
+        public void UpdateHistoryRepository(string historyRepositoryName, HistoryRepository historyRepository)
+        {
+            if (HistoryRepositories.TryGetValue(historyRepositoryName, out HistoryRepository? _))
+            {
+                HistoryRepositories[historyRepositoryName] = historyRepository;
+                return;
+            }
+            throw new UnknownEntityException("History repository", historyRepositoryName);
         }
 
         /// <summary>

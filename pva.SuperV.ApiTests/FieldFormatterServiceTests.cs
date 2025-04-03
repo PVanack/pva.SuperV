@@ -1,4 +1,4 @@
-﻿using pva.SuperV.Api;
+﻿using pva.SuperV.Api.Exceptions;
 using pva.SuperV.Api.Services.FieldFormatters;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
@@ -79,10 +79,24 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public void UpdateProjectFieldFormatter_ShouldUpdateFieldFormatter()
+        {
+            // GIVEN
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel(AlarmStatesFormatterName, AlarmStatesFormatterValues);
+            // WHEN
+            FieldFormatterModel fieldFormatter = _fieldFormatterService.UpdateFieldFormatter(wipProject.GetId(), expectedFieldFormatter.Name, expectedFieldFormatter);
+
+            // THEN
+            fieldFormatter
+                .ShouldNotBeNull()
+                .ShouldBeEquivalentTo(expectedFieldFormatter);
+        }
+
+        [Fact]
         public void DeleteWipProjectFieldFormatter_ShouldDeleteFieldFormatter()
         {
             // GIVEN
-            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{AlarmStatesFormatterName}", AlarmStatesFormatterValues);
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel(AlarmStatesFormatterName, AlarmStatesFormatterValues);
             wipProject.GetClass(ClassName).GetField(AlarmStateFieldName).Formatter = null;
             wipProject.GetClass(AllFieldsClassName).GetField("IntFieldWithFormat").Formatter = null;
 
@@ -97,7 +111,7 @@ namespace pva.SuperV.ApiTests
         public void DeleteInUseWipProjectFieldFormatter_ThrowsException()
         {
             // GIVEN
-            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{AlarmStatesFormatterName}", AlarmStatesFormatterValues);
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel(AlarmStatesFormatterName, AlarmStatesFormatterValues);
 
             // WHEN/THEN
             Assert.Throws<EntityInUseException>(() => _fieldFormatterService.DeleteFieldFormatter(wipProject.GetId(), expectedFieldFormatter.Name));

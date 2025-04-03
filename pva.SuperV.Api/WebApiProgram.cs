@@ -166,6 +166,7 @@ namespace pva.SuperV.Api
     [JsonSerializable(typeof(UshortFieldValueModel))]
 
     [JsonSerializable(typeof(HistoryRequestModel))]
+    [JsonSerializable(typeof(HistoryStatisticsRequestModel))]
     [JsonSerializable(typeof(HistoryRawResultModel))]
     [JsonSerializable(typeof(List<HistoryFieldModel>))]
     [JsonSerializable(typeof(List<HistoryRawRowModel>))]

@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Engine;
+﻿using pva.SuperV.Api.Exceptions;
+using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Model.FieldDefinitions;
@@ -54,6 +55,21 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
                     }
                     throw;
                 }
+            }
+            throw new NonWipProjectException(projectId);
+        }
+
+        public FieldDefinitionModel UpdateField(string projectId, string className, string fieldName, FieldDefinitionModel updateRequest)
+        {
+            if (GetProjectEntity(projectId) is WipProject wipProject)
+            {
+                Class clazz = GetClassEntity(wipProject, className);
+                if (updateRequest.Name == null || updateRequest.Name.Equals(fieldName))
+                {
+                    IFieldDefinition fieldDefinitionUpdate = FieldDefinitionMapper.FromDto(updateRequest);
+                    return FieldDefinitionMapper.ToDto(wipProject.UpdateField(className, fieldName, fieldDefinitionUpdate, updateRequest.ValueFormatter));
+                }
+                throw new EntityPropertyNotChangeableException("field", "Name");
             }
             throw new NonWipProjectException(projectId);
         }

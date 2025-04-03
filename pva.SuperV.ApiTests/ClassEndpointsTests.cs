@@ -1,6 +1,6 @@
 ﻿using NSubstitute;
 using NSubstitute.ExceptionExtensions;
-using pva.SuperV.Api;
+using pva.SuperV.Api.Exceptions;
 using pva.SuperV.Api.Services.Classes;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Classes;
@@ -132,6 +132,52 @@ namespace pva.SuperV.ApiTests
 
             // WHEN
             var response = await client.PostAsJsonAsync("/classes/RunnableProject", expectedClass);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+        }
+        [Fact]
+        public async Task GivenExistingClassInWipProject_WhenUpdatingProjectClass_ThenClassIsUpdated()
+        {
+            // GIVEN
+            ClassModel expectedClass = new("Class1", null);
+            MockedClassService.UpdateClass("Project1", expectedClass.Name, Arg.Any<ClassModel>())
+                .Returns(expectedClass);
+
+            // WHEN
+            var response = await client.PutAsJsonAsync($"/classes/Project1/{expectedClass.Name}", expectedClass);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            ClassModel? createdClass = await response.Content.ReadFromJsonAsync<ClassModel>();
+            createdClass.ShouldBeEquivalentTo(expectedClass);
+        }
+
+        [Fact]
+        public async Task GivenUnknownProjectProject_WhenUodatingProjectClass_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            ClassModel expectedClass = new("Class1", null);
+            MockedClassService.UpdateClass("UnknownProject", expectedClass.Name, Arg.Any<ClassModel>())
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var response = await client.PutAsJsonAsync($"/classes/UnknownProject/{expectedClass.Name}", expectedClass);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task GivenNonWipProject_WhenUpdatingProjectClass_ThenBadRequestIsReturned()
+        {
+            // GIVEN
+            ClassModel expectedClass = new("Class1", null);
+            MockedClassService.UpdateClass("RunnableProject", expectedClass.Name, Arg.Any<ClassModel>())
+                .Throws<NonWipProjectException>();
+
+            // WHEN
+            var response = await client.PutAsJsonAsync($"/classes/RunnableProject/{expectedClass.Name}", expectedClass);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);

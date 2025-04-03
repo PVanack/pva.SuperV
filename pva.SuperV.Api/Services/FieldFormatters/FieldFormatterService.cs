@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Engine;
+﻿using pva.SuperV.Api.Exceptions;
+using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Model.FieldFormatters;
@@ -39,6 +40,17 @@ namespace pva.SuperV.Api.Services.FieldFormatters
             {
                 FieldFormatter fieldFormatter = FieldFormatterMapper.FromDto(fieldFormatterModel);
                 wipProject.AddFieldFormatter(fieldFormatter);
+                return FieldFormatterMapper.ToDto(fieldFormatter);
+            }
+            throw new NonWipProjectException(projectId);
+        }
+
+        public FieldFormatterModel UpdateFieldFormatter(string projectId, string fieldFormatterName, FieldFormatterModel fieldFormatterModel)
+        {
+            if (GetProjectEntity(projectId) is WipProject wipProject)
+            {
+                FieldFormatter fieldFormatter = FieldFormatterMapper.FromDto(fieldFormatterModel);
+                wipProject.UpdateFieldFormatter(fieldFormatterName, fieldFormatter);
                 return FieldFormatterMapper.ToDto(fieldFormatter);
             }
             throw new NonWipProjectException(projectId);

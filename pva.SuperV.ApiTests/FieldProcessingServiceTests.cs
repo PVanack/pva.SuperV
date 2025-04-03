@@ -104,10 +104,42 @@ namespace pva.SuperV.ApiTests
                         ValueFieldName,
                     ]);
             // WHEN
-            FieldValueProcessingModel FieldProcessing = fieldProcessingService.CreateFieldProcessing(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
+            FieldValueProcessingModel createdFieldProcessing = fieldProcessingService.CreateFieldProcessing(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
 
             // THEN
-            FieldProcessing
+            createdFieldProcessing
+                .ShouldNotBeNull()
+                .ShouldBeEquivalentTo(expectedFieldProcessing);
+        }
+
+        [Fact]
+        public void UpdateHistorizationFieldProcessing_ShouldUpdateHistorizationFieldProcessing()
+        {
+            // GIVEN
+            FieldValueProcessingModel expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
+                    ValueFieldName,
+                    HistoryRepositoryName,
+                    null,
+                    [
+                        ValueFieldName,
+                    ]);
+            FieldValueProcessingModel createdFieldProcessing = fieldProcessingService.CreateFieldProcessing(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
+
+            // WHEN
+            expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
+                    ValueFieldName,
+                    HistoryRepositoryName,
+                    null,
+                    [
+                        ValueFieldName,
+                        AlarmStateFieldName
+                    ]);
+
+            FieldValueProcessingModel updatedFieldProcessing = fieldProcessingService.UpdateFieldProcessing(wipProject.GetId(), ClassName, ValueFieldName,
+                expectedFieldProcessing.Name, expectedFieldProcessing);
+
+            // THEN
+            updatedFieldProcessing
                 .ShouldNotBeNull()
                 .ShouldBeEquivalentTo(expectedFieldProcessing);
         }

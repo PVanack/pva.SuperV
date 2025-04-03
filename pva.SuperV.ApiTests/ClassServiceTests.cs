@@ -65,6 +65,17 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public void UpdateClassInWipProject_ShouldUpdateClass()
+        {
+            ClassModel expectedClass = new(ClassName, null);
+            // Act & Assert
+            ClassModel createClassModel = classService.UpdateClass(wipProject.GetId(), expectedClass.Name, expectedClass);
+
+            createClassModel.ShouldNotBeNull()
+                .ShouldBeEquivalentTo(expectedClass);
+        }
+
+        [Fact]
         public void DeleteClassInWipProject_ShouldDeleteClass()
         {
             ClassModel expectedClass = new("NewClass", null);

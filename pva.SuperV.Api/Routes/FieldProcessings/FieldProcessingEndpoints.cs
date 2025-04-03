@@ -40,6 +40,22 @@ namespace pva.SuperV.Api.Routes.FieldProcessings
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
+            fieldProcessingsApi.MapPut("/{wipProjectId}/{className}/{fieldName}/{processingName}",
+                (IFieldProcessingService fieldProcessingService,
+                [Description("ID of WIP project")] string wipProjectId,
+                [Description("Name of class")] string className,
+                [Description("Name of field")] string fieldName,
+                [Description("Name of field processing")] string processingName,
+                [Description("Field processing update request")][FromBody] FieldValueProcessingModel createRequest)
+                    => UpdateProcessing.Handle(fieldProcessingService, wipProjectId, className, fieldName, processingName, createRequest))
+                .WithName("UpdateProcessing")
+                .WithDisplayName("UpdateProcessing")
+                .WithSummary("Updates a field processing in a class of a WIP project")
+                .WithDescription("Updates a field processing in a class of a WIP project")
+                .Produces<FieldDefinitionModel>(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
+
             fieldProcessingsApi.MapPost("/{wipProjectId}/{className}/{fieldName}",
                 (IFieldProcessingService fieldProcessingService,
                 [Description("ID of WIP project")] string wipProjectId,

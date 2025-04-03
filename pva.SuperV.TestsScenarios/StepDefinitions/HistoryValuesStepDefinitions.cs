@@ -38,11 +38,11 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             // This doesn' work, as comparison of the object values use Object Equals().
             //historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
             // As a workaround, we compare each element :-(
-            historyResult!.Header.ShouldBeEquivalentTo(expectedHistoryResult.Header);
-            historyResult!.Rows.Count.ShouldBe(expectedHistoryResult.Rows.Count);
+            historyResult.Header.ShouldBeEquivalentTo(expectedHistoryResult.Header);
+            historyResult.Rows.Count.ShouldBe(expectedHistoryResult.Rows.Count);
             for (int rowIndex = 0; rowIndex < expectedHistoryResult.Rows.Count; rowIndex++)
             {
-                var actualRow = historyResult!.Rows[rowIndex];
+                var actualRow = historyResult.Rows[rowIndex];
                 var expectedRow = expectedHistoryResult.Rows[rowIndex];
                 actualRow.Timestamp.ShouldBe(expectedRow.Timestamp);
                 actualRow.Quality.ShouldBe(expectedRow.Quality);
@@ -112,11 +112,11 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             // This doesn' work, as comparison of the object values use Object Equals().
             //historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
             // As a workaround, we compare each element :-(
-            historyResult!.Header.ShouldBeEquivalentTo(expectedHistoryResult.Header);
-            historyResult!.Rows.Count.ShouldBe(expectedHistoryResult.Rows.Count);
+            historyResult.Header.ShouldBeEquivalentTo(expectedHistoryResult.Header);
+            historyResult.Rows.Count.ShouldBe(expectedHistoryResult.Rows.Count);
             for (int rowIndex = 0; rowIndex < expectedHistoryResult.Rows.Count; rowIndex++)
             {
-                var actualRow = historyResult!.Rows[rowIndex];
+                var actualRow = historyResult.Rows[rowIndex];
                 var expectedRow = expectedHistoryResult.Rows[rowIndex];
                 actualRow.Timestamp.ShouldBe(expectedRow.Timestamp);
                 actualRow.Quality.ShouldBe(expectedRow.Quality);

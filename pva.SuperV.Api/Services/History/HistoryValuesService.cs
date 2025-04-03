@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Engine;
+﻿using pva.SuperV.Api.Exceptions;
+using pva.SuperV.Engine;
 using pva.SuperV.Engine.HistoryRetrieval;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Model.HistoryRetrieval;
