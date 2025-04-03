@@ -10,7 +10,7 @@ namespace pva.SuperV.Engine.HistoryStorage
     public class HistoryRepository(string name)
     {
         /// <summary>
-        /// Gets or sets the name.
+        /// Gets the history repository name.
         /// </summary>
         /// <value>
         /// The name.
