@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Engine.FieldFormatters;
+﻿using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Engine.Processing;
 using System.Globalization;
 using System.Text;
@@ -39,7 +40,7 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The type.
         /// </value>
-        public Type Type { get; set; }
+        public Type Type { get; init; }
 
         /// <summary>
         /// Gets or sets the formatter associated with field.
@@ -55,7 +56,7 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The default value.
         /// </value>
-        public T? DefaultValue { get; }
+        public T? DefaultValue { get; set; }
 
         /// <summary>
         /// Gets or sets the value post change processings.
@@ -132,6 +133,24 @@ namespace pva.SuperV.Engine
                 ValuePostChangeProcessings = [.. ValuePostChangeProcessings]
             };
             return fieldDefinition;
+        }
+
+        /// <summary>
+        /// Update field from another field.
+        /// </summary>
+        /// <param name="fieldDefinitionUpdate">Field from which to update. Only default value and formatter are copied.</param>
+        /// <param name="fieldFormatter">Formatter</param>
+        /// <exception cref="WrongFieldTypeException"></exception>
+        public void Update(IFieldDefinition fieldDefinitionUpdate, FieldFormatter? fieldFormatter)
+        {
+            FieldDefinition<T>? typedFieldDefinitionUpdate = fieldDefinitionUpdate as FieldDefinition<T>;
+            if (typedFieldDefinitionUpdate != null)
+            {
+                DefaultValue = typedFieldDefinitionUpdate.DefaultValue;
+                Formatter = fieldFormatter;
+                return;
+            }
+            throw new WrongFieldTypeException(Name, Type, fieldDefinitionUpdate.Type);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The type.
         /// </value>
-        Type Type { get; set; }
+        Type Type { get; init; }
 
         /// <summary>
         /// Gets or sets the name of the field.
@@ -54,5 +54,12 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <returns></returns>
         IFieldDefinition Clone();
+
+        /// <summary>        /// <summary>
+        /// Update field from another field.
+        /// </summary>
+        /// <param name="fieldDefinitionUpdate">Field from which to update. Only default value and formatter are copied.</param>
+        /// <param name="fieldFormatter">Formatter</param>
+        void Update(IFieldDefinition fieldDefinitionUpdate, FieldFormatter? fieldFormatter);
     }
 }

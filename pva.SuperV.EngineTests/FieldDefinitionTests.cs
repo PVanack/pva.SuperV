@@ -5,7 +5,7 @@ using Shouldly;
 namespace pva.SuperV.EngineTests
 {
     [Collection("Project building")]
-    public class FieldTests : SuperVTestsBase
+    public class FieldDefinitionTests : SuperVTestsBase
     {
         [Theory]
         [InlineData("AS.0")]

@@ -1,5 +1,6 @@
 ﻿using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.Processing;
 using Shouldly;
 
 namespace pva.SuperV.EngineTests
@@ -67,6 +68,38 @@ namespace pva.SuperV.EngineTests
         }
 
         [Fact]
+        public void GivenClassWithField_WhenUpdatingField_ThenFieldIsUpdated()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            Class clazz = project.AddClass(ClassName);
+            project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10));
+
+            // WHEN
+            project.UpdateField(ClassName, FieldName, new FieldDefinition<int>(FieldName, 20), null);
+
+            // THEN
+            clazz.FieldDefinitions.ShouldNotBeNull()
+                .ShouldContainKey(FieldName);
+            FieldDefinition<int>? field = clazz.GetField<int>(FieldName);
+            field!.ShouldNotBeNull();
+            field!.DefaultValue.ShouldBe(20);
+            field.Formatter.ShouldBeNull();
+        }
+
+        [Fact]
+        public void GivenClassWithField_WhenUpdatingFieldWithAnotherType_ThenExceptionIsThrown()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            _ = project.AddClass(ClassName);
+            project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10));
+
+            // WHEN/THEN
+            Assert.Throws<WrongFieldTypeException>(() => project.UpdateField(ClassName, FieldName, new FieldDefinition<float>(FieldName, 10), null));
+        }
+
+        [Fact]
         public void GivenClassWithField_WhenRemovingField_ThenFieldIsRemoved()
         {
             // GIVEN
@@ -80,6 +113,22 @@ namespace pva.SuperV.EngineTests
             // THEN
             clazz.FieldDefinitions.ShouldBeEmpty();
             Assert.Throws<UnknownEntityException>(() => clazz.GetField<int>(FieldName));
+        }
+
+        [Fact]
+        public void GivenClassWithFieldUsedInProcessing_WhenRemovingField_ThenExceptionIsThrown()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            project.AddHistoryRepository(new Engine.HistoryStorage.HistoryRepository("HistoryRepository"));
+            Class clazz = project.AddClass(ClassName);
+            project.AddField(ClassName, new FieldDefinition<int>("ValueField", 10));
+            project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10));
+            project.AddFieldChangePostProcessing(ClassName, "ValueField", new HistorizationProcessing<int>("Historization", project, clazz, "ValueField", "HistoryRepository",
+                null, ["ValueField", FieldName]));
+
+            // WHEN/THEN
+            Assert.Throws<EntityInUseException>(() => project.RemoveField(ClassName, FieldName));
         }
     }
 }

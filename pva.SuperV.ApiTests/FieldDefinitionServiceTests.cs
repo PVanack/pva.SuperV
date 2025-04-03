@@ -1,6 +1,7 @@
 ﻿using pva.SuperV.Api.Exceptions;
 using pva.SuperV.Api.Services.FieldDefinitions;
 using pva.SuperV.Engine;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.EngineTests;
 using pva.SuperV.Model.FieldDefinitions;
 using Shouldly;
@@ -99,8 +100,19 @@ namespace pva.SuperV.ApiTests
             FieldDefinitionModel expectedFieldDefinition = new ShortFieldDefinitionModel("IntFieldWithFormat", default, null);
 
             // WHEN/THEN
-            Assert.Throws<EntityPropertyNotChangeableException>(()
+            Assert.Throws<WrongFieldTypeException>(()
                 => fieldDefinitionService.UpdateField(wipProject.GetId(), AllFieldsClassName, expectedFieldDefinition.Name, expectedFieldDefinition));
+        }
+
+        [Fact]
+        public void UpdateClassFieldDefinitionChangingName_ShouldThrowException()
+        {
+            // GIVEN
+            FieldDefinitionModel expectedFieldDefinition = new IntFieldDefinitionModel("ChangedName", default, null);
+
+            // WHEN/THEN
+            Assert.Throws<EntityPropertyNotChangeableException>(()
+                => fieldDefinitionService.UpdateField(wipProject.GetId(), AllFieldsClassName, "IntFieldWithFormat", expectedFieldDefinition));
         }
 
         [Fact]

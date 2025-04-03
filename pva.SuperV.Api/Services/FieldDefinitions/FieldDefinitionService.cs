@@ -66,18 +66,8 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
                 Class clazz = GetClassEntity(wipProject, className);
                 if (updateRequest.Name == null || updateRequest.Name.Equals(fieldName))
                 {
-                    IFieldDefinition fieldDefinition = clazz.GetField(fieldName);
                     IFieldDefinition fieldDefinitionUpdate = FieldDefinitionMapper.FromDto(updateRequest);
-                    if (fieldDefinitionUpdate.Type == fieldDefinition.Type)
-                    {
-                        FieldFormatter? fieldFormatter = null;
-                        if (updateRequest.ValueFormatter is not null)
-                        {
-                            fieldFormatter = wipProject.GetFormatter(updateRequest.ValueFormatter);
-                        }
-                        return FieldDefinitionMapper.ToDto(clazz.UpdateField(fieldName, fieldDefinitionUpdate, fieldFormatter));
-                    }
-                    throw new EntityPropertyNotChangeableException("field", "Type");
+                    return FieldDefinitionMapper.ToDto(wipProject.UpdateField(className, fieldName, fieldDefinitionUpdate, updateRequest.ValueFormatter));
                 }
                 throw new EntityPropertyNotChangeableException("field", "Name");
             }

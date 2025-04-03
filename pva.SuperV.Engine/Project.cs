@@ -217,8 +217,12 @@ namespace pva.SuperV.Engine
         /// <param name="formatterName">Name of the formatter.</param>
         /// <returns><see cref="FieldFormatter"/></returns>
         /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownFormatterException"></exception>
-        public FieldFormatter GetFormatter(string formatterName)
+        public FieldFormatter? GetFormatter(string? formatterName)
         {
+            if (String.IsNullOrEmpty(formatterName))
+            {
+                return null;
+            }
             if (FieldFormatters.TryGetValue(formatterName, out FieldFormatter? value))
             {
                 return value;

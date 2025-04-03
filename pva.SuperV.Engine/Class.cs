@@ -155,6 +155,7 @@ namespace pva.SuperV.Engine
             VerifyFieldNotUsedInProcessings(fieldName);
             FieldDefinitions.Remove(fieldName);
         }
+
         private void VerifyFieldNotUsedInProcessings(string fieldName)
         {
             List<String> fieldsUsedInProcessing = [.. FieldDefinitions.Values
@@ -216,12 +217,12 @@ namespace pva.SuperV.Engine
             throw new UnknownEntityException("Field", fieldName);
         }
 
-        public IFieldDefinition? UpdateField(string fieldName, IFieldDefinition fieldDefinition, FieldFormatter? fieldFormatter)
+        public IFieldDefinition UpdateField(string fieldName, IFieldDefinition fieldDefinition, FieldFormatter? fieldFormatter)
         {
-            if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? _))
+            if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldToUpdate))
             {
-                FieldDefinitions[fieldName] = fieldDefinition;
-                return fieldDefinition;
+                fieldToUpdate.Update(fieldDefinition, fieldFormatter);
+                return fieldToUpdate;
             }
             throw new UnknownEntityException("Field", fieldName);
         }
