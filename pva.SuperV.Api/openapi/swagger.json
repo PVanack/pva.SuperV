@@ -93,6 +93,68 @@
           }
         }
       },
+      "put": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Updates a project",
+        "description": "Updates a project",
+        "operationId": "UpdateProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": " ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Project update request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "tags": [
           "pva.SuperV.Api"
@@ -4658,6 +4720,24 @@
       "QualityLevel": {
         "type": "integer",
         "description": "Quality level of row."
+      },
+      "UpdateProjectRequest": {
+        "required": [
+          "description"
+        ],
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Description of project"
+          },
+          "historyStorageConnectionString": {
+            "type": "string",
+            "description": "Connection string to history storage",
+            "default": null,
+            "nullable": true
+          }
+        }
       }
     }
   },

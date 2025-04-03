@@ -2,6 +2,7 @@
 using pva.SuperV.Api.Services.Projects;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.EngineTests;
 using pva.SuperV.Model.Projects;
 using Shouldly;
@@ -109,6 +110,23 @@ namespace pva.SuperV.ApiTests
             result.ShouldNotBeNull();
             result.Id.ShouldNotBeNull();
             result.Name.ShouldBe("NewProject");
+            result.Runnable.ShouldBeFalse();
+        }
+
+        [Fact]
+        public void UpdateProject_ShouldReturnUpdatedProject()
+        {
+            // Arrange
+            ProjectModel createdProject = projectService.CreateProject(new CreateProjectRequest(Name: "NewProject", Description: "Description"));
+
+            // Act
+            UpdateProjectRequest updateProjectRequest = new("Description2", NullHistoryStorageEngine.Prefix);
+            ProjectModel result = projectService.UpdateProject(createdProject.Id, updateProjectRequest);
+
+            // Assert
+            result.ShouldNotBeNull();
+            result.Id.ShouldNotBeNull();
+            result.Description.ShouldBe(updateProjectRequest.Description);
             result.Runnable.ShouldBeFalse();
         }
 

@@ -156,6 +156,24 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public async Task GivenExistingProject_WhenUpdatingProject_ThenProjectIsUpdated()
+        {
+            // GIVEN
+            UpdateProjectRequest updateProjectRequest = new("NewProject", "Description");
+            ProjectModel expectedUpdatedProject = new("1", "NewProject", 1, "descriptioon", false);
+            MockedProjectService.UpdateProject(expectedUpdatedProject.Name, updateProjectRequest)
+                .Returns(expectedUpdatedProject);
+
+            // WHEN
+            var response = await client.PutAsJsonAsync($"/projects/{expectedUpdatedProject.Name}", updateProjectRequest);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            var updatedProject = await response.Content.ReadFromJsonAsync<ProjectModel>();
+            updatedProject.ShouldBeEquivalentTo(expectedUpdatedProject);
+        }
+
+        [Fact]
         public async Task GivenRunnableProject_WhenCreatingWipProjectFromRunnable_ThenWipProjectIsCreated()
         {
             // GIVEN

@@ -52,6 +52,18 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<ProjectModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status404NotFound);
 
+            projectsApi.MapPut("/{projectId}",
+                (IProjectService projectService,
+                [Description(" ID of project")] string projectId,
+                [Description("Project update request")][FromBody] UpdateProjectRequest updateProjectRequest)
+                    => UpdateProject.Handle(projectService, projectId, updateProjectRequest))
+                .WithName("UpdateProject")
+                .WithDisplayName("UpdateProject")
+                .WithSummary("Updates a project")
+                .WithDescription("Updates a project")
+                .Produces<ProjectModel>(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound);
+
             projectsApi.MapPost("/{wipProjectId}/build",
                 async (IProjectService projectService,
                         [Description("ID of WIP project")] string wipProjectId)
