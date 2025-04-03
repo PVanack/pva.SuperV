@@ -9,5 +9,6 @@ namespace pva.SuperV.Api.Services.FieldFormatters
         FieldFormatterModel GetFieldFormatter(string projectId, string fieldFormatterName);
         FieldFormatterModel CreateFieldFormatter(string projectId, FieldFormatterModel fieldFormatterModel);
         void DeleteFieldFormatter(string projectId, string fieldFormatterName);
+        FieldFormatterModel UpdateFieldFormatter(string projectId, string fieldFormatterName, FieldFormatterModel fieldFormatterModel);
     }
 }

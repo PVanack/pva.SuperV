@@ -45,6 +45,17 @@ namespace pva.SuperV.Api.Services.FieldFormatters
             throw new NonWipProjectException(projectId);
         }
 
+        public FieldFormatterModel UpdateFieldFormatter(string projectId, string fieldFormatterName, FieldFormatterModel fieldFormatterModel)
+        {
+            if (GetProjectEntity(projectId) is WipProject wipProject)
+            {
+                FieldFormatter fieldFormatter = FieldFormatterMapper.FromDto(fieldFormatterModel);
+                wipProject.UpdateFieldFormatter(fieldFormatterName, fieldFormatter);
+                return FieldFormatterMapper.ToDto(fieldFormatter);
+            }
+            throw new NonWipProjectException(projectId);
+        }
+
         public void DeleteFieldFormatter(string projectId, string fieldFormatterName)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)

@@ -56,6 +56,20 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
+            fieldFormattersApi.MapPut("/{wipProjectId}/{fieldFormatterName}",
+                (IFieldFormatterService fieldFormatterService, HttpContext context,
+                [Description("ID of WIP project")] string wipProjectId,
+                [Description("Field formatter name")] string fieldFormatterName,
+                [Description("Field formatter update model")][FromBody] FieldFormatterModel fieldFormatterModel)
+                    => UpdateFieldFormatter.Handle(fieldFormatterService, wipProjectId, fieldFormatterName, fieldFormatterModel))
+                .WithName("UpdateFieldFormatter")
+                .WithDisplayName("UpdateFieldFormatter")
+                .WithSummary("Updates a field formatter in a WIP project")
+                .WithDescription("Updates a field formatter in a WIP project")
+                .Produces<FieldFormatterModel>(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
+
             fieldFormattersApi.MapDelete("/{wipProjectId}/{fieldFormatterName}",
                 (IFieldFormatterService fieldFormatterService,
                 [Description("ID of WUP project")] string wipProjectId,

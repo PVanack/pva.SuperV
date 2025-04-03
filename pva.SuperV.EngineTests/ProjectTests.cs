@@ -228,7 +228,7 @@ namespace pva.SuperV.EngineTests
         }
 
         [Fact]
-        public void GivenProjectWithClassAndFormatter_WhenAddingFormatterWithSameName_ThenExceptionIsThrown()
+        public void GivenProjectWithFormatter_WhenAddingFormatterWithSameName_ThenExceptionIsThrown()
         {
             // GIVEN
             WipProject project = Project.CreateProject(ProjectName);
@@ -238,5 +238,51 @@ namespace pva.SuperV.EngineTests
             // WHEN/THEN
             Assert.Throws<EntityAlreadyExistException>(() => project.AddFieldFormatter(formatter));
         }
+
+        [Fact]
+        public void GivenProjectWithFormatter_WhenUpdatingFormatter_ThenFormatterIsUpdated()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            EnumFormatter formatter = new(AlarmStatesFormatterName, ["Closed", "Opened"]);
+            project.AddFieldFormatter(formatter);
+
+            // WHEN
+            EnumFormatter expectedFormatter = new(AlarmStatesFormatterName, ["Opened", "Closed"]);
+            project.UpdateFieldFormatter(AlarmStatesFormatterName, expectedFormatter);
+
+            // THEN
+            project.GetFormatter(AlarmStatesFormatterName).ShouldBeEquivalentTo(expectedFormatter);
+        }
+
+        [Fact]
+        public void GivenProjectWithFormatter_WhenRemovingFormatter_ThenFormatterIsRemoved()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            EnumFormatter formatter = new(AlarmStatesFormatterName, ["Closed", "Opened"]);
+            project.AddFieldFormatter(formatter);
+
+            // WHEN
+            project.RemoveFieldFormatter(AlarmStatesFormatterName);
+
+            // THEN
+            Assert.Throws<UnknownEntityException>(() => _ = project.GetFormatter(AlarmStatesFormatterName));
+        }
+
+        [Fact]
+        public void GivenFormatterUsedByField_WhenRemovingFormatter_ThenExceptionIsThrown()
+        {
+            // GIVEN
+            WipProject project = Project.CreateProject(ProjectName);
+            EnumFormatter formatter = new(AlarmStatesFormatterName, ["Closed", "Opened"]);
+            project.AddFieldFormatter(formatter);
+            _ = project.AddClass(ClassName);
+            IFieldDefinition field = project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), AlarmStatesFormatterName);
+
+            // WHEN/THEN
+            Assert.Throws<EntityInUseException>(() => project.RemoveFieldFormatter(AlarmStatesFormatterName));
+        }
+
     }
 }

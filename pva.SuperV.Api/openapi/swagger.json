@@ -1062,6 +1062,77 @@
       }
     },
     "/field-formatters/{wipProjectId}/{fieldFormatterName}": {
+      "put": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Updates a field formatter in a WIP project",
+        "description": "Updates a field formatter in a WIP project",
+        "operationId": "UpdateFieldFormatter",
+        "parameters": [
+          {
+            "name": "wipProjectId",
+            "in": "path",
+            "description": "ID of WIP project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fieldFormatterName",
+            "in": "path",
+            "description": "Field formatter name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Field formatter update model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldFormatterModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldFormatterModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "tags": [
           "pva.SuperV.Api"

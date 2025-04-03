@@ -161,6 +161,56 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
+        public async Task GivenWipProject_WhenUpdatingEnumFieldFormatter_ThenFieldFormatterIsUpdated()
+        {
+            // GIVEN
+            Dictionary<int, string> values = new() { { 0, "Off" }, { 1, "ON" } };
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel("FieldFormatter", values);
+            MockedFieldFormatterService.UpdateFieldFormatter("Project", expectedFieldFormatter.Name, Arg.Any<FieldFormatterModel>())
+                .Returns(expectedFieldFormatter);
+
+            // WHEN
+            var response = await client.PutAsJsonAsync($"/field-formatters/Project/{expectedFieldFormatter.Name}", expectedFieldFormatter);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            FieldFormatterModel? fieldFormatter = await response.Content.ReadFromJsonAsync<FieldFormatterModel>();
+            fieldFormatter.ShouldBeEquivalentTo(expectedFieldFormatter);
+        }
+
+        [Fact]
+        public async Task WhenUpdatingEnumFieldFormatterOnUnknownProject_ThenNotFoundIsReturned()
+        {
+            // GIVEN
+            Dictionary<int, string> values = new() { { 0, "Off" }, { 1, "ON" } };
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel("FieldFormatter", values);
+            MockedFieldFormatterService.UpdateFieldFormatter("UnknownProject", expectedFieldFormatter.Name, Arg.Any<FieldFormatterModel>())
+                .Throws<UnknownEntityException>();
+
+            // WHEN
+            var response = await client.PutAsJsonAsync($"/field-formatters/UnknownProject/{expectedFieldFormatter.Name}", expectedFieldFormatter);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task WhenUpdatingEnumFieldFormatterOnNonWipProject_ThenBadRequestIsReturned()
+        {
+            // GIVEN
+            Dictionary<int, string> values = new() { { 0, "Off" }, { 1, "ON" } };
+            FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel("FieldFormatter", values);
+            MockedFieldFormatterService.UpdateFieldFormatter("RunnableProject", expectedFieldFormatter.Name, Arg.Any<FieldFormatterModel>())
+                .Throws<NonWipProjectException>();
+
+            // WHEN
+            var response = await client.PutAsJsonAsync($"/field-formatters/RunnableProject/{expectedFieldFormatter.Name}", expectedFieldFormatter);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
         public async Task GivenWipProject_WhenRemovingFieldFormatter_ThenFieldFormatterIsRemoved()
         {
             // GIVEN

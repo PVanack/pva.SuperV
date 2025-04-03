@@ -194,6 +194,22 @@ namespace pva.SuperV.Engine
             FieldFormatters.Add(fieldFormatter.Name!, fieldFormatter);
         }
 
+        public void UpdateFieldFormatter(string fieldFormatterName, FieldFormatter fieldFormatter)
+        {
+            FieldFormatter? existingFormatter = GetFormatter(fieldFormatterName);
+            if (existingFormatter != null)
+            {
+                if (existingFormatter.GetType() == fieldFormatter.GetType())
+                {
+                    FieldFormatters[fieldFormatterName] = fieldFormatter;
+                    return;
+                }
+                throw new WrongFieldTypeException(fieldFormatterName, existingFormatter.GetType(), fieldFormatter.GetType());
+            }
+            throw new UnknownEntityException("Field formatter", fieldFormatterName);
+        }
+
+
         /// <summary>
         /// Removes a field formatter.
         /// </summary>
