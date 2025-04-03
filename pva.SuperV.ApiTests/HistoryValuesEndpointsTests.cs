@@ -55,6 +55,7 @@ namespace pva.SuperV.ApiTests
             // This doesn' work, as comparison of the object values use Object Equals().
             //historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
             // As a workaround, we compare each element :-(
+            historyResult.ShouldNotBeNull();
             historyResult.Header.ShouldBeEquivalentTo(expectedHistoryResult.Header);
             historyResult.Rows.Count.ShouldBe(expectedHistoryResult.Rows.Count);
             for (int rowIndex = 0; rowIndex < expectedHistoryResult.Rows.Count; rowIndex++)
@@ -180,6 +181,7 @@ namespace pva.SuperV.ApiTests
             // This doesn' work, as comparison of the object values use Object Equals().
             //historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
             // As a workaround, we compare each element :-(
+            historyResult.ShouldNotBeNull();
             historyResult.Header.ShouldBeEquivalentTo(expectedHistoryResult.Header);
             historyResult.Rows.Count.ShouldBe(expectedHistoryResult.Rows.Count);
             for (int rowIndex = 0; rowIndex < expectedHistoryResult.Rows.Count; rowIndex++)
