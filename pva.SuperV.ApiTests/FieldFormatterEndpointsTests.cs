@@ -3,6 +3,7 @@ using NSubstitute.ExceptionExtensions;
 using pva.SuperV.Api.Exceptions;
 using pva.SuperV.Api.Services.FieldFormatters;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Model;
 using pva.SuperV.Model.FieldFormatters;
 using Shouldly;
 using System.Net.Http.Json;
@@ -60,6 +61,28 @@ namespace pva.SuperV.ApiTests
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
             FieldFormatterModel[]? fieldFormatters = await response.Content.ReadFromJsonAsync<FieldFormatterModel[]>();
             fieldFormatters.ShouldBeEquivalentTo(expectedFieldFormatters.ToArray());
+        }
+
+        [Fact]
+        public async Task GivenExistingFieldFormattersInProject_WhenSearchingProjectFieldFormatters_ThenPageOfFieldFormattersIsReturned()
+        {
+            // GIVEN
+            List<FieldFormatterModel> expectedFieldFormatters = [new EnumFormatterModel("FieldFormatter", new Dictionary<int, string>() { { 1, "OFF" } })];
+            FieldFormatterPagedSearchRequest search = new(1, 5, null, null);
+            MockedFieldFormatterService.SearchFieldFormatters("Project", search)
+                .Returns(new PagedSearchResult<FieldFormatterModel>(1, 5, expectedFieldFormatters.Count, expectedFieldFormatters));
+
+            // WHEN
+            var response = await client.PostAsJsonAsync("/field-formatters/Project/search", search);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            PagedSearchResult<FieldFormatterModel>? result = await response.Content.ReadFromJsonAsync<PagedSearchResult<FieldFormatterModel>?>();
+            result.ShouldNotBeNull();
+            result.PageNumber.ShouldBe(1);
+            result.PageSize.ShouldBe(5);
+            result.Count.ShouldBe(expectedFieldFormatters.Count);
+            result.Result.ShouldBeEquivalentTo(expectedFieldFormatters);
         }
 
         [Fact]
