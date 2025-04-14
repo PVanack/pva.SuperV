@@ -1,6 +1,6 @@
 ﻿namespace pva.SuperV.Model
 {
-    public record PagedSearchRequest(int PageNumber, int PageSize, string NameFilter)
+    public record PagedSearchRequest(int PageNumber, int PageSize, string? NameFilter, string? SortOption)
     {
     }
 }

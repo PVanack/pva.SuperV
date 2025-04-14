@@ -39,6 +39,49 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Search available projects by page",
+        "description": "Search available projects by page",
+        "operationId": "SearchProjects",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPagedSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectModel"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/projects/{projectId}": {
@@ -4714,6 +4757,33 @@
           "runnable": {
             "type": "boolean",
             "description": "Indicates if the project is runnable."
+          }
+        }
+      },
+      "ProjectPagedSearchRequest": {
+        "required": [
+          "pageNumber",
+          "pageSize",
+          "nameFilter",
+          "sortOption"
+        ],
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nameFilter": {
+            "type": "string",
+            "nullable": true
+          },
+          "sortOption": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

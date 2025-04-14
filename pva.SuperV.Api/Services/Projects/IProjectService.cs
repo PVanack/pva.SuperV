@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Model.Projects;
+﻿using pva.SuperV.Model;
+using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Api.Services.Projects
 {
@@ -15,5 +16,6 @@ namespace pva.SuperV.Api.Services.Projects
         Task<StreamReader?> GetProjectInstancesAsync(string projectId);
         void LoadProjectInstances(string projectId, StreamReader reader);
         ProjectModel UpdateProject(string projectId, UpdateProjectRequest updateProjectRequest);
+        PagedSearchResult<ProjectModel> SearchProjects(ProjectPagedSearchRequest search);
     }
 }

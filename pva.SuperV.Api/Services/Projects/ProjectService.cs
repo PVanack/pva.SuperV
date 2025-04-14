@@ -1,12 +1,18 @@
 ﻿using pva.SuperV.Api.Exceptions;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Model;
 using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Api.Services.Projects
 {
     public class ProjectService : BaseService, IProjectService
     {
+        private readonly Dictionary<string, Comparison<ProjectModel>> sortOptions = new()
+            {
+                { "name", new Comparison<ProjectModel>((a, b) => a.Name.CompareTo(b.Name)) }
+            };
+
         public List<ProjectModel> GetProjects()
             => [.. Project.Projects.Values.Select(project => ProjectMapper.ToDto(project))];
 
@@ -14,6 +20,24 @@ namespace pva.SuperV.Api.Services.Projects
         {
             return ProjectMapper.ToDto(GetProjectEntity(projectId));
 
+        }
+
+        public PagedSearchResult<ProjectModel> SearchProjects(ProjectPagedSearchRequest search)
+        {
+            List<ProjectModel> allProjects = GetProjects();
+            List<ProjectModel> projects = FilterProjects(allProjects, search);
+            projects = SortResult(projects, search.SortOption, sortOptions);
+            return CreateResult(search, allProjects, projects);
+        }
+
+        private static List<ProjectModel> FilterProjects(List<ProjectModel> allProjects, ProjectPagedSearchRequest search)
+        {
+            List<ProjectModel> filteredProjects = allProjects;
+            if (!String.IsNullOrEmpty(search.NameFilter))
+            {
+                filteredProjects = [.. filteredProjects.Where(project => project.Name.Contains(search.NameFilter))];
+            }
+            return filteredProjects;
         }
 
         public ProjectModel CreateProject(CreateProjectRequest createProjectRequest)

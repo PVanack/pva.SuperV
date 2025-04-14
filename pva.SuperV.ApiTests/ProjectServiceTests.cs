@@ -4,6 +4,7 @@ using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.EngineTests;
+using pva.SuperV.Model;
 using pva.SuperV.Model.Projects;
 using Shouldly;
 using System.Text;
@@ -63,6 +64,127 @@ namespace pva.SuperV.ApiTests
             projectService = new();
             runnableProject = CreateRunnableProject();
             wipProject = CreateWipProject(null);
+        }
+
+        [Fact]
+        public void SearchProjectsPaged_ShouldReturnPageOfProjects()
+        {
+            CreateDummyWipProjects();
+
+            // Act
+            ProjectPagedSearchRequest search = new(1, 5, null, null);
+            PagedSearchResult<ProjectModel> page1Result = projectService.SearchProjects(search);
+            search = search with { PageNumber = 2, PageSize = 10 };
+            PagedSearchResult<ProjectModel> page2Result = projectService.SearchProjects(search);
+            search = search with { PageNumber = 3 };
+            PagedSearchResult<ProjectModel> page3Result = projectService.SearchProjects(search);
+            search = search with { PageNumber = 4 };
+            PagedSearchResult<ProjectModel> page4Result = projectService.SearchProjects(search);
+
+            // Assert
+            List<ProjectModel> expectedProjects = [.. Project.Projects.Select(entry => ProjectMapper.ToDto(entry.Value))];
+
+            page1Result.ShouldNotBeNull();
+            page1Result.PageNumber.ShouldBe(1);
+            page1Result.PageSize.ShouldBe(5);
+            page1Result.Count.ShouldBe(Project.Projects.Count);
+            page1Result.Result.ShouldBeEquivalentTo(expectedProjects.Take(5).ToList());
+
+            page2Result.ShouldNotBeNull();
+            page2Result.PageNumber.ShouldBe(2);
+            page2Result.PageSize.ShouldBe(10);
+            page2Result.Count.ShouldBe(Project.Projects.Count);
+            page2Result.Result.ShouldBeEquivalentTo(expectedProjects.Skip(10).Take(10).ToList());
+
+            page3Result.ShouldNotBeNull();
+            page3Result.PageNumber.ShouldBe(3);
+            page3Result.PageSize.ShouldBe(10);
+            page3Result.Count.ShouldBe(Project.Projects.Count);
+            page3Result.Result.ShouldBeEquivalentTo(expectedProjects.Skip(20).Take(10).ToList());
+
+            page4Result.ShouldNotBeNull();
+            page4Result.PageNumber.ShouldBe(4);
+            page4Result.PageSize.ShouldBe(10);
+            page4Result.Count.ShouldBe(Project.Projects.Count);
+            page4Result.Result.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public void SearchProjectsSortedByNameAsc_ShouldReturnPageOfProjectsSorted()
+        {
+            CreateDummyWipProjects();
+
+            // Act
+            ProjectPagedSearchRequest search = new(1, 5, null, "name");
+            PagedSearchResult<ProjectModel> pagedResult = projectService.SearchProjects(search);
+
+            // Assert
+            List<ProjectModel> expectedProjects = [.. Project.Projects.Values.Select(project => ProjectMapper.ToDto(project))];
+            expectedProjects.Sort(new Comparison<ProjectModel>((a, b) => a.Name.CompareTo(b.Name)));
+
+            pagedResult.ShouldNotBeNull();
+            pagedResult.PageNumber.ShouldBe(1);
+            pagedResult.PageSize.ShouldBe(5);
+            pagedResult.Count.ShouldBe(Project.Projects.Count);
+            pagedResult.Result.ShouldBeEquivalentTo(expectedProjects.Take(5).ToList());
+        }
+
+        [Fact]
+        public void SearchProjectsSortByNameDesc_ShouldReturnPageOfProjectsSorted()
+        {
+            CreateDummyWipProjects();
+
+            // Act
+            ProjectPagedSearchRequest search = new(1, 5, null, "-name");
+            PagedSearchResult<ProjectModel> pagedResult = projectService.SearchProjects(search);
+
+            // Assert
+            List<ProjectModel> expectedProjects = [.. Project.Projects.Values.Select(project => ProjectMapper.ToDto(project))];
+            expectedProjects.Sort(new Comparison<ProjectModel>((a, b) => a.Name.CompareTo(b.Name)));
+            expectedProjects.Reverse();
+
+            pagedResult.ShouldNotBeNull();
+            pagedResult.PageNumber.ShouldBe(1);
+            pagedResult.PageSize.ShouldBe(5);
+            pagedResult.Count.ShouldBe(Project.Projects.Count);
+            pagedResult.Result.ShouldBeEquivalentTo(expectedProjects.Take(5).ToList());
+        }
+
+        [Fact]
+        public void SearchProjectsWithInvalidSortOption_ShouldThrowException()
+        {
+            // Act
+            ProjectPagedSearchRequest search = new(1, 5, null, "-UnknownOption");
+            Assert.Throws<InvalidSortOptionException>(() => projectService.SearchProjects(search));
+        }
+
+        [Fact]
+        public void SearchProjectsByName_ShouldReturnPageOfProjects()
+        {
+            CreateDummyWipProjects();
+
+            // Act
+            ProjectPagedSearchRequest search = new(1, 5, "DummyProject1", null);
+            PagedSearchResult<ProjectModel> pagedResult = projectService.SearchProjects(search);
+
+            // Assert
+            List<ProjectModel> expectedProjects = [.. Project.Projects.Values
+                .Where(project=> project.Name!.Contains("DummyProject1"))
+                .Select(project => ProjectMapper.ToDto(project))];
+
+            pagedResult.ShouldNotBeNull();
+            pagedResult.PageNumber.ShouldBe(1);
+            pagedResult.PageSize.ShouldBe(5);
+            pagedResult.Count.ShouldBe(Project.Projects.Count);
+            pagedResult.Result.ShouldBeEquivalentTo(expectedProjects.Take(5).ToList());
+        }
+
+        private static void CreateDummyWipProjects()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                Project.CreateProject($"DummyProject{i + 1}");
+            }
         }
 
         [Fact]
