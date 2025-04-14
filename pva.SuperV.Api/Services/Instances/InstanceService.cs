@@ -1,12 +1,18 @@
 ﻿using pva.SuperV.Api.Exceptions;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Model;
 using pva.SuperV.Model.Instances;
 
 namespace pva.SuperV.Api.Services.Instances
 {
     public class InstanceService : BaseService, IInstanceService
     {
+        private readonly Dictionary<string, Comparison<InstanceModel>> sortOptions = new()
+            {
+                { "name", new Comparison<InstanceModel>((a, b) => a.Name.CompareTo(b.Name)) }
+            };
+
         public List<InstanceModel> GetInstances(string projectId)
         {
             if (GetProjectEntity(projectId) is RunnableProject runnableProject)
@@ -14,6 +20,25 @@ namespace pva.SuperV.Api.Services.Instances
                 return [.. runnableProject.Instances.Values.Select(InstanceMapper.ToDto)];
             }
             throw new NonRunnableProjectException(projectId);
+        }
+
+        public PagedSearchResult<InstanceModel> SearchInstances(string projectId, InstancePagedSearchRequest search)
+        {
+            List<InstanceModel> allInstances = GetInstances(projectId);
+            List<InstanceModel> projects = FilterInstances(allInstances, search);
+            projects = SortResult(projects, search.SortOption, sortOptions);
+            return CreateResult(search, allInstances, projects);
+
+        }
+
+        private static List<InstanceModel> FilterInstances(List<InstanceModel> allInstances, InstancePagedSearchRequest search)
+        {
+            List<InstanceModel> filteredInstances = allInstances;
+            if (!String.IsNullOrEmpty(search.NameFilter))
+            {
+                filteredInstances = [.. filteredInstances.Where(clazz => clazz.Name.Contains(search.NameFilter))];
+            }
+            return filteredInstances;
         }
 
         public InstanceModel GetInstance(string projectId, string instanceName)

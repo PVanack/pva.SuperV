@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using pva.SuperV.Api.Services.Instances;
+using pva.SuperV.Model;
 using pva.SuperV.Model.FieldDefinitions;
 using pva.SuperV.Model.Instances;
 using System.ComponentModel;
@@ -20,6 +21,19 @@ namespace pva.SuperV.Api.Routes.Instances
                 .WithSummary("Gets the list of instances from a project")
                 .WithDescription("Gets the list of instances from a project")
                 .Produces<List<FieldDefinitionModel>>(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
+
+            instancesApi.MapPost("/{runnableProjectId}/search",
+                (IInstanceService instanceService,
+                [Description("ID of runnable project")] string runnableProjectId,
+                [FromBody] InstancePagedSearchRequest search)
+                    => SearchInstances.Handle(instanceService, runnableProjectId, search))
+                .WithName("SearchInstances")
+                .WithDisplayName("SearchInstances")
+                .WithSummary("Searches the list of instances from a project")
+                .WithDescription("Searches the list of instances from a project")
+                .Produces<PagedSearchResult<FieldDefinitionModel>>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 

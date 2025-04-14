@@ -3,6 +3,7 @@ using NSubstitute.ExceptionExtensions;
 using pva.SuperV.Api.Exceptions;
 using pva.SuperV.Api.Services.Instances;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Model;
 using pva.SuperV.Model.Instances;
 using Shouldly;
 using System.Net.Http.Json;
@@ -27,6 +28,28 @@ namespace pva.SuperV.ApiTests
             application = new();
             client = application.CreateClient();
             Console.SetOut(new ConsoleWriter(output));
+        }
+
+        [Fact]
+        public async Task GivenExistingInstancesInProject_WhenSearchingProjectInstances_ThenInstancesAreReturned()
+        {
+            // GIVEN
+            InstancePagedSearchRequest search = new(1, 10, null, null, null);
+            List<InstanceModel> expectedInstances = [new InstanceModel("Instance", "Class1", [])];
+            MockedInstanceService.SearchInstances("Project1", search)
+                .Returns(new PagedSearchResult<InstanceModel>(1, 10, expectedInstances.Count, expectedInstances));
+
+            // WHEN
+            var response = await client.PostAsJsonAsync("/instances/Project1/search", search);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            PagedSearchResult<InstanceModel>? projectInstances = await response.Content.ReadFromJsonAsync<PagedSearchResult<InstanceModel>>();
+            projectInstances.ShouldNotBeNull();
+            projectInstances.PageNumber.ShouldBe(1);
+            projectInstances.PageSize.ShouldBe(10);
+            projectInstances.Count.ShouldBe(expectedInstances.Count);
+            projectInstances.Result.ShouldBeEquivalentTo(expectedInstances);
         }
 
         [Fact]
