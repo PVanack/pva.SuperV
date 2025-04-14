@@ -3,6 +3,7 @@ using NSubstitute.ExceptionExtensions;
 using pva.SuperV.Api.Exceptions;
 using pva.SuperV.Api.Services.Classes;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Model;
 using pva.SuperV.Model.Classes;
 using Shouldly;
 using System.Net.Http.Json;
@@ -26,6 +27,28 @@ namespace pva.SuperV.ApiTests
             application = new();
             client = application.CreateClient();
             Console.SetOut(new ConsoleWriter(output));
+        }
+
+        [Fact]
+        public async Task GivenExistingClassesInProject_WhenSearchingProjectClasses_ThenClassesAreReturned()
+        {
+            // GIVEN
+            ClassPagedSearchRequest search = new(1, 10, null, null);
+            List<ClassModel> expectedClasses = [new ClassModel("Class1", null)];
+            MockedClassService.SearchClasses("Project1", search)
+                .Returns(new PagedSearchResult<ClassModel>(1, 10, expectedClasses.Count, expectedClasses));
+
+            // WHEN
+            var response = await client.PostAsJsonAsync("/classes/Project1/search", search);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            PagedSearchResult<ClassModel>? projectClasses = await response.Content.ReadFromJsonAsync<PagedSearchResult<ClassModel>>();
+            projectClasses.ShouldNotBeNull();
+            projectClasses.PageNumber.ShouldBe(1);
+            projectClasses.PageSize.ShouldBe(10);
+            projectClasses.Count.ShouldBe(expectedClasses.Count);
+            projectClasses.Result.ShouldBeEquivalentTo(expectedClasses);
         }
 
         [Fact]

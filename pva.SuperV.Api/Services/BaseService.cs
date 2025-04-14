@@ -2,7 +2,6 @@
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model;
-using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Api.Services
 {
@@ -55,7 +54,7 @@ namespace pva.SuperV.Api.Services
             throw new NonRunnableProjectException(projectId);
         }
 
-        protected static PagedSearchResult<T> CreateResult<T>(ProjectPagedSearchRequest search, List<T> allEntities, List<T> filteredEntities)
+        protected static PagedSearchResult<T> CreateResult<T>(PagedSearchRequest search, List<T> allEntities, List<T> filteredEntities)
             => new(search.PageNumber, search.PageSize, allEntities.Count,
                 [.. filteredEntities
                     .Skip((search.PageNumber - 1) * search.PageSize)
