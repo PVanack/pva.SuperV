@@ -133,8 +133,28 @@ namespace pva.SuperV.ApiTests
 
             // Assert
             List<InstanceModel> expectedInstances = [.. runnableProject.Instances.Values
-                .Where(clazz=> clazz.Name!.Contains("IntField"))
-                .Select(clazz => InstanceMapper.ToDto(clazz))];
+                .Where(instance => instance.Name!.Contains("IntField"))
+                .Select(instance => InstanceMapper.ToDto(instance))];
+
+            pagedResult.ShouldNotBeNull();
+            pagedResult.PageNumber.ShouldBe(1);
+            pagedResult.PageSize.ShouldBe(5);
+            pagedResult.Count.ShouldBe(runnableProject.Instances.Count);
+            pagedResult.Result.ShouldBeEquivalentTo(expectedInstances.Take(5).ToList());
+        }
+
+        [Fact]
+        public void SearchInstancesByClassName_ShouldReturnPageOfInstances()
+        {
+
+            // Act
+            InstancePagedSearchRequest search = new(1, 5, null, null, AllFieldsClassName);
+            PagedSearchResult<InstanceModel> pagedResult = instanceService.SearchInstances(runnableProject.GetId(), search);
+
+            // Assert
+            List<InstanceModel> expectedInstances = [.. runnableProject.Instances.Values
+                .Where(instance => instance.Class.Name.Equals(AllFieldsClassName))
+                .Select(instance => InstanceMapper.ToDto(instance))];
 
             pagedResult.ShouldNotBeNull();
             pagedResult.PageNumber.ShouldBe(1);

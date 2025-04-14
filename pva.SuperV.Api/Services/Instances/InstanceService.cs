@@ -34,9 +34,13 @@ namespace pva.SuperV.Api.Services.Instances
         private static List<InstanceModel> FilterInstances(List<InstanceModel> allInstances, InstancePagedSearchRequest search)
         {
             List<InstanceModel> filteredInstances = allInstances;
+            if (!String.IsNullOrEmpty(search.ClassName))
+            {
+                filteredInstances = [.. filteredInstances.Where(instance => instance.ClassName.Equals(search.ClassName))];
+            }
             if (!String.IsNullOrEmpty(search.NameFilter))
             {
-                filteredInstances = [.. filteredInstances.Where(clazz => clazz.Name.Contains(search.NameFilter))];
+                filteredInstances = [.. filteredInstances.Where(instance => instance.Name.Contains(search.NameFilter))];
             }
             return filteredInstances;
         }
