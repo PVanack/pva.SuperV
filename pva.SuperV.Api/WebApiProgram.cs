@@ -118,6 +118,7 @@ namespace pva.SuperV.Api
     [JsonSerializable(typeof(List<ProjectModel>))]
     [JsonSerializable(typeof(ProjectModel))]
     [JsonSerializable(typeof(CreateProjectRequest))]
+    [JsonSerializable(typeof(UpdateProjectRequest))]
 
     [JsonSerializable(typeof(List<FieldFormatterModel>))]
     [JsonSerializable(typeof(FieldFormatterModel))]

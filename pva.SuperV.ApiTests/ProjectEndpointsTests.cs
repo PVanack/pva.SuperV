@@ -3,6 +3,7 @@ using NSubstitute.ExceptionExtensions;
 using pva.SuperV.Api.Exceptions;
 using pva.SuperV.Api.Services.Projects;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Model;
 using pva.SuperV.Model.Projects;
 using Shouldly;
 using System.Net.Http.Headers;
@@ -87,6 +88,28 @@ namespace pva.SuperV.ApiTests
             application = new();
             client = application.CreateClient();
             Console.SetOut(new ConsoleWriter(output));
+        }
+
+        [Fact]
+        public async Task GivenExistingProjects_WhenSearchingProjects_ThenProjectsAreReturned()
+        {
+            // GIVEN
+            List<ProjectModel> expectedProjects = [new ProjectModel("Project1", "a", 1, "Descr", false)];
+            ProjectPagedSearchRequest searchRequest = new(1, 10, null, null);
+            MockedProjectService.SearchProjects(Arg.Any<ProjectPagedSearchRequest>())
+                .Returns(new PagedSearchResult<ProjectModel>(1, 10, expectedProjects.Count, expectedProjects));
+
+            // WHEN
+            var response = await client.PostAsJsonAsync("/projects/search", searchRequest);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            PagedSearchResult<ProjectModel>? projectSearchResult = await response.Content.ReadFromJsonAsync<PagedSearchResult<ProjectModel>>();
+            projectSearchResult.ShouldNotBeNull();
+            projectSearchResult.PageNumber.ShouldBe(1);
+            projectSearchResult.PageSize.ShouldBe(10);
+            projectSearchResult.Count.ShouldBe(1);
+            projectSearchResult.Result.ShouldBeEquivalentTo(expectedProjects);
         }
 
         [Fact]

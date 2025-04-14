@@ -41,6 +41,51 @@
         }
       }
     },
+    "/projects/search": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Search available projects by page",
+        "description": "Search available projects by page",
+        "operationId": "SearchProjects",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPagedSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectModel"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/projects/{projectId}": {
       "get": {
         "tags": [
@@ -654,6 +699,69 @@
         }
       }
     },
+    "/classes/{projectId}/search": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Searches the list of available classes in a project",
+        "description": "Searches the list of available classes in a project",
+        "operationId": "SearchClasses",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClassPagedSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedSearchResultOfClassModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/classes/{projectId}/{className}": {
       "get": {
         "tags": [
@@ -970,6 +1078,69 @@
                   "items": {
                     "$ref": "#/components/schemas/FieldFormatterModel"
                   }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/field-formatters/{projectId}/search": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Searches the list of available field formatter types",
+        "description": "Searches the list of available field formatter types",
+        "operationId": "SearchFieldFormatterTypes",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldFormatterPagedSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedSearchResultOfFieldFormatterModel"
                 }
               }
             }
@@ -1595,6 +1766,78 @@
                   "items": {
                     "$ref": "#/components/schemas/FieldDefinitionModel"
                   }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fields/{projectId}/{className}/search": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Searches the list of available fields in a class from a project",
+        "description": "Searches the list of available fields in a class from a project",
+        "operationId": "SearchFieldDefinitions",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "className",
+            "in": "path",
+            "description": "Name of class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldDefinitionPagedSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedSearchResultOfFieldDefinitionModel"
                 }
               }
             }
@@ -2435,6 +2678,69 @@
         }
       }
     },
+    "/instances/{runnableProjectId}/search": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Searches the list of instances from a project",
+        "description": "Searches the list of instances from a project",
+        "operationId": "SearchInstances",
+        "parameters": [
+          {
+            "name": "runnableProjectId",
+            "in": "path",
+            "description": "ID of runnable project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstancePagedSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedSearchResultOfFieldDefinitionModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/instances/{runnableProjectId}/{instanceName}": {
       "get": {
         "tags": [
@@ -3014,6 +3320,33 @@
           }
         }
       },
+      "ClassPagedSearchRequest": {
+        "required": [
+          "pageNumber",
+          "pageSize",
+          "nameFilter",
+          "sortOption"
+        ],
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nameFilter": {
+            "type": "string",
+            "nullable": true
+          },
+          "sortOption": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "CreateFieldFormatterRequest": {
         "required": [
           "fieldFormatter"
@@ -3504,6 +3837,33 @@
           }
         }
       },
+      "FieldDefinitionPagedSearchRequest": {
+        "required": [
+          "pageNumber",
+          "pageSize",
+          "nameFilter",
+          "sortOption"
+        ],
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nameFilter": {
+            "type": "string",
+            "nullable": true
+          },
+          "sortOption": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "FieldFormatterModel": {
         "required": [
           "$type"
@@ -3565,6 +3925,33 @@
           "formatterType": {
             "type": "string",
             "description": "Type of the formatter."
+          }
+        }
+      },
+      "FieldFormatterPagedSearchRequest": {
+        "required": [
+          "pageNumber",
+          "pageSize",
+          "nameFilter",
+          "sortOption"
+        ],
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nameFilter": {
+            "type": "string",
+            "nullable": true
+          },
+          "sortOption": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -4678,10 +5065,129 @@
           }
         }
       },
+      "InstancePagedSearchRequest": {
+        "required": [
+          "className",
+          "pageNumber",
+          "pageSize",
+          "nameFilter",
+          "sortOption"
+        ],
+        "type": "object",
+        "properties": {
+          "className": {
+            "type": "string",
+            "nullable": true
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nameFilter": {
+            "type": "string",
+            "nullable": true
+          },
+          "sortOption": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "NullableOfFillMode": {
         "type": "integer",
         "description": "Fill mode in case the interval misses values.",
         "nullable": true
+      },
+      "PagedSearchResultOfClassModel": {
+        "required": [
+          "pageNumber",
+          "pageSize",
+          "count",
+          "result"
+        ],
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassModel"
+            }
+          }
+        }
+      },
+      "PagedSearchResultOfFieldDefinitionModel": {
+        "required": [
+          "pageNumber",
+          "pageSize",
+          "count",
+          "result"
+        ],
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldDefinitionModel"
+            }
+          }
+        }
+      },
+      "PagedSearchResultOfFieldFormatterModel": {
+        "required": [
+          "pageNumber",
+          "pageSize",
+          "count",
+          "result"
+        ],
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldFormatterModel"
+            }
+          }
+        }
       },
       "ProjectModel": {
         "required": [
@@ -4714,6 +5220,33 @@
           "runnable": {
             "type": "boolean",
             "description": "Indicates if the project is runnable."
+          }
+        }
+      },
+      "ProjectPagedSearchRequest": {
+        "required": [
+          "pageNumber",
+          "pageSize",
+          "nameFilter",
+          "sortOption"
+        ],
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nameFilter": {
+            "type": "string",
+            "nullable": true
+          },
+          "sortOption": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
