@@ -76,6 +76,18 @@ namespace pva.SuperV.Api
             builder.Services.AddHttpLogging(o => { });
             builder.Logging.AddConsole();
             builder.Logging.AddJsonConsole();
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  policy =>
+                                      policy
+                                      .AllowAnyMethod()
+                                      .AllowAnyHeader()
+                                      .SetIsOriginAllowed(origin => true)
+                                      .AllowCredentials()
+                                  );
+            });
 
             var app = builder.Build();
 
@@ -107,7 +119,7 @@ namespace pva.SuperV.Api
                .MapFieldProcessingEndpoints()
                .MapInstancesEndpoints()
                .MapHistoryValuesEndpoints();
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.Run();
         }
     }

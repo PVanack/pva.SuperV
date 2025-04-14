@@ -5,6 +5,9 @@
     "description": "API for accessing SuperV projects.",
     "version": "v1"
   },
+  "servers": [
+    {"url" : "http://localhost:5153"}
+  ],
   "paths": {
     "/projects": {
       "get": {

@@ -1,5 +1,5 @@
-using pva.SuperV.Blazor.Client.Pages;
 using pva.SuperV.Blazor.Components;
+using pva.SuperV.Blazor.SuperVClient;
 
 namespace pva.SuperV.Blazor
 {
@@ -13,6 +13,7 @@ namespace pva.SuperV.Blazor
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
+            builder.Services.AddHttpClient<RestClient>("SuperV", client => client.BaseAddress = new Uri(builder.Configuration["SuperVApiUrl"]!));
 
             var app = builder.Build();
 
