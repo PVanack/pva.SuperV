@@ -148,12 +148,12 @@ namespace pva.SuperV.ApiTests
         {
 
             // Act
-            InstancePagedSearchRequest search = new(1, 5, null, null, AllFieldsClassName);
+            InstancePagedSearchRequest search = new(1, 5, null, null, BaseClassName);
             PagedSearchResult<InstanceModel> pagedResult = instanceService.SearchInstances(runnableProject.GetId(), search);
 
             // Assert
             List<InstanceModel> expectedInstances = [.. runnableProject.Instances.Values
-                .Where(instance => instance.Class.Name.Equals(AllFieldsClassName))
+                .Where(instance => instance.Class.Name.Equals(ClassName)) // ClassName inherits from BaseClass
                 .Select(instance => InstanceMapper.ToDto(instance))];
 
             pagedResult.ShouldNotBeNull();

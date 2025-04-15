@@ -25,24 +25,46 @@ namespace pva.SuperV.Api.Services.Instances
         public PagedSearchResult<InstanceModel> SearchInstances(string projectId, InstancePagedSearchRequest search)
         {
             List<InstanceModel> allInstances = GetInstances(projectId);
-            List<InstanceModel> projects = FilterInstances(allInstances, search);
+            List<InstanceModel> projects = FilterInstances(projectId, allInstances, search);
             projects = SortResult(projects, search.SortOption, sortOptions);
             return CreateResult(search, allInstances, projects);
 
         }
 
-        private static List<InstanceModel> FilterInstances(List<InstanceModel> allInstances, InstancePagedSearchRequest search)
+        private static List<InstanceModel> FilterInstances(string projectId, List<InstanceModel> allInstances, InstancePagedSearchRequest search)
         {
             List<InstanceModel> filteredInstances = allInstances;
             if (!String.IsNullOrEmpty(search.ClassName))
             {
-                filteredInstances = [.. filteredInstances.Where(instance => instance.ClassName.Equals(search.ClassName))];
+                Dictionary<string, bool> classNameMatches = [];
+                filteredInstances = [.. filteredInstances.Where(instance => FilterInstanceClass(projectId, search.ClassName, instance, ref classNameMatches))];
             }
             if (!String.IsNullOrEmpty(search.NameFilter))
             {
                 filteredInstances = [.. filteredInstances.Where(instance => instance.Name.Contains(search.NameFilter))];
             }
             return filteredInstances;
+        }
+
+        private static bool FilterInstanceClass(string projectId, string className, InstanceModel instance, ref Dictionary<string, bool> classNameMatches)
+        {
+            bool isClassNameMatching;
+            if (classNameMatches.TryGetValue(className, out isClassNameMatching))
+            {
+                return isClassNameMatching;
+            }
+            Class? clazz = GetClassEntity(projectId, className);
+            while (clazz != null)
+            {
+                isClassNameMatching = instance.ClassName.Equals(clazz.Name);
+                classNameMatches[instance.ClassName] = isClassNameMatching;
+                if (isClassNameMatching)
+                {
+                    return isClassNameMatching;
+                }
+                clazz = clazz.BaseClass;
+            }
+            return isClassNameMatching;
         }
 
         public InstanceModel GetInstance(string projectId, string instanceName)
