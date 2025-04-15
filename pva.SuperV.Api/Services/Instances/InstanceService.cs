@@ -46,23 +46,28 @@ namespace pva.SuperV.Api.Services.Instances
             return filteredInstances;
         }
 
-        private static bool FilterInstanceClass(string projectId, string className, InstanceModel instance, ref Dictionary<string, bool> classNameMatches)
+        private static bool FilterInstanceClass(string projectId, string searchedClassName, InstanceModel instance, ref Dictionary<string, bool> classNameMatches)
         {
             bool isClassNameMatching;
-            if (classNameMatches.TryGetValue(className, out isClassNameMatching))
+            if (classNameMatches.TryGetValue(instance.ClassName, out isClassNameMatching))
             {
                 return isClassNameMatching;
             }
-            Class? clazz = GetClassEntity(projectId, className);
+            Class? clazz = GetClassEntity(projectId, instance.ClassName);
+            List<string> classInheritance = [];
             while (clazz != null)
             {
-                isClassNameMatching = instance.ClassName.Equals(clazz.Name);
-                classNameMatches[instance.ClassName] = isClassNameMatching;
+                isClassNameMatching = clazz.Name.Equals(searchedClassName);
+                classInheritance.Add(clazz.Name);
                 if (isClassNameMatching)
                 {
-                    return isClassNameMatching;
+                    break;
                 }
                 clazz = clazz.BaseClass;
+            }
+            foreach (string className in classInheritance)
+            {
+                classNameMatches[className] = isClassNameMatching;
             }
             return isClassNameMatching;
         }
