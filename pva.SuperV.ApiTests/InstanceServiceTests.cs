@@ -146,14 +146,16 @@ namespace pva.SuperV.ApiTests
         [Fact]
         public void SearchInstancesByClassName_ShouldReturnPageOfInstances()
         {
-
+            _ = runnableProject.CreateInstance(ClassName, "DummyInstance");
+            _ = runnableProject.CreateInstance(BaseClassName, "BaseDummyInstance");
             // Act
-            InstancePagedSearchRequest search = new(1, 5, null, null, AllFieldsClassName);
+            InstancePagedSearchRequest search = new(1, 5, null, null, BaseClassName);
             PagedSearchResult<InstanceModel> pagedResult = instanceService.SearchInstances(runnableProject.GetId(), search);
 
             // Assert
             List<InstanceModel> expectedInstances = [.. runnableProject.Instances.Values
-                .Where(instance => instance.Class.Name.Equals(AllFieldsClassName))
+                .Where(instance => instance.Class.Name.Equals(BaseClassName)
+                                    || (instance.Class.BaseClass != null && instance.Class.BaseClass.Name.Equals(BaseClassName)))
                 .Select(instance => InstanceMapper.ToDto(instance))];
 
             pagedResult.ShouldNotBeNull();
