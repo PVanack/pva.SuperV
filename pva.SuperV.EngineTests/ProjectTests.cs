@@ -278,7 +278,7 @@ namespace pva.SuperV.EngineTests
             EnumFormatter formatter = new(AlarmStatesFormatterName, ["Closed", "Opened"]);
             project.AddFieldFormatter(formatter);
             _ = project.AddClass(ClassName);
-            IFieldDefinition field = project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), AlarmStatesFormatterName);
+            _ = project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), AlarmStatesFormatterName);
 
             // WHEN/THEN
             Assert.Throws<EntityInUseException>(() => project.RemoveFieldFormatter(AlarmStatesFormatterName));

@@ -63,7 +63,7 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
-                Class clazz = GetClassEntity(wipProject, className);
+                _ = GetClassEntity(wipProject, className);
                 if (updateRequest.Name == null || updateRequest.Name.Equals(fieldName))
                 {
                     IFieldDefinition fieldDefinitionUpdate = FieldDefinitionMapper.FromDto(updateRequest);
