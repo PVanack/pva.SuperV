@@ -1,3 +1,4 @@
+using MudBlazor.Services;
 using pva.SuperV.Blazor.Components;
 using pva.SuperV.Blazor.SuperVClient;
 
@@ -10,9 +11,11 @@ namespace pva.SuperV.Blazor
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddRazorComponents()
+            builder.Services
+                .AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
+            builder.Services.AddMudServices();
             builder.Services.AddHttpClient<RestClient>("SuperV", client => client.BaseAddress = new Uri(builder.Configuration["SuperVApiUrl"]!));
 
             var app = builder.Build();
