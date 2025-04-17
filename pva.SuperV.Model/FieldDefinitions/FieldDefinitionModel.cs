@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
@@ -19,9 +20,14 @@ namespace pva.SuperV.Model.FieldDefinitions
     [JsonDerivedType(typeof(UlongFieldDefinitionModel), typeDiscriminator: nameof(UlongFieldDefinitionModel))]
     [JsonDerivedType(typeof(UshortFieldDefinitionModel), typeDiscriminator: nameof(UshortFieldDefinitionModel))]
     public abstract record FieldDefinitionModel(
-        [property: Description("Name of field")] string Name,
-        [property: Description("Type of field")] string FieldType,
-        [property: Description("Field value formatter")] string? ValueFormatter)
+        [property: Description("Name of field")]
+        [Required(AllowEmptyStrings = false)]
+        [RegularExpression(Engine.Constants.IdentifierNamePattern, ErrorMessage = "Must be a valid identifier")]
+        string Name,
+        [property: Description("Type of field")]
+        string FieldType,
+        [property: Description("Field value formatter")]
+        string? ValueFormatter)
     {
     }
 }
