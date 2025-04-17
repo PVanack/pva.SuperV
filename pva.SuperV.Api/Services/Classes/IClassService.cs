@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Model.Classes;
+﻿using pva.SuperV.Model;
+using pva.SuperV.Model.Classes;
 
 namespace pva.SuperV.Api.Services.Classes
 {
@@ -9,5 +10,6 @@ namespace pva.SuperV.Api.Services.Classes
         ClassModel CreateClass(string projectId, ClassModel createRequest);
         void DeleteClass(string projectId, string className);
         ClassModel UpdateClass(string projectId, string className, ClassModel updateRequest);
+        PagedSearchResult<ClassModel> SearchClasses(string projectId, ClassPagedSearchRequest search);
     }
 }

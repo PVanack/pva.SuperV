@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using pva.SuperV.Api.Services.FieldDefinitions;
+using pva.SuperV.Model;
 using pva.SuperV.Model.FieldDefinitions;
 using System.ComponentModel;
 
@@ -20,6 +21,20 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 .WithSummary("Gets the list of available fields in a class from a project")
                 .WithDescription("Gets the list of available fields in a class from a project")
                 .Produces<List<FieldDefinitionModel>>(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
+
+            fieldDefinitionsApi.MapPost("/{projectId}/{className}/search",
+                (IFieldDefinitionService fieldDefinitionService,
+                [Description("ID of project")] string projectId,
+                [Description("Name of class")] string className,
+                [FromBody] FieldDefinitionPagedSearchRequest search)
+                    => SearchFieldDefinitions.Handle(fieldDefinitionService, projectId, className, search))
+                .WithName("SearchFieldDefinitions")
+                .WithDisplayName("SearchFieldDefinitions")
+                .WithSummary("Searches the list of available fields in a class from a project")
+                .WithDescription("Searches the list of available fields in a class from a project")
+                .Produces<PagedSearchResult<FieldDefinitionModel>>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 

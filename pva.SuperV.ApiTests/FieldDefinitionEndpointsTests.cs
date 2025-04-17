@@ -3,6 +3,7 @@ using NSubstitute.ExceptionExtensions;
 using pva.SuperV.Api.Exceptions;
 using pva.SuperV.Api.Services.FieldDefinitions;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Model;
 using pva.SuperV.Model.FieldDefinitions;
 using Shouldly;
 using System.Net.Http.Json;
@@ -26,6 +27,28 @@ public class FieldDefinitionEndpointsTests
         application = new();
         client = application.CreateClient();
         Console.SetOut(new ConsoleWriter(output));
+    }
+
+    [Fact]
+    public async Task GivenExistingFieldDefinitionsInClass_WhenSearchingClassFieldDefinitions_ThenFieldDefinitionsAreReturned()
+    {
+        // GIVEN
+        List<FieldDefinitionModel> expectedFieldDefinitions = [new IntFieldDefinitionModel("IntField", default, null)];
+        FieldDefinitionPagedSearchRequest search = new(1, 10, null, null);
+        MockedFieldDefinitionService.SearchFields("Project", "Class", Arg.Any<FieldDefinitionPagedSearchRequest>())
+            .Returns(new Model.PagedSearchResult<FieldDefinitionModel>(1, 10, expectedFieldDefinitions.Count, expectedFieldDefinitions));
+
+        // WHEN
+        var response = await client.PostAsJsonAsync("/fields/Project/Class/search", search);
+
+        // THEN
+        response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+        PagedSearchResult<FieldDefinitionModel>? result = await response.Content.ReadFromJsonAsync<PagedSearchResult<FieldDefinitionModel>>();
+        result.ShouldNotBeNull();
+        result.PageNumber.ShouldBe(1);
+        result.PageSize.ShouldBe(10);
+        result.Count.ShouldBe(expectedFieldDefinitions.Count);
+        result.Result.ShouldBeEquivalentTo(expectedFieldDefinitions);
     }
 
     [Fact]

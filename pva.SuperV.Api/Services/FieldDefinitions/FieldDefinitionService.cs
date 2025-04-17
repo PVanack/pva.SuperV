@@ -2,12 +2,18 @@
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.FieldFormatters;
+using pva.SuperV.Model;
 using pva.SuperV.Model.FieldDefinitions;
 
 namespace pva.SuperV.Api.Services.FieldDefinitions
 {
     public class FieldDefinitionService : BaseService, IFieldDefinitionService
     {
+        private readonly Dictionary<string, Comparison<FieldDefinitionModel>> sortOptions = new()
+            {
+                { "name", new Comparison<FieldDefinitionModel>((a, b) => a.Name.CompareTo(b.Name)) }
+            };
+
         public List<FieldDefinitionModel> GetFields(string projectId, string className)
             => [.. GetClassEntity(projectId, className).FieldDefinitions.Values.Select(field => FieldDefinitionMapper.ToDto(field!))];
 
@@ -19,6 +25,25 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
             }
             throw new UnknownEntityException("Field", fieldName);
         }
+
+        public PagedSearchResult<FieldDefinitionModel> SearchFields(string projectId, string className, FieldDefinitionPagedSearchRequest search)
+        {
+            List<FieldDefinitionModel> allFieldDefinitions = GetFields(projectId, className);
+            List<FieldDefinitionModel> fieldDefinitions = FilterFieldDefinitions(allFieldDefinitions, search);
+            fieldDefinitions = SortResult(fieldDefinitions, search.SortOption, sortOptions);
+            return CreateResult(search, allFieldDefinitions, fieldDefinitions);
+        }
+
+        private static List<FieldDefinitionModel> FilterFieldDefinitions(List<FieldDefinitionModel> allFieldDefinitions, FieldDefinitionPagedSearchRequest search)
+        {
+            List<FieldDefinitionModel> filteredClasses = allFieldDefinitions;
+            if (!String.IsNullOrEmpty(search.NameFilter))
+            {
+                filteredClasses = [.. filteredClasses.Where(fieldDefinition => fieldDefinition.Name.Contains(search.NameFilter))];
+            }
+            return filteredClasses;
+        }
+
 
         public List<FieldDefinitionModel> CreateFields(string projectId, string className, List<FieldDefinitionModel> createRequests)
         {

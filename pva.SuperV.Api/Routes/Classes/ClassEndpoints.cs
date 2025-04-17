@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using pva.SuperV.Api.Services.Classes;
+using pva.SuperV.Model;
 using pva.SuperV.Model.Classes;
 using System.ComponentModel;
 
@@ -19,6 +20,19 @@ namespace pva.SuperV.Api.Routes.Classes
                 .WithSummary("Gets the list of available classes in a project")
                 .WithDescription("Gets the list of available classes in a project")
                 .Produces<List<ClassModel>>(StatusCodes.Status200OK)
+                .Produces<string>(StatusCodes.Status404NotFound)
+                .Produces<string>(StatusCodes.Status400BadRequest);
+
+            classesApi.MapPost("/{projectId}/search",
+                (IClassService classService,
+                [Description("ID of project")] string projectId,
+                [FromBody] ClassPagedSearchRequest search)
+                    => SearchClasses.Handle(classService, projectId, search))
+                .WithName("SearchClasses")
+                .WithDisplayName("SearchClasses")
+                .WithSummary("Searches the list of available classes in a project")
+                .WithDescription("Searches the list of available classes in a project")
+                .Produces<PagedSearchResult<ClassModel>>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 

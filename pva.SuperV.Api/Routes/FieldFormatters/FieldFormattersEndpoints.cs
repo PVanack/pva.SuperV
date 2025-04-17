@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using pva.SuperV.Api.Services.FieldFormatters;
+using pva.SuperV.Model;
 using pva.SuperV.Model.FieldFormatters;
 using System.ComponentModel;
 
@@ -29,6 +30,17 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
                 .WithDescription("Gets the list of field formatters of project")
                 .Produces<List<FieldFormatterModel>>(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound);
+
+            fieldFormattersApi.MapPost("/{projectId}/search",
+                (IFieldFormatterService fieldFormatterService,
+                [Description("ID of project")] string projectId,
+                [FromBody] FieldFormatterPagedSearchRequest search) =>
+                    SearchFieldFormatters.Handle(fieldFormatterService, projectId, search))
+                .WithName("SearchFieldFormatterTypes")
+                .WithDisplayName("SearchFieldFormatterTypes")
+                .WithSummary("Searches the list of available field formatter types")
+                .WithDescription("Searches the list of available field formatter types")
+                .Produces<PagedSearchResult<FieldFormatterModel>>(StatusCodes.Status200OK);
 
             fieldFormattersApi.MapGet("/{projectId}/{fieldFormatterName}",
                 (IFieldFormatterService fieldFormatterService,

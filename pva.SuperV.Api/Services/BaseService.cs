@@ -1,6 +1,7 @@
 ﻿using pva.SuperV.Api.Exceptions;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Model;
 
 namespace pva.SuperV.Api.Services
 {
@@ -52,6 +53,35 @@ namespace pva.SuperV.Api.Services
             }
             throw new NonRunnableProjectException(projectId);
         }
+
+        protected static PagedSearchResult<T> CreateResult<T>(PagedSearchRequest search, List<T> allEntities, List<T> filteredEntities)
+            => new(search.PageNumber, search.PageSize, allEntities.Count,
+                [.. filteredEntities
+                    .Skip((search.PageNumber - 1) * search.PageSize)
+                    .Take(search.PageSize)]);
+
+        protected static List<T> SortResult<T>(List<T> entities, string? sortOption, Dictionary<string, Comparison<T>> sortOptions)
+        {
+            if (String.IsNullOrEmpty(sortOption))
+            {
+                return entities;
+            }
+            string actualSortOption = sortOption.StartsWith('-') ? sortOption[1..] : sortOption;
+            if (sortOptions.TryGetValue(actualSortOption, out Comparison<T>? comparison))
+            {
+                entities.Sort(comparison);
+                if (sortOption.StartsWith('-'))
+                {
+                    entities.Reverse();
+                }
+            }
+            else
+            {
+                throw new InvalidSortOptionException(sortOption, [.. sortOptions!.Keys]);
+            }
+            return entities;
+        }
+
 
     }
 }

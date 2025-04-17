@@ -19,6 +19,15 @@ namespace pva.SuperV.Api.Routes.Projects
                 .WithDescription("Gets the list of available projects")
                 .Produces<List<ProjectModel>>(StatusCodes.Status200OK);
 
+            projectsApi.MapPost("/search",
+                (IProjectService projectService, [FromBody] ProjectPagedSearchRequest search)
+                    => SearchProjects.Handle(projectService, search))
+                .WithName("SearchProjects")
+                .WithDisplayName("SearchProjects")
+                .WithSummary("Search available projects by page")
+                .WithDescription("Search available projects by page")
+                .Produces<List<ProjectModel>>(StatusCodes.Status200OK);
+
             projectsApi.MapGet("/{projectId}",
                 (IProjectService projectService,
                 [Description("ID of project")] string projectId)
