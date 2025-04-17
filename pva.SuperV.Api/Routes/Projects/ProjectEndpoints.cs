@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using pva.SuperV.Api.Services.Projects;
+using pva.SuperV.Model;
 using pva.SuperV.Model.Projects;
 using System.ComponentModel;
 
@@ -26,7 +27,7 @@ namespace pva.SuperV.Api.Routes.Projects
                 .WithDisplayName("SearchProjects")
                 .WithSummary("Search available projects by page")
                 .WithDescription("Search available projects by page")
-                .Produces<List<ProjectModel>>(StatusCodes.Status200OK);
+                .Produces<PagedSearchResult<ProjectModel>>(StatusCodes.Status200OK);
 
             projectsApi.MapGet("/{projectId}",
                 (IProjectService projectService,

@@ -70,10 +70,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProjectModel"
-                  }
+                  "$ref": "#/components/schemas/PagedSearchResultOfProjectModel"
                 }
               }
             }
@@ -5190,6 +5187,35 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FieldFormatterModel"
+            }
+          }
+        }
+      },
+      "PagedSearchResultOfProjectModel": {
+        "required": [
+          "pageNumber",
+          "pageSize",
+          "count",
+          "result"
+        ],
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectModel"
             }
           }
         }
