@@ -4,8 +4,9 @@ using pva.SuperV.Blazor.SuperVClient;
 
 namespace pva.SuperV.Blazor
 {
-    public class Program
+    public static class Program
     {
+        public const string SuperVRestClientName = "SuperVRestClient";
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,10 @@ namespace pva.SuperV.Blazor
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents();
             builder.Services.AddMudServices();
-            builder.Services.AddHttpClient<RestClient>("SuperV", client => client.BaseAddress = new Uri(builder.Configuration["SuperVApiUrl"]!));
+
+            RestClient restClient = new(new HttpClient()) { BaseUrl = builder.Configuration["SuperVApiUrl"]! };
+            builder.Services.AddScoped<IRestClient, RestClient>((service) => restClient);
+            builder.Services.AddScoped<State>();
 
             var app = builder.Build();
 

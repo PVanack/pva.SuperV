@@ -7,8 +7,6 @@ namespace pva.SuperV.Blazor.Components.Pages
 {
     public partial class Projects
     {
-        [Inject]
-        private RestClient RestClient { get; set; } = default!;
         private readonly HorizontalAlignment horizontalAlignment = HorizontalAlignment.Right;
         private readonly bool hidePageNumber = false;
         private readonly bool hidePagination = false;
@@ -17,48 +15,40 @@ namespace pva.SuperV.Blazor.Components.Pages
         private readonly string infoFormat = "{first_item}-{last_item} of {all_items}";
         private readonly string allItemsText = "All";
 
-        private IEnumerable<ProjectModel>? projects = [];
+        [Inject]
+        private IRestClient SuperVRestClient { get; set; } = default!;
+        [Inject]
+        private NavigationManager NavigationManager { get; set; } = default!;
+        [Inject]
+        private State State { get; set; } = default!;
 
-        protected override async Task OnInitializedAsync()
+        private MudTable<ProjectModel> projectsTable = default!;
+        private string projectNameSearchString = default!;
+
+        private async Task<TableData<ProjectModel>> ServerReload(TableState state, CancellationToken token)
         {
-            projects = await RestClient.GetProjectsAsync();
-            //await Task.Run(() =>
-            //    projects = new List<ProjectModel>() {
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = false },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "RP1", Description = "Runnable project", Runnable = true },
-            //    new ProjectModel() { Name = "WIP", Description = "WIP project", Runnable = false }
-            //    }.AsEnumerable()
-            //);
+            ProjectPagedSearchRequest request = new() { PageNumber = state.Page + 1, PageSize = state.PageSize, NameFilter = projectNameSearchString };
+            PagedSearchResultOfProjectModel projects = await SuperVRestClient.SearchProjectsAsync(request, token);
+            TableData<ProjectModel> projectsTableData = new() { TotalItems = projects.Count, Items = projects.Result };
+            return projectsTableData;
         }
 
         private async Task CreateProject(MouseEventArgs e)
         {
-            CreateProjectRequest request = new()
-            { Name = "Name", Description = "Description", HistoryStorageConnectionString = "" };
-            ProjectModel createdProject = await RestClient.CreateBlankProjectAsync(request);
+            State.EditedProject = null;
+            NavigationManager.NavigateTo("/Project");
+            await projectsTable.ReloadServerData();
         }
 
+        private void RowClickedEvent(TableRowClickEventArgs<ProjectModel> tableRowClickEventArgs)
+        {
+            State.EditedProject = tableRowClickEventArgs.Item!;
+            NavigationManager.NavigateTo("/project");
+        }
+
+        private async Task Search(string args)
+        {
+            await projectsTable.ReloadServerData();
+        }
     }
 }

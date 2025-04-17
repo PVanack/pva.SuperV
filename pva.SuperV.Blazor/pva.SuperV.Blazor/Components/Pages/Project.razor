@@ -1,0 +1,36 @@
+﻿@page "/project"
+<PageTitle>@pageTitle</PageTitle>
+
+<h1>@pageTitle</h1>
+
+<EditForm Model="@EditedProject" OnValidSubmit="OnValidSubmit">
+	<DataAnnotationsValidator />
+	<MudGrid>
+		<MudItem xs="12" sm="7">
+			<MudCard>
+				<MudCardContent>
+					<MudTextField Disabled="@isModification" Label="Project name"
+								  @bind-Value="EditedProject.Name" For="@(() => EditedProject.Name)" />
+					<MudTextField Label="Project description" Class="mt-3"
+								  @bind-Value="EditedProject.Description" For="@(() => EditedProject.Description)" />
+					<MudTextField Label="History storage connection string" Class="mt-3"
+								  @bind-Value="EditedProject.HistoryStorageConnectionString" For="@(() => EditedProject.HistoryStorageConnectionString)" />
+				</MudCardContent>
+				<MudCardActions>
+					<MudSpacer />
+					<MudButton @onclick="CancelSubmit" Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto">Cancel</MudButton>
+					&nbsp;
+					<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">OK</MudButton>
+				</MudCardActions>
+			</MudCard>
+		</MudItem>
+		<MudItem hidden="@success" xs="12" sm="5">
+			<MudPaper Class="pa-4 mud-height-full">
+				<MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+				<MudText Color="@Color.Error">
+					<ValidationSummary />
+				</MudText>
+			</MudPaper>
+		</MudItem>
+	</MudGrid>
+</EditForm>

@@ -1,14 +1,17 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace pva.SuperV.Blazor.Components.Layout
 {
     public partial class MainLayout : LayoutComponentBase
     {
-        bool _drawerOpen = true;
+        MudTheme theme = new();
+        bool isDarkMode = true;
+        bool drawerOpen = false;
 
-        void DrawerToggle()
+        void ToggleDrawer()
         {
-            _drawerOpen = !_drawerOpen;
+            drawerOpen = !drawerOpen;
         }
     }
 }

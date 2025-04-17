@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <OpenApiReference Include="..\..\pva.SuperV.Api\openapi\swagger.json" Namespace="pva.SuperV.Blazor.SuperVClient" ClassName="RestClient" Link="OpenAPIs\swagger.json" />
+    <OpenApiReference Include="..\..\pva.SuperV.Api\openapi\swagger.json" Namespace="pva.SuperV.Blazor.SuperVClient" ClassName="RestClient" Link="OpenAPIs\swagger.json" Options="/generateClientInterfaces:true" />
   </ItemGroup>
 
   <ItemGroup>

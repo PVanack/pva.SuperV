@@ -3,49 +3,45 @@
 <PageTitle>Projects</PageTitle>
 
 <h1>Projects</h1>
-
-
-@if (projects == null)
-{
-	<p><em>Loading...</em></p>
-}
-else
-{
-	<MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Label="Create project" Size="Size.Small" OnClick="@CreateProject" />
-	<MudTable Items="@projects">
-		<ToolBarContent>
-			<MudText Typo="Typo.h6">Projects</MudText>
-		</ToolBarContent>
-		<HeaderContent>
-			<MudTh>Name</MudTh>
-			<MudTh>Description</MudTh>
-			<MudTh>Runnable</MudTh>
-		</HeaderContent>
-		<RowTemplate>
-			<MudTd DataLabel="Name">@context.Name</MudTd>
-			<MudTd DataLabel="Description">@context.Description</MudTd>
-			<MudTd DataLabel="Runnable">
-				@if (context.Runnable)
-				{
-					<a></a>
-				}
-				else
-				{
-					<img src="images/WIP.png" width="25" height="25" />
-				}
-			</MudTd>
-		</RowTemplate>
-		<PagerContent>
-			<MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100, int.MaxValue }"
-						   RowsPerPageString="@rowsPerPageString"
-						   InfoFormat="@infoFormat"
-						   AllItemsText="@allItemsText"
-						   HorizontalAlignment="@horizontalAlignment"
-						   HideRowsPerPage="@hideRowsPerPage"
-						   HidePageNumber="@hidePageNumber"
-						   HidePagination="@hidePagination"
-						   />
-		</PagerContent>
-	</MudTable>
-
-}
+<MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Label="Create project" Size="Size.Small" OnClick="@CreateProject" />
+<MudTable T="ProjectModel" @ref="projectsTable" ServerData="ServerReload" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
+	<ColGroup>
+		<col style="width:auto" />
+		<col style="width:auto" />
+		<col style="width:auto" />
+	</ColGroup>
+	<ToolBarContent>
+		<MudText Typo="Typo.h6">Projects</MudText>
+		<MudSpacer />
+		<MudTextField @bind-Value="projectNameSearchString" Placeholder="Search" Clearable=true Immediate=true TextChanged="Search"
+		Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+	</ToolBarContent>
+	<HeaderContent>
+		<MudTh Style="text-align:center">Name</MudTh>
+		<MudTh Style="text-align:center">Description</MudTh>
+		<MudTh Style="text-align:center">Runnable</MudTh>
+	</HeaderContent>
+	<RowTemplate>
+		<MudTd DataLabel="Name">@context.Name</MudTd>
+		<MudTd DataLabel="Description">@context.Description</MudTd>
+		<MudTd DataLabel="Runnable" Style="text-align:center">
+			<MudImage Width="25" Height="25" hidden="@(context.Runnable)" Src="images/WIP.png" />
+		</MudTd>
+	</RowTemplate>
+	<NoRecordsContent>
+		<MudText>No matching records found</MudText>
+	</NoRecordsContent>
+	<LoadingContent>
+		<MudText>Loading...</MudText>
+	</LoadingContent>
+	<PagerContent>
+		<MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100, int.MaxValue }"
+					   RowsPerPageString="@rowsPerPageString"
+					   InfoFormat="@infoFormat"
+					   AllItemsText="@allItemsText"
+					   HorizontalAlignment="@horizontalAlignment"
+					   HideRowsPerPage="@hideRowsPerPage"
+					   HidePageNumber="@hidePageNumber"
+					   HidePagination="@hidePagination" />
+	</PagerContent>
+</MudTable>
