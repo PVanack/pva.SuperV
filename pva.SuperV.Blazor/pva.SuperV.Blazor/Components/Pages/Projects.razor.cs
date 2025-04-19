@@ -20,6 +20,8 @@ namespace pva.SuperV.Blazor.Components.Pages
         [Inject]
         private NavigationManager NavigationManager { get; set; } = default!;
         [Inject]
+        private IDialogService DialogService { get; set; } = default!;
+        [Inject]
         private State State { get; set; } = default!;
 
         private MudTable<ProjectModel> projectsTable = default!;
@@ -49,6 +51,31 @@ namespace pva.SuperV.Blazor.Components.Pages
         private async Task Search(string args)
         {
             await projectsTable.ReloadServerData();
+        }
+
+        private async Task CreateWipProjectFromRunnable(string runnableProjectId)
+        {
+            await SuperVRestClient.CreateProjectFromRunnableAsync(runnableProjectId);
+            await projectsTable.ReloadServerData();
+        }
+
+        private async Task BuildWipProject(string wipProjectId)
+        {
+            await SuperVRestClient.BuildProjectAsync(wipProjectId);
+            await projectsTable.ReloadServerData();
+        }
+        private async Task DeleteProject(string projectId)
+        {
+            var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.EntityDescription, $"project {projectId}" } };
+
+            var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>($"Delete project", parameters);
+            var result = await dialog.Result;
+
+            if (result is not null && !result.Canceled)
+            {
+                await SuperVRestClient.UnloadProjectAsync(projectId);
+                await projectsTable.ReloadServerData();
+            }
         }
     }
 }

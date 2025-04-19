@@ -6,26 +6,54 @@
 <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Label="Create project" Size="Size.Small" OnClick="@CreateProject" />
 <MudTable T="ProjectModel" @ref="projectsTable" ServerData="ServerReload" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
 	<ColGroup>
-		<col style="width:auto" />
-		<col style="width:auto" />
-		<col style="width:auto" />
+		<col />
+		<col />
+		<col style="width:25px;" />
+		<col style="width:25px;" />
 	</ColGroup>
 	<ToolBarContent>
 		<MudText Typo="Typo.h6">Projects</MudText>
 		<MudSpacer />
 		<MudTextField @bind-Value="projectNameSearchString" Placeholder="Search" Clearable=true Immediate=true TextChanged="Search"
-		Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+					  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
 	</ToolBarContent>
 	<HeaderContent>
 		<MudTh Style="text-align:center">Name</MudTh>
 		<MudTh Style="text-align:center">Description</MudTh>
 		<MudTh Style="text-align:center">Runnable</MudTh>
+		<MudTh />
 	</HeaderContent>
 	<RowTemplate>
 		<MudTd DataLabel="Name">@context.Name</MudTd>
 		<MudTd DataLabel="Description">@context.Description</MudTd>
 		<MudTd DataLabel="Runnable" Style="text-align:center">
 			<MudImage Width="25" Height="25" hidden="@(context.Runnable)" Src="images/WIP.png" />
+		</MudTd>
+		<MudTd>
+			<MudMenu Dense
+					 Variant="Variant.Text"
+					 Size="Size.Small"
+					 Color="Color.Inherit"
+					 Icon="@Icons.Material.TwoTone.MoreVert">
+				<MudMenuItem hidden="@(!context.Runnable)" OnClick="@((e)=> CreateWipProjectFromRunnable(context.Id))"
+							 ForceLoad
+							 Icon="@Icons.Material.Filled.DesignServices"
+							 IconColor="Color.Primary"
+							 Label="Create WIP project" />
+
+				<MudMenuItem hidden="@(context.Runnable)" OnClick="@((e)=> BuildWipProject(context.Id))"
+							 ForceLoad
+							 Icon="@Icons.Material.Filled.MiscellaneousServices"
+							 IconColor="Color.Primary"
+							 Label="Build project" />
+				<MudMenuItem OnClick="@((e)=> DeleteProject(context.Id))"
+							 ForceLoad
+							 Icon="@Icons.Material.Filled.Delete"
+							 IconColor="Color.Primary"
+							 Label="Delete project" />
+			</MudMenu>
+
+			<MudSpacer />
 		</MudTd>
 	</RowTemplate>
 	<NoRecordsContent>

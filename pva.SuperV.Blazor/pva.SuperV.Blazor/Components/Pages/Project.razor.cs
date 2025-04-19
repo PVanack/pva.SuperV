@@ -17,11 +17,10 @@ namespace pva.SuperV.Blazor.Components.Pages
         private string pageTitle = default!;
         private bool success;
         private bool isModification;
-        private CreateProjectRequest EditedProject { get; set; } = default!;
+        private CreateProjectRequest EditedProject { get; set; } = new();
 
         protected override Task OnInitializedAsync()
         {
-            EditedProject = new();
             if (State.EditedProject != null)
             {
                 isModification = true;
