@@ -13,6 +13,7 @@
 		<NavMenu />
 	</MudDrawer>
 	<MudMainContent>
+		<MudBreadcrumbs @ref="BreadcrumbsComponent" Items="State.Breadcrumbs" Separator=">"></MudBreadcrumbs>
 		@Body
 	</MudMainContent>
 </MudLayout>

@@ -6,6 +6,8 @@ namespace pva.SuperV.Blazor.Components.Pages
 {
     public partial class Project
     {
+        [Parameter]
+        public string ProjectId { get; set; } = default!;
 
         [Inject]
         private IRestClient SuperVRestClient { get; set; } = default!;
@@ -19,8 +21,12 @@ namespace pva.SuperV.Blazor.Components.Pages
         private bool isModification;
         private CreateProjectRequest EditedProject { get; set; } = new();
 
-        protected override Task OnInitializedAsync()
+        protected override async Task OnParametersSetAsync()
         {
+            if (!String.IsNullOrEmpty(ProjectId))
+            {
+                State.EditedProject = await SuperVRestClient.GetProjectAsync(ProjectId);
+            }
             if (State.EditedProject != null)
             {
                 isModification = true;
@@ -28,7 +34,8 @@ namespace pva.SuperV.Blazor.Components.Pages
                 EditedProject.Description = State.EditedProject.Description;
             }
             pageTitle = isModification ? $"Project {EditedProject.Name}" : "New project";
-            return base.OnInitializedAsync();
+            State.AddProjectBreadcrumb(State.EditedProject);
+            await base.OnParametersSetAsync();
         }
 
         private async Task OnValidSubmit(EditContext context)
@@ -55,6 +62,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         {
             NavigationManager.NavigateTo("/projects");
             State.EditedProject = null;
+            State.RemoveLastBreadcrumb();
         }
 
     }

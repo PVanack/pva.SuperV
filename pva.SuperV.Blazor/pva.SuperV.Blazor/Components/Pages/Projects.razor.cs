@@ -27,6 +27,11 @@ namespace pva.SuperV.Blazor.Components.Pages
         private MudTable<ProjectModel> projectsTable = default!;
         private string projectNameSearchString = default!;
 
+        protected override void OnInitialized()
+        {
+            State.SetProjectsBreadcrumb();
+            base.OnInitialized();
+        }
         private async Task<TableData<ProjectModel>> ServerReload(TableState state, CancellationToken token)
         {
             ProjectPagedSearchRequest request = new() { PageNumber = state.Page + 1, PageSize = state.PageSize, NameFilter = projectNameSearchString };
@@ -38,7 +43,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         private async Task CreateProject(MouseEventArgs e)
         {
             State.EditedProject = null;
-            NavigationManager.NavigateTo("/Project");
+            NavigationManager.NavigateTo("/project");
             await projectsTable.ReloadServerData();
         }
 
