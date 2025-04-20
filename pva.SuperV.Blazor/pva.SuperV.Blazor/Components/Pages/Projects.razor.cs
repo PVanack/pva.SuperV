@@ -8,14 +8,6 @@ namespace pva.SuperV.Blazor.Components.Pages
 {
     public partial class Projects
     {
-        private readonly HorizontalAlignment horizontalAlignment = HorizontalAlignment.Right;
-        private readonly bool hidePageNumber = false;
-        private readonly bool hidePagination = false;
-        private readonly bool hideRowsPerPage = false;
-        private readonly string rowsPerPageString = "Rows per page:";
-        private readonly string infoFormat = "{first_item}-{last_item} of {all_items}";
-        private readonly string allItemsText = "All";
-
         [Inject]
         private IRestClient SuperVRestClient { get; set; } = default!;
         [Inject]
