@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
+using pva.SuperV.Blazor.Components.Dialogs;
 using pva.SuperV.Blazor.SuperVClient;
 
 namespace pva.SuperV.Blazor.Components.Pages

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace pva.SuperV.Blazor.Components.Pages
+namespace pva.SuperV.Blazor.Components.Dialogs
 {
     public partial class DeleteConfirmationDialog
     {
