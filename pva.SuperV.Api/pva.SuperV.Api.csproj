@@ -9,6 +9,12 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
   </PropertyGroup>
 
+  <!-- Necessary for SaveProjectDefinitions() and SaveProjectInstances() (see https://learn.microsoft.com/en-us/dotnet/core/compatibility/serialization/8.0/publishtrimmed) -->
+  <PropertyGroup>
+    <PublishTrimmed>true</PublishTrimmed>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.1.15" />

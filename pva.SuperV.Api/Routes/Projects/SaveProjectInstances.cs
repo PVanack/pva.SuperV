@@ -7,13 +7,13 @@ namespace pva.SuperV.Api.Routes.Projects
 {
     internal static class SaveProjectInstances
     {
-        internal static async Task<Results<FileStreamHttpResult, NotFound<string>, BadRequest<string>, InternalServerError<string>>> Handle(IProjectService projectService, string projectId)
+        internal static async Task<Results<Ok<string>, NotFound<string>, BadRequest<string>, InternalServerError<string>>> Handle(IProjectService projectService, string projectId)
         {
             try
             {
                 StreamReader? stream = await projectService.GetProjectInstancesAsync(projectId);
                 return stream is not null
-                    ? TypedResults.Stream(stream.BaseStream, "application/json")
+                    ? TypedResults.Ok(await stream.ReadToEndAsync())
                     : TypedResults.InternalServerError("Project instances stream is null");
             }
             catch (UnknownEntityException e)

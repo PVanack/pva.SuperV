@@ -190,10 +190,15 @@ namespace pva.SuperV.Api
     [JsonSerializable(typeof(InstancePagedSearchRequest))]
 
     [JsonSerializable(typeof(HistoryRequestModel))]
-    [JsonSerializable(typeof(HistoryStatisticsRequestModel))]
     [JsonSerializable(typeof(HistoryRawResultModel))]
-    [JsonSerializable(typeof(List<HistoryFieldModel>))]
     [JsonSerializable(typeof(List<HistoryRawRowModel>))]
+    [JsonSerializable(typeof(HistoryResultModel))]
+    [JsonSerializable(typeof(List<HistoryFieldModel>))]
+    [JsonSerializable(typeof(HistoryStatisticsRequestModel))]
+    [JsonSerializable(typeof(HistoryStatisticsRawResultModel))]
+    [JsonSerializable(typeof(List<HistoryStatisticsRawRowModel>))]
+    [JsonSerializable(typeof(HistoryStatisticsResultModel))]
+    [JsonSerializable(typeof(List<HistoryStatisticsRowModel>))]
     internal partial class AppJsonSerializerContext : JsonSerializerContext
     {
     }
