@@ -8,11 +8,11 @@ namespace pva.SuperV.Api.Routes.Projects
 {
     internal static class LoadProjectFromDefinitions
     {
-        internal static Results<Created<ProjectModel>, BadRequest<string>> Handle(IProjectService projectService, HttpRequest request)
+        internal static Results<Created<ProjectModel>, BadRequest<string>> Handle(IProjectService projectService, byte[] fileData)
         {
             try
             {
-                using StreamReader reader = new(request.Body, System.Text.Encoding.UTF8);
+                using StreamReader reader = new(new MemoryStream(fileData), System.Text.Encoding.UTF8);
                 ProjectModel projectModel = projectService.CreateProjectFromJsonDefinition(reader);
                 return TypedResults.Created($"/projects/{projectModel.Id}", projectModel);
             }

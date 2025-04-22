@@ -98,12 +98,12 @@ namespace pva.SuperV.Api.Routes.Projects
 
             projectsApi.MapPost("/load-from-definitions",
                 (IProjectService projectService,
-                [Description("HTTP request")] HttpRequest request)
-                    => LoadProjectFromDefinitions.Handle(projectService, request))
+                [Description("File data containing project definitioons")]
+                [FromBody] byte[] fileData)
+                    => LoadProjectFromDefinitions.Handle(projectService, fileData))
                 .WithName("LoadProjectFromDefinitions")
                 .WithSummary("Loads a project from a definition JSON")
                 .WithDescription("Loads a project from a definition JSON")
-                .Accepts<IFormFile>("multipart/form-data")
                 .Produces<ProjectModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
@@ -120,14 +120,15 @@ namespace pva.SuperV.Api.Routes.Projects
 
             projectsApi.MapPost("/{runnableProjectId}/instances",
                 (IProjectService projectService,
-                [Description("ID of runnable project")] string runnableProjectId,
-                [Description(" HTTP Request")] HttpRequest request)
-                    => LoadProjectInstances.Handle(projectService, runnableProjectId, request))
+                [Description("ID of runnable project")]
+                string runnableProjectId,
+                [Description("File data containing the instances")]
+                [FromBody] byte[] fileData)
+                    => LoadProjectInstances.Handle(projectService, runnableProjectId, fileData))
                 .WithName("LoadProjectInstances")
                 .WithSummary("Loads runnable project instances from a JSON file")
                 .WithDescription("Loads runnable project instances from a JSON file")
-                .Accepts<IFormFile>("multipart/form-data")
-                .Produces<ProjectModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 

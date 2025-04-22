@@ -488,10 +488,12 @@
         "description": "Loads a project from a definition JSON",
         "operationId": "LoadProjectFromDefinitions",
         "requestBody": {
+          "description": "File data containing project definitioons",
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/IFormFile"
+                "type": "string",
+                "format": "byte"
               }
             }
           },
@@ -602,10 +604,12 @@
           }
         ],
         "requestBody": {
+          "description": "File data containing the instances",
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/IFormFile"
+                "type": "string",
+                "format": "byte"
               }
             }
           },
@@ -613,14 +617,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProjectModel"
-                }
-              }
-            }
+            "description": "OK"
           },
           "404": {
             "description": "Not Found",
@@ -5049,10 +5046,6 @@
             "description": "Retrieved values."
           }
         }
-      },
-      "IFormFile": {
-        "type": "string",
-        "format": "binary"
       },
       "InstanceModel": {
         "required": [

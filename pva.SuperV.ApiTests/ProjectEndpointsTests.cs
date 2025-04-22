@@ -6,7 +6,6 @@ using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Projects;
 using Shouldly;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using Xunit.Abstractions;
@@ -275,7 +274,9 @@ namespace pva.SuperV.ApiTests
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
             string definitionsJson = await response.Content.ReadAsStringAsync();
-            definitionsJson.ShouldNotBeNull()
+            definitionsJson.ShouldNotBeNull();
+            definitionsJson = definitionsJson.Replace("\"{", "{").Replace("\\r", "\r").Replace("\\n", "\n").Replace("\\\"", "\"").Replace("}\"", "}");
+            definitionsJson
                 .ShouldBe(projectDefinitionsJson);
             await stream.DisposeAsync();
         }
@@ -302,12 +303,8 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedProject);
 
             // WHEN
-            using var form = new MultipartFormDataContent();
-            var jsonContent = new ByteArrayContent(Encoding.UTF8.GetBytes(projectDefinitionsJson));
-            jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
-            form.Add(jsonContent);
-
-            var response = await client.PostAsync("/projects/load-from-definitions", form);
+            var response = await client.PostAsync("/projects/load-from-definitions",
+                BuildJsonStreamContent(projectDefinitionsJson));
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
@@ -331,8 +328,10 @@ namespace pva.SuperV.ApiTests
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            string definitionsJson = await response.Content.ReadAsStringAsync();
-            definitionsJson.ShouldNotBeNull()
+            string instancesJson = await response.Content.ReadAsStringAsync();
+            instancesJson.ShouldNotBeNull();
+            instancesJson = instancesJson.Replace("\"{", "{").Replace("\\r", "\r").Replace("\\n", "\n").Replace("\\\"", "\"").Replace("}\"", "}");
+            instancesJson
                 .ShouldBe(projectInstancesJson);
             await stream.DisposeAsync();
         }
@@ -369,12 +368,8 @@ namespace pva.SuperV.ApiTests
             // GIVEN
 
             // WHEN
-            using var form = new MultipartFormDataContent();
-            var jsonContent = new ByteArrayContent(Encoding.UTF8.GetBytes(createProjectInstancesJson));
-            jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
-            form.Add(jsonContent);
-
-            var response = await client.PostAsync("/projects/TestProject/instances", form);
+            var response = await client.PostAsync("/projects/TestProject/instances",
+                BuildJsonStreamContent(createProjectInstancesJson));
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
@@ -388,12 +383,8 @@ namespace pva.SuperV.ApiTests
                 .Do(call => { throw new UnknownEntityException(); });
 
             // WHEN
-            using var form = new MultipartFormDataContent();
-            var jsonContent = new ByteArrayContent(Encoding.UTF8.GetBytes(createProjectInstancesJson));
-            jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
-            form.Add(jsonContent);
-
-            var response = await client.PostAsync("/projects/UnknownProject/instances", form);
+            var response = await client.PostAsync("/projects/UnknownProject/instances",
+                BuildJsonStreamContent(createProjectInstancesJson));
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -407,15 +398,21 @@ namespace pva.SuperV.ApiTests
                 .Do(call => { throw new NonRunnableProjectException(); });
 
             // WHEN
-            using var form = new MultipartFormDataContent();
-            var jsonContent = new ByteArrayContent(Encoding.UTF8.GetBytes(createProjectInstancesJson));
-            jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
-            form.Add(jsonContent);
 
-            var response = await client.PostAsync("/projects/WipProject/instances", form);
+            var response = await client.PostAsync("/projects/WipProject/instances",
+                BuildJsonStreamContent(createProjectInstancesJson));
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
+        }
+
+        private static JsonContent BuildJsonStreamContent(string json)
+        {
+            JsonContent jsonContent = JsonContent.Create(Encoding.UTF8.GetBytes(json));
+            return jsonContent;
+            //StreamContent content = new(new MemoryStream(Encoding.UTF8.GetBytes(json)));
+            //content.Headers.ContentType = new MediaTypeHeaderValue("application/json", "charset=UTF-8");
+            //return content;
         }
 
         [Fact]
