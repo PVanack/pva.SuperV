@@ -13,8 +13,12 @@ namespace pva.SuperV.Blazor
 
             // Add services to the container.
             builder.Services
-                .AddRazorComponents()
-                .AddInteractiveServerComponents()
+                .AddRazorComponents(options
+                    => options.DetailedErrors = builder.Environment.IsDevelopment())
+                .AddInteractiveServerComponents(options =>
+                    {
+                        options.DetailedErrors = true;
+                    })
                 .AddInteractiveWebAssemblyComponents();
             builder.Services.AddMudServices();
 
