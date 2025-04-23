@@ -12,40 +12,103 @@
 		document.body.removeChild(link);
 	}
 </script>
+<style>
+	.selected {
+		background-color: #1E88E5 !important;
+	}
+
+		.selected > td {
+			color: white !important;
+		}
+
+			.selected > td .mud-input {
+				color: white !important;
+			}
+</style>
 
 <h1>Projects</h1>
-
-<MudPaper>
-	<MudButtonGroup Color="Color.Primary">
-		<MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Label="Create project" Size="Size.Small" OnClick="@CreateProject" />
-		<MudFileUpload T="IBrowserFile" FilesChanged="LoadProjectFromDefinition">
-			<ActivatorContent>
-				<MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.UploadFile" Label="Load project" Size="Size.Small" />
-			</ActivatorContent>
-		</MudFileUpload>
-	</MudButtonGroup>
-	<MudSpacer/>
-</MudPaper>
-<MudTable T="ProjectModel" @ref="projectsTable" ServerData="ServerReload" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
+<MudTable T="ProjectModel" @ref="projectsTable" ServerData="ServerReload" RowClassFunc="SelectedRowClassFunc" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
+	<ToolBarContent>
+		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
+			<MudButton StartIcon="@Icons.Material.Filled.Add"
+					   OnClick="@CreateProject">
+				Create project
+			</MudButton>
+			<MudFileUpload T="IBrowserFile" FilesChanged="LoadProjectFromDefinition">
+				<ActivatorContent>
+					<MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.FileOpen">
+						Load project"
+					</MudButton>
+				</ActivatorContent>
+			</MudFileUpload>
+		</MudButtonGroup>
+		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
+			<MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="@EditProject">
+				Edit project
+			</MudButton>
+			<MudButton StartIcon="@Icons.Material.Filled.DesignServices"
+					   hidden="@(SelectedProject == null || !SelectedProject.Runnable)" OnClick="@((e)=> CreateWipProjectFromRunnable(SelectedProject!.Id))">
+				Create WIP project
+			</MudButton>
+			<MudButton StartIcon="@Icons.Material.Filled.Save"
+					   hidden="@(SelectedProject == null || !SelectedProject.Runnable)" OnClick="@((e) => SaveProjectInstances(SelectedProject!))">
+				Save project instances
+			</MudButton>
+			<MudFileUpload T="IBrowserFile" FilesChanged="@((e) => LoadProjectInstancesFromFile(e, SelectedProject!))">
+				<ActivatorContent>
+					<MudButton StartIcon="@Icons.Material.Filled.FileOpen"
+							   hidden="@(SelectedProject == null || !SelectedProject.Runnable)">
+						Load project instances
+					</MudButton>
+				</ActivatorContent>
+			</MudFileUpload>
+			<MudButton StartIcon="@Icons.Material.Filled.MiscellaneousServices"
+					   hidden="@(SelectedProject == null || SelectedProject.Runnable)" OnClick="@((e)=> BuildWipProject(SelectedProject!.Id))">
+				Build project
+			</MudButton>
+			<MudButton StartIcon="@Icons.Material.Filled.Save"
+					   hidden="@(SelectedProject == null || SelectedProject.Runnable)" OnClick="@((e)=> SaveProjectDefinitions(SelectedProject!))">
+				Save project definitions
+			</MudButton>
+			<MudButton IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.DeleteForever"
+					   hidden="@(SelectedProject == null)" OnClick="@((e)=> DeleteProject(SelectedProject!.Id))">
+				Delete project
+			</MudButton>
+		</MudButtonGroup>
+		<MudSpacer />
+		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
+			<MudButton StartIcon="@Icons.Material.Filled.DataObject"
+					   hidden="@(SelectedProject == null || !SelectedProject.Runnable)" Href=@($"/instances/{SelectedProject?.Id}")>
+				Instances
+			</MudButton>
+			<MudButton StartIcon="@Icons.Material.Filled.Class"
+					   hidden="@(SelectedProject == null || SelectedProject.Runnable)" Href=@($"/classes/{SelectedProject?.Id}")>
+				Classes
+			</MudButton>
+			<MudButton StartIcon="@Icons.Material.Filled.FormatListNumbered"
+					   hidden="@(SelectedProject == null || SelectedProject.Runnable)" Href=@($"/field-formatters/{SelectedProject?.Id}")>
+				Field formatters
+			</MudButton>
+			<MudButton StartIcon="@Icons.Material.Filled.Storage"
+					   hidden="@(SelectedProject == null || SelectedProject.Runnable)" Href=@($"/history-repositories/{SelectedProject?.Id}")>
+				History repositories
+			</MudButton>
+		</MudButtonGroup>
+		<MudSpacer />
+		<MudTextField @bind-Value="projectNameSearchString" Placeholder="Search" Clearable=true Immediate=true TextChanged="Search"
+					  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+	</ToolBarContent>
 	<ColGroup>
 		<col />
 		<col />
 		<col />
 		<col style="width:25px;" />
-		<col style="width:25px;" />
 	</ColGroup>
-	<ToolBarContent>
-		<MudText Typo="Typo.h6">Projects</MudText>
-		<MudSpacer />
-		<MudTextField @bind-Value="projectNameSearchString" Placeholder="Search" Clearable=true Immediate=true TextChanged="Search"
-					  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-	</ToolBarContent>
 	<HeaderContent>
 		<MudTh Style="text-align:center">Name</MudTh>
 		<MudTh Style="text-align:center">Description</MudTh>
 		<MudTh Style="text-align:center">Version</MudTh>
 		<MudTh Style="text-align:center">State</MudTh>
-		<MudTh />
 	</HeaderContent>
 	<RowTemplate>
 		<MudTd DataLabel="Name">@context.Name</MudTd>
@@ -54,51 +117,6 @@
 		<MudTd DataLabel="Runnable" Style="text-align:center">
 			<MudIcon Icon="@(context.Runnable ? Icons.Material.Filled.MiscellaneousServices : Icons.Material.Filled.DesignServices)"
 					 Title="@(context.Runnable ? "Runnable" : "WIP")" />
-		</MudTd>
-		<MudTd>
-			<MudMenu Dense
-					 @key="@context.Id" @ref="ContextMenusRef[context.Id]"
-					 Variant="Variant.Text"
-					 Color="Color.Primary"
-					 Icon="@Icons.Material.TwoTone.MoreVert">
-				@if (context.Runnable)
-				{
-					<MudMenuItem OnClick="@((e)=> CreateWipProjectFromRunnable(context.Id))"
-								 ForceLoad
-								 Icon="@Icons.Material.Filled.DesignServices"
-								 Label="CREATE WIP PROJECT" />
-					<MudMenuItem OnClick="@((e) => SaveProjectInstances(context))"
-								 ForceLoad
-								 Icon="@Icons.Material.Filled.Save"
-								 Label="SAVE PROJECT INSTANCES" />
-					<MudMenuItem Icon="@Icons.Material.Filled.UploadFile"
-								 Label="LOAD PROJECT INSTANCES">
-						<MudFileUpload T="IBrowserFile" 
-									   FilesChanged="@((e) => LoadProjectInstancesFromFile(e, context))">
-							<ActivatorContent>
-								<MudButton Color="Color.Inherit" Variant="Variant.Text">Load instances</MudButton>
-							</ActivatorContent>
-						</MudFileUpload>
-					</MudMenuItem>
-				}
-				else
-				{
-					<MudMenuItem OnClick="@((e)=> BuildWipProject(context.Id))"
-								 ForceLoad
-								 Icon="@Icons.Material.Filled.MiscellaneousServices"
-								 Label="BUILD PROJECT" />
-					<MudMenuItem OnClick="@((e)=> SaveProjectDefinitions(context))"
-								 ForceLoad
-								 Icon="@Icons.Material.Filled.Save"
-								 Label="SAVE PROJECT DEFINITIONS" />
-				}
-				<MudMenuItem OnClick="@((e)=> DeleteProject(context.Id))"
-							 ForceLoad
-							 Icon="@Icons.Material.Filled.DeleteForever"
-							 IconColor="Color.Secondary"
-							 Label="DELETE PROJECT" />
-			</MudMenu>
-			<MudSpacer />
 		</MudTd>
 	</RowTemplate>
 	<NoRecordsContent>
