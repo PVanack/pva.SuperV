@@ -3,7 +3,7 @@
     /// <summary>
     /// Project constants.
     /// </summary>
-    internal static class Constants
+    public static class Constants
     {
         /// <summary>
         /// Valid identifier name pattern used for validation.

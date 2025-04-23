@@ -34,6 +34,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.ApiTests", "pva.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.TestsScenarios", "pva.SuperV.TestsScenarios\pva.SuperV.TestsScenarios.csproj", "{68620CA5-55E1-46C4-95BC-D5D23A7D32FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.Blazor", "pva.SuperV.Blazor\pva.SuperV.Blazor\pva.SuperV.Blazor.csproj", "{6BFF67A8-1773-430E-8B6C-3FE002834046}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.Blazor.Client", "pva.SuperV.Blazor\pva.SuperV.Blazor.Client\pva.SuperV.Blazor.Client.csproj", "{7E92F3BB-A4B2-4874-AFD3-A88FEB28517C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +75,14 @@ Global
 		{68620CA5-55E1-46C4-95BC-D5D23A7D32FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68620CA5-55E1-46C4-95BC-D5D23A7D32FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68620CA5-55E1-46C4-95BC-D5D23A7D32FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BFF67A8-1773-430E-8B6C-3FE002834046}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BFF67A8-1773-430E-8B6C-3FE002834046}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BFF67A8-1773-430E-8B6C-3FE002834046}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BFF67A8-1773-430E-8B6C-3FE002834046}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E92F3BB-A4B2-4874-AFD3-A88FEB28517C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E92F3BB-A4B2-4874-AFD3-A88FEB28517C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E92F3BB-A4B2-4874-AFD3-A88FEB28517C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E92F3BB-A4B2-4874-AFD3-A88FEB28517C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

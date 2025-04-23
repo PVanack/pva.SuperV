@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using pva.SuperV.Api.Services.Projects;
+using pva.SuperV.Model;
 using pva.SuperV.Model.Projects;
 using System.ComponentModel;
 
@@ -26,7 +27,7 @@ namespace pva.SuperV.Api.Routes.Projects
                 .WithDisplayName("SearchProjects")
                 .WithSummary("Search available projects by page")
                 .WithDescription("Search available projects by page")
-                .Produces<List<ProjectModel>>(StatusCodes.Status200OK);
+                .Produces<PagedSearchResult<ProjectModel>>(StatusCodes.Status200OK);
 
             projectsApi.MapGet("/{projectId}",
                 (IProjectService projectService,
@@ -89,20 +90,20 @@ namespace pva.SuperV.Api.Routes.Projects
                         [Description("ID of project")] string projectId)
                     => await SaveProjectDefinitions.Handle(projectService, projectId))
                 .WithName("SaveProjectDefinitions")
-                .WithSummary("Saves the definitions of project to a stream writer")
-                .WithDescription("Saves the definitions of project to a stream writer")
-                .Produces<string>(StatusCodes.Status200OK)
+                .WithSummary("Saves the definitions of project")
+                .WithDescription("Saves the definitions of project")
+                .Produces<string>(StatusCodes.Status200OK, "application/json")
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             projectsApi.MapPost("/load-from-definitions",
                 (IProjectService projectService,
-                [Description("HTTP request")] HttpRequest request)
-                    => LoadProjectFromDefinitions.Handle(projectService, request))
+                [Description("File data containing project definitioons")]
+                [FromBody] byte[] fileData)
+                    => LoadProjectFromDefinitions.Handle(projectService, fileData))
                 .WithName("LoadProjectFromDefinitions")
                 .WithSummary("Loads a project from a definition JSON")
                 .WithDescription("Loads a project from a definition JSON")
-                .Accepts<IFormFile>("multipart/form-data")
                 .Produces<ProjectModel>(StatusCodes.Status201Created)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
@@ -111,22 +112,23 @@ namespace pva.SuperV.Api.Routes.Projects
                         [Description("ID of runnable project")] string runnableProjectId)
                     => await SaveProjectInstances.Handle(projectService, runnableProjectId))
                 .WithName("SaveProjectInstances")
-                .WithSummary("Saves the instances of project to a stream writer")
-                .WithDescription("Saves the instances of project to a stream writer")
-                .Produces<string>(StatusCodes.Status200OK)
+                .WithSummary("Saves the instances of runnable project")
+                .WithDescription("Saves the instances of a runnable project")
+                .Produces<string>(StatusCodes.Status200OK, "application/json")
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             projectsApi.MapPost("/{runnableProjectId}/instances",
                 (IProjectService projectService,
-                [Description("ID of runnable project")] string runnableProjectId,
-                [Description(" HTTP Request")] HttpRequest request)
-                    => LoadProjectInstances.Handle(projectService, runnableProjectId, request))
+                [Description("ID of runnable project")]
+                string runnableProjectId,
+                [Description("File data containing the instances")]
+                [FromBody] byte[] fileData)
+                    => LoadProjectInstances.Handle(projectService, runnableProjectId, fileData))
                 .WithName("LoadProjectInstances")
-                .WithSummary("Loads project instances from a JSON file")
-                .WithDescription("Loads project instances from a JSON file")
-                .Accepts<IFormFile>("multipart/form-data")
-                .Produces<ProjectModel>(StatusCodes.Status200OK)
+                .WithSummary("Loads runnable project instances from a JSON file")
+                .WithDescription("Loads runnable project instances from a JSON file")
+                .Produces(StatusCodes.Status200OK)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 

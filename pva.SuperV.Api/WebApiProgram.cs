@@ -15,6 +15,7 @@ using pva.SuperV.Api.Services.History;
 using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Api.Services.Instances;
 using pva.SuperV.Api.Services.Projects;
+using pva.SuperV.Model;
 using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.FieldDefinitions;
 using pva.SuperV.Model.FieldFormatters;
@@ -76,6 +77,18 @@ namespace pva.SuperV.Api
             builder.Services.AddHttpLogging(o => { });
             builder.Logging.AddConsole();
             builder.Logging.AddJsonConsole();
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  policy =>
+                                      policy
+                                      .AllowAnyMethod()
+                                      .AllowAnyHeader()
+                                      .SetIsOriginAllowed(origin => true)
+                                      .AllowCredentials()
+                                  );
+            });
 
             var app = builder.Build();
 
@@ -107,7 +120,7 @@ namespace pva.SuperV.Api
                .MapFieldProcessingEndpoints()
                .MapInstancesEndpoints()
                .MapHistoryValuesEndpoints();
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.Run();
         }
     }
@@ -119,14 +132,20 @@ namespace pva.SuperV.Api
     [JsonSerializable(typeof(ProjectModel))]
     [JsonSerializable(typeof(CreateProjectRequest))]
     [JsonSerializable(typeof(UpdateProjectRequest))]
+    [JsonSerializable(typeof(ProjectPagedSearchRequest))]
+    [JsonSerializable(typeof(PagedSearchResult<ProjectModel>))]
 
     [JsonSerializable(typeof(List<FieldFormatterModel>))]
     [JsonSerializable(typeof(FieldFormatterModel))]
     [JsonSerializable(typeof(EnumFormatterModel))]
     [JsonSerializable(typeof(CreateFieldFormatterRequest))]
+    [JsonSerializable(typeof(PagedSearchResult<FieldFormatterModel>))]
+    [JsonSerializable(typeof(FieldFormatterPagedSearchRequest))]
 
     [JsonSerializable(typeof(List<ClassModel>))]
     [JsonSerializable(typeof(ClassModel))]
+    [JsonSerializable(typeof(PagedSearchResult<ClassModel>))]
+    [JsonSerializable(typeof(ClassPagedSearchRequest))]
 
     [JsonSerializable(typeof(List<HistoryRepositoryModel>))]
     [JsonSerializable(typeof(HistoryRepositoryModel))]
@@ -145,6 +164,8 @@ namespace pva.SuperV.Api
     [JsonSerializable(typeof(UintFieldDefinitionModel))]
     [JsonSerializable(typeof(UlongFieldDefinitionModel))]
     [JsonSerializable(typeof(UshortFieldDefinitionModel))]
+    [JsonSerializable(typeof(PagedSearchResult<FieldDefinitionModel>))]
+    [JsonSerializable(typeof(FieldDefinitionPagedSearchRequest))]
 
     [JsonSerializable(typeof(List<FieldValueProcessingModel>))]
     [JsonSerializable(typeof(FieldValueProcessingModel))]
@@ -165,12 +186,19 @@ namespace pva.SuperV.Api
     [JsonSerializable(typeof(UintFieldValueModel))]
     [JsonSerializable(typeof(UlongFieldValueModel))]
     [JsonSerializable(typeof(UshortFieldValueModel))]
+    [JsonSerializable(typeof(PagedSearchResult<InstanceModel>))]
+    [JsonSerializable(typeof(InstancePagedSearchRequest))]
 
     [JsonSerializable(typeof(HistoryRequestModel))]
-    [JsonSerializable(typeof(HistoryStatisticsRequestModel))]
     [JsonSerializable(typeof(HistoryRawResultModel))]
-    [JsonSerializable(typeof(List<HistoryFieldModel>))]
     [JsonSerializable(typeof(List<HistoryRawRowModel>))]
+    [JsonSerializable(typeof(HistoryResultModel))]
+    [JsonSerializable(typeof(List<HistoryFieldModel>))]
+    [JsonSerializable(typeof(HistoryStatisticsRequestModel))]
+    [JsonSerializable(typeof(HistoryStatisticsRawResultModel))]
+    [JsonSerializable(typeof(List<HistoryStatisticsRawRowModel>))]
+    [JsonSerializable(typeof(HistoryStatisticsResultModel))]
+    [JsonSerializable(typeof(List<HistoryStatisticsRowModel>))]
     internal partial class AppJsonSerializerContext : JsonSerializerContext
     {
     }

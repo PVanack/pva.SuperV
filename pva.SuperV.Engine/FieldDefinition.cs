@@ -143,8 +143,7 @@ namespace pva.SuperV.Engine
         /// <exception cref="WrongFieldTypeException"></exception>
         public void Update(IFieldDefinition fieldDefinitionUpdate, FieldFormatter? fieldFormatter)
         {
-            FieldDefinition<T>? typedFieldDefinitionUpdate = fieldDefinitionUpdate as FieldDefinition<T>;
-            if (typedFieldDefinitionUpdate != null)
+            if (fieldDefinitionUpdate is FieldDefinition<T> typedFieldDefinitionUpdate)
             {
                 DefaultValue = typedFieldDefinitionUpdate.DefaultValue;
                 Formatter = fieldFormatter;

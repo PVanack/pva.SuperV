@@ -5,6 +5,11 @@
     "description": "API for accessing SuperV projects.",
     "version": "v1"
   },
+  "servers": [
+    {
+      "url": "http://localhost/"
+    }
+  ],
   "paths": {
     "/projects": {
       "get": {
@@ -65,10 +70,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ProjectModel"
-                  }
+                  "$ref": "#/components/schemas/PagedSearchResultOfProjectModel"
                 }
               }
             }
@@ -419,8 +421,8 @@
         "tags": [
           "pva.SuperV.Api"
         ],
-        "summary": "Saves the definitions of project to a stream writer",
-        "description": "Saves the definitions of project to a stream writer",
+        "summary": "Saves the definitions of project",
+        "description": "Saves the definitions of project",
         "operationId": "SaveProjectDefinitions",
         "parameters": [
           {
@@ -434,6 +436,16 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -463,16 +475,6 @@
                 }
               }
             }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
           }
         }
       }
@@ -486,10 +488,12 @@
         "description": "Loads a project from a definition JSON",
         "operationId": "LoadProjectFromDefinitions",
         "requestBody": {
+          "description": "File data containing project definitioons",
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/IFormFile"
+                "type": "string",
+                "format": "byte"
               }
             }
           },
@@ -524,8 +528,8 @@
         "tags": [
           "pva.SuperV.Api"
         ],
-        "summary": "Saves the instances of project to a stream writer",
-        "description": "Saves the instances of project to a stream writer",
+        "summary": "Saves the instances of runnable project",
+        "description": "Saves the instances of a runnable project",
         "operationId": "SaveProjectInstances",
         "parameters": [
           {
@@ -539,6 +543,16 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -568,16 +582,6 @@
                 }
               }
             }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
           }
         }
       },
@@ -585,8 +589,8 @@
         "tags": [
           "pva.SuperV.Api"
         ],
-        "summary": "Loads project instances from a JSON file",
-        "description": "Loads project instances from a JSON file",
+        "summary": "Loads runnable project instances from a JSON file",
+        "description": "Loads runnable project instances from a JSON file",
         "operationId": "LoadProjectInstances",
         "parameters": [
           {
@@ -600,10 +604,12 @@
           }
         ],
         "requestBody": {
+          "description": "File data containing the instances",
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/IFormFile"
+                "type": "string",
+                "format": "byte"
               }
             }
           },
@@ -611,14 +617,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProjectModel"
-                }
-              }
-            }
+            "description": "OK"
           },
           "404": {
             "description": "Not Found",
@@ -3331,18 +3330,22 @@
         "properties": {
           "pageNumber": {
             "type": "integer",
+            "description": "Page number. Must be greater than 0.",
             "format": "int32"
           },
           "pageSize": {
             "type": "integer",
+            "description": "Page size. Must be greater than 0.",
             "format": "int32"
           },
           "nameFilter": {
             "type": "string",
+            "description": "Filter on name of entity.",
             "nullable": true
           },
           "sortOption": {
             "type": "string",
+            "description": "Sorting option",
             "nullable": true
           }
         }
@@ -3848,18 +3851,22 @@
         "properties": {
           "pageNumber": {
             "type": "integer",
+            "description": "Page number. Must be greater than 0.",
             "format": "int32"
           },
           "pageSize": {
             "type": "integer",
+            "description": "Page size. Must be greater than 0.",
             "format": "int32"
           },
           "nameFilter": {
             "type": "string",
+            "description": "Filter on name of entity.",
             "nullable": true
           },
           "sortOption": {
             "type": "string",
+            "description": "Sorting option",
             "nullable": true
           }
         }
@@ -3939,18 +3946,22 @@
         "properties": {
           "pageNumber": {
             "type": "integer",
+            "description": "Page number. Must be greater than 0.",
             "format": "int32"
           },
           "pageSize": {
             "type": "integer",
+            "description": "Page size. Must be greater than 0.",
             "format": "int32"
           },
           "nameFilter": {
             "type": "string",
+            "description": "Filter on name of entity.",
             "nullable": true
           },
           "sortOption": {
             "type": "string",
+            "description": "Sorting option",
             "nullable": true
           }
         }
@@ -5036,10 +5047,6 @@
           }
         }
       },
-      "IFormFile": {
-        "type": "string",
-        "format": "binary"
-      },
       "InstanceModel": {
         "required": [
           "name",
@@ -5077,22 +5084,27 @@
         "properties": {
           "className": {
             "type": "string",
+            "description": "Filter on class name.",
             "nullable": true
           },
           "pageNumber": {
             "type": "integer",
+            "description": "Page number. Must be greater than 0.",
             "format": "int32"
           },
           "pageSize": {
             "type": "integer",
+            "description": "Page size. Must be greater than 0.",
             "format": "int32"
           },
           "nameFilter": {
             "type": "string",
+            "description": "Filter on name of entity.",
             "nullable": true
           },
           "sortOption": {
             "type": "string",
+            "description": "Sorting option",
             "nullable": true
           }
         }
@@ -5113,21 +5125,25 @@
         "properties": {
           "pageNumber": {
             "type": "integer",
+            "description": "Page number.",
             "format": "int32"
           },
           "pageSize": {
             "type": "integer",
+            "description": "Page size.",
             "format": "int32"
           },
           "count": {
             "type": "integer",
+            "description": "Total number of entities.",
             "format": "int32"
           },
           "result": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ClassModel"
-            }
+            },
+            "description": "List of entities."
           }
         }
       },
@@ -5142,21 +5158,25 @@
         "properties": {
           "pageNumber": {
             "type": "integer",
+            "description": "Page number.",
             "format": "int32"
           },
           "pageSize": {
             "type": "integer",
+            "description": "Page size.",
             "format": "int32"
           },
           "count": {
             "type": "integer",
+            "description": "Total number of entities.",
             "format": "int32"
           },
           "result": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FieldDefinitionModel"
-            }
+            },
+            "description": "List of entities."
           }
         }
       },
@@ -5171,21 +5191,58 @@
         "properties": {
           "pageNumber": {
             "type": "integer",
+            "description": "Page number.",
             "format": "int32"
           },
           "pageSize": {
             "type": "integer",
+            "description": "Page size.",
             "format": "int32"
           },
           "count": {
             "type": "integer",
+            "description": "Total number of entities.",
             "format": "int32"
           },
           "result": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/FieldFormatterModel"
-            }
+            },
+            "description": "List of entities."
+          }
+        }
+      },
+      "PagedSearchResultOfProjectModel": {
+        "required": [
+          "pageNumber",
+          "pageSize",
+          "count",
+          "result"
+        ],
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "description": "Page number.",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "Page size.",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total number of entities.",
+            "format": "int32"
+          },
+          "result": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectModel"
+            },
+            "description": "List of entities."
           }
         }
       },
@@ -5234,18 +5291,22 @@
         "properties": {
           "pageNumber": {
             "type": "integer",
+            "description": "Page number. Must be greater than 0.",
             "format": "int32"
           },
           "pageSize": {
             "type": "integer",
+            "description": "Page size. Must be greater than 0.",
             "format": "int32"
           },
           "nameFilter": {
             "type": "string",
+            "description": "Filter on name of entity.",
             "nullable": true
           },
           "sortOption": {
             "type": "string",
+            "description": "Sorting option",
             "nullable": true
           }
         }
