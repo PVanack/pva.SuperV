@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.Instances;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Instances;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.Instances
 {
     internal static class CreateInstance
     {
-        internal static Results<Created<InstanceModel>, NotFound<string>, BadRequest<string>> Handle(IInstanceService instanceService, string projectId, InstanceModel createRequest)
+        internal static async Task<Results<Created<InstanceModel>, NotFound<string>, BadRequest<string>>>
+            Handle(IInstanceService instanceService, string projectId, InstanceModel createRequest)
         {
             try
             {
-                return TypedResults.Created($"/instances/{projectId}/{createRequest.Name}", instanceService.CreateInstance(projectId, createRequest));
+                return TypedResults.Created($"/instances/{projectId}/{createRequest.Name}", await instanceService.CreateInstanceAsync(projectId, createRequest));
             }
             catch (UnknownEntityException e)
             {

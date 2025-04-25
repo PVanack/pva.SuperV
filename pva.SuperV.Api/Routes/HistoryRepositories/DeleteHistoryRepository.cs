@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.HistoryRepositories
 {
@@ -11,7 +11,7 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
         {
             try
             {
-                historyRepositoryService.DeleteHistoryRepository(projectId, historyRepositoryName);
+                historyRepositoryService.DeleteHistoryRepositoryAsync(projectId, historyRepositoryName);
                 return TypedResults.NoContent();
             }
             catch (UnknownEntityException e)

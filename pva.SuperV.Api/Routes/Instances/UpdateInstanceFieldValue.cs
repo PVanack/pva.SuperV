@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.Instances;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Instances;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.Instances
 {
     internal static class UpdateInstanceFieldValue
     {
-        internal static Results<Ok<FieldValueModel>, NotFound<string>, BadRequest<string>> Handle(IFieldValueService fieldValueService, string projectId, string instanceName, string fieldName, FieldValueModel value)
+        internal static async Task<Results<Ok<FieldValueModel>, NotFound<string>, BadRequest<string>>>
+            Handle(IFieldValueService fieldValueService, string projectId, string instanceName, string fieldName, FieldValueModel value)
         {
             try
             {
-                return TypedResults.Ok(fieldValueService.UpdateFieldValue(projectId, instanceName, fieldName, value));
+                return TypedResults.Ok(await fieldValueService.UpdateFieldValueAsync(projectId, instanceName, fieldName, value));
             }
             catch (UnknownEntityException e)
             {

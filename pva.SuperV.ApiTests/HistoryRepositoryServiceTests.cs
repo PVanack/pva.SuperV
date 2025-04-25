@@ -24,32 +24,32 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetHistoryRepositories_ShouldReturnListOfHistoryRepositories()
+        public async Task GetHistoryRepositories_ShouldReturnListOfHistoryRepositories()
         {
             // Act
-            List<HistoryRepositoryModel> result = historyRepositoryService.GetHistoryRepositories(runnableProject.GetId());
+            List<HistoryRepositoryModel> result = await historyRepositoryService.GetHistoryRepositoriesAsync(runnableProject.GetId());
 
             // Assert
             result.Count.ShouldBe(runnableProject.HistoryRepositories.Count);
         }
 
         [Fact]
-        public void GetHistoryRepositoryByName_ShouldReturnHistoryRepository()
+        public async Task GetHistoryRepositoryByName_ShouldReturnHistoryRepository()
         {
             HistoryRepositoryModel expectedHistoryRepository = new(HistoryRepositoryName);
             // Act
-            HistoryRepositoryModel result = historyRepositoryService.GetHistoryRepository(runnableProject.GetId(), expectedHistoryRepository.Name);
+            HistoryRepositoryModel result = await historyRepositoryService.GetHistoryRepositoryAsync(runnableProject.GetId(), expectedHistoryRepository.Name);
 
             // Assert
             result.ShouldBeEquivalentTo(expectedHistoryRepository);
         }
 
         [Fact]
-        public void CreateHistoryRepository_ShouldCreateHistoryRepository()
+        public async Task CreateHistoryRepository_ShouldCreateHistoryRepository()
         {
             HistoryRepositoryModel expectedHistoryRepository = new($"{HistoryRepositoryName}Test");
             // Act
-            HistoryRepositoryModel result = historyRepositoryService.CreateHistoryRepository(wipProject.GetId(), expectedHistoryRepository);
+            HistoryRepositoryModel result = await historyRepositoryService.CreateHistoryRepositoryAsync(wipProject.GetId(), expectedHistoryRepository);
 
             // Assert
             result.ShouldBeEquivalentTo(expectedHistoryRepository);
@@ -57,7 +57,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void DeleteHistoryRepository_ShouldDeleteHistoryRepository()
+        public async Task DeleteHistoryRepository_ShouldDeleteHistoryRepository()
         {
             HistoryRepositoryModel expectedHistoryRepository = new($"{HistoryRepositoryName}");
             IFieldDefinition valueField = wipProject.GetClass(ClassName).GetField(ValueFieldName);
@@ -68,19 +68,19 @@ namespace pva.SuperV.ApiTests
             historizationProcessings.ForEach(historizationProcessing => intFieldWithFormatField.ValuePostChangeProcessings.Remove(historizationProcessing));
 
             // Act
-            historyRepositoryService.DeleteHistoryRepository(wipProject.GetId(), expectedHistoryRepository.Name);
+            await historyRepositoryService.DeleteHistoryRepositoryAsync(wipProject.GetId(), expectedHistoryRepository.Name);
 
             // Assert
             wipProject.HistoryRepositories.ShouldNotContainKey(expectedHistoryRepository.Name);
         }
 
         [Fact]
-        public void DeleteInUseHistoryRepository_ThrowsException()
+        public async Task DeleteInUseHistoryRepository_ThrowsException()
         {
             HistoryRepositoryModel expectedHistoryRepository = new($"{HistoryRepositoryName}");
 
             // Act
-            Assert.Throws<EntityInUseException>(() => historyRepositoryService.DeleteHistoryRepository(wipProject.GetId(), expectedHistoryRepository.Name));
+            await Assert.ThrowsAsync<EntityInUseException>(async () => await historyRepositoryService.DeleteHistoryRepositoryAsync(wipProject.GetId(), expectedHistoryRepository.Name));
         }
     }
 }

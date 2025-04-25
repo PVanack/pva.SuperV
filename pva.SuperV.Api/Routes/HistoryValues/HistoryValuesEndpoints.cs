@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using pva.SuperV.Api.Services.History;
 using pva.SuperV.Model.HistoryRetrieval;
+using pva.SuperV.Model.Services;
 using System.ComponentModel;
 
 namespace pva.SuperV.Api.Routes.HistoryValues

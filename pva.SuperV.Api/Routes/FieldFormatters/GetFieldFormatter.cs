@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.FieldFormatters;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.FieldFormatters;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.FieldFormatters
 {
     internal static class GetFieldFormatter
     {
-        internal static Results<Ok<FieldFormatterModel>, NotFound<string>, BadRequest<string>> Handle(IFieldFormatterService fieldFormatterService, string projectId, string fieldFormatterName)
+        internal static async Task<Results<Ok<FieldFormatterModel>, NotFound<string>, BadRequest<string>>>
+            Handle(IFieldFormatterService fieldFormatterService, string projectId, string fieldFormatterName)
         {
             try
             {
-                FieldFormatterModel fieldFormatter = fieldFormatterService.GetFieldFormatter(projectId, fieldFormatterName);
+                FieldFormatterModel fieldFormatter = await fieldFormatterService.GetFieldFormatterAsync(projectId, fieldFormatterName);
                 return TypedResults.Ok<FieldFormatterModel>(fieldFormatter);
             }
             catch (UnknownEntityException e)

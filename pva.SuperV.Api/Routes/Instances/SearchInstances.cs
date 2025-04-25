@@ -1,18 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.Instances;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Instances;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.Instances
 {
     internal static class SearchInstances
     {
-        internal static Results<Ok<PagedSearchResult<InstanceModel>>, NotFound<string>, BadRequest<string>> Handle(IInstanceService instanceService, string projectId, InstancePagedSearchRequest search)
+        internal static async Task<Results<Ok<PagedSearchResult<InstanceModel>>, NotFound<string>, BadRequest<string>>>
+            Handle(IInstanceService instanceService, string projectId, InstancePagedSearchRequest search)
         {
             try
             {
-                return TypedResults.Ok(instanceService.SearchInstances(projectId, search));
+                return TypedResults.Ok(await instanceService.SearchInstancesAsync(projectId, search));
             }
             catch (UnknownEntityException e)
             {

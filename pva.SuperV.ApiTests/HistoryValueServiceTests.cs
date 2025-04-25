@@ -57,7 +57,7 @@ namespace pva.SuperV.ApiTests
 
             // Act
             HistoryRequestModel request = new(timestamp.AddSeconds(-1), DateTime.Now, [ValueFieldName]);
-            HistoryRawResultModel historyResult = historyValuesService.GetInstanceRawHistoryValues(runnableProject.GetId(), InstanceName, request);
+            HistoryRawResultModel historyResult = await historyValuesService.GetInstanceRawHistoryValuesAsync(runnableProject.GetId(), InstanceName, request);
 
             // Assert
             // This doesn' work, as comparison of the object values uses Object Equals().
@@ -151,7 +151,7 @@ namespace pva.SuperV.ApiTests
                     "UshortField",
                     "IntFieldWithFormat"
                 ]);
-            HistoryRawResultModel historyResult = historyValuesService.GetInstanceRawHistoryValues(runnableProject.GetId(), AllFieldsInstanceName, request);
+            HistoryRawResultModel historyResult = await historyValuesService.GetInstanceRawHistoryValuesAsync(runnableProject.GetId(), AllFieldsInstanceName, request);
 
             // Assert
             // This doesn' work, as comparison of the object values uses Object Equals().
@@ -185,7 +185,7 @@ namespace pva.SuperV.ApiTests
 
             // Act
             HistoryRequestModel request = new(timestamp.AddSeconds(-1), DateTime.Now, [ValueFieldName]);
-            HistoryResultModel historyResult = historyValuesService.GetInstanceHistoryValues(runnableProject.GetId(), InstanceName, request);
+            HistoryResultModel historyResult = await historyValuesService.GetInstanceHistoryValuesAsync(runnableProject.GetId(), InstanceName, request);
 
             // Assert
             historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
@@ -263,7 +263,7 @@ namespace pva.SuperV.ApiTests
                     "UshortField",
                     "IntFieldWithFormat"
                 ]);
-            HistoryResultModel historyResult = historyValuesService.GetInstanceHistoryValues(runnableProject.GetId(), AllFieldsInstanceName, request);
+            HistoryResultModel historyResult = await historyValuesService.GetInstanceHistoryValuesAsync(runnableProject.GetId(), AllFieldsInstanceName, request);
 
             // Assert
             historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
@@ -282,7 +282,7 @@ namespace pva.SuperV.ApiTests
             // Act
             HistoryStatisticsRequestModel request = new(timestamp, timestamp.AddHours(1), TimeSpan.FromHours(1), FillMode.PREV,
                 [new HistoryStatisticFieldModel(ValueFieldName, HistoryStatFunction.AVG)]);
-            HistoryStatisticsRawResultModel historyResult = historyValuesService.GetInstanceRawHistoryStatistics(runnableProject.GetId(), InstanceName, request);
+            HistoryStatisticsRawResultModel historyResult = await historyValuesService.GetInstanceRawHistoryStatisticsAsync(runnableProject.GetId(), InstanceName, request);
 
             // Assert
             // This doesn' work, as comparison of the object values uses Object Equals().
@@ -318,7 +318,7 @@ namespace pva.SuperV.ApiTests
             // Act
             HistoryStatisticsRequestModel request = new(timestamp, timestamp.AddMinutes(59), TimeSpan.FromHours(1), FillMode.PREV,
                 [new HistoryStatisticFieldModel(ValueFieldName, HistoryStatFunction.AVG)]);
-            HistoryStatisticsResultModel historyResult = historyValuesService.GetInstanceHistoryStatistics(runnableProject.GetId(), InstanceName, request);
+            HistoryStatisticsResultModel historyResult = await historyValuesService.GetInstanceHistoryStatisticsAsync(runnableProject.GetId(), InstanceName, request);
 
             // Assert
             historyResult.ShouldBeEquivalentTo(expectedHistoryResult);

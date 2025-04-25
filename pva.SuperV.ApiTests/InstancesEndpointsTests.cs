@@ -1,10 +1,10 @@
 ﻿using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using pva.SuperV.Api.Exceptions;
-using pva.SuperV.Api.Services.Instances;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Instances;
+using pva.SuperV.Model.Services;
 using Shouldly;
 using System.Net.Http.Json;
 using Xunit.Abstractions;
@@ -36,7 +36,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             InstancePagedSearchRequest search = new(1, 10, null, null, null);
             List<InstanceModel> expectedInstances = [new InstanceModel("Instance", "Class1", [])];
-            MockedInstanceService.SearchInstances("Project1", search)
+            MockedInstanceService.SearchInstancesAsync("Project1", search)
                 .Returns(new PagedSearchResult<InstanceModel>(1, 10, expectedInstances.Count, expectedInstances));
 
             // WHEN
@@ -64,7 +64,7 @@ namespace pva.SuperV.ApiTests
                             new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now))
                     ])
                 ];
-            MockedInstanceService.GetInstances("Project1")
+            MockedInstanceService.GetInstancesAsync("Project1")
                 .Returns(expectedInstances);
 
             // WHEN
@@ -80,8 +80,8 @@ namespace pva.SuperV.ApiTests
         public async Task WhenGettingUnknownProjectInstances_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedInstanceService.GetInstances("UnknownProject")
-                .Throws<UnknownEntityException>();
+            MockedInstanceService.GetInstancesAsync("UnknownProject")
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var response = await client.GetAsync("/instances/UnknownProject");
@@ -100,7 +100,7 @@ namespace pva.SuperV.ApiTests
                         new FieldModel("Field1", typeof(int).ToString(),
                         new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now))
                     ]);
-            MockedInstanceService.GetInstance("Project1", expectedInstance.Name)
+            MockedInstanceService.GetInstanceAsync("Project1", expectedInstance.Name)
                 .Returns(expectedInstance);
 
             // WHEN
@@ -116,8 +116,8 @@ namespace pva.SuperV.ApiTests
         public async Task WhenGettingProjectUnknownInstance_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedInstanceService.GetInstance("Project1", "UnknownInstance")
-                .Throws<UnknownEntityException>();
+            MockedInstanceService.GetInstanceAsync("Project1", "UnknownInstance")
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var response = await client.GetAsync($"/instances/Project1/UnknownInstance");
@@ -136,7 +136,7 @@ namespace pva.SuperV.ApiTests
                         new FieldModel("Field1", typeof(int).ToString(),
                         new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now))
                     ]);
-            MockedInstanceService.CreateInstance("Project1", Arg.Any<InstanceModel>())
+            MockedInstanceService.CreateInstanceAsync("Project1", Arg.Any<InstanceModel>())
                 .Returns(expectedInstance);
 
             // WHEN
@@ -158,8 +158,8 @@ namespace pva.SuperV.ApiTests
                         new FieldModel("Field1", typeof(int).ToString(),
                         new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now))
                     ]);
-            MockedInstanceService.CreateInstance("UnknownProject", Arg.Any<InstanceModel>())
-                .Throws<UnknownEntityException>();
+            MockedInstanceService.CreateInstanceAsync("UnknownProject", Arg.Any<InstanceModel>())
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var response = await client.PostAsJsonAsync($"/instances/UnknownProject/", expectedInstance);
@@ -178,8 +178,8 @@ namespace pva.SuperV.ApiTests
                         new FieldModel("Field1", typeof(int).ToString(),
                         new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now))
                     ]);
-            MockedInstanceService.CreateInstance("RunnableProject", Arg.Any<InstanceModel>())
-                .Throws<NonWipProjectException>();
+            MockedInstanceService.CreateInstanceAsync("RunnableProject", Arg.Any<InstanceModel>())
+                .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
             var response = await client.PostAsJsonAsync($"/instances/RunnableProject/", expectedInstance);
@@ -210,7 +210,7 @@ namespace pva.SuperV.ApiTests
         public async Task WhenDeletingInstanceOnNonWipProject_ThenBadRequestIsReturned()
         {
             // GIVEN
-            MockedInstanceService.When(fake => fake.DeleteInstance("Project", "UnknownInstance"))
+            MockedInstanceService.When(async (fake) => await fake.DeleteInstanceAsync("Project", "UnknownInstance"))
                 .Do(call => { throw new UnknownEntityException(); });
 
             // WHEN
@@ -224,7 +224,7 @@ namespace pva.SuperV.ApiTests
         public async Task WhenDeletingProjectUnknownInstance_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedInstanceService.When(fake => fake.DeleteInstance("RunnableProject", "Instance"))
+            MockedInstanceService.When(async (fake) => await fake.DeleteInstanceAsync("RunnableProject", "Instance"))
                 .Do(call => { throw new NonWipProjectException(); });
 
             // WHEN
@@ -240,7 +240,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             FieldModel expectedField = new("Field1", typeof(int).ToString(),
                 new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now));
-            MockedFieldValueService.GetField("Project1", "Instance1", "Field1")
+            MockedFieldValueService.GetFieldAsync("Project1", "Instance1", "Field1")
                 .Returns(expectedField);
 
             // WHEN
@@ -256,8 +256,8 @@ namespace pva.SuperV.ApiTests
         public async Task WhenGettingProjectInstanceUnknownField_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedFieldValueService.GetField("Project1", "Instance1", "UnknownField")
-                .Throws<UnknownEntityException>();
+            MockedFieldValueService.GetFieldAsync("Project1", "Instance1", "UnknownField")
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var response = await client.GetAsync($"/instances/Project1/Instance1/UnknownField/value");
@@ -271,7 +271,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldValueModel expectedFieldValue = new ShortFieldValueModel(5321, null, Engine.QualityLevel.Good, DateTime.Now);
-            MockedFieldValueService.UpdateFieldValue("Project1", "Instance1", "Field1", Arg.Any<FieldValueModel>())
+            MockedFieldValueService.UpdateFieldValueAsync("Project1", "Instance1", "Field1", Arg.Any<FieldValueModel>())
                 .Returns(expectedFieldValue);
 
             // WHEN
@@ -288,8 +288,8 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldValueModel expectedFieldValue = new ShortFieldValueModel(5321, null, Engine.QualityLevel.Good, DateTime.Now);
-            MockedFieldValueService.UpdateFieldValue("Project1", "Instance1", "UnknownField", Arg.Any<FieldValueModel>())
-                .Throws<UnknownEntityException>();
+            MockedFieldValueService.UpdateFieldValueAsync("Project1", "Instance1", "UnknownField", Arg.Any<FieldValueModel>())
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var response = await client.PutAsJsonAsync($"/instances/Project1/Instance1/UnknownField/value", expectedFieldValue);

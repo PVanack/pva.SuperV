@@ -1,18 +1,19 @@
 ﻿
 using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.HistoryRepositories;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.HistoryRepositories
 {
     internal static class GetHistoryRepository
     {
-        internal static Results<Ok<HistoryRepositoryModel>, NotFound<string>, BadRequest<string>> Handle(IHistoryRepositoryService historyRepositoryService, string projectId, string historyRepositoryName)
+        internal static async Task<Results<Ok<HistoryRepositoryModel>, NotFound<string>, BadRequest<string>>>
+            Handle(IHistoryRepositoryService historyRepositoryService, string projectId, string historyRepositoryName)
         {
             try
             {
-                return TypedResults.Ok(historyRepositoryService.GetHistoryRepository(projectId, historyRepositoryName));
+                return TypedResults.Ok(await historyRepositoryService.GetHistoryRepositoryAsync(projectId, historyRepositoryName));
             }
             catch (UnknownEntityException e)
             {

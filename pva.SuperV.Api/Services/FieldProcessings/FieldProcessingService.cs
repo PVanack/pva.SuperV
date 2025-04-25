@@ -3,28 +3,29 @@ using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.Processing;
 using pva.SuperV.Model.FieldProcessings;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Services.FieldProcessings
 {
     public class FieldProcessingService : BaseService, IFieldProcessingService
     {
-        public List<FieldValueProcessingModel> GetFieldProcessings(string projectId, string className, string fieldName)
+        public async Task<List<FieldValueProcessingModel>> GetFieldProcessingsAsync(string projectId, string className, string fieldName)
         {
             IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(GetProjectEntity(projectId), className, fieldName);
-            return [.. fieldDefinition.ValuePostChangeProcessings.Select(Field => FieldProcessingMapper.ToDto(Field))];
+            return await Task.FromResult(fieldDefinition.ValuePostChangeProcessings.Select(Field => FieldProcessingMapper.ToDto(Field)).ToList());
         }
 
-        public FieldValueProcessingModel GetFieldProcessing(string projectId, string className, string fieldName, string processingName)
+        public async Task<FieldValueProcessingModel> GetFieldProcessingAsync(string projectId, string className, string fieldName, string processingName)
         {
             IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(GetProjectEntity(projectId), className, fieldName);
             IFieldValueProcessing? processing = fieldDefinition.ValuePostChangeProcessings
                 .FirstOrDefault(field => field.Name.Equals(processingName));
             return processing is not null
-                ? FieldProcessingMapper.ToDto(processing)
-                : throw new UnknownEntityException("FieldValueProcessing", processingName);
+                ? await Task.FromResult(FieldProcessingMapper.ToDto(processing))
+                : await Task.FromException<FieldValueProcessingModel>(new UnknownEntityException("FieldValueProcessing", processingName));
         }
 
-        public FieldValueProcessingModel CreateFieldProcessing(string projectId, string className, string fieldName, FieldValueProcessingModel createRequest)
+        public async Task<FieldValueProcessingModel> CreateFieldProcessingAsync(string projectId, string className, string fieldName, FieldValueProcessingModel createRequest)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
@@ -32,12 +33,12 @@ namespace pva.SuperV.Api.Services.FieldProcessings
                 IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(clazz, fieldName);
                 IFieldValueProcessing fieldProcessing = FieldProcessingMapper.FromDto(wipProject, clazz, fieldDefinition, createRequest);
                 wipProject.AddFieldChangePostProcessing(className, fieldName, fieldProcessing);
-                return FieldProcessingMapper.ToDto(fieldProcessing);
+                return await Task.FromResult(FieldProcessingMapper.ToDto(fieldProcessing));
             }
-            throw new NonWipProjectException(projectId);
+            return await Task.FromException<FieldValueProcessingModel>(new NonWipProjectException(projectId));
         }
 
-        public FieldValueProcessingModel UpdateFieldProcessing(string projectId, string className, string fieldName, string processingName, FieldValueProcessingModel createRequest)
+        public async Task<FieldValueProcessingModel> UpdateFieldProcessingAsync(string projectId, string className, string fieldName, string processingName, FieldValueProcessingModel createRequest)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
@@ -45,19 +46,20 @@ namespace pva.SuperV.Api.Services.FieldProcessings
                 IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(clazz, fieldName);
                 IFieldValueProcessing fieldProcessing = FieldProcessingMapper.FromDto(wipProject, clazz, fieldDefinition, createRequest);
                 wipProject.UpdateFieldChangePostProcessing(className, fieldName, processingName, fieldProcessing);
-                return FieldProcessingMapper.ToDto(fieldProcessing);
+                return await Task.FromResult(FieldProcessingMapper.ToDto(fieldProcessing));
             }
-            throw new NonWipProjectException(projectId);
+            return await Task.FromException<FieldValueProcessingModel>(new NonWipProjectException(projectId));
         }
 
-        public void DeleteFieldProcessing(string projectId, string className, string fieldName, string processingName)
+        public async ValueTask DeleteFieldProcessingAsync(string projectId, string className, string fieldName, string processingName)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 wipProject.RemoveFieldChangePostProcessing(className, fieldName, processingName);
+                await ValueTask.CompletedTask;
                 return;
             }
-            throw new NonWipProjectException(projectId);
+            await ValueTask.FromException(new NonWipProjectException(projectId));
         }
     }
 }

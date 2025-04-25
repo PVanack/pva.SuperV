@@ -488,7 +488,7 @@
         "description": "Loads a project from a definition JSON",
         "operationId": "LoadProjectFromDefinitions",
         "requestBody": {
-          "description": "File data containing project definitioons",
+          "description": "File data containing project definitions",
           "content": {
             "application/json": {
               "schema": {

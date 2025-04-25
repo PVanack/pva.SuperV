@@ -3,12 +3,13 @@ using pva.SuperV.Engine;
 using pva.SuperV.Engine.HistoryRetrieval;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Model.HistoryRetrieval;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Services.History
 {
     public class HistoryValuesService : BaseService, IHistoryValuesService
     {
-        public HistoryRawResultModel GetInstanceRawHistoryValues(string projectId, string instanceName, HistoryRequestModel request)
+        public async Task<HistoryRawResultModel> GetInstanceRawHistoryValuesAsync(string projectId, string instanceName, HistoryRequestModel request)
         {
             Project project = GetProjectEntity(projectId);
             if (project is RunnableProject runnableProject)
@@ -24,13 +25,13 @@ namespace pva.SuperV.Api.Services.History
                 {
                     return new HistoryFieldModel(fieldDefinition.Name, fieldDefinition.Type.ToString(), fieldIndex++);
                 })];
-                return new HistoryRawResultModel(header, HistoryRowMapper.ToRawDto(rows));
+                return await Task.FromResult(new HistoryRawResultModel(header, HistoryRowMapper.ToRawDto(rows)));
 
             }
-            throw new NonRunnableProjectException(projectId);
+            return await Task.FromException<HistoryRawResultModel>(new NonRunnableProjectException(projectId));
         }
 
-        public HistoryResultModel GetInstanceHistoryValues(string projectId, string instanceName, HistoryRequestModel request)
+        public async Task<HistoryResultModel> GetInstanceHistoryValuesAsync(string projectId, string instanceName, HistoryRequestModel request)
         {
             Project project = GetProjectEntity(projectId);
             if (project is RunnableProject runnableProject)
@@ -47,13 +48,12 @@ namespace pva.SuperV.Api.Services.History
                 {
                     return new HistoryFieldModel(fieldDefinition.Name, fieldDefinition.Type.ToString(), fieldIndex++);
                 })];
-                return new HistoryResultModel(header, HistoryRowMapper.ToDto(rows, fields));
-
+                return await Task.FromResult(new HistoryResultModel(header, HistoryRowMapper.ToDto(rows, fields)));
             }
-            throw new NonRunnableProjectException(projectId);
+            return await Task.FromException<HistoryResultModel>(new NonRunnableProjectException(projectId));
         }
 
-        public HistoryStatisticsRawResultModel GetInstanceRawHistoryStatistics(string projectId, string instanceName, HistoryStatisticsRequestModel request)
+        public async Task<HistoryStatisticsRawResultModel> GetInstanceRawHistoryStatisticsAsync(string projectId, string instanceName, HistoryStatisticsRequestModel request)
         {
             Project project = GetProjectEntity(projectId);
             if (project is RunnableProject runnableProject)
@@ -72,13 +72,13 @@ namespace pva.SuperV.Api.Services.History
 
                 List<HistoryStatisticRow> rows = runnableProject.GetHistoryStatistics(instanceName, query, statisticFields, historyRepository!, classTimeSerieId!);
 
-                return new HistoryStatisticsRawResultModel(BuildStatisticsHeader(request, fields, rows), HistoryRowMapper.ToRawDto(rows));
+                return await Task.FromResult(new HistoryStatisticsRawResultModel(BuildStatisticsHeader(request, fields, rows), HistoryRowMapper.ToRawDto(rows)));
 
             }
-            throw new NonRunnableProjectException(projectId);
+            return await Task.FromException<HistoryStatisticsRawResultModel>(new NonRunnableProjectException(projectId));
         }
 
-        public HistoryStatisticsResultModel GetInstanceHistoryStatistics(string projectId, string instanceName, HistoryStatisticsRequestModel request)
+        public async Task<HistoryStatisticsResultModel> GetInstanceHistoryStatisticsAsync(string projectId, string instanceName, HistoryStatisticsRequestModel request)
         {
             Project project = GetProjectEntity(projectId);
             if (project is RunnableProject runnableProject)
@@ -97,10 +97,10 @@ namespace pva.SuperV.Api.Services.History
 
                 List<HistoryStatisticRow> rows = runnableProject.GetHistoryStatistics(instanceName, query, statisticFields, historyRepository!, classTimeSerieId!);
 
-                return new HistoryStatisticsResultModel(BuildStatisticsHeader(request, fields, rows), HistoryRowMapper.ToDto(rows, fields));
+                return await Task.FromResult(new HistoryStatisticsResultModel(BuildStatisticsHeader(request, fields, rows), HistoryRowMapper.ToDto(rows, fields)));
 
             }
-            throw new NonRunnableProjectException(projectId);
+            return await Task.FromException<HistoryStatisticsResultModel>(new NonRunnableProjectException(projectId));
         }
 
         private static List<HistoryStatisticResultFieldModel> BuildStatisticsHeader(HistoryStatisticsRequestModel request, List<IFieldDefinition> fields, List<HistoryStatisticRow> rows)

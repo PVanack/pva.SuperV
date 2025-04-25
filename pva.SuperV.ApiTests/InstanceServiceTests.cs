@@ -45,16 +45,16 @@ namespace pva.SuperV.ApiTests
             => new(fieldName, fieldType.ToString(), FieldValueMapper.ToDto(instance!.GetField(fieldName)));
 
         [Fact]
-        public void SearchInstancesPaged_ShouldReturnPageOfInstances()
+        public async Task SearchInstancesPaged_ShouldReturnPageOfInstances()
         {
 
             // Act
             InstancePagedSearchRequest search = new(1, 5, null, null, null);
-            PagedSearchResult<InstanceModel> page1Result = instanceService.SearchInstances(runnableProject.GetId(), search);
+            PagedSearchResult<InstanceModel> page1Result = await instanceService.SearchInstancesAsync(runnableProject.GetId(), search);
             search = search with { PageNumber = 2, PageSize = 10 };
-            PagedSearchResult<InstanceModel> page2Result = instanceService.SearchInstances(runnableProject.GetId(), search);
+            PagedSearchResult<InstanceModel> page2Result = await instanceService.SearchInstancesAsync(runnableProject.GetId(), search);
             search = search with { PageNumber = 3 };
-            PagedSearchResult<InstanceModel> page3Result = instanceService.SearchInstances(runnableProject.GetId(), search);
+            PagedSearchResult<InstanceModel> page3Result = await instanceService.SearchInstancesAsync(runnableProject.GetId(), search);
 
             // Assert
             List<InstanceModel> expectedInstances = [.. runnableProject.Instances.Select(entry => InstanceMapper.ToDto(entry.Value))];
@@ -79,11 +79,11 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchInstancesSortedByNameAsc_ShouldReturnPageOfInstancesSorted()
+        public async Task SearchInstancesSortedByNameAsc_ShouldReturnPageOfInstancesSorted()
         {
             // Act
             InstancePagedSearchRequest search = new(1, 5, null, "name", null);
-            PagedSearchResult<InstanceModel> pagedResult = instanceService.SearchInstances(runnableProject.GetId(), search);
+            PagedSearchResult<InstanceModel> pagedResult = await instanceService.SearchInstancesAsync(runnableProject.GetId(), search);
 
             // Assert
             List<InstanceModel> expectedInstances = [.. runnableProject.Instances.Select(entry => InstanceMapper.ToDto(entry.Value))];
@@ -97,11 +97,11 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchInstancesSortedByNameDesc_ShouldReturnPageOfInstancesSorted()
+        public async Task SearchInstancesSortedByNameDesc_ShouldReturnPageOfInstancesSorted()
         {
             // Act
             InstancePagedSearchRequest search = new(1, 5, null, "-name", null);
-            PagedSearchResult<InstanceModel> pagedResult = instanceService.SearchInstances(runnableProject.GetId(), search);
+            PagedSearchResult<InstanceModel> pagedResult = await instanceService.SearchInstancesAsync(runnableProject.GetId(), search);
 
             // Assert
             List<InstanceModel> expectedInstances = [.. runnableProject.Instances.Select(entry => InstanceMapper.ToDto(entry.Value))];
@@ -116,20 +116,20 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchInstancesSortedWithInvalidOption_ShouldThrowException()
+        public async Task SearchInstancesSortedWithInvalidOption_ShouldThrowException()
         {
             // Act
             InstancePagedSearchRequest search = new(1, 5, null, "-InvalidOption", null);
-            Assert.Throws<InvalidSortOptionException>(() => instanceService.SearchInstances(runnableProject.GetId(), search));
+            await Assert.ThrowsAsync<InvalidSortOptionException>(async () => await instanceService.SearchInstancesAsync(runnableProject.GetId(), search));
         }
 
         [Fact]
-        public void SearchInstancesByName_ShouldReturnPageOfInstances()
+        public async Task SearchInstancesByName_ShouldReturnPageOfInstances()
         {
 
             // Act
             InstancePagedSearchRequest search = new(1, 5, "IntField", null, null);
-            PagedSearchResult<InstanceModel> pagedResult = instanceService.SearchInstances(runnableProject.GetId(), search);
+            PagedSearchResult<InstanceModel> pagedResult = await instanceService.SearchInstancesAsync(runnableProject.GetId(), search);
 
             // Assert
             List<InstanceModel> expectedInstances = [.. runnableProject.Instances.Values
@@ -144,13 +144,13 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchInstancesByClassName_ShouldReturnPageOfInstances()
+        public async Task SearchInstancesByClassName_ShouldReturnPageOfInstances()
         {
             _ = runnableProject.CreateInstance(ClassName, "DummyInstance");
             _ = runnableProject.CreateInstance(BaseClassName, "BaseDummyInstance");
             // Act
             InstancePagedSearchRequest search = new(1, 5, null, null, BaseClassName);
-            PagedSearchResult<InstanceModel> pagedResult = instanceService.SearchInstances(runnableProject.GetId(), search);
+            PagedSearchResult<InstanceModel> pagedResult = await instanceService.SearchInstancesAsync(runnableProject.GetId(), search);
 
             // Assert
             List<InstanceModel> expectedInstances = [.. runnableProject.Instances.Values
@@ -166,21 +166,21 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetInstances_ShouldReturnListOfInstances()
+        public async Task GetInstances_ShouldReturnListOfInstances()
         {
             List<InstanceModel> expectedInstances = [expectedInstance];
             // Act
-            var result = instanceService.GetInstances(runnableProject.GetId());
+            var result = await instanceService.GetInstancesAsync(runnableProject.GetId());
 
             // Assert
             result.ShouldBeEquivalentTo(expectedInstances);
         }
 
         [Fact]
-        public void GetInstance_ShouldReturnInstance_WhenInstanceExists()
+        public async Task GetInstance_ShouldReturnInstance_WhenInstanceExists()
         {
             // Act
-            var result = instanceService.GetInstance(runnableProject.GetId(), InstanceName);
+            var result = await instanceService.GetInstanceAsync(runnableProject.GetId(), InstanceName);
 
             // Assert
             result.ShouldNotBeNull();
@@ -188,29 +188,27 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetInstance_ShouldThrowUnknownEntityException_WhenInstanceDoesNotExist()
+        public async Task GetInstance_ShouldThrowUnknownEntityException_WhenInstanceDoesNotExist()
         {
             // Act & Assert
-            Assert.Throws<UnknownEntityException>(()
-                => instanceService.GetInstance(runnableProject.GetId(), "UnknownInstance"));
+            await Assert.ThrowsAsync<UnknownEntityException>(async ()
+                => await instanceService.GetInstanceAsync(runnableProject.GetId(), "UnknownInstance"));
         }
 
         [Fact]
-        public void CreateInstanceInRunnableProject_ShouldCreateInstance()
+        public async Task CreateInstanceInRunnableProject_ShouldCreateInstance()
         {
             InstanceModel expectedCreatedInstance = expectedInstance with { Name = "Instance1" };
             // Act & Assert
-            InstanceModel createInstanceModel = instanceService.CreateInstance(runnableProject.GetId(), expectedCreatedInstance with { Fields = [] });
+            InstanceModel createInstanceModel = await instanceService.CreateInstanceAsync(runnableProject.GetId(), expectedCreatedInstance with { Fields = [] });
 
             createInstanceModel.Fields.Count.ShouldBe(expectedCreatedInstance.Fields.Count);
             List<FieldModel> fieldsUpdatedWithTimestampsAndQualities = [];
             for (int index = 0; index < createInstanceModel.Fields.Count; index++)
             {
-                fieldsUpdatedWithTimestampsAndQualities.Add(expectedCreatedInstance.Fields[index]
-                    with
+                fieldsUpdatedWithTimestampsAndQualities.Add(expectedCreatedInstance.Fields[index] with
                 {
-                    FieldValue = expectedCreatedInstance.Fields[index].FieldValue
-                            with
+                    FieldValue = expectedCreatedInstance.Fields[index].FieldValue with
                     {
                         Quality = createInstanceModel.Fields[index].FieldValue.Quality,
                         Timestamp = createInstanceModel.Fields[index].FieldValue.Timestamp
@@ -224,7 +222,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void CreateInstanceWithInitialedFieldsInRunnableProject_ShouldCreateInstanceWithFieldsInitialized()
+        public async Task CreateInstanceWithInitialedFieldsInRunnableProject_ShouldCreateInstanceWithFieldsInitialized()
         {
             InstanceModel expectedCreatedInstance = expectedInstance with
             {
@@ -236,7 +234,7 @@ namespace pva.SuperV.ApiTests
                                         : field)]
             };
             // Act & Assert
-            InstanceModel createInstanceModel = instanceService.CreateInstance(runnableProject.GetId(),
+            InstanceModel createInstanceModel = await instanceService.CreateInstanceAsync(runnableProject.GetId(),
                 expectedCreatedInstance with
                 {
                     Fields = [expectedCreatedInstance.Fields[0]]
@@ -261,11 +259,11 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetInstanceField_ShouldReturnField()
+        public async Task GetInstanceField_ShouldReturnField()
         {
             // Act
             FieldModel expectedField = expectedInstance.Fields[0];
-            FieldModel retrievedField = fieldValueService.GetField(runnableProject.GetId(), expectedInstance.Name, expectedField.Name);
+            FieldModel retrievedField = await fieldValueService.GetFieldAsync(runnableProject.GetId(), expectedInstance.Name, expectedField.Name);
 
             // Assert
             retrievedField.ShouldBeEquivalentTo(expectedField);

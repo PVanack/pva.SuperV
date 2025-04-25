@@ -1,20 +1,21 @@
 ﻿using pva.SuperV.Engine;
 using pva.SuperV.Model.Instances;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Services.Instances
 {
     public class FieldValueService : BaseService, IFieldValueService
     {
-        public FieldModel GetField(string projectId, string instanceName, string fieldName)
+        public async Task<FieldModel> GetFieldAsync(string projectId, string instanceName, string fieldName)
         {
-            return FieldMapper.ToDto(GetFieldEntity(projectId, instanceName, fieldName));
+            return await Task.FromResult(FieldMapper.ToDto(GetFieldEntity(projectId, instanceName, fieldName)));
         }
 
-        public FieldValueModel UpdateFieldValue(string projectId, string instanceName, string fieldName, FieldValueModel value)
+        public async Task<FieldValueModel> UpdateFieldValueAsync(string projectId, string instanceName, string fieldName, FieldValueModel value)
         {
             IField field = GetFieldEntity(projectId, instanceName, fieldName);
             FieldValueMapper.SetFieldValue(field, value);
-            return FieldValueMapper.ToDto(field);
+            return await Task.FromResult(FieldValueMapper.ToDto(field));
         }
 
     }

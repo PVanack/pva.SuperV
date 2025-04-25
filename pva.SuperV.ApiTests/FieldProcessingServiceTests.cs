@@ -21,7 +21,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetFieldProcessings_ShouldReturnListOfFieldProcessings()
+        public async Task GetFieldProcessings_ShouldReturnListOfFieldProcessings()
         {
             // GIVEN
             List<string> fieldsToHistorize = [ValueFieldName];
@@ -42,7 +42,7 @@ namespace pva.SuperV.ApiTests
                      fieldsToHistorize)
                 ];
             // WHEN
-            List<FieldValueProcessingModel> FieldProcessings = fieldProcessingService.GetFieldProcessings(runnableProject.GetId(), ClassName, ValueFieldName);
+            List<FieldValueProcessingModel> FieldProcessings = await fieldProcessingService.GetFieldProcessingsAsync(runnableProject.GetId(), ClassName, ValueFieldName);
 
             // THEN
             FieldProcessings
@@ -51,7 +51,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetFieldProcessing_ShouldReturnFieldProcessing()
+        public async Task GetFieldProcessing_ShouldReturnFieldProcessing()
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new AlarmStateProcessingModel("ValueAlarmState",
@@ -63,7 +63,7 @@ namespace pva.SuperV.ApiTests
                     AlarmStateFieldName,
                     null);
             // WHEN
-            FieldValueProcessingModel FieldProcessing = fieldProcessingService.GetFieldProcessing(runnableProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing.Name);
+            FieldValueProcessingModel FieldProcessing = await fieldProcessingService.GetFieldProcessingAsync(runnableProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing.Name);
 
             // THEN
             FieldProcessing
@@ -72,7 +72,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void CreateAlarmStateFieldProcessing_ShouldCreateAlarmStateFieldProcessing()
+        public async Task CreateAlarmStateFieldProcessing_ShouldCreateAlarmStateFieldProcessing()
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new AlarmStateProcessingModel("ValueAlarmStateAdded",
@@ -84,7 +84,7 @@ namespace pva.SuperV.ApiTests
                     AlarmStateFieldName,
                     null);
             // WHEN
-            FieldValueProcessingModel FieldProcessing = fieldProcessingService.CreateFieldProcessing(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
+            FieldValueProcessingModel FieldProcessing = await fieldProcessingService.CreateFieldProcessingAsync(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
 
             // THEN
             FieldProcessing
@@ -93,7 +93,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void CreateHistorizationFieldProcessing_ShouldCreateHistorizationFieldProcessing()
+        public async Task CreateHistorizationFieldProcessing_ShouldCreateHistorizationFieldProcessing()
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
@@ -104,7 +104,7 @@ namespace pva.SuperV.ApiTests
                         ValueFieldName,
                     ]);
             // WHEN
-            FieldValueProcessingModel createdFieldProcessing = fieldProcessingService.CreateFieldProcessing(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
+            FieldValueProcessingModel createdFieldProcessing = await fieldProcessingService.CreateFieldProcessingAsync(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
 
             // THEN
             createdFieldProcessing
@@ -113,7 +113,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void UpdateHistorizationFieldProcessing_ShouldUpdateHistorizationFieldProcessing()
+        public async Task UpdateHistorizationFieldProcessing_ShouldUpdateHistorizationFieldProcessing()
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
@@ -123,7 +123,7 @@ namespace pva.SuperV.ApiTests
                     [
                         ValueFieldName,
                     ]);
-            FieldValueProcessingModel createdFieldProcessing = fieldProcessingService.CreateFieldProcessing(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
+            _ = await fieldProcessingService.CreateFieldProcessingAsync(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
 
             // WHEN
             expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
@@ -135,7 +135,7 @@ namespace pva.SuperV.ApiTests
                         AlarmStateFieldName
                     ]);
 
-            FieldValueProcessingModel updatedFieldProcessing = fieldProcessingService.UpdateFieldProcessing(wipProject.GetId(), ClassName, ValueFieldName,
+            FieldValueProcessingModel updatedFieldProcessing = await fieldProcessingService.UpdateFieldProcessingAsync(wipProject.GetId(), ClassName, ValueFieldName,
                 expectedFieldProcessing.Name, expectedFieldProcessing);
 
             // THEN
@@ -145,12 +145,12 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void DeleteFieldProcessing_ShouldDeleteFieldProcessing()
+        public async Task DeleteFieldProcessing_ShouldDeleteFieldProcessing()
         {
             // GIVEN
 
             // WHEN
-            fieldProcessingService.DeleteFieldProcessing(wipProject.GetId(), ClassName, ValueFieldName, "ValueAlarmState");
+            await fieldProcessingService.DeleteFieldProcessingAsync(wipProject.GetId(), ClassName, ValueFieldName, "ValueAlarmState");
 
             // THEN
             wipProject.GetClass(ClassName)

@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.Classes;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Classes;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.Classes
 {
     internal static class GetClasses
     {
-        internal static Results<Ok<List<ClassModel>>, NotFound<string>, BadRequest<string>> Handle(IClassService classService, string projectId)
+        internal static async Task<Results<Ok<List<ClassModel>>, NotFound<string>, BadRequest<string>>> Handle(IClassService classService, string projectId)
         {
             try
             {
-                return TypedResults.Ok(classService.GetClasses(projectId));
+                return TypedResults.Ok(await classService.GetClassesAsync(projectId));
             }
             catch (UnknownEntityException e)
             {

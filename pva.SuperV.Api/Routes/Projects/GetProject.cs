@@ -1,18 +1,18 @@
 ﻿
 using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.Projects;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Projects;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.Projects
 {
     internal static class GetProject
     {
-        internal static Results<Ok<ProjectModel>, NotFound<string>, BadRequest<string>> Handle(IProjectService projectService, string projectId)
+        internal static async Task<Results<Ok<ProjectModel>, NotFound<string>, BadRequest<string>>> Handle(IProjectService projectService, string projectId)
         {
             try
             {
-                return TypedResults.Ok(projectService.GetProject(projectId));
+                return TypedResults.Ok(await projectService.GetProjectAsync(projectId));
             }
             catch (UnknownEntityException e)
             {

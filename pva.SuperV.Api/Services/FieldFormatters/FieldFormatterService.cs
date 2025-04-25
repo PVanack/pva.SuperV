@@ -4,6 +4,7 @@ using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Model;
 using pva.SuperV.Model.FieldFormatters;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Services.FieldFormatters
 {
@@ -16,24 +17,27 @@ namespace pva.SuperV.Api.Services.FieldFormatters
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
             Justification = "<Pending>")]
-        public List<string> GetFieldFormatterTypes()
+        public async Task<List<string>> GetFieldFormatterTypesAsync()
         {
             Type fieldFormatterType = typeof(FieldFormatter);
-            return [.. AppDomain.CurrentDomain.GetAssemblies()
+            return await Task.FromResult(AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(domainAssembly => domainAssembly.GetExportedTypes())
                 .Where(type => type.IsSubclassOf(fieldFormatterType) &&
                         type != fieldFormatterType && !type.IsAbstract)
-                .Select(type => type.ToString())];
+                .Select(type => type.ToString())
+                .ToList());
         }
 
-        public List<FieldFormatterModel> GetFieldFormatters(string projectId)
+        public async Task<List<FieldFormatterModel>> GetFieldFormattersAsync(string projectId)
         {
-            return [.. GetProjectEntity(projectId).FieldFormatters.Values.Select(fieldFormatter => FieldFormatterMapper.ToDto(fieldFormatter))];
+            return await Task.FromResult(GetProjectEntity(projectId).FieldFormatters.Values
+                .Select(fieldFormatter => FieldFormatterMapper.ToDto(fieldFormatter))
+                .ToList());
         }
 
-        public PagedSearchResult<FieldFormatterModel> SearchFieldFormatters(string projectId, FieldFormatterPagedSearchRequest search)
+        public async Task<PagedSearchResult<FieldFormatterModel>> SearchFieldFormattersAsync(string projectId, FieldFormatterPagedSearchRequest search)
         {
-            List<FieldFormatterModel> allFieldFormatters = GetFieldFormatters(projectId);
+            List<FieldFormatterModel> allFieldFormatters = await GetFieldFormattersAsync(projectId);
             List<FieldFormatterModel> fieldFormatters = FilterFieldFormatters(allFieldFormatters, search);
             fieldFormatters = SortResult(fieldFormatters, search.SortOption, sortOptions);
             return CreateResult(search, allFieldFormatters, fieldFormatters);
@@ -50,48 +54,49 @@ namespace pva.SuperV.Api.Services.FieldFormatters
             return filteredFieldDefinitions;
         }
 
-        public FieldFormatterModel GetFieldFormatter(string projectId, string fieldFormatterName)
+        public async Task<FieldFormatterModel> GetFieldFormatterAsync(string projectId, string fieldFormatterName)
         {
             if (GetProjectEntity(projectId).FieldFormatters.TryGetValue(fieldFormatterName, out FieldFormatter? fieldFormatter))
             {
-                return FieldFormatterMapper.ToDto(fieldFormatter);
+                return await Task.FromResult(FieldFormatterMapper.ToDto(fieldFormatter));
             }
-            throw new UnknownEntityException("Field formatter", fieldFormatterName);
+            return await Task.FromException<FieldFormatterModel>(new UnknownEntityException("Field formatter", fieldFormatterName));
         }
 
-        public FieldFormatterModel CreateFieldFormatter(string projectId, FieldFormatterModel fieldFormatterModel)
+        public async Task<FieldFormatterModel> CreateFieldFormatterAsync(string projectId, FieldFormatterModel fieldFormatterModel)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 FieldFormatter fieldFormatter = FieldFormatterMapper.FromDto(fieldFormatterModel);
                 wipProject.AddFieldFormatter(fieldFormatter);
-                return FieldFormatterMapper.ToDto(fieldFormatter);
+                return await Task.FromResult(FieldFormatterMapper.ToDto(fieldFormatter));
             }
-            throw new NonWipProjectException(projectId);
+            return await Task.FromException<FieldFormatterModel>(new NonWipProjectException(projectId));
         }
 
-        public FieldFormatterModel UpdateFieldFormatter(string projectId, string fieldFormatterName, FieldFormatterModel fieldFormatterModel)
+        public async Task<FieldFormatterModel> UpdateFieldFormatterAsync(string projectId, string fieldFormatterName, FieldFormatterModel fieldFormatterModel)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 FieldFormatter fieldFormatter = FieldFormatterMapper.FromDto(fieldFormatterModel);
                 wipProject.UpdateFieldFormatter(fieldFormatterName, fieldFormatter);
-                return FieldFormatterMapper.ToDto(fieldFormatter);
+                return await Task.FromResult(FieldFormatterMapper.ToDto(fieldFormatter));
             }
-            throw new NonWipProjectException(projectId);
+            return await Task.FromException<FieldFormatterModel>(new NonWipProjectException(projectId));
         }
 
-        public void DeleteFieldFormatter(string projectId, string fieldFormatterName)
+        public async ValueTask DeleteFieldFormatterAsync(string projectId, string fieldFormatterName)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 if (wipProject.RemoveFieldFormatter(fieldFormatterName))
                 {
+                    await ValueTask.CompletedTask;
                     return;
                 }
-                throw new UnknownEntityException("Field formatter", fieldFormatterName);
+                await ValueTask.FromException(new UnknownEntityException("Field formatter", fieldFormatterName));
             }
-            throw new NonWipProjectException(projectId);
+            await ValueTask.FromException(new NonWipProjectException(projectId));
         }
 
     }

@@ -1,17 +1,18 @@
 ﻿
 using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.Classes;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.Classes
 {
     internal static class DeleteClass
     {
-        internal static Results<NoContent, NotFound<string>, BadRequest<string>> Handle(IClassService classService, string projectId, string className)
+        internal static async Task<Results<NoContent, NotFound<string>, BadRequest<string>>>
+            Handle(IClassService classService, string projectId, string className)
         {
             try
             {
-                classService.DeleteClass(projectId, className);
+                await classService.DeleteClassAsync(projectId, className);
                 return TypedResults.NoContent();
             }
             catch (UnknownEntityException e)

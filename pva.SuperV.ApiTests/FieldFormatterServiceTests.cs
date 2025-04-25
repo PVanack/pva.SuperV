@@ -25,11 +25,11 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetFieldFormatterTypes_ShouldReturnListOfFieldFormatterTypes()
+        public async Task GetFieldFormatterTypes_ShouldReturnListOfFieldFormatterTypes()
         {
             // GIVEN
             // WHEN
-            List<string> formatterTypes = fieldFormatterService.GetFieldFormatterTypes();
+            List<string> formatterTypes = await fieldFormatterService.GetFieldFormatterTypesAsync();
 
             // THEN
             formatterTypes
@@ -38,19 +38,19 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchClassesPaged_ShouldReturnPageOfClasses()
+        public async Task SearchClassesPaged_ShouldReturnPageOfClasses()
         {
             CreateDummyFieldFormatters();
 
             // Act
             FieldFormatterPagedSearchRequest search = new(1, 5, null, null);
-            PagedSearchResult<FieldFormatterModel> page1Result = fieldFormatterService.SearchFieldFormatters(wipProject.GetId(), search);
+            PagedSearchResult<FieldFormatterModel> page1Result = await fieldFormatterService.SearchFieldFormattersAsync(wipProject.GetId(), search);
             search = search with { PageNumber = 2, PageSize = 10 };
-            PagedSearchResult<FieldFormatterModel> page2Result = fieldFormatterService.SearchFieldFormatters(wipProject.GetId(), search);
+            PagedSearchResult<FieldFormatterModel> page2Result = await fieldFormatterService.SearchFieldFormattersAsync(wipProject.GetId(), search);
             search = search with { PageNumber = 3 };
-            PagedSearchResult<FieldFormatterModel> page3Result = fieldFormatterService.SearchFieldFormatters(wipProject.GetId(), search);
+            PagedSearchResult<FieldFormatterModel> page3Result = await fieldFormatterService.SearchFieldFormattersAsync(wipProject.GetId(), search);
             search = search with { PageNumber = 4 };
-            PagedSearchResult<FieldFormatterModel> page4Result = fieldFormatterService.SearchFieldFormatters(wipProject.GetId(), search);
+            PagedSearchResult<FieldFormatterModel> page4Result = await fieldFormatterService.SearchFieldFormattersAsync(wipProject.GetId(), search);
 
             // Assert
             List<FieldFormatterModel> expectedFieldFormatters = [.. wipProject.FieldFormatters.Select(entry => FieldFormatterMapper.ToDto(entry.Value))];
@@ -81,13 +81,13 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchClassesSortedByNameAsc_ShouldReturnPageOfFieldFormattersSorted()
+        public async Task SearchClassesSortedByNameAsc_ShouldReturnPageOfFieldFormattersSorted()
         {
             CreateDummyFieldFormatters();
 
             // Act
             FieldFormatterPagedSearchRequest search = new(1, 5, null, "name");
-            PagedSearchResult<FieldFormatterModel> pagedResult = fieldFormatterService.SearchFieldFormatters(wipProject.GetId(), search);
+            PagedSearchResult<FieldFormatterModel> pagedResult = await fieldFormatterService.SearchFieldFormattersAsync(wipProject.GetId(), search);
 
             // Assert
             List<FieldFormatterModel> expectedFieldFormatters = [.. wipProject.FieldFormatters.Select(entry => FieldFormatterMapper.ToDto(entry.Value))];
@@ -101,13 +101,13 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchFieldFormattersSortedByNameDesc_ShouldReturnPageOfFieldFormattersSorted()
+        public async Task SearchFieldFormattersSortedByNameDesc_ShouldReturnPageOfFieldFormattersSorted()
         {
             CreateDummyFieldFormatters();
 
             // Act
             FieldFormatterPagedSearchRequest search = new(1, 5, null, "-name");
-            PagedSearchResult<FieldFormatterModel> pagedResult = fieldFormatterService.SearchFieldFormatters(wipProject.GetId(), search);
+            PagedSearchResult<FieldFormatterModel> pagedResult = await fieldFormatterService.SearchFieldFormattersAsync(wipProject.GetId(), search);
 
             // Assert
             List<FieldFormatterModel> expectedFieldFormatters = [.. wipProject.FieldFormatters.Select(entry => FieldFormatterMapper.ToDto(entry.Value))];
@@ -122,21 +122,21 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchFieldFormattersSortedWithInvalidOption_ShouldThrowException()
+        public async Task SearchFieldFormattersSortedWithInvalidOption_ShouldThrowException()
         {
             // Act
             FieldFormatterPagedSearchRequest search = new(1, 5, null, "-InvalidOption");
-            Assert.Throws<InvalidSortOptionException>(() => fieldFormatterService.SearchFieldFormatters(wipProject.GetId(), search));
+            await Assert.ThrowsAsync<InvalidSortOptionException>(async () => await fieldFormatterService.SearchFieldFormattersAsync(wipProject.GetId(), search));
         }
 
         [Fact]
-        public void SearchFieldFormattersByName_ShouldReturnPageOfFieldFormatters()
+        public async Task SearchFieldFormattersByName_ShouldReturnPageOfFieldFormatters()
         {
             CreateDummyFieldFormatters();
 
             // Act
             FieldFormatterPagedSearchRequest search = new(1, 5, "DummyFieldFormatter1", null);
-            PagedSearchResult<FieldFormatterModel> pagedResult = fieldFormatterService.SearchFieldFormatters(wipProject.GetId(), search);
+            PagedSearchResult<FieldFormatterModel> pagedResult = await fieldFormatterService.SearchFieldFormattersAsync(wipProject.GetId(), search);
 
             // Assert
             List<FieldFormatterModel> expectedFieldFormatters = [.. wipProject.FieldFormatters.Values
@@ -150,8 +150,6 @@ namespace pva.SuperV.ApiTests
             pagedResult.Result.ShouldBeEquivalentTo(expectedFieldFormatters.Take(5).ToList());
         }
 
-
-
         private void CreateDummyFieldFormatters()
         {
             for (int i = 0; i < 10; i++)
@@ -161,12 +159,12 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetProjectFieldFormatters_ShouldReturnListOfProjectFieldFormatters()
+        public async Task GetProjectFieldFormatters_ShouldReturnListOfProjectFieldFormatters()
         {
             // GIVEN
             List<FieldFormatterModel> expectedFieldFormatters = [new EnumFormatterModel(AlarmStatesFormatterName, AlarmStatesFormatterValues)];
             // WHEN
-            List<FieldFormatterModel> fieldFormatters = fieldFormatterService.GetFieldFormatters(runnableProject.GetId());
+            List<FieldFormatterModel> fieldFormatters = await fieldFormatterService.GetFieldFormattersAsync(runnableProject.GetId());
 
             // THEN
             fieldFormatters
@@ -175,12 +173,12 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetProjectFieldFormatter_ShouldReturnFieldFormatter()
+        public async Task GetProjectFieldFormatter_ShouldReturnFieldFormatter()
         {
             // GIVEN
             FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel(AlarmStatesFormatterName, AlarmStatesFormatterValues);
             // WHEN
-            FieldFormatterModel fieldFormatter = fieldFormatterService.GetFieldFormatter(runnableProject.GetId(), expectedFieldFormatter.Name);
+            FieldFormatterModel fieldFormatter = await fieldFormatterService.GetFieldFormatterAsync(runnableProject.GetId(), expectedFieldFormatter.Name);
 
             // THEN
             fieldFormatter
@@ -189,12 +187,12 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void CreateProjectFieldFormatter_ShouldCreateFieldFormatter()
+        public async Task CreateProjectFieldFormatter_ShouldCreateFieldFormatter()
         {
             // GIVEN
             FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{AlarmStatesFormatterName}New", AlarmStatesFormatterValues);
             // WHEN
-            FieldFormatterModel fieldFormatter = fieldFormatterService.CreateFieldFormatter(wipProject.GetId(), expectedFieldFormatter);
+            FieldFormatterModel fieldFormatter = await fieldFormatterService.CreateFieldFormatterAsync(wipProject.GetId(), expectedFieldFormatter);
 
             // THEN
             fieldFormatter
@@ -203,12 +201,12 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void UpdateProjectFieldFormatter_ShouldUpdateFieldFormatter()
+        public async Task UpdateProjectFieldFormatter_ShouldUpdateFieldFormatter()
         {
             // GIVEN
             FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel(AlarmStatesFormatterName, AlarmStatesFormatterValues);
             // WHEN
-            FieldFormatterModel fieldFormatter = fieldFormatterService.UpdateFieldFormatter(wipProject.GetId(), expectedFieldFormatter.Name, expectedFieldFormatter);
+            FieldFormatterModel fieldFormatter = await fieldFormatterService.UpdateFieldFormatterAsync(wipProject.GetId(), expectedFieldFormatter.Name, expectedFieldFormatter);
 
             // THEN
             fieldFormatter
@@ -217,7 +215,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void DeleteWipProjectFieldFormatter_ShouldDeleteFieldFormatter()
+        public async Task DeleteWipProjectFieldFormatter_ShouldDeleteFieldFormatter()
         {
             // GIVEN
             FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel(AlarmStatesFormatterName, AlarmStatesFormatterValues);
@@ -225,41 +223,41 @@ namespace pva.SuperV.ApiTests
             wipProject.GetClass(AllFieldsClassName).GetField("IntFieldWithFormat").Formatter = null;
 
             // WHEN
-            fieldFormatterService.DeleteFieldFormatter(wipProject.GetId(), expectedFieldFormatter.Name);
+            await fieldFormatterService.DeleteFieldFormatterAsync(wipProject.GetId(), expectedFieldFormatter.Name);
 
             // THEN
             Assert.Throws<UnknownEntityException>(() => wipProject.GetFormatter(expectedFieldFormatter.Name));
         }
 
         [Fact]
-        public void DeleteInUseWipProjectFieldFormatter_ThrowsException()
+        public async Task DeleteInUseWipProjectFieldFormatter_ThrowsException()
         {
             // GIVEN
             FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel(AlarmStatesFormatterName, AlarmStatesFormatterValues);
 
             // WHEN/THEN
-            Assert.Throws<EntityInUseException>(() => fieldFormatterService.DeleteFieldFormatter(wipProject.GetId(), expectedFieldFormatter.Name));
+            await Assert.ThrowsAsync<EntityInUseException>(async () => await fieldFormatterService.DeleteFieldFormatterAsync(wipProject.GetId(), expectedFieldFormatter.Name));
         }
 
         [Fact]
-        public void DeleteRunnableProjectFieldFormatter_ShouldThrowException()
+        public async Task DeleteRunnableProjectFieldFormatter_ShouldThrowException()
         {
             // GIVEN
             FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{AlarmStatesFormatterName}New", AlarmStatesFormatterValues);
             // WHEN
-            Assert.Throws<NonWipProjectException>(() =>
-                fieldFormatterService.DeleteFieldFormatter(runnableProject.GetId(), expectedFieldFormatter.Name));
+            await Assert.ThrowsAsync<NonWipProjectException>(async () =>
+                await fieldFormatterService.DeleteFieldFormatterAsync(runnableProject.GetId(), expectedFieldFormatter.Name));
 
             // THEN
         }
 
         [Fact]
-        public void DeleteNonExistentFieldFormatter_ShouldThrowException()
+        public async Task DeleteNonExistentFieldFormatter_ShouldThrowException()
         {
             // GIVEN
             // WHEN
-            Assert.Throws<UnknownEntityException>(() =>
-                fieldFormatterService.DeleteFieldFormatter(wipProject.GetId(), "UnknownFormatter"));
+            await Assert.ThrowsAsync<UnknownEntityException>(async () =>
+                await fieldFormatterService.DeleteFieldFormatterAsync(wipProject.GetId(), "UnknownFormatter"));
 
             // THEN
         }

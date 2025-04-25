@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.History;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.HistoryRetrieval;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.HistoryValues
 {
     internal static class GetHistoryStatistics
     {
-        internal static Results<Ok<HistoryStatisticsResultModel>, NotFound<string>, BadRequest<string>> Handle(IHistoryValuesService historyValuesService, string projectId, string instanceName, HistoryStatisticsRequestModel request)
+        internal static async Task<Results<Ok<HistoryStatisticsResultModel>, NotFound<string>, BadRequest<string>>>
+            Handle(IHistoryValuesService historyValuesService, string projectId, string instanceName, HistoryStatisticsRequestModel request)
         {
             try
             {
@@ -15,7 +16,7 @@ namespace pva.SuperV.Api.Routes.HistoryValues
                 {
                     return TypedResults.BadRequest("Start time needs to be before end time");
                 }
-                HistoryStatisticsResultModel value = historyValuesService.GetInstanceHistoryStatistics(projectId, instanceName, request);
+                HistoryStatisticsResultModel value = await historyValuesService.GetInstanceHistoryStatisticsAsync(projectId, instanceName, request);
                 return TypedResults.Ok(value);
             }
             catch (UnknownEntityException e)

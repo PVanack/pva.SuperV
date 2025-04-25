@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.Classes;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Classes;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.Classes
 {
     internal static class CreateClass
     {
-        internal static Results<Created<ClassModel>, NotFound<string>, BadRequest<string>> Handle(IClassService classService, string projectId, ClassModel createRequest)
+        internal static async Task<Results<Created<ClassModel>, NotFound<string>, BadRequest<string>>>
+            Handle(IClassService classService, string projectId, ClassModel createRequest)
         {
             try
             {
-                ClassModel createdClass = classService.CreateClass(projectId, createRequest);
+                ClassModel createdClass = await classService.CreateClassAsync(projectId, createRequest);
                 return TypedResults.Created($"/classes/{projectId}/{createdClass.Name}", createdClass);
             }
             catch (UnknownEntityException e)

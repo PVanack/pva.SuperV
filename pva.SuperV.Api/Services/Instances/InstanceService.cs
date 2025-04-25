@@ -3,6 +3,7 @@ using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Instances;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Services.Instances
 {
@@ -13,18 +14,18 @@ namespace pva.SuperV.Api.Services.Instances
                 { "name", new Comparison<InstanceModel>((a, b) => a.Name.CompareTo(b.Name)) }
             };
 
-        public List<InstanceModel> GetInstances(string projectId)
+        public async Task<List<InstanceModel>> GetInstancesAsync(string projectId)
         {
             if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {
-                return [.. runnableProject.Instances.Values.Select(InstanceMapper.ToDto)];
+                return await Task.FromResult(runnableProject.Instances.Values.Select(InstanceMapper.ToDto).ToList());
             }
-            throw new NonRunnableProjectException(projectId);
+            return await Task.FromException<List<InstanceModel>>(new NonRunnableProjectException(projectId));
         }
 
-        public PagedSearchResult<InstanceModel> SearchInstances(string projectId, InstancePagedSearchRequest search)
+        public async Task<PagedSearchResult<InstanceModel>> SearchInstancesAsync(string projectId, InstancePagedSearchRequest search)
         {
-            List<InstanceModel> allInstances = GetInstances(projectId);
+            List<InstanceModel> allInstances = await GetInstancesAsync(projectId);
             List<InstanceModel> projects = FilterInstances(projectId, allInstances, search);
             projects = SortResult(projects, search.SortOption, sortOptions);
             return CreateResult(search, allInstances, projects);
@@ -48,8 +49,7 @@ namespace pva.SuperV.Api.Services.Instances
 
         private static bool FilterInstanceClass(string projectId, string searchedClassName, InstanceModel instance, ref Dictionary<string, bool> classNameMatches)
         {
-            bool isClassNameMatching;
-            if (classNameMatches.TryGetValue(instance.ClassName, out isClassNameMatching))
+            if (classNameMatches.TryGetValue(instance.ClassName, out bool isClassNameMatching))
             {
                 return isClassNameMatching;
             }
@@ -72,20 +72,20 @@ namespace pva.SuperV.Api.Services.Instances
             return isClassNameMatching;
         }
 
-        public InstanceModel GetInstance(string projectId, string instanceName)
+        public async Task<InstanceModel> GetInstanceAsync(string projectId, string instanceName)
         {
             if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {
                 if (runnableProject.Instances.TryGetValue(instanceName, out Instance? instance))
                 {
-                    return InstanceMapper.ToDto(instance);
+                    return await Task.FromResult(InstanceMapper.ToDto(instance));
                 }
-                throw new UnknownEntityException("Instance", instanceName);
+                return await Task.FromException<InstanceModel>(new UnknownEntityException("Instance", instanceName));
             }
-            throw new NonRunnableProjectException(projectId);
+            return await Task.FromException<InstanceModel>(new NonRunnableProjectException(projectId));
         }
 
-        public InstanceModel CreateInstance(string projectId, InstanceModel createRequest)
+        public async Task<InstanceModel> CreateInstanceAsync(string projectId, InstanceModel createRequest)
         {
             if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {
@@ -95,19 +95,20 @@ namespace pva.SuperV.Api.Services.Instances
                     IField? field = createdInstance!.GetField(fieldModel.Name) ?? throw new UnknownEntityException("Field", fieldModel.Name);
                     FieldValueMapper.SetFieldValue(field, fieldModel.FieldValue);
                 });
-                return InstanceMapper.ToDto(createdInstance!);
+                return await Task.FromResult(InstanceMapper.ToDto(createdInstance!));
             }
-            throw new NonRunnableProjectException(projectId);
+            return await Task.FromException<InstanceModel>(new NonRunnableProjectException(projectId));
         }
 
-        public void DeleteInstance(string projectId, string instanceName)
+        public async ValueTask DeleteInstanceAsync(string projectId, string instanceName)
         {
             if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {
                 runnableProject.RemoveInstance(instanceName);
+                await ValueTask.CompletedTask;
                 return;
             }
-            throw new NonRunnableProjectException(projectId);
+            await ValueTask.FromException(new NonRunnableProjectException(projectId));
         }
     }
 }
