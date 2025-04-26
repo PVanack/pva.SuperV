@@ -7,7 +7,7 @@ namespace pva.SuperV.Blazor
     public class State
     {
         public List<BreadcrumbItem> Breadcrumbs { get; set; } = default!;
-        public ProjectModel? EditedProject { get; set; }
+        public ProjectModel? EditedProject { get; set; } = default!;
         public MainLayout MainlLayout { get; set; } = default!;
 
         public void SetHomeBreadCrumb(bool refreshBreadcrumbs = true)
@@ -25,7 +25,7 @@ namespace pva.SuperV.Blazor
 
         public void AddProjectBreadcrumb(ProjectModel? project, bool refreshBreadcrumbs = true)
         {
-            SetProjectsBreadcrumb(false);
+            SetProjectsBreadcrumb(refreshBreadcrumbs);
             if (project != null)
             {
                 Breadcrumbs.Add(new(project.Name, $"#/project/{project.Id}"));
@@ -56,6 +56,13 @@ namespace pva.SuperV.Blazor
             {
                 MainlLayout?.Refresh();
             }
+        }
+
+        internal void AddFieldFormattersBreadcrumb(string projectId, bool refreshBreadCrumbs = true)
+        {
+            AddProjectBreadcrumb(EditedProject, false);
+            Breadcrumbs.Add(new("Field formatters", $"/field-formatters/{projectId}"));
+            RefreshBreadcrumbsIfNeeded();
         }
     }
 }

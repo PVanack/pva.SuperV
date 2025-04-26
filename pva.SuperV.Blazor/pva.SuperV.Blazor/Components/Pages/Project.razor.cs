@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Forms;
 using pva.SuperV.Model.Projects;
 using pva.SuperV.Model.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace pva.SuperV.Blazor.Components.Pages
 {
@@ -61,10 +62,23 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private void GoBackToProjects()
         {
-            NavigationManager.NavigateTo("/projects");
             State.EditedProject = null;
             State.RemoveLastBreadcrumb();
+            NavigationManager.NavigateTo("/projects");
         }
+    }
 
+    public class EditedProject(string name, string description, string? historyStorageConnectionString = null)
+    {
+        public EditedProject() : this("", "", null) { }
+
+        [Required(AllowEmptyStrings = false)]
+        [RegularExpression(Engine.Constants.IdentifierNamePattern, ErrorMessage = "Must be a valid identifier")]
+        public string Name { get => name; set => name = value; }
+
+        [Required]
+        public string Description { get => description; set => description = value; }
+
+        public string? HistoryStorageConnectionString { get => historyStorageConnectionString; set => historyStorageConnectionString = value; }
     }
 }

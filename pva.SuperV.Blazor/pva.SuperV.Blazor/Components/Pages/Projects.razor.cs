@@ -56,7 +56,7 @@ namespace pva.SuperV.Blazor.Components.Pages
             if (SelectedItem != null)
             {
                 State.EditedProject = SelectedItem;
-                NavigationManager.NavigateTo("/project");
+                NavigationManager.NavigateTo($"/project/{SelectedItem.Id}");
                 await ReloadTable();
             }
         }
@@ -64,6 +64,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         private void RowClickedEvent(TableRowClickEventArgs<ProjectModel> _)
         {
             SelectedItem = itemsTable.SelectedItem;
+            State.EditedProject = SelectedItem;
         }
 
         private string SelectedRowClassFunc(ProjectModel project, int rowNumber)
