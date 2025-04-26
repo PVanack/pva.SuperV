@@ -1,6 +1,6 @@
 ﻿using MudBlazor;
 using pva.SuperV.Blazor.Components.Layout;
-using pva.SuperV.Blazor.SuperVClient;
+using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Blazor
 {
@@ -23,7 +23,7 @@ namespace pva.SuperV.Blazor
             RefreshBreadcrumbsIfNeeded(refreshBreadcrumbs);
         }
 
-        public void AddProjectBreadcrumb(ProjectModel? project)
+        public void AddProjectBreadcrumb(ProjectModel? project, bool refreshBreadcrumbs = true)
         {
             SetProjectsBreadcrumb(false);
             if (project != null)

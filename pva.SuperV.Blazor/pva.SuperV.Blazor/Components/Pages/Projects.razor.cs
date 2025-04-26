@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using MudBlazor;
 using pva.SuperV.Blazor.Components.Dialogs;
-using pva.SuperV.Blazor.SuperVClient;
+using pva.SuperV.Model;
+using pva.SuperV.Model.Projects;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Blazor.Components.Pages
 {
@@ -13,7 +15,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         [Inject]
         private IJSRuntime JSRuntime { get; set; } = default!;
         [Inject]
-        private IRestClient SuperVRestClient { get; set; } = default!;
+        private IProjectService ProjectServiceClient { get; set; } = default!;
         [Inject]
         private NavigationManager NavigationManager { get; set; } = default!;
         [Inject]
@@ -21,12 +23,11 @@ namespace pva.SuperV.Blazor.Components.Pages
         [Inject]
         private State State { get; set; } = default!;
 
-        private MudTable<ProjectModel> projectsTable = default!;
-        private string projectNameSearchString = default!;
+        private MudTable<ProjectModel> itemsTable = default!;
+        private string itemNameSearchString = default!;
         private int selectedRowNumber;
 
-        private Dictionary<String, MudMenu?> ContextMenusRef { get; set; } = [];
-        private ProjectModel? SelectedProject { get; set; } = default!;
+        private ProjectModel? SelectedItem { get; set; } = default!;
 
         protected override void OnInitialized()
         {
@@ -34,23 +35,17 @@ namespace pva.SuperV.Blazor.Components.Pages
             base.OnInitialized();
         }
 
-        private async Task<TableData<ProjectModel>> ServerReload(TableState state, CancellationToken token)
+        private async Task<TableData<ProjectModel>> ServerReload(TableState state, CancellationToken _)
         {
-            ProjectPagedSearchRequest request = new() { PageNumber = state.Page + 1, PageSize = state.PageSize, NameFilter = projectNameSearchString };
-            PagedSearchResultOfProjectModel projects = await SuperVRestClient.SearchProjectsAsync(request, token);
-            ContextMenusRef.Clear();
-            foreach (var project in projects.Result)
-            {
-                ContextMenusRef.Add(project.Id, null);
-            }
-
-            TableData<ProjectModel> projectsTableData = new() { TotalItems = projects.Count, Items = projects.Result };
-            return projectsTableData;
+            ProjectPagedSearchRequest request = new(state.Page + 1, state.PageSize, itemNameSearchString, null);
+            PagedSearchResult<ProjectModel> projects = await ProjectServiceClient.SearchProjectsAsync(request);
+            TableData<ProjectModel> itemsTableData = new() { TotalItems = projects.Count, Items = projects.Result };
+            return itemsTableData;
         }
 
         private async Task CreateProject(MouseEventArgs e)
         {
-            SelectedProject = null;
+            SelectedItem = null;
             State.EditedProject = null;
             NavigationManager.NavigateTo("/project");
             await ReloadTable();
@@ -58,17 +53,17 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private async Task EditProject(MouseEventArgs e)
         {
-            if (State.EditedProject != null)
+            if (SelectedItem != null)
             {
+                State.EditedProject = SelectedItem;
                 NavigationManager.NavigateTo("/project");
                 await ReloadTable();
             }
         }
 
-        private void RowClickedEvent(TableRowClickEventArgs<ProjectModel> tableRowClickEventArgs)
+        private void RowClickedEvent(TableRowClickEventArgs<ProjectModel> _)
         {
-            SelectedProject = projectsTable.SelectedItem;
-            State.EditedProject = projectsTable.SelectedItem!;
+            SelectedItem = itemsTable.SelectedItem;
         }
 
         private string SelectedRowClassFunc(ProjectModel project, int rowNumber)
@@ -76,15 +71,13 @@ namespace pva.SuperV.Blazor.Components.Pages
             if (selectedRowNumber == rowNumber)
             {
                 selectedRowNumber = -1;
-                SelectedProject = null;
-                State.EditedProject = null!;
+                SelectedItem = null;
                 return string.Empty;
             }
-            else if (projectsTable.SelectedItem != null && projectsTable.SelectedItem.Equals(project))
+            else if (itemsTable.SelectedItem != null && itemsTable.SelectedItem.Equals(project))
             {
                 selectedRowNumber = rowNumber;
-                SelectedProject = projectsTable.SelectedItem;
-                State.EditedProject = projectsTable.SelectedItem!;
+                SelectedItem = itemsTable.SelectedItem;
                 return "selected";
             }
             else
@@ -100,13 +93,13 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private async Task CreateWipProjectFromRunnable(string runnableProjectId)
         {
-            await SuperVRestClient.CreateProjectFromRunnableAsync(runnableProjectId);
+            await ProjectServiceClient.CreateProjectFromRunnableAsync(runnableProjectId);
             await ReloadTable();
         }
 
         private async Task BuildWipProject(string wipProjectId)
         {
-            await SuperVRestClient.BuildProjectAsync(wipProjectId);
+            await ProjectServiceClient.BuildProjectAsync(wipProjectId);
             await ReloadTable();
         }
         private async Task DeleteProject(string projectId)
@@ -118,21 +111,23 @@ namespace pva.SuperV.Blazor.Components.Pages
 
             if (result is not null && !result.Canceled)
             {
-                await SuperVRestClient.UnloadProjectAsync(projectId);
+                await ProjectServiceClient.UnloadProjectAsync(projectId);
                 await ReloadTable();
             }
         }
 
         private async Task SaveProjectDefinitions(ProjectModel project)
         {
-            string json = await SuperVRestClient.SaveProjectDefinitionsAsync(project.Id);
+            StreamReader? streamReader = await ProjectServiceClient.GetProjectDefinitionsAsync(project.Id);
+            string json = await streamReader.ReadToEndAsync();
             string fileName = $"{project.Name}-{project.Version}.prj";
             await JSRuntime.InvokeAsync<object>("saveFile", fileName, json);
         }
 
         private async Task SaveProjectInstances(ProjectModel project)
         {
-            string json = await SuperVRestClient.SaveProjectInstancesAsync(project.Id);
+            StreamReader? streamReader = await ProjectServiceClient.GetProjectInstancesAsync(project.Id);
+            string json = await streamReader.ReadToEndAsync();
             string fileName = $"{project.Name}-{project.Version}.snp";
             await JSRuntime.InvokeAsync<object>("saveFile", fileName, json);
         }
@@ -141,27 +136,26 @@ namespace pva.SuperV.Blazor.Components.Pages
         {
             using MemoryStream memoryStream = new();
             await file.OpenReadStream().CopyToAsync(memoryStream);
-            await SuperVRestClient.LoadProjectFromDefinitionsAsync(memoryStream.ToArray());
+            byte[] fileContent = memoryStream.ToArray();
+            using MemoryStream memoryStream2 = new(fileContent);
+            _ = ProjectServiceClient.CreateProjectFromJsonDefinitionAsync(new StreamReader(memoryStream2));
             await ReloadTable();
         }
 
         private async Task LoadProjectInstancesFromFile(IBrowserFile file, ProjectModel project)
         {
-            if (ContextMenusRef.TryGetValue(project.Id, out var menu) && menu is not null)
-            {
-                await menu.CloseMenuAsync();
-            }
             using MemoryStream memoryStream = new();
             await file.OpenReadStream().CopyToAsync(memoryStream);
-            await SuperVRestClient.LoadProjectInstancesAsync(project.Id, memoryStream.ToArray());
+            byte[] fileContent = memoryStream.ToArray();
+            using MemoryStream memoryStream2 = new(fileContent);
+            await ProjectServiceClient.LoadProjectInstancesAsync(project.Id, new StreamReader(memoryStream2));
         }
 
         private async Task ReloadTable()
         {
             selectedRowNumber = -1;
-            SelectedProject = null;
-            State.EditedProject = null!;
-            await projectsTable.ReloadServerData();
+            SelectedItem = null;
+            await itemsTable.ReloadServerData();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using pva.SuperV.Blazor.SuperVClient;
+using pva.SuperV.Model.Projects;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Blazor.Components.Pages
 {
@@ -10,7 +11,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         public string ProjectId { get; set; } = default!;
 
         [Inject]
-        private IRestClient SuperVRestClient { get; set; } = default!;
+        private IProjectService ProjectServiceClient { get; set; } = default!;
         [Inject]
         private NavigationManager NavigationManager { get; set; } = default!;
         [Inject]
@@ -19,19 +20,18 @@ namespace pva.SuperV.Blazor.Components.Pages
         private string pageTitle = default!;
         private bool success;
         private bool isModification;
-        private CreateProjectRequest EditedProject { get; set; } = new();
+        private EditedProject EditedProject { get; set; } = new();
 
         protected override async Task OnParametersSetAsync()
         {
             if (!String.IsNullOrEmpty(ProjectId))
             {
-                State.EditedProject = await SuperVRestClient.GetProjectAsync(ProjectId);
+                State.EditedProject = await ProjectServiceClient.GetProjectAsync(ProjectId);
             }
             if (State.EditedProject != null)
             {
                 isModification = true;
-                EditedProject.Name = State.EditedProject.Name;
-                EditedProject.Description = State.EditedProject.Description;
+                EditedProject = new(State.EditedProject.Name, State.EditedProject.Description!);
             }
             pageTitle = isModification ? $"Project {EditedProject.Name}" : "New project";
             State.AddProjectBreadcrumb(State.EditedProject);
@@ -43,12 +43,13 @@ namespace pva.SuperV.Blazor.Components.Pages
             success = true;
             if (State.EditedProject != null)
             {
-                UpdateProjectRequest projectUpdate = new() { Description = EditedProject.Description, HistoryStorageConnectionString = EditedProject.HistoryStorageConnectionString };
-                await SuperVRestClient.UpdateProjectAsync(State.EditedProject.Id, projectUpdate);
+                UpdateProjectRequest projectUpdate = new(EditedProject.Description, EditedProject.HistoryStorageConnectionString);
+                await ProjectServiceClient.UpdateProjectAsync(State.EditedProject.Id, projectUpdate);
             }
             else
             {
-                await SuperVRestClient.CreateBlankProjectAsync(EditedProject);
+                CreateProjectRequest projectCreation = new(EditedProject.Name, EditedProject.Description, EditedProject.HistoryStorageConnectionString);
+                await ProjectServiceClient.CreateProjectAsync(projectCreation);
             }
             GoBackToProjects();
         }

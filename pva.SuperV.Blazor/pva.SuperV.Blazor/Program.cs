@@ -22,7 +22,7 @@ namespace pva.SuperV.Blazor
                 .AddInteractiveWebAssemblyComponents();
             builder.Services.AddMudServices();
 
-            RestClient restClient = new(new HttpClient()) { BaseUrl = builder.Configuration["SuperVApiUrl"]! };
+            builder.Services.AddScoped<IProjectService, ProjectService>((service) => new(BuildHttpClient(builder)));
             builder.Services.AddScoped<IRestClient, RestClient>((service) => restClient);
             builder.Services.AddScoped<State>();
 
