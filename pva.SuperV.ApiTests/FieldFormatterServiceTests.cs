@@ -192,7 +192,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel($"{AlarmStatesFormatterName}New", AlarmStatesFormatterValues);
             // WHEN
-            FieldFormatterModel fieldFormatter = await fieldFormatterService.CreateFieldFormatterAsync(wipProject.GetId(), expectedFieldFormatter);
+            FieldFormatterModel fieldFormatter = await fieldFormatterService.CreateFieldFormatterAsync(wipProject.GetId(), new CreateFieldFormatterRequest(expectedFieldFormatter));
 
             // THEN
             fieldFormatter

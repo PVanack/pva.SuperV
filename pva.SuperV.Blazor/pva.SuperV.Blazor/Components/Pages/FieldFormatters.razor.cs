@@ -64,6 +64,7 @@ public partial class FieldFormatters
     private void RowClickedEvent(TableRowClickEventArgs<FieldFormatterModel> _)
     {
         SelectedItem = itemsTable.SelectedItem;
+        State.EditedFieldFormatter = SelectedItem;
     }
 
     private string SelectedRowClassFunc(FieldFormatterModel item, int rowNumber)
@@ -95,7 +96,7 @@ public partial class FieldFormatters
     {
         var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.EntityDescription, $"field formatter {itemId}" } };
 
-        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>($"Delete firld formatter", parameters);
+        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>($"Delete field formatter", parameters);
         var result = await dialog.Result;
 
         if (result is not null && !result.Canceled)

@@ -1,5 +1,6 @@
 ﻿using MudBlazor;
 using pva.SuperV.Blazor.Components.Layout;
+using pva.SuperV.Model.FieldFormatters;
 using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Blazor
@@ -8,6 +9,7 @@ namespace pva.SuperV.Blazor
     {
         public List<BreadcrumbItem> Breadcrumbs { get; set; } = default!;
         public ProjectModel? EditedProject { get; set; } = default!;
+        public FieldFormatterModel? EditedFieldFormatter { get; set; } = default!;
         public MainLayout MainlLayout { get; set; } = default!;
 
         public void SetHomeBreadCrumb(bool refreshBreadcrumbs = true)
@@ -63,6 +65,15 @@ namespace pva.SuperV.Blazor
             AddProjectBreadcrumb(EditedProject, false);
             Breadcrumbs.Add(new("Field formatters", $"/field-formatters/{projectId}"));
             RefreshBreadcrumbsIfNeeded();
+        }
+
+        internal void AddFieldFormatterBreadcrumb(string projectId, FieldFormatterModel? editedFieldFormatter)
+        {
+            if (editedFieldFormatter != null)
+            {
+                Breadcrumbs.Add(new($"Field formatter {editedFieldFormatter.Name}", $"/field-formatter/{projectId}/{editedFieldFormatter?.Name}"));
+                RefreshBreadcrumbsIfNeeded();
+            }
         }
     }
 }

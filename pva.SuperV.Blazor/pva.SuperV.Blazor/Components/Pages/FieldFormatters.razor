@@ -58,7 +58,7 @@
 	</HeaderContent>
 	<RowTemplate>
 		<MudTd DataLabel="Name">@context.Name</MudTd>
-		<MudTd DataLabel="Type">@context.FormatterType</MudTd>
+		<MudTd DataLabel="Type">@FieldFormatter.GetFormatterType(context)</MudTd>
 	</RowTemplate>
 	<NoRecordsContent>
 		<MudText>No matching records found</MudText>

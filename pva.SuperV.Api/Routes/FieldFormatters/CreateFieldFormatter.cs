@@ -12,7 +12,7 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
         {
             try
             {
-                FieldFormatterModel createdFieldFormatter = await fieldFormatterService.CreateFieldFormatterAsync(projectId, createRequest.FieldFormatter);
+                FieldFormatterModel createdFieldFormatter = await fieldFormatterService.CreateFieldFormatterAsync(projectId, createRequest);
                 return TypedResults.Created<FieldFormatterModel>($"/field-formatters/{projectId}/{createdFieldFormatter.Name}", createdFieldFormatter);
             }
             catch (UnknownEntityException e)

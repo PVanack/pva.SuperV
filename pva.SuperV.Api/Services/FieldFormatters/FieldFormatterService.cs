@@ -63,11 +63,11 @@ namespace pva.SuperV.Api.Services.FieldFormatters
             return await Task.FromException<FieldFormatterModel>(new UnknownEntityException("Field formatter", fieldFormatterName));
         }
 
-        public async Task<FieldFormatterModel> CreateFieldFormatterAsync(string projectId, FieldFormatterModel fieldFormatterModel)
+        public async Task<FieldFormatterModel> CreateFieldFormatterAsync(string projectId, CreateFieldFormatterRequest createRequest)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
-                FieldFormatter fieldFormatter = FieldFormatterMapper.FromDto(fieldFormatterModel);
+                FieldFormatter fieldFormatter = FieldFormatterMapper.FromDto(createRequest.FieldFormatter);
                 wipProject.AddFieldFormatter(fieldFormatter);
                 return await Task.FromResult(FieldFormatterMapper.ToDto(fieldFormatter));
             }

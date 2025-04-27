@@ -8,11 +8,11 @@ namespace pva.SuperV.Blazor.Services
     {
         private const string baseUri = "/field-formatters";
 
-        public async Task<FieldFormatterModel> CreateFieldFormatterAsync(string projectId, FieldFormatterModel fieldFormatterModel)
+        public async Task<FieldFormatterModel> CreateFieldFormatterAsync(string projectId, CreateFieldFormatterRequest createRequest)
         {
             try
             {
-                var result = await httpClient.PostAsJsonAsync($"{baseUri}/{projectId}", fieldFormatterModel)
+                var result = await httpClient.PostAsJsonAsync($"{baseUri}/{projectId}", createRequest)
                     ?? throw new ApiException("No content available");
                 if (result.StatusCode == System.Net.HttpStatusCode.Created)
                 {
