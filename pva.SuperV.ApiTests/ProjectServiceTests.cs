@@ -67,19 +67,19 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchProjectsPaged_ShouldReturnPageOfProjects()
+        public async Task SearchProjectsPaged_ShouldReturnPageOfProjects()
         {
             CreateDummyWipProjects();
 
             // Act
             ProjectPagedSearchRequest search = new(1, 5, null, null);
-            PagedSearchResult<ProjectModel> page1Result = projectService.SearchProjects(search);
+            PagedSearchResult<ProjectModel> page1Result = await projectService.SearchProjectsAsync(search);
             search = search with { PageNumber = 2, PageSize = 10 };
-            PagedSearchResult<ProjectModel> page2Result = projectService.SearchProjects(search);
+            PagedSearchResult<ProjectModel> page2Result = await projectService.SearchProjectsAsync(search);
             search = search with { PageNumber = 3 };
-            PagedSearchResult<ProjectModel> page3Result = projectService.SearchProjects(search);
+            PagedSearchResult<ProjectModel> page3Result = await projectService.SearchProjectsAsync(search);
             search = search with { PageNumber = 4 };
-            PagedSearchResult<ProjectModel> page4Result = projectService.SearchProjects(search);
+            PagedSearchResult<ProjectModel> page4Result = await projectService.SearchProjectsAsync(search);
 
             // Assert
             List<ProjectModel> expectedProjects = [.. Project.Projects.Select(entry => ProjectMapper.ToDto(entry.Value))];
@@ -110,13 +110,13 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchProjectsSortedByNameAsc_ShouldReturnPageOfProjectsSorted()
+        public async Task SearchProjectsSortedByNameAsc_ShouldReturnPageOfProjectsSorted()
         {
             CreateDummyWipProjects();
 
             // Act
             ProjectPagedSearchRequest search = new(1, 5, null, "name");
-            PagedSearchResult<ProjectModel> pagedResult = projectService.SearchProjects(search);
+            PagedSearchResult<ProjectModel> pagedResult = await projectService.SearchProjectsAsync(search);
 
             // Assert
             List<ProjectModel> expectedProjects = [.. Project.Projects.Values.Select(project => ProjectMapper.ToDto(project))];
@@ -130,13 +130,13 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchProjectsSortByNameDesc_ShouldReturnPageOfProjectsSorted()
+        public async Task SearchProjectsSortByNameDesc_ShouldReturnPageOfProjectsSorted()
         {
             CreateDummyWipProjects();
 
             // Act
             ProjectPagedSearchRequest search = new(1, 5, null, "-name");
-            PagedSearchResult<ProjectModel> pagedResult = projectService.SearchProjects(search);
+            PagedSearchResult<ProjectModel> pagedResult = await projectService.SearchProjectsAsync(search);
 
             // Assert
             List<ProjectModel> expectedProjects = [.. Project.Projects.Values.Select(project => ProjectMapper.ToDto(project))];
@@ -151,21 +151,21 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchProjectsWithInvalidSortOption_ShouldThrowException()
+        public async Task SearchProjectsWithInvalidSortOption_ShouldThrowException()
         {
             // Act
             ProjectPagedSearchRequest search = new(1, 5, null, "-UnknownOption");
-            Assert.Throws<InvalidSortOptionException>(() => projectService.SearchProjects(search));
+            await Assert.ThrowsAsync<InvalidSortOptionException>(async () => await projectService.SearchProjectsAsync(search));
         }
 
         [Fact]
-        public void SearchProjectsByName_ShouldReturnPageOfProjects()
+        public async Task SearchProjectsByName_ShouldReturnPageOfProjects()
         {
             CreateDummyWipProjects();
 
             // Act
             ProjectPagedSearchRequest search = new(1, 5, "DummyProject1", null);
-            PagedSearchResult<ProjectModel> pagedResult = projectService.SearchProjects(search);
+            PagedSearchResult<ProjectModel> pagedResult = await projectService.SearchProjectsAsync(search);
 
             // Assert
             List<ProjectModel> expectedProjects = [.. Project.Projects.Values
@@ -188,10 +188,10 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetProjects_ShouldReturnListOfProjects()
+        public async Task GetProjects_ShouldReturnListOfProjects()
         {
             // Act
-            List<ProjectModel> result = projectService.GetProjects();
+            List<ProjectModel> result = await projectService.GetProjectsAsync();
 
             // Assert
             result.ShouldContain(p
@@ -201,10 +201,10 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetProject_ShouldReturnProject_WhenProjectExists()
+        public async Task GetProject_ShouldReturnProject_WhenProjectExists()
         {
             // Act
-            var result = projectService.GetProject(runnableProject.GetId());
+            var result = await projectService.GetProjectAsync(runnableProject.GetId());
 
             // Assert
             result.ShouldNotBeNull();
@@ -212,21 +212,21 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetProject_ShouldThrowUnknownEntityException_WhenProjectDoesNotExist()
+        public async Task GetProject_ShouldThrowUnknownEntityException_WhenProjectDoesNotExist()
         {
             // Act & Assert
-            Assert.Throws<UnknownEntityException>(()
-                => projectService.GetProject("NonExistentId"));
+            await Assert.ThrowsAsync<UnknownEntityException>(async ()
+                => await projectService.GetProjectAsync("NonExistentId"));
         }
 
         [Fact]
-        public void CreateProject_ShouldReturnCreatedProject()
+        public async Task CreateProject_ShouldReturnCreatedProject()
         {
             // Arrange
             CreateProjectRequest createProjectRequest = new(Name: "NewProject", Description: "Description");
 
             // Act
-            var result = projectService.CreateProject(createProjectRequest);
+            var result = await projectService.CreateProjectAsync(createProjectRequest);
 
             // Assert
             result.ShouldNotBeNull();
@@ -236,14 +236,14 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void UpdateProject_ShouldReturnUpdatedProject()
+        public async Task UpdateProject_ShouldReturnUpdatedProject()
         {
             // Arrange
-            ProjectModel createdProject = projectService.CreateProject(new CreateProjectRequest(Name: "NewProject", Description: "Description"));
+            ProjectModel createdProject = await projectService.CreateProjectAsync(new CreateProjectRequest(Name: "NewProject", Description: "Description"));
 
             // Act
             UpdateProjectRequest updateProjectRequest = new("Description2", NullHistoryStorageEngine.Prefix);
-            ProjectModel result = projectService.UpdateProject(createdProject.Id, updateProjectRequest);
+            ProjectModel result = await projectService.UpdateProjectAsync(createdProject.Id, updateProjectRequest);
 
             // Assert
             result.ShouldNotBeNull();
@@ -253,12 +253,12 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void CreateProjectFromRunnable_ShouldReturnCreatedProject()
+        public async Task CreateProjectFromRunnable_ShouldReturnCreatedProject()
         {
             // Arrange
 
             // Act
-            var result = projectService.CreateProjectFromRunnable(runnableProject.GetId());
+            var result = await projectService.CreateProjectFromRunnableAsync(runnableProject.GetId());
 
             // Assert
             result.ShouldNotBeNull();
@@ -305,11 +305,11 @@ namespace pva.SuperV.ApiTests
 
 
         [Fact]
-        public void CreateProjectFromDefinitionJson_ShouldReturnRunnableProject()
+        public async Task CreateProjectFromDefinitionJson_ShouldReturnRunnableProject()
         {
             // Act
             using StreamReader definitionsStream = new(new MemoryStream(Encoding.UTF8.GetBytes(projectDefinitionsJson)));
-            var result = projectService.CreateProjectFromJsonDefinition(definitionsStream);
+            var result = await projectService.CreateProjectFromJsonDefinitionAsync(definitionsStream);
 
             // Assert
             result.ShouldNotBeNull();
@@ -340,36 +340,36 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void LoadRunnableProjectInstancesFromJson_ShouldCreateInstances()
+        public async Task LoadRunnableProjectInstancesFromJson_ShouldCreateInstances()
         {
             // Act
             using StreamReader definitionsStream = new(new MemoryStream(Encoding.UTF8.GetBytes(projectInstancesJson)));
-            projectService.LoadProjectInstances(runnableProject.GetId(), definitionsStream);
+            await projectService.LoadProjectInstancesAsync(runnableProject.GetId(), definitionsStream);
 
             // Assert
             runnableProject.Instances.ShouldContainKey("InstanceToCreate");
         }
 
         [Fact]
-        public void LoadWipProjectInstancesFromJson_ShouldThrowException()
+        public async Task LoadWipProjectInstancesFromJson_ShouldThrowException()
         {
             // Act
             using StreamReader definitionsStream = new(new MemoryStream(Encoding.UTF8.GetBytes(projectInstancesJson)));
-            Assert.Throws<NonRunnableProjectException>(() => projectService.LoadProjectInstances(wipProject.GetId(), definitionsStream));
+            await Assert.ThrowsAsync<NonRunnableProjectException>(async () => await projectService.LoadProjectInstancesAsync(wipProject.GetId(), definitionsStream));
 
             // Assert
         }
 
         [Fact]
-        public void UnloadProject_ShouldRemoveProject()
+        public async Task UnloadProject_ShouldRemoveProject()
         {
             // Act
             WipProject wipProject1 = Project.CreateProject("WipProject1");
-            projectService.UnloadProject(wipProject1.GetId());
+            await projectService.UnloadProjectAsync(wipProject1.GetId());
 
             // Assert
-            Assert.Throws<UnknownEntityException>(()
-                => projectService.GetProject(wipProject1.GetId()));
+            await Assert.ThrowsAsync<UnknownEntityException>(async ()
+                => await projectService.GetProjectAsync(wipProject1.GetId()));
         }
 
     }

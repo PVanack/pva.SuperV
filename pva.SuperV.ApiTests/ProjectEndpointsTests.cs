@@ -1,10 +1,10 @@
 ﻿using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using pva.SuperV.Api.Exceptions;
-using pva.SuperV.Api.Services.Projects;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Projects;
+using pva.SuperV.Model.Services;
 using Shouldly;
 using System.Net.Http.Json;
 using System.Text;
@@ -95,7 +95,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             List<ProjectModel> expectedProjects = [new ProjectModel("Project1", "a", 1, "Descr", false)];
             ProjectPagedSearchRequest searchRequest = new(1, 10, null, null);
-            MockedProjectService.SearchProjects(Arg.Any<ProjectPagedSearchRequest>())
+            MockedProjectService.SearchProjectsAsync(Arg.Any<ProjectPagedSearchRequest>())
                 .Returns(new PagedSearchResult<ProjectModel>(1, 10, expectedProjects.Count, expectedProjects));
 
             // WHEN
@@ -116,7 +116,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             List<ProjectModel> expectedProjects = [new ProjectModel("Project1", "a", 1, "Descr", false)];
-            MockedProjectService.GetProjects()
+            MockedProjectService.GetProjectsAsync()
                 .Returns(expectedProjects);
 
             // WHEN
@@ -133,7 +133,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ProjectModel expectedProject = new("Project1", "Project1", 1, "Descr", false);
-            MockedProjectService.GetProject("Project1")
+            MockedProjectService.GetProjectAsync("Project1")
                 .Returns(expectedProject);
 
             // WHEN
@@ -149,8 +149,8 @@ namespace pva.SuperV.ApiTests
         public async Task WhenGettingUnknownProject_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedProjectService.GetProject("UnknownProject")
-                .Throws<UnknownEntityException>();
+            MockedProjectService.GetProjectAsync("UnknownProject")
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var response = await client.GetAsync("/projects/UnknownProject");
@@ -165,7 +165,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             CreateProjectRequest createProjectRequest = new("NewProject", "Description");
             ProjectModel expectedCreatedProject = new("1", "NewProject", 1, "descriptioon", false);
-            MockedProjectService.CreateProject(createProjectRequest)
+            MockedProjectService.CreateProjectAsync(createProjectRequest)
                 .Returns(expectedCreatedProject);
 
             // WHEN
@@ -183,7 +183,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             UpdateProjectRequest updateProjectRequest = new("NewProject", "Description");
             ProjectModel expectedUpdatedProject = new("1", "NewProject", 1, "descriptioon", false);
-            MockedProjectService.UpdateProject(expectedUpdatedProject.Name, updateProjectRequest)
+            MockedProjectService.UpdateProjectAsync(expectedUpdatedProject.Name, updateProjectRequest)
                 .Returns(expectedUpdatedProject);
 
             // WHEN
@@ -200,7 +200,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ProjectModel expectedCreatedProject = new("1", "NewProject", 2, "descriptioon", false);
-            MockedProjectService.CreateProjectFromRunnable("NewProject")
+            MockedProjectService.CreateProjectFromRunnableAsync("NewProject")
                 .Returns(expectedCreatedProject);
 
             // WHEN
@@ -216,8 +216,8 @@ namespace pva.SuperV.ApiTests
         public async Task WhenCreatingWipProjectFromWipProject_ThenBadRequestIsReturned()
         {
             // GIVEN
-            MockedProjectService.CreateProjectFromRunnable("WipProject")
-                .Throws<NonRunnableProjectException>();
+            MockedProjectService.CreateProjectFromRunnableAsync("WipProject")
+                .ThrowsAsync<NonRunnableProjectException>();
 
             // WHEN
             var response = await client.PostAsync("/projects/create/WipProject", null);
@@ -299,7 +299,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ProjectModel expectedProject = new("TestProject", "TestProject", 11, null, true);
-            MockedProjectService.CreateProjectFromJsonDefinition(Arg.Any<StreamReader>())
+            MockedProjectService.CreateProjectFromJsonDefinitionAsync(Arg.Any<StreamReader>())
                 .Returns(expectedProject);
 
             // WHEN
@@ -379,7 +379,7 @@ namespace pva.SuperV.ApiTests
         public async Task WhenLoadingUnknownProjectInstances_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedProjectService.When(fake => fake.LoadProjectInstances("UnknownProject", Arg.Any<StreamReader>()))
+            MockedProjectService.When(async (fake) => await fake.LoadProjectInstancesAsync("UnknownProject", Arg.Any<StreamReader>()))
                 .Do(call => { throw new UnknownEntityException(); });
 
             // WHEN
@@ -394,7 +394,7 @@ namespace pva.SuperV.ApiTests
         public async Task WhenLoadingNonRunnableProjectInstances_ThenBadRequestIsReturned()
         {
             // GIVEN
-            MockedProjectService.When(fake => fake.LoadProjectInstances("WipProject", Arg.Any<StreamReader>()))
+            MockedProjectService.When(async (fake) => await fake.LoadProjectInstancesAsync("WipProject", Arg.Any<StreamReader>()))
                 .Do(call => { throw new NonRunnableProjectException(); });
 
             // WHEN
@@ -419,7 +419,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenProject_WhenUnloadingProject_ThenProjectIsUnloaded()
         {
             // GIVEN
-            MockedProjectService.When(fake => fake.UnloadProject("UnknownProject"))
+            MockedProjectService.When(async (fake) => await fake.UnloadProjectAsync("UnknownProject"))
                 .Do(call => { throw new UnknownEntityException(); });
 
             // WHEN

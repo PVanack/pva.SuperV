@@ -24,19 +24,19 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchClassesPaged_ShouldReturnPageOfClasses()
+        public async Task SearchClassesPaged_ShouldReturnPageOfClasses()
         {
             CreateDummyClasses();
 
             // Act
             ClassPagedSearchRequest search = new(1, 5, null, null);
-            PagedSearchResult<ClassModel> page1Result = classService.SearchClasses(wipProject.GetId(), search);
+            PagedSearchResult<ClassModel> page1Result = await classService.SearchClassesAsync(wipProject.GetId(), search);
             search = search with { PageNumber = 2, PageSize = 10 };
-            PagedSearchResult<ClassModel> page2Result = classService.SearchClasses(wipProject.GetId(), search);
+            PagedSearchResult<ClassModel> page2Result = await classService.SearchClassesAsync(wipProject.GetId(), search);
             search = search with { PageNumber = 3 };
-            PagedSearchResult<ClassModel> page3Result = classService.SearchClasses(wipProject.GetId(), search);
+            PagedSearchResult<ClassModel> page3Result = await classService.SearchClassesAsync(wipProject.GetId(), search);
             search = search with { PageNumber = 4 };
-            PagedSearchResult<ClassModel> page4Result = classService.SearchClasses(wipProject.GetId(), search);
+            PagedSearchResult<ClassModel> page4Result = await classService.SearchClassesAsync(wipProject.GetId(), search);
 
             // Assert
             List<ClassModel> expectedClasses = [.. wipProject.Classes.Select(entry => ClassMapper.ToDto(entry.Value))];
@@ -67,13 +67,13 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchClassesSortedByNameAsc_ShouldReturnPageOfClassesSorted()
+        public async Task SearchClassesSortedByNameAsc_ShouldReturnPageOfClassesSorted()
         {
             CreateDummyClasses();
 
             // Act
             ClassPagedSearchRequest search = new(1, 5, null, "name");
-            PagedSearchResult<ClassModel> pagedResult = classService.SearchClasses(wipProject.GetId(), search);
+            PagedSearchResult<ClassModel> pagedResult = await classService.SearchClassesAsync(wipProject.GetId(), search);
 
             // Assert
             List<ClassModel> expectedClasses = [.. wipProject.Classes.Select(entry => ClassMapper.ToDto(entry.Value))];
@@ -87,13 +87,13 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchClassesSortedByNameDesc_ShouldReturnPageOfClassesSorted()
+        public async Task SearchClassesSortedByNameDesc_ShouldReturnPageOfClassesSorted()
         {
             CreateDummyClasses();
 
             // Act
             ClassPagedSearchRequest search = new(1, 5, null, "-name");
-            PagedSearchResult<ClassModel> pagedResult = classService.SearchClasses(wipProject.GetId(), search);
+            PagedSearchResult<ClassModel> pagedResult = await classService.SearchClassesAsync(wipProject.GetId(), search);
 
             // Assert
             List<ClassModel> expectedClasses = [.. wipProject.Classes.Select(entry => ClassMapper.ToDto(entry.Value))];
@@ -108,21 +108,21 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchClassesSortedWithInvalidOption_ShouldThrowException()
+        public async Task SearchClassesSortedWithInvalidOption_ShouldThrowException()
         {
             // Act
             ClassPagedSearchRequest search = new(1, 5, null, "-InvalidOption");
-            Assert.Throws<InvalidSortOptionException>(() => classService.SearchClasses(wipProject.GetId(), search));
+            await Assert.ThrowsAsync<InvalidSortOptionException>(async () => await classService.SearchClassesAsync(wipProject.GetId(), search));
         }
 
         [Fact]
-        public void SearchClassesByName_ShouldReturnPageOfClasses()
+        public async Task SearchClassesByName_ShouldReturnPageOfClasses()
         {
             CreateDummyClasses();
 
             // Act
             ClassPagedSearchRequest search = new(1, 5, "DummyClass1", null);
-            PagedSearchResult<ClassModel> pagedResult = classService.SearchClasses(wipProject.GetId(), search);
+            PagedSearchResult<ClassModel> pagedResult = await classService.SearchClassesAsync(wipProject.GetId(), search);
 
             // Assert
             List<ClassModel> expectedClasses = [.. wipProject.Classes.Values
@@ -146,10 +146,10 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetClasses_ShouldReturnListOfClasses()
+        public async Task GetClasses_ShouldReturnListOfClasses()
         {
             // Act
-            var result = classService.GetClasses(runnableProject.GetId());
+            var result = await classService.GetClassesAsync(runnableProject.GetId());
 
             // Assert
             result.Count.ShouldBe(3);
@@ -159,10 +159,10 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetClass_ShouldReturnClass_WhenClassExists()
+        public async Task GetClass_ShouldReturnClass_WhenClassExists()
         {
             // Act
-            var result = classService.GetClass(runnableProject.GetId(), ClassName);
+            var result = await classService.GetClassAsync(runnableProject.GetId(), ClassName);
 
             // Assert
             result.ShouldNotBeNull();
@@ -170,41 +170,41 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetClass_ShouldThrowUnknownEntityException_WhenClassDoesNotExist()
+        public async Task GetClass_ShouldThrowUnknownEntityException_WhenClassDoesNotExist()
         {
             // Act & Assert
-            Assert.Throws<UnknownEntityException>(()
-                => classService.GetClass(runnableProject.GetId(), "UnknownClass"));
+            await Assert.ThrowsAsync<UnknownEntityException>(async ()
+                => await classService.GetClassAsync(runnableProject.GetId(), "UnknownClass"));
         }
 
         [Fact]
-        public void CreateClassInWipProject_ShouldCreateClass()
+        public async Task CreateClassInWipProject_ShouldCreateClass()
         {
             ClassModel expectedClass = new("NewClass", null);
             // Act & Assert
-            ClassModel createClassModel = classService.CreateClass(wipProject.GetId(), expectedClass);
+            ClassModel createClassModel = await classService.CreateClassAsync(wipProject.GetId(), expectedClass);
 
             createClassModel.ShouldNotBeNull()
                 .ShouldBeEquivalentTo(expectedClass);
         }
 
         [Fact]
-        public void UpdateClassInWipProject_ShouldUpdateClass()
+        public async Task UpdateClassInWipProject_ShouldUpdateClass()
         {
             ClassModel expectedClass = new(ClassName, null);
             // Act & Assert
-            ClassModel createClassModel = classService.UpdateClass(wipProject.GetId(), expectedClass.Name, expectedClass);
+            ClassModel createClassModel = await classService.UpdateClassAsync(wipProject.GetId(), expectedClass.Name, expectedClass);
 
             createClassModel.ShouldNotBeNull()
                 .ShouldBeEquivalentTo(expectedClass);
         }
 
         [Fact]
-        public void DeleteClassInWipProject_ShouldDeleteClass()
+        public async Task DeleteClassInWipProject_ShouldDeleteClass()
         {
             ClassModel expectedClass = new("NewClass", null);
             // Act
-            classService.DeleteClass(wipProject.GetId(), expectedClass.Name);
+            await classService.DeleteClassAsync(wipProject.GetId(), expectedClass.Name);
 
             // Assert
             wipProject.Classes.ShouldNotContainKey(expectedClass.Name);

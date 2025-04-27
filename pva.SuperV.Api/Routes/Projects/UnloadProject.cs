@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.Projects;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.Projects
 {
     internal static class UnloadProject
     {
-        internal static Results<NoContent, NotFound<string>, BadRequest<string>> Handle(IProjectService projectService, string projectId)
+        internal static async Task<Results<NoContent, NotFound<string>, BadRequest<string>>>
+            Handle(IProjectService projectService, string projectId)
         {
             try
             {
-                projectService.UnloadProject(projectId);
+                await projectService.UnloadProjectAsync(projectId);
                 return TypedResults.NoContent();
             }
             catch (UnknownEntityException e)

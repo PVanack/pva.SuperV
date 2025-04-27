@@ -1,5 +1,5 @@
-﻿using pva.SuperV.Api.Services.HistoryRepositories;
-using pva.SuperV.Model.HistoryRepositories;
+﻿using pva.SuperV.Model.HistoryRepositories;
+using pva.SuperV.Model.Services;
 using System.ComponentModel;
 
 namespace pva.SuperV.Api.Routes.HistoryRepositories

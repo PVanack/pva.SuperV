@@ -2,6 +2,7 @@
 using pva.SuperV.Engine;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Classes;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Services.Classes
 {
@@ -12,15 +13,15 @@ namespace pva.SuperV.Api.Services.Classes
                 { "name", new Comparison<ClassModel>((a, b) => a.Name.CompareTo(b.Name)) }
             };
 
-        public List<ClassModel> GetClasses(string projectId)
+        public async Task<List<ClassModel>> GetClassesAsync(string projectId)
         {
             Project project = GetProjectEntity(projectId);
-            return [.. project.Classes.Values.Select(clazz => ClassMapper.ToDto(clazz))];
+            return await Task.FromResult(project.Classes.Values.Select(clazz => ClassMapper.ToDto(clazz)).ToList());
         }
 
-        public PagedSearchResult<ClassModel> SearchClasses(string projectId, ClassPagedSearchRequest search)
+        public async Task<PagedSearchResult<ClassModel>> SearchClassesAsync(string projectId, ClassPagedSearchRequest search)
         {
-            List<ClassModel> allClasses = GetClasses(projectId);
+            List<ClassModel> allClasses = await GetClassesAsync(projectId);
             List<ClassModel> projects = FilterClasses(allClasses, search);
             projects = SortResult(projects, search.SortOption, sortOptions);
             return CreateResult(search, allClasses, projects);
@@ -36,39 +37,39 @@ namespace pva.SuperV.Api.Services.Classes
             return filteredClasses;
         }
 
-        public ClassModel GetClass(string projectId, string className)
-            => ClassMapper.ToDto(GetClassEntity(projectId, className));
+        public Task<ClassModel> GetClassAsync(string projectId, string className)
+            => Task.FromResult(ClassMapper.ToDto(GetClassEntity(projectId, className)));
 
-        public ClassModel CreateClass(string projectId, ClassModel createRequest)
+        public Task<ClassModel> CreateClassAsync(string projectId, ClassModel createRequest)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
-                return ClassMapper.ToDto(wipProject.AddClass(createRequest!.Name, createRequest!.BaseClassName));
+                return Task.FromResult(ClassMapper.ToDto(wipProject.AddClass(createRequest!.Name, createRequest!.BaseClassName)));
             }
-            throw new NonWipProjectException(projectId);
+            return Task.FromException<ClassModel>(new NonWipProjectException(projectId));
         }
 
-        public ClassModel UpdateClass(string projectId, string className, ClassModel updateRequest)
+        public Task<ClassModel> UpdateClassAsync(string projectId, string className, ClassModel updateRequest)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 if (updateRequest.Name == null || updateRequest.Name.Equals(className))
                 {
-                    return ClassMapper.ToDto(wipProject.UpdateClass(className, updateRequest!.BaseClassName));
+                    return Task.FromResult(ClassMapper.ToDto(wipProject.UpdateClass(className, updateRequest!.BaseClassName)));
                 }
-                throw new EntityPropertyNotChangeableException("class", "Name");
+                return Task.FromException<ClassModel>(new EntityPropertyNotChangeableException("class", "Name"));
             }
-            throw new NonWipProjectException(projectId);
+            return Task.FromException<ClassModel>(new NonWipProjectException(projectId));
         }
 
-        public void DeleteClass(string projectId, string className)
+        public ValueTask DeleteClassAsync(string projectId, string className)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 wipProject.RemoveClass(className);
-                return;
+                return ValueTask.CompletedTask;
             }
-            throw new NonWipProjectException(projectId);
+            return ValueTask.FromException(new NonWipProjectException(projectId));
         }
     }
 }

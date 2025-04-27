@@ -1,0 +1,45 @@
+﻿@page "/field-formatter/{ProjectId}"
+@page "/field-formatter/{ProjectId}/{FieldFormatterName}"
+
+<PageTitle>@pageTitle</PageTitle>
+
+<h1>@pageTitle</h1>
+
+<EditForm Model="@EditedFieldFormatter" OnValidSubmit="OnValidSubmit">
+	<DataAnnotationsValidator />
+	<MudGrid>
+		<MudItem xs="12" sm="7">
+			<MudCard>
+				<MudCardContent>
+					<MudFocusTrap DefaultFocus=DefaultFocus.FirstChild>
+						<MudTextField Disabled="@isModification" Label="Field formatter name"
+									  @bind-Value="EditedFieldFormatter.Name" For="@(() => EditedFieldFormatter.Name)" />
+						<MudSelect T="string"  Disabled="@isModification" ValueChanged="@OnFormatterTypeChanged" Label="Select field formatter type" Placeholder="Field formatter type" Value="EditedFieldFormatter?.FormatterType">
+							@foreach (var formatterType in GetFieldFormatterTypes())
+							{
+								<MudSelectItem Value="formatterType">@formatterType</MudSelectItem>
+							}
+						</MudSelect>
+						<CascadingValue Value="EditedFieldFormatter" Name="EditedFieldFormatter">
+							<EnumFormatter/>
+						</CascadingValue>
+					</MudFocusTrap>
+				</MudCardContent>
+				<MudCardActions>
+					<MudSpacer />
+					<MudButton @onclick="CancelSubmit" Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto">Cancel</MudButton>
+					&nbsp;
+					<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">OK</MudButton>
+				</MudCardActions>
+			</MudCard>
+		</MudItem>
+		<MudItem hidden="@success" xs="12" sm="5">
+			<MudPaper Class="pa-4 mud-height-full">
+				<MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+				<MudText Color="@Color.Error">
+					<ValidationSummary />
+				</MudText>
+			</MudPaper>
+		</MudItem>
+	</MudGrid>
+</EditForm>

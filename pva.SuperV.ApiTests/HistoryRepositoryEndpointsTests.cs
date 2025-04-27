@@ -1,9 +1,9 @@
 ﻿using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using pva.SuperV.Api.Exceptions;
-using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.HistoryRepositories;
+using pva.SuperV.Model.Services;
 using Shouldly;
 using System.Net.Http.Json;
 using Xunit.Abstractions;
@@ -33,7 +33,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             List<HistoryRepositoryModel> expectedHistoryRepositories = [new HistoryRepositoryModel("Repository1")];
-            MockedHistoryRepositoryService.GetHistoryRepositories("Project")
+            MockedHistoryRepositoryService.GetHistoryRepositoriesAsync("Project")
                 .Returns(expectedHistoryRepositories);
             // WHEN
             var result = await client.GetAsync("/history-repositories/Project");
@@ -48,8 +48,8 @@ namespace pva.SuperV.ApiTests
         public async Task WhenGettingHistoryRepositoriesOnUnknownProject_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedHistoryRepositoryService.GetHistoryRepositories("UnknownProject")
-                .Throws<UnknownEntityException>();
+            MockedHistoryRepositoryService.GetHistoryRepositoriesAsync("UnknownProject")
+                .ThrowsAsync<UnknownEntityException>();
             // WHEN
             var result = await client.GetAsync("/history-repositories/UnknownProject");
 
@@ -62,7 +62,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
-            MockedHistoryRepositoryService.GetHistoryRepository("Project", $"{expectedHistoryRepository.Name}")
+            MockedHistoryRepositoryService.GetHistoryRepositoryAsync("Project", $"{expectedHistoryRepository.Name}")
                 .Returns(expectedHistoryRepository);
             // WHEN
             var result = await client.GetAsync($"/history-repositories/Project/{expectedHistoryRepository.Name}");
@@ -77,8 +77,8 @@ namespace pva.SuperV.ApiTests
         public async Task WhenGettingUnknownHistoryRepository_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedHistoryRepositoryService.GetHistoryRepository("Project", "UnknownRepository")
-                .Throws<UnknownEntityException>();
+            MockedHistoryRepositoryService.GetHistoryRepositoryAsync("Project", "UnknownRepository")
+                .ThrowsAsync<UnknownEntityException>();
             // WHEN
             var result = await client.GetAsync("/history-repositories/Project/UnknownRepository");
 
@@ -91,7 +91,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
-            MockedHistoryRepositoryService.CreateHistoryRepository("Project", expectedHistoryRepository)
+            MockedHistoryRepositoryService.CreateHistoryRepositoryAsync("Project", expectedHistoryRepository)
                 .Returns(expectedHistoryRepository);
 
             // WHEN
@@ -108,8 +108,8 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
-            MockedHistoryRepositoryService.CreateHistoryRepository("UnknownProject", expectedHistoryRepository)
-                .Throws<UnknownEntityException>();
+            MockedHistoryRepositoryService.CreateHistoryRepositoryAsync("UnknownProject", expectedHistoryRepository)
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var result = await client.PostAsJsonAsync($"/history-repositories/UnknownProject", expectedHistoryRepository);
@@ -123,8 +123,8 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
-            MockedHistoryRepositoryService.CreateHistoryRepository("RunnableProject", expectedHistoryRepository)
-                .Throws<NonWipProjectException>();
+            MockedHistoryRepositoryService.CreateHistoryRepositoryAsync("RunnableProject", expectedHistoryRepository)
+                .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
             var result = await client.PostAsJsonAsync($"/history-repositories/RunnableProject", expectedHistoryRepository);
@@ -138,7 +138,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
-            MockedHistoryRepositoryService.UpdateHistoryRepository("Project", expectedHistoryRepository.Name, expectedHistoryRepository)
+            MockedHistoryRepositoryService.UpdateHistoryRepositoryAsync("Project", expectedHistoryRepository.Name, expectedHistoryRepository)
                 .Returns(expectedHistoryRepository);
 
             // WHEN
@@ -155,8 +155,8 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
-            MockedHistoryRepositoryService.UpdateHistoryRepository("UnknownProject", expectedHistoryRepository.Name, expectedHistoryRepository)
-                .Throws<UnknownEntityException>();
+            MockedHistoryRepositoryService.UpdateHistoryRepositoryAsync("UnknownProject", expectedHistoryRepository.Name, expectedHistoryRepository)
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var result = await client.PutAsJsonAsync($"/history-repositories/UnknownProject/{expectedHistoryRepository.Name}", expectedHistoryRepository);
@@ -170,8 +170,8 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
-            MockedHistoryRepositoryService.UpdateHistoryRepository("RunnableProject", expectedHistoryRepository.Name, expectedHistoryRepository)
-                .Throws<NonWipProjectException>();
+            MockedHistoryRepositoryService.UpdateHistoryRepositoryAsync("RunnableProject", expectedHistoryRepository.Name, expectedHistoryRepository)
+                .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
             var result = await client.PutAsJsonAsync($"/history-repositories/RunnableProject/{expectedHistoryRepository.Name}", expectedHistoryRepository);
@@ -197,7 +197,7 @@ namespace pva.SuperV.ApiTests
         public async Task WhenDeletingUnknownHistoryRepository_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedHistoryRepositoryService.When(fake => fake.DeleteHistoryRepository("Project", "UnknownRepository"))
+            MockedHistoryRepositoryService.When(async (fake) => await fake.DeleteHistoryRepositoryAsync("Project", "UnknownRepository"))
                 .Do(call => { throw new UnknownEntityException(); });
 
             // WHEN
@@ -211,7 +211,7 @@ namespace pva.SuperV.ApiTests
         public async Task WhenDeletingHistoryRepositoryOnNonWipProject_ThenBadRequestIsReturned()
         {
             // GIVEN
-            MockedHistoryRepositoryService.When(fake => fake.DeleteHistoryRepository("RunnableProject", "Repository"))
+            MockedHistoryRepositoryService.When(async (fake) => await fake.DeleteHistoryRepositoryAsync("RunnableProject", "Repository"))
                 .Do(call => { throw new NonWipProjectException(); });
 
             // WHEN

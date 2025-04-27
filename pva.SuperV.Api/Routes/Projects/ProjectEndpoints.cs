@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using pva.SuperV.Api.Services.Projects;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Projects;
+using pva.SuperV.Model.Services;
 using System.ComponentModel;
 
 namespace pva.SuperV.Api.Routes.Projects
@@ -12,8 +12,8 @@ namespace pva.SuperV.Api.Routes.Projects
         {
             RouteGroupBuilder projectsApi = app.MapGroup("/projects");
             projectsApi.MapGet("/",
-                (IProjectService projectService)
-                    => GetProjects.Handle(projectService))
+                async (IProjectService projectService)
+                    => await GetProjects.Handle(projectService))
                 .WithName("GetProjects")
                 .WithDisplayName("GetProjects")
                 .WithSummary("Gets the list of available projects")
@@ -21,8 +21,8 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<List<ProjectModel>>(StatusCodes.Status200OK);
 
             projectsApi.MapPost("/search",
-                (IProjectService projectService, [FromBody] ProjectPagedSearchRequest search)
-                    => SearchProjects.Handle(projectService, search))
+                async (IProjectService projectService, [FromBody] ProjectPagedSearchRequest search)
+                    => await SearchProjects.Handle(projectService, search))
                 .WithName("SearchProjects")
                 .WithDisplayName("SearchProjects")
                 .WithSummary("Search available projects by page")
@@ -30,9 +30,9 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<PagedSearchResult<ProjectModel>>(StatusCodes.Status200OK);
 
             projectsApi.MapGet("/{projectId}",
-                (IProjectService projectService,
+                async (IProjectService projectService,
                 [Description("ID of project")] string projectId)
-                    => GetProject.Handle(projectService, projectId))
+                    => await GetProject.Handle(projectService, projectId))
                 .WithName("GetProject")
                 .WithDisplayName("GetProject")
                 .WithSummary("Gets a project by its ID")
@@ -41,9 +41,9 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status404NotFound);
 
             projectsApi.MapPost("/create",
-                (IProjectService projectService,
+                async (IProjectService projectService,
                 [Description("Project creation request")][FromBody] CreateProjectRequest createProjectRequest)
-                    => CreateProject.Handle(projectService, createProjectRequest))
+                    => await CreateProject.Handle(projectService, createProjectRequest))
                 .WithName("CreateBlankProject")
                 .WithDisplayName("CreateBlankProjectFromRunnable")
                 .WithSummary("Creates a blank WIP project")
@@ -52,9 +52,9 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status404NotFound);
 
             projectsApi.MapPost("/create/{runnableProjectId}",
-                (IProjectService projectService,
+                async (IProjectService projectService,
                 [Description(" ID of runnable project")] string runnableProjectId)
-                    => CreateProjectFromRunnable.Handle(projectService, runnableProjectId))
+                    => await CreateProjectFromRunnable.Handle(projectService, runnableProjectId))
                 .WithName("CreateProjectFromRunnable")
                 .WithDisplayName("CreateProjectFromRunnable")
                 .WithSummary("Creates a WIP project from a runnable project")
@@ -63,10 +63,10 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status404NotFound);
 
             projectsApi.MapPut("/{projectId}",
-                (IProjectService projectService,
+                async (IProjectService projectService,
                 [Description(" ID of project")] string projectId,
                 [Description("Project update request")][FromBody] UpdateProjectRequest updateProjectRequest)
-                    => UpdateProject.Handle(projectService, projectId, updateProjectRequest))
+                    => await UpdateProject.Handle(projectService, projectId, updateProjectRequest))
                 .WithName("UpdateProject")
                 .WithDisplayName("UpdateProject")
                 .WithSummary("Updates a project")
@@ -97,10 +97,10 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             projectsApi.MapPost("/load-from-definitions",
-                (IProjectService projectService,
-                [Description("File data containing project definitioons")]
+                async (IProjectService projectService,
+                [Description("File data containing project definitions")]
                 [FromBody] byte[] fileData)
-                    => LoadProjectFromDefinitions.Handle(projectService, fileData))
+                    => await LoadProjectFromDefinitions.Handle(projectService, fileData))
                 .WithName("LoadProjectFromDefinitions")
                 .WithSummary("Loads a project from a definition JSON")
                 .WithDescription("Loads a project from a definition JSON")
@@ -119,12 +119,12 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             projectsApi.MapPost("/{runnableProjectId}/instances",
-                (IProjectService projectService,
+                async (IProjectService projectService,
                 [Description("ID of runnable project")]
                 string runnableProjectId,
                 [Description("File data containing the instances")]
                 [FromBody] byte[] fileData)
-                    => LoadProjectInstances.Handle(projectService, runnableProjectId, fileData))
+                    => await LoadProjectInstances.Handle(projectService, runnableProjectId, fileData))
                 .WithName("LoadProjectInstances")
                 .WithSummary("Loads runnable project instances from a JSON file")
                 .WithDescription("Loads runnable project instances from a JSON file")
@@ -133,9 +133,9 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             projectsApi.MapDelete("/{projectId}",
-                (IProjectService projectService,
+                async (IProjectService projectService,
                 [Description("ID of project")] string projectId)
-                    => UnloadProject.Handle(projectService, projectId))
+                    => await UnloadProject.Handle(projectService, projectId))
                 .WithName("UnloadProject")
                 .WithSummary("Unloads a project")
                 .WithDescription("Unloads a project")

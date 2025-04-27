@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.Instances;
 using pva.SuperV.Engine.Exceptions;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.Instances
 {
@@ -10,7 +10,7 @@ namespace pva.SuperV.Api.Routes.Instances
         {
             try
             {
-                instanceService.DeleteInstance(projectId, instanceName);
+                instanceService.DeleteInstanceAsync(projectId, instanceName);
                 return TypedResults.NoContent();
             }
             catch (UnknownEntityException e)

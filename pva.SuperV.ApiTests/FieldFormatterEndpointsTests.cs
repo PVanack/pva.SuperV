@@ -1,10 +1,10 @@
 ﻿using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using pva.SuperV.Api.Exceptions;
-using pva.SuperV.Api.Services.FieldFormatters;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model;
 using pva.SuperV.Model.FieldFormatters;
+using pva.SuperV.Model.Services;
 using Shouldly;
 using System.Net.Http.Json;
 using Xunit.Abstractions;
@@ -34,7 +34,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             List<string> expectedFieldFormatterTypes = ["FormatterType1"];
-            MockedFieldFormatterService.GetFieldFormatterTypes()
+            MockedFieldFormatterService.GetFieldFormatterTypesAsync()
                 .Returns(expectedFieldFormatterTypes);
 
             // WHEN
@@ -51,7 +51,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             List<FieldFormatterModel> expectedFieldFormatters = [new EnumFormatterModel("FieldFormatter", new Dictionary<int, string>() { { 1, "OFF" } })];
-            MockedFieldFormatterService.GetFieldFormatters("Project")
+            MockedFieldFormatterService.GetFieldFormattersAsync("Project")
                 .Returns(expectedFieldFormatters);
 
             // WHEN
@@ -69,7 +69,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             List<FieldFormatterModel> expectedFieldFormatters = [new EnumFormatterModel("FieldFormatter", new Dictionary<int, string>() { { 1, "OFF" } })];
             FieldFormatterPagedSearchRequest search = new(1, 5, null, null);
-            MockedFieldFormatterService.SearchFieldFormatters("Project", search)
+            MockedFieldFormatterService.SearchFieldFormattersAsync("Project", search)
                 .Returns(new PagedSearchResult<FieldFormatterModel>(1, 5, expectedFieldFormatters.Count, expectedFieldFormatters));
 
             // WHEN
@@ -89,8 +89,8 @@ namespace pva.SuperV.ApiTests
         public async Task WhenGettingUnknownProjectFieldFormatters_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedFieldFormatterService.GetFieldFormatters("UnknownProject")
-                .Throws<UnknownEntityException>();
+            MockedFieldFormatterService.GetFieldFormattersAsync("UnknownProject")
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var response = await client.GetAsync("/field-formatters/UnknownProject");
@@ -104,7 +104,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel("FieldFormatter", new Dictionary<int, string>() { { 0, "OFF" }, { 1, "ON" } });
-            MockedFieldFormatterService.GetFieldFormatter("Project", expectedFieldFormatter.Name)
+            MockedFieldFormatterService.GetFieldFormatterAsync("Project", expectedFieldFormatter.Name)
                 .Returns(expectedFieldFormatter);
 
             // WHEN
@@ -120,8 +120,8 @@ namespace pva.SuperV.ApiTests
         public async Task WhenGettingProjectUnknownFieldFormatter_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedFieldFormatterService.GetFieldFormatter("Project", "UnknownFieldFormatter")
-                .Throws<UnknownEntityException>();
+            MockedFieldFormatterService.GetFieldFormatterAsync("Project", "UnknownFieldFormatter")
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var response = await client.GetAsync($"/field-formatters/Project/UnknownFieldFormatter");
@@ -137,7 +137,7 @@ namespace pva.SuperV.ApiTests
             Dictionary<int, string> values = new() { { 0, "Off" }, { 1, "ON" } };
             EnumFormatterModel expectedFieldFormatter = new("FieldFormatter", values);
             CreateFieldFormatterRequest createRequest = new(expectedFieldFormatter);
-            MockedFieldFormatterService.CreateFieldFormatter("Project", Arg.Any<FieldFormatterModel>())
+            MockedFieldFormatterService.CreateFieldFormatterAsync("Project", Arg.Any<CreateFieldFormatterRequest>())
                 .Returns(expectedFieldFormatter);
 
             // WHEN
@@ -156,8 +156,8 @@ namespace pva.SuperV.ApiTests
             Dictionary<int, string> values = new() { { 0, "Off" }, { 1, "ON" } };
             EnumFormatterModel expectedFieldFormatter = new("FieldFormatter", values);
             CreateFieldFormatterRequest createRequest = new(expectedFieldFormatter);
-            MockedFieldFormatterService.CreateFieldFormatter("UnknownProject", Arg.Any<FieldFormatterModel>())
-                .Throws<UnknownEntityException>();
+            MockedFieldFormatterService.CreateFieldFormatterAsync("UnknownProject", Arg.Any<CreateFieldFormatterRequest>())
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var response = await client.PostAsJsonAsync($"/field-formatters/UnknownProject", createRequest);
@@ -173,8 +173,8 @@ namespace pva.SuperV.ApiTests
             Dictionary<int, string> values = new() { { 0, "Off" }, { 1, "ON" } };
             EnumFormatterModel expectedFieldFormatter = new("FieldFormatter", values);
             CreateFieldFormatterRequest createRequest = new(expectedFieldFormatter);
-            MockedFieldFormatterService.CreateFieldFormatter("RunnableProject", Arg.Any<FieldFormatterModel>())
-                .Throws<NonWipProjectException>();
+            MockedFieldFormatterService.CreateFieldFormatterAsync("RunnableProject", Arg.Any<CreateFieldFormatterRequest>())
+                .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
             var response = await client.PostAsJsonAsync($"/field-formatters/RunnableProject", createRequest);
@@ -189,7 +189,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             Dictionary<int, string> values = new() { { 0, "Off" }, { 1, "ON" } };
             FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel("FieldFormatter", values);
-            MockedFieldFormatterService.UpdateFieldFormatter("Project", expectedFieldFormatter.Name, Arg.Any<FieldFormatterModel>())
+            MockedFieldFormatterService.UpdateFieldFormatterAsync("Project", expectedFieldFormatter.Name, Arg.Any<FieldFormatterModel>())
                 .Returns(expectedFieldFormatter);
 
             // WHEN
@@ -207,8 +207,8 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             Dictionary<int, string> values = new() { { 0, "Off" }, { 1, "ON" } };
             FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel("FieldFormatter", values);
-            MockedFieldFormatterService.UpdateFieldFormatter("UnknownProject", expectedFieldFormatter.Name, Arg.Any<FieldFormatterModel>())
-                .Throws<UnknownEntityException>();
+            MockedFieldFormatterService.UpdateFieldFormatterAsync("UnknownProject", expectedFieldFormatter.Name, Arg.Any<FieldFormatterModel>())
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var response = await client.PutAsJsonAsync($"/field-formatters/UnknownProject/{expectedFieldFormatter.Name}", expectedFieldFormatter);
@@ -223,8 +223,8 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             Dictionary<int, string> values = new() { { 0, "Off" }, { 1, "ON" } };
             FieldFormatterModel expectedFieldFormatter = new EnumFormatterModel("FieldFormatter", values);
-            MockedFieldFormatterService.UpdateFieldFormatter("RunnableProject", expectedFieldFormatter.Name, Arg.Any<FieldFormatterModel>())
-                .Throws<NonWipProjectException>();
+            MockedFieldFormatterService.UpdateFieldFormatterAsync("RunnableProject", expectedFieldFormatter.Name, Arg.Any<FieldFormatterModel>())
+                .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
             var response = await client.PutAsJsonAsync($"/field-formatters/RunnableProject/{expectedFieldFormatter.Name}", expectedFieldFormatter);
@@ -249,7 +249,7 @@ namespace pva.SuperV.ApiTests
         public async Task WhenRemovingUnknownFieldFormatter_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedFieldFormatterService.When(fake => fake.DeleteFieldFormatter("Project", "UnknownFieldFormatter"))
+            MockedFieldFormatterService.When(async (fake) => await fake.DeleteFieldFormatterAsync("Project", "UnknownFieldFormatter"))
                 .Do(call => { throw new UnknownEntityException(); });
 
             // WHEN
@@ -263,7 +263,7 @@ namespace pva.SuperV.ApiTests
         public async Task WhenRemovingFieldFormatterOnNonWipProject_ThenBadRequestIsReturned()
         {
             // GIVEN
-            MockedFieldFormatterService.When(fake => fake.DeleteFieldFormatter("RunnableProject", "FieldFormatter"))
+            MockedFieldFormatterService.When(async (fake) => await fake.DeleteFieldFormatterAsync("RunnableProject", "FieldFormatter"))
                 .Do(call => { throw new NonWipProjectException(); });
 
             // WHEN

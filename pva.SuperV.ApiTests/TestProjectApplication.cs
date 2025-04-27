@@ -3,14 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NSubstitute;
 using pva.SuperV.Api;
-using pva.SuperV.Api.Services.Classes;
-using pva.SuperV.Api.Services.FieldDefinitions;
-using pva.SuperV.Api.Services.FieldFormatters;
-using pva.SuperV.Api.Services.FieldProcessings;
-using pva.SuperV.Api.Services.History;
-using pva.SuperV.Api.Services.HistoryRepositories;
-using pva.SuperV.Api.Services.Instances;
-using pva.SuperV.Api.Services.Projects;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.ApiTests
 {

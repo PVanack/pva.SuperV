@@ -4,6 +4,7 @@ using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Model;
 using pva.SuperV.Model.FieldDefinitions;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Services.FieldDefinitions
 {
@@ -14,21 +15,21 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
                 { "name", new Comparison<FieldDefinitionModel>((a, b) => a.Name.CompareTo(b.Name)) }
             };
 
-        public List<FieldDefinitionModel> GetFields(string projectId, string className)
-            => [.. GetClassEntity(projectId, className).FieldDefinitions.Values.Select(field => FieldDefinitionMapper.ToDto(field!))];
+        public async Task<List<FieldDefinitionModel>> GetFieldsAsync(string projectId, string className)
+            => await Task.FromResult(GetClassEntity(projectId, className).FieldDefinitions.Values.Select(field => FieldDefinitionMapper.ToDto(field!)).ToList());
 
-        public FieldDefinitionModel GetField(string projectId, string className, string fieldName)
+        public async Task<FieldDefinitionModel> GetFieldAsync(string projectId, string className, string fieldName)
         {
             if (GetClassEntity(projectId, className).FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
             {
-                return FieldDefinitionMapper.ToDto(fieldDefinition);
+                return await Task.FromResult(FieldDefinitionMapper.ToDto(fieldDefinition));
             }
-            throw new UnknownEntityException("Field", fieldName);
+            return await Task.FromException<FieldDefinitionModel>(new UnknownEntityException("Field", fieldName));
         }
 
-        public PagedSearchResult<FieldDefinitionModel> SearchFields(string projectId, string className, FieldDefinitionPagedSearchRequest search)
+        public async Task<PagedSearchResult<FieldDefinitionModel>> SearchFieldsAsync(string projectId, string className, FieldDefinitionPagedSearchRequest search)
         {
-            List<FieldDefinitionModel> allFieldDefinitions = GetFields(projectId, className);
+            List<FieldDefinitionModel> allFieldDefinitions = await GetFieldsAsync(projectId, className);
             List<FieldDefinitionModel> fieldDefinitions = FilterFieldDefinitions(allFieldDefinitions, search);
             fieldDefinitions = SortResult(fieldDefinitions, search.SortOption, sortOptions);
             return CreateResult(search, allFieldDefinitions, fieldDefinitions);
@@ -45,7 +46,7 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
         }
 
 
-        public List<FieldDefinitionModel> CreateFields(string projectId, string className, List<FieldDefinitionModel> createRequests)
+        public async Task<List<FieldDefinitionModel>> CreateFieldsAsync(string projectId, string className, List<FieldDefinitionModel> createRequests)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
@@ -62,9 +63,9 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
                         }
                         createdFieldDefinitions.Add(FieldDefinitionMapper.ToDto(clazz.AddField(FieldDefinitionMapper.FromDto(fieldDefinition), fieldFormatter)));
                     });
-                    return createdFieldDefinitions;
+                    return await Task.FromResult(createdFieldDefinitions);
                 }
-                catch (SuperVException)
+                catch (SuperVException e)
                 {
                     // If exception while creatig one of the fields, remove all the already created fields.
                     try
@@ -78,13 +79,13 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
                     {
                         // Ignore execption while deleting
                     }
-                    throw;
+                    return await Task.FromException<List<FieldDefinitionModel>>(e);
                 }
             }
-            throw new NonWipProjectException(projectId);
+            return await Task.FromException<List<FieldDefinitionModel>>(new NonWipProjectException(projectId));
         }
 
-        public FieldDefinitionModel UpdateField(string projectId, string className, string fieldName, FieldDefinitionModel updateRequest)
+        public async Task<FieldDefinitionModel> UpdateFieldAsync(string projectId, string className, string fieldName, FieldDefinitionModel updateRequest)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
@@ -92,21 +93,22 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
                 if (updateRequest.Name == null || updateRequest.Name.Equals(fieldName))
                 {
                     IFieldDefinition fieldDefinitionUpdate = FieldDefinitionMapper.FromDto(updateRequest);
-                    return FieldDefinitionMapper.ToDto(wipProject.UpdateField(className, fieldName, fieldDefinitionUpdate, updateRequest.ValueFormatter));
+                    return await Task.FromResult(FieldDefinitionMapper.ToDto(wipProject.UpdateField(className, fieldName, fieldDefinitionUpdate, updateRequest.ValueFormatter)));
                 }
-                throw new EntityPropertyNotChangeableException("field", "Name");
+                return await Task.FromException<FieldDefinitionModel>(new EntityPropertyNotChangeableException("field", "Name"));
             }
-            throw new NonWipProjectException(projectId);
+            return await Task.FromException<FieldDefinitionModel>(new NonWipProjectException(projectId));
         }
 
-        public void DeleteField(string projectId, string className, string fieldName)
+        public async ValueTask DeleteFieldAsync(string projectId, string className, string fieldName)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 GetClassEntity(wipProject, className).RemoveField(fieldName);
+                await ValueTask.CompletedTask;
                 return;
             }
-            throw new NonWipProjectException(projectId);
+            await ValueTask.FromException(new NonWipProjectException(projectId));
         }
     }
 }

@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.Projects;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Projects;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.Projects
 {
     internal static class CreateProjectFromRunnable
     {
-        internal static Results<Created<ProjectModel>, BadRequest<string>> Handle(IProjectService projectService, string runnableProjectId)
+        internal static async Task<Results<Created<ProjectModel>, BadRequest<string>>>
+            Handle(IProjectService projectService, string runnableProjectId)
         {
             try
             {
-                ProjectModel createdProject = projectService.CreateProjectFromRunnable(runnableProjectId);
+                ProjectModel createdProject = await projectService.CreateProjectFromRunnableAsync(runnableProjectId);
                 return TypedResults.Created<ProjectModel>($"/projects/{createdProject.Id}", createdProject);
             }
             catch (SuperVException e)

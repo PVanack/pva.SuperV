@@ -1,6 +1,7 @@
 using MudBlazor.Services;
 using pva.SuperV.Blazor.Components;
-using pva.SuperV.Blazor.SuperVClient;
+using pva.SuperV.Blazor.Services;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Blazor
 {
@@ -16,14 +17,14 @@ namespace pva.SuperV.Blazor
                 .AddRazorComponents(options
                     => options.DetailedErrors = builder.Environment.IsDevelopment())
                 .AddInteractiveServerComponents(options =>
-                    {
-                        options.DetailedErrors = true;
-                    })
+                {
+                    options.DetailedErrors = true;
+                })
                 .AddInteractiveWebAssemblyComponents();
             builder.Services.AddMudServices();
 
-            RestClient restClient = new(new HttpClient()) { BaseUrl = builder.Configuration["SuperVApiUrl"]! };
-            builder.Services.AddScoped<IRestClient, RestClient>((service) => restClient);
+            builder.Services.AddScoped<IProjectService, ProjectService>((service) => new(BuildHttpClient(builder)));
+            builder.Services.AddScoped<IFieldFormatterService, FieldFormatterService>((service) => new(BuildHttpClient(builder)));
             builder.Services.AddScoped<State>();
 
             var app = builder.Build();
@@ -51,6 +52,11 @@ namespace pva.SuperV.Blazor
                 .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
 
             app.Run();
+        }
+
+        private static HttpClient BuildHttpClient(WebApplicationBuilder builder)
+        {
+            return new HttpClient() { BaseAddress = new Uri(builder.Configuration["SuperVApiUrl"]!) };
         }
     }
 }

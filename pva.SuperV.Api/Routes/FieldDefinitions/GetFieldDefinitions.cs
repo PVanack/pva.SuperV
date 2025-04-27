@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.FieldDefinitions;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.FieldDefinitions;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.FieldDefinitions
 {
     internal static class GetFieldDefinitions
     {
-        internal static Results<Ok<List<FieldDefinitionModel>>, NotFound<string>, BadRequest<string>> Handle(IFieldDefinitionService fieldDefinitionService, string projectId, string className)
+        internal static async Task<Results<Ok<List<FieldDefinitionModel>>, NotFound<string>, BadRequest<string>>>
+            Handle(IFieldDefinitionService fieldDefinitionService, string projectId, string className)
         {
             try
             {
-                return TypedResults.Ok(fieldDefinitionService.GetFields(projectId, className));
+                return TypedResults.Ok(await fieldDefinitionService.GetFieldsAsync(projectId, className));
             }
             catch (UnknownEntityException e)
             {

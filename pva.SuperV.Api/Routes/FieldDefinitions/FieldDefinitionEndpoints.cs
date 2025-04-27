@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using pva.SuperV.Api.Services.FieldDefinitions;
 using pva.SuperV.Model;
 using pva.SuperV.Model.FieldDefinitions;
+using pva.SuperV.Model.Services;
 using System.ComponentModel;
 
 namespace pva.SuperV.Api.Routes.FieldDefinitions
@@ -12,10 +12,10 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
         {
             RouteGroupBuilder fieldDefinitionsApi = app.MapGroup("/fields");
             fieldDefinitionsApi.MapGet("/{projectId}/{className}",
-                (IFieldDefinitionService fieldDefinitionService,
+                async (IFieldDefinitionService fieldDefinitionService,
                 [Description("ID of project")] string projectId,
                 [Description("Name of class")] string className)
-                    => GetFieldDefinitions.Handle(fieldDefinitionService, projectId, className))
+                    => await GetFieldDefinitions.Handle(fieldDefinitionService, projectId, className))
                 .WithName("GetFieldDefinitions")
                 .WithDisplayName("GetFieldDefinitions")
                 .WithSummary("Gets the list of available fields in a class from a project")
@@ -25,11 +25,11 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             fieldDefinitionsApi.MapPost("/{projectId}/{className}/search",
-                (IFieldDefinitionService fieldDefinitionService,
+                async (IFieldDefinitionService fieldDefinitionService,
                 [Description("ID of project")] string projectId,
                 [Description("Name of class")] string className,
                 [FromBody] FieldDefinitionPagedSearchRequest search)
-                    => SearchFieldDefinitions.Handle(fieldDefinitionService, projectId, className, search))
+                    => await SearchFieldDefinitions.Handle(fieldDefinitionService, projectId, className, search))
                 .WithName("SearchFieldDefinitions")
                 .WithDisplayName("SearchFieldDefinitions")
                 .WithSummary("Searches the list of available fields in a class from a project")
@@ -39,11 +39,11 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             fieldDefinitionsApi.MapGet("/{projectId}/{className}/{fieldName}",
-                (IFieldDefinitionService fieldDefinitionService,
+                async (IFieldDefinitionService fieldDefinitionService,
                 [Description("ID of project")] string projectId,
                 [Description("Name of class")] string className,
                 [Description("Name of field")] string fieldName)
-                    => GetFieldDefinition.Handle(fieldDefinitionService, projectId, className, fieldName))
+                    => await GetFieldDefinition.Handle(fieldDefinitionService, projectId, className, fieldName))
                 .WithName("GetFieldDefinition")
                 .WithDisplayName("GetFieldDefinition")
                 .WithSummary("Gets a field definition from a class of a project by its name")
@@ -53,11 +53,11 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             fieldDefinitionsApi.MapPost("/{wipProjectId}/{className}",
-                (IFieldDefinitionService fieldDefinitionService,
+                async (IFieldDefinitionService fieldDefinitionService,
                 [Description("ID of WIP project")] string wipProjectId,
                 [Description("Name of class")] string className,
                 [Description("Field creation requests")][FromBody] List<FieldDefinitionModel> createRequests)
-                    => CreateFieldDefinitions.Handle(fieldDefinitionService, wipProjectId, className, createRequests))
+                    => await CreateFieldDefinitions.Handle(fieldDefinitionService, wipProjectId, className, createRequests))
                 .WithName("CreateFieldDefinitions")
                 .WithDisplayName("CreateFieldDefinitions")
                 .WithSummary("Creates field definitions in a class of a WIP project")
@@ -67,12 +67,12 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             fieldDefinitionsApi.MapPut("/{wipProjectId}/{className}/{fieldName}",
-                (IFieldDefinitionService fieldDefinitionService,
+                async (IFieldDefinitionService fieldDefinitionService,
                 [Description("ID of WIP project")] string wipProjectId,
                 [Description("Name of class")] string className,
                 [Description("Name of class")] string fieldName,
                 [Description("Field update request")][FromBody] FieldDefinitionModel updateRequest)
-                    => UpdateFieldDefinition.Handle(fieldDefinitionService, wipProjectId, className, fieldName, updateRequest))
+                    => await UpdateFieldDefinition.Handle(fieldDefinitionService, wipProjectId, className, fieldName, updateRequest))
                 .WithName("UpdateFieldDefinition")
                 .WithDisplayName("UpdateFieldDefinition")
                 .WithSummary("Updates field definition in a class of a WIP project")
@@ -82,11 +82,11 @@ namespace pva.SuperV.Api.Routes.FieldDefinitions
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             fieldDefinitionsApi.MapDelete("/{wipProjectId}/{className}/{fieldName}",
-                (IFieldDefinitionService fieldDefinitionService,
+                async (IFieldDefinitionService fieldDefinitionService,
                 [Description("ID of WIP project")] string wipProjectId,
                 [Description("Name of class")] string className,
                 [Description("Name of field")] string fieldName)
-                    => DeleteFieldDefinition.Handle(fieldDefinitionService, wipProjectId, className, fieldName))
+                    => await DeleteFieldDefinition.Handle(fieldDefinitionService, wipProjectId, className, fieldName))
                 .WithName("DeleteFieldDefinition")
                 .WithDisplayName("DeleteFieldDefinition")
                 .WithSummary("Deletes a field definition from a class of a WIP project by its name")

@@ -41,12 +41,12 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetClassFieldDefinitions_ShouldReturnListOfClassFieldDefinitions()
+        public async Task GetClassFieldDefinitions_ShouldReturnListOfClassFieldDefinitions()
         {
             // GIVEN
 
             // WHEN
-            List<FieldDefinitionModel> fieldDefinitions = fieldDefinitionService.GetFields(runnableProject.GetId(), AllFieldsClassName);
+            List<FieldDefinitionModel> fieldDefinitions = await fieldDefinitionService.GetFieldsAsync(runnableProject.GetId(), AllFieldsClassName);
 
             // THEN
             fieldDefinitions
@@ -55,20 +55,20 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchPagedFieldDefinitions_ShouldReturnListOfPagedFieldDefinitions()
+        public async Task SearchPagedFieldDefinitions_ShouldReturnListOfPagedFieldDefinitions()
         {
             // GIVEN
             Class clazz = CreateDummyFieldDefinitions(className);
 
             // Act
             FieldDefinitionPagedSearchRequest search = new(1, 5, null, null);
-            PagedSearchResult<FieldDefinitionModel> page1Result = fieldDefinitionService.SearchFields(wipProject.GetId(), className, search);
+            PagedSearchResult<FieldDefinitionModel> page1Result = await fieldDefinitionService.SearchFieldsAsync(wipProject.GetId(), className, search);
             search = search with { PageNumber = 2, PageSize = 10 };
-            PagedSearchResult<FieldDefinitionModel> page2Result = fieldDefinitionService.SearchFields(wipProject.GetId(), className, search);
+            PagedSearchResult<FieldDefinitionModel> page2Result = await fieldDefinitionService.SearchFieldsAsync(wipProject.GetId(), className, search);
             search = search with { PageNumber = 3 };
-            PagedSearchResult<FieldDefinitionModel> page3Result = fieldDefinitionService.SearchFields(wipProject.GetId(), className, search);
+            PagedSearchResult<FieldDefinitionModel> page3Result = await fieldDefinitionService.SearchFieldsAsync(wipProject.GetId(), className, search);
             search = search with { PageNumber = 4 };
-            PagedSearchResult<FieldDefinitionModel> page4Result = fieldDefinitionService.SearchFields(wipProject.GetId(), className, search);
+            PagedSearchResult<FieldDefinitionModel> page4Result = await fieldDefinitionService.SearchFieldsAsync(wipProject.GetId(), className, search);
 
             // Assert
             List<FieldDefinitionModel> expectedFieldDefinitions = [.. clazz.FieldDefinitions.Select(entry => FieldDefinitionMapper.ToDto(entry.Value))];
@@ -99,14 +99,14 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchClassesSortedByNameAsc_ShouldReturnPageOfClassesSorted()
+        public async Task SearchClassesSortedByNameAsc_ShouldReturnPageOfClassesSorted()
         {
             // GIVEN
             Class clazz = CreateDummyFieldDefinitions(className);
 
             // Act
             FieldDefinitionPagedSearchRequest search = new(1, 5, null, "name");
-            PagedSearchResult<FieldDefinitionModel> pagedResult = fieldDefinitionService.SearchFields(wipProject.GetId(), className, search);
+            PagedSearchResult<FieldDefinitionModel> pagedResult = await fieldDefinitionService.SearchFieldsAsync(wipProject.GetId(), className, search);
 
             // Assert
             List<FieldDefinitionModel> expectedFieldDefinitions = [.. clazz.FieldDefinitions.Select(entry => FieldDefinitionMapper.ToDto(entry.Value))];
@@ -120,14 +120,14 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchClassesSortedByNameDesc_ShouldReturnPageOfClassesSorted()
+        public async Task SearchClassesSortedByNameDesc_ShouldReturnPageOfClassesSorted()
         {
             // GIVEN
             Class clazz = CreateDummyFieldDefinitions(className);
 
             // Act
             FieldDefinitionPagedSearchRequest search = new(1, 5, null, "-name");
-            PagedSearchResult<FieldDefinitionModel> pagedResult = fieldDefinitionService.SearchFields(wipProject.GetId(), className, search);
+            PagedSearchResult<FieldDefinitionModel> pagedResult = await fieldDefinitionService.SearchFieldsAsync(wipProject.GetId(), className, search);
 
             // Assert
             List<FieldDefinitionModel> expectedFieldDefinitions = [.. clazz.FieldDefinitions.Select(entry => FieldDefinitionMapper.ToDto(entry.Value))];
@@ -142,25 +142,25 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void SearchClassesSortedWithInvalidOption_ShouldThrowException()
+        public async Task SearchClassesSortedWithInvalidOption_ShouldThrowException()
         {
             // GIVEN
             _ = CreateDummyFieldDefinitions(className);
 
             // Act
             FieldDefinitionPagedSearchRequest search = new(1, 5, null, "-InvalidOption");
-            Assert.Throws<InvalidSortOptionException>(() => fieldDefinitionService.SearchFields(wipProject.GetId(), className, search));
+            await Assert.ThrowsAsync<InvalidSortOptionException>(() => fieldDefinitionService.SearchFieldsAsync(wipProject.GetId(), className, search));
         }
 
         [Fact]
-        public void SearchClassesByName_ShouldReturnPageOfClasses()
+        public async Task SearchClassesByName_ShouldReturnPageOfClasses()
         {
             // GIVEN
             Class clazz = CreateDummyFieldDefinitions(className);
 
             // Act
             FieldDefinitionPagedSearchRequest search = new(1, 5, "DummyField1", null);
-            PagedSearchResult<FieldDefinitionModel> pagedResult = fieldDefinitionService.SearchFields(wipProject.GetId(), className, search);
+            PagedSearchResult<FieldDefinitionModel> pagedResult = await fieldDefinitionService.SearchFieldsAsync(wipProject.GetId(), className, search);
 
             // Assert
             List<FieldDefinitionModel> expectedFieldDefinition = [.. clazz.FieldDefinitions.Values
@@ -185,13 +185,13 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void GetClassFieldDefinition_ShouldReturnClassFieldDefinition()
+        public async Task GetClassFieldDefinition_ShouldReturnClassFieldDefinition()
         {
             // GIVEN
             FieldDefinitionModel expectedFieldDefinition =
                 new StringFieldDefinitionModel(BaseClassFieldName, "InheritedField", null);
             // WHEN
-            FieldDefinitionModel fieldDefinition = fieldDefinitionService.GetField(runnableProject.GetId(), BaseClassName, BaseClassFieldName);
+            FieldDefinitionModel fieldDefinition = await fieldDefinitionService.GetFieldAsync(runnableProject.GetId(), BaseClassName, BaseClassFieldName);
 
             // THEN
             fieldDefinition
@@ -200,60 +200,60 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public void CreateClassFieldDefinition_ShouldCreateClassFieldDefinition()
+        public async Task CreateClassFieldDefinition_ShouldCreateClassFieldDefinition()
         {
             // GIVEN
             List<FieldDefinitionModel> expectedFieldDefinitions = allFieldsExpectedFieldDefinitions;
 
             // WHEN
-            List<FieldDefinitionModel> createdFieldDefinitions = fieldDefinitionService.CreateFields(wipProject.GetId(), BaseClassName, expectedFieldDefinitions);
+            List<FieldDefinitionModel> createdFieldDefinitions = await fieldDefinitionService.CreateFieldsAsync(wipProject.GetId(), BaseClassName, expectedFieldDefinitions);
 
             // THEN
             createdFieldDefinitions.ShouldBeEquivalentTo(expectedFieldDefinitions);
         }
 
         [Fact]
-        public void UpdateClassFieldDefinition_ShouldUpdateClassFieldDefinition()
+        public async Task UpdateClassFieldDefinition_ShouldUpdateClassFieldDefinition()
         {
             // GIVEN
             FieldDefinitionModel expectedFieldDefinition = new IntFieldDefinitionModel("IntFieldWithFormat", default, null);
 
             // WHEN
-            FieldDefinitionModel updatedFieldDefinition = fieldDefinitionService.UpdateField(wipProject.GetId(), AllFieldsClassName, expectedFieldDefinition.Name, expectedFieldDefinition);
+            FieldDefinitionModel updatedFieldDefinition = await fieldDefinitionService.UpdateFieldAsync(wipProject.GetId(), AllFieldsClassName, expectedFieldDefinition.Name, expectedFieldDefinition);
 
             // THEN
             updatedFieldDefinition.ShouldBeEquivalentTo(expectedFieldDefinition);
         }
 
         [Fact]
-        public void UpdateClassFieldDefinitionChangingType_ShouldThrowException()
+        public async Task UpdateClassFieldDefinitionChangingType_ShouldThrowException()
         {
             // GIVEN
             FieldDefinitionModel expectedFieldDefinition = new ShortFieldDefinitionModel("IntFieldWithFormat", default, null);
 
             // WHEN/THEN
-            Assert.Throws<WrongFieldTypeException>(()
-                => fieldDefinitionService.UpdateField(wipProject.GetId(), AllFieldsClassName, expectedFieldDefinition.Name, expectedFieldDefinition));
+            await Assert.ThrowsAsync<WrongFieldTypeException>(()
+                => fieldDefinitionService.UpdateFieldAsync(wipProject.GetId(), AllFieldsClassName, expectedFieldDefinition.Name, expectedFieldDefinition));
         }
 
         [Fact]
-        public void UpdateClassFieldDefinitionChangingName_ShouldThrowException()
+        public async Task UpdateClassFieldDefinitionChangingName_ShouldThrowException()
         {
             // GIVEN
             FieldDefinitionModel expectedFieldDefinition = new IntFieldDefinitionModel("ChangedName", default, null);
 
             // WHEN/THEN
-            Assert.Throws<EntityPropertyNotChangeableException>(()
-                => fieldDefinitionService.UpdateField(wipProject.GetId(), AllFieldsClassName, "IntFieldWithFormat", expectedFieldDefinition));
+            await Assert.ThrowsAsync<EntityPropertyNotChangeableException>(()
+                => fieldDefinitionService.UpdateFieldAsync(wipProject.GetId(), AllFieldsClassName, "IntFieldWithFormat", expectedFieldDefinition));
         }
 
         [Fact]
-        public void DeleteClassFieldDefinition_ShouldDeleteClassFieldDefinition()
+        public async Task DeleteClassFieldDefinition_ShouldDeleteClassFieldDefinition()
         {
             // GIVEN
 
             // WHEN
-            fieldDefinitionService.DeleteField(wipProject.GetId(), BaseClassName, BaseClassFieldName);
+            await fieldDefinitionService.DeleteFieldAsync(wipProject.GetId(), BaseClassName, BaseClassFieldName);
 
             // THEN
             wipProject.GetClass(BaseClassName).FieldDefinitions.Keys.ShouldNotContain(BaseClassFieldName);

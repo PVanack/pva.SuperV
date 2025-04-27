@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Api.Services.Classes;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Classes;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.Classes
 {
     internal static class UpdateClass
     {
-        internal static Results<Ok<ClassModel>, NotFound<string>, BadRequest<string>> Handle(IClassService classService, string wipProjectId, string className, ClassModel updateRequest)
+        internal static async Task<Results<Ok<ClassModel>, NotFound<string>, BadRequest<string>>>
+            Handle(IClassService classService, string wipProjectId, string className, ClassModel updateRequest)
         {
             try
             {
-                ClassModel updatedClass = classService.UpdateClass(wipProjectId, className, updateRequest);
+                ClassModel updatedClass = await classService.UpdateClassAsync(wipProjectId, className, updateRequest);
                 return TypedResults.Ok(updatedClass);
             }
             catch (UnknownEntityException e)

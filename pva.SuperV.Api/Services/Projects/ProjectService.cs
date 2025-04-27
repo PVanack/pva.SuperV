@@ -3,6 +3,7 @@ using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Projects;
+using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Services.Projects
 {
@@ -13,18 +14,18 @@ namespace pva.SuperV.Api.Services.Projects
                 { "name", new Comparison<ProjectModel>((a, b) => a.Name.CompareTo(b.Name)) }
             };
 
-        public List<ProjectModel> GetProjects()
-            => [.. Project.Projects.Values.Select(project => ProjectMapper.ToDto(project))];
+        public async Task<List<ProjectModel>> GetProjectsAsync()
+            => await Task.FromResult(Project.Projects.Values.Select(project => ProjectMapper.ToDto(project)).ToList());
 
-        public ProjectModel GetProject(string projectId)
+        public async Task<ProjectModel> GetProjectAsync(string projectId)
         {
-            return ProjectMapper.ToDto(GetProjectEntity(projectId));
+            return await Task.FromResult(ProjectMapper.ToDto(GetProjectEntity(projectId)));
 
         }
 
-        public PagedSearchResult<ProjectModel> SearchProjects(ProjectPagedSearchRequest search)
+        public async Task<PagedSearchResult<ProjectModel>> SearchProjectsAsync(ProjectPagedSearchRequest search)
         {
-            List<ProjectModel> allProjects = GetProjects();
+            List<ProjectModel> allProjects = await GetProjectsAsync();
             List<ProjectModel> projects = FilterProjects(allProjects, search);
             projects = SortResult(projects, search.SortOption, sortOptions);
             return CreateResult(search, allProjects, projects);
@@ -40,33 +41,33 @@ namespace pva.SuperV.Api.Services.Projects
             return filteredProjects;
         }
 
-        public ProjectModel CreateProject(CreateProjectRequest createProjectRequest)
+        public async Task<ProjectModel> CreateProjectAsync(CreateProjectRequest createProjectRequest)
         {
             WipProject wipProject = Project.CreateProject(createProjectRequest.Name, createProjectRequest.HistoryStorageConnectionString);
             wipProject.Description = createProjectRequest.Description;
-            return ProjectMapper.ToDto(wipProject);
+            return await Task.FromResult(ProjectMapper.ToDto(wipProject));
         }
 
-        public ProjectModel CreateProjectFromRunnable(string runnableProjectId)
+        public async Task<ProjectModel> CreateProjectFromRunnableAsync(string runnableProjectId)
         {
             if (GetProjectEntity(runnableProjectId) is RunnableProject runnableProject)
             {
                 WipProject wipProject = Project.CreateProject(runnableProject);
-                return ProjectMapper.ToDto(wipProject);
+                return await Task.FromResult(ProjectMapper.ToDto(wipProject));
             }
             throw new NonRunnableProjectException(runnableProjectId);
         }
 
-        public ProjectModel UpdateProject(string projectId, UpdateProjectRequest updateProjectRequest)
+        public async Task<ProjectModel> UpdateProjectAsync(string projectId, UpdateProjectRequest updateProjectRequest)
         {
             Project? projectToUpdate = GetProjectEntity(projectId);
             if (projectToUpdate is not null)
             {
                 projectToUpdate.Description = updateProjectRequest.Description;
                 projectToUpdate.HistoryStorageEngineConnectionString = updateProjectRequest.HistoryStorageConnectionString;
-                return ProjectMapper.ToDto(projectToUpdate);
+                return await Task.FromResult(ProjectMapper.ToDto(projectToUpdate));
             }
-            throw new UnknownEntityException("Project", projectId);
+            return await Task.FromException<ProjectModel>(new UnknownEntityException("Project", projectId));
         }
 
         public async Task<ProjectModel> BuildProjectAsync(string projectId)
@@ -86,9 +87,9 @@ namespace pva.SuperV.Api.Services.Projects
             return await ProjectStorage.StreamProjectDefinitionAsync(project, stream);
         }
 
-        public ProjectModel CreateProjectFromJsonDefinition(StreamReader streamReader)
+        public async Task<ProjectModel> CreateProjectFromJsonDefinitionAsync(StreamReader streamReader)
         {
-            return ProjectMapper.ToDto(ProjectStorage.CreateProjectFromJsonDefinition<RunnableProject>(streamReader));
+            return await Task.FromResult(ProjectMapper.ToDto(ProjectStorage.CreateProjectFromJsonDefinition<RunnableProject>(streamReader)));
         }
 
         public async Task<StreamReader?> GetProjectInstancesAsync(string projectId)
@@ -101,19 +102,21 @@ namespace pva.SuperV.Api.Services.Projects
             throw new NonRunnableProjectException(projectId);
         }
 
-        public void LoadProjectInstances(string projectId, StreamReader reader)
+        public async ValueTask LoadProjectInstancesAsync(string projectId, StreamReader reader)
         {
             if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {
                 ProjectStorage.LoadProjectInstances(runnableProject, reader);
+                await ValueTask.CompletedTask;
                 return;
             }
-            throw new NonRunnableProjectException(projectId);
+            await ValueTask.FromException(new NonRunnableProjectException(projectId));
         }
 
-        public void UnloadProject(string projectId)
+        public async ValueTask UnloadProjectAsync(string projectId)
         {
             GetProjectEntity(projectId).Unload();
+            await ValueTask.CompletedTask;
         }
     }
 }

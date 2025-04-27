@@ -1,10 +1,10 @@
 ﻿using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using pva.SuperV.Api.Exceptions;
-using pva.SuperV.Api.Services.Classes;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Classes;
+using pva.SuperV.Model.Services;
 using Shouldly;
 using System.Net.Http.Json;
 using Xunit.Abstractions;
@@ -35,7 +35,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             ClassPagedSearchRequest search = new(1, 10, null, null);
             List<ClassModel> expectedClasses = [new ClassModel("Class1", null)];
-            MockedClassService.SearchClasses("Project1", search)
+            MockedClassService.SearchClassesAsync("Project1", search)
                 .Returns(new PagedSearchResult<ClassModel>(1, 10, expectedClasses.Count, expectedClasses));
 
             // WHEN
@@ -56,7 +56,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             List<ClassModel> expectedClasses = [new ClassModel("Class1", null)];
-            MockedClassService.GetClasses("Project1")
+            MockedClassService.GetClassesAsync("Project1")
                 .Returns(expectedClasses);
 
             // WHEN
@@ -72,8 +72,8 @@ namespace pva.SuperV.ApiTests
         public async Task WhenGettingUnknownProjectClasses_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedClassService.GetClasses("UnknownProject")
-                .Throws<UnknownEntityException>();
+            MockedClassService.GetClassesAsync("UnknownProject")
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var response = await client.GetAsync("/classes/UnknownProject");
@@ -87,7 +87,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ClassModel expectedClass = new("Class1", null);
-            MockedClassService.GetClass("Project1", expectedClass.Name)
+            MockedClassService.GetClassAsync("Project1", expectedClass.Name)
                 .Returns(expectedClass);
 
             // WHEN
@@ -103,8 +103,8 @@ namespace pva.SuperV.ApiTests
         public async Task WhenGettingProjectUnknownClass_ThenNotFoundIsReturned()
         {
             // GIVEN
-            MockedClassService.GetClass("Project1", "UnknownClass")
-                .Throws<UnknownEntityException>();
+            MockedClassService.GetClassAsync("Project1", "UnknownClass")
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var response = await client.GetAsync($"/classes/Project1/UnknownClass");
@@ -118,7 +118,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ClassModel expectedClass = new("Class1", null);
-            MockedClassService.CreateClass("Project1", Arg.Any<ClassModel>())
+            MockedClassService.CreateClassAsync("Project1", Arg.Any<ClassModel>())
                 .Returns(expectedClass);
 
             // WHEN
@@ -135,8 +135,8 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ClassModel expectedClass = new("Class1", null);
-            MockedClassService.CreateClass("UnknownProject", Arg.Any<ClassModel>())
-                .Throws<UnknownEntityException>();
+            MockedClassService.CreateClassAsync("UnknownProject", Arg.Any<ClassModel>())
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var response = await client.PostAsJsonAsync("/classes/UnknownProject", expectedClass);
@@ -150,8 +150,8 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ClassModel expectedClass = new("Class1", null);
-            MockedClassService.CreateClass("RunnableProject", Arg.Any<ClassModel>())
-                .Throws<NonWipProjectException>();
+            MockedClassService.CreateClassAsync("RunnableProject", Arg.Any<ClassModel>())
+                .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
             var response = await client.PostAsJsonAsync("/classes/RunnableProject", expectedClass);
@@ -164,7 +164,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ClassModel expectedClass = new("Class1", null);
-            MockedClassService.UpdateClass("Project1", expectedClass.Name, Arg.Any<ClassModel>())
+            MockedClassService.UpdateClassAsync("Project1", expectedClass.Name, Arg.Any<ClassModel>())
                 .Returns(expectedClass);
 
             // WHEN
@@ -177,12 +177,12 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task GivenUnknownProjectProject_WhenUodatingProjectClass_ThenNotFoundIsReturned()
+        public async Task GivenUnknownProjectProject_WhenUpdatingProjectClass_ThenNotFoundIsReturned()
         {
             // GIVEN
             ClassModel expectedClass = new("Class1", null);
-            MockedClassService.UpdateClass("UnknownProject", expectedClass.Name, Arg.Any<ClassModel>())
-                .Throws<UnknownEntityException>();
+            MockedClassService.UpdateClassAsync("UnknownProject", expectedClass.Name, Arg.Any<ClassModel>())
+                .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
             var response = await client.PutAsJsonAsync($"/classes/UnknownProject/{expectedClass.Name}", expectedClass);
@@ -196,8 +196,8 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ClassModel expectedClass = new("Class1", null);
-            MockedClassService.UpdateClass("RunnableProject", expectedClass.Name, Arg.Any<ClassModel>())
-                .Throws<NonWipProjectException>();
+            MockedClassService.UpdateClassAsync("RunnableProject", expectedClass.Name, Arg.Any<ClassModel>())
+                .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
             var response = await client.PutAsJsonAsync($"/classes/RunnableProject/{expectedClass.Name}", expectedClass);
@@ -224,7 +224,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ClassModel expectedClass = new("Class1", null);
-            MockedClassService.When(fake => fake.DeleteClass("UnknownProject", expectedClass.Name))
+            MockedClassService.When(async (fake) => await fake.DeleteClassAsync("UnknownProject", expectedClass.Name))
                 .Do(call => { throw new UnknownEntityException(); });
 
             // WHEN
@@ -239,7 +239,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ClassModel expectedClass = new("Class1", null);
-            MockedClassService.When(fake => fake.DeleteClass("RunnableProject", expectedClass.Name))
+            MockedClassService.When(async (fake) => await fake.DeleteClassAsync("RunnableProject", expectedClass.Name))
                 .Do(call => { throw new NonWipProjectException(); });
 
             // WHEN

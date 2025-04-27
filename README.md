@@ -45,8 +45,9 @@ Along fields in classes, [processing](/pva.SuperV.Engine/Processing/FieldValuePr
 
 ## Solution orgnization
 The solution is composed of the following projects:
-- The [Engine](/pva.SuperV.Engine) which holds all the intelligence
+- The [Engine](/pva.SuperV.Engine) which holds all the intelligence.
 - The [REST API](/pva.SuperV.Api) which allows to access the engine from clients.
+- The [Blazor Front End](/pva.SuperV.Blazor) which allows a UI access to the engine from HTTP clients.
 
 ## SuperV project workflow
 Project creation workflow using the engine library is as follows (the same can be achieved using the [REST API with those calls](/pva.SuperV.Api/pva.SuperV.Api.http)):

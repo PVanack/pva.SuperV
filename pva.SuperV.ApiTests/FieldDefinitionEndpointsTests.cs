@@ -1,10 +1,10 @@
 ﻿using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using pva.SuperV.Api.Exceptions;
-using pva.SuperV.Api.Services.FieldDefinitions;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model;
 using pva.SuperV.Model.FieldDefinitions;
+using pva.SuperV.Model.Services;
 using Shouldly;
 using System.Net.Http.Json;
 using Xunit.Abstractions;
@@ -35,7 +35,7 @@ public class FieldDefinitionEndpointsTests
         // GIVEN
         List<FieldDefinitionModel> expectedFieldDefinitions = [new IntFieldDefinitionModel("IntField", default, null)];
         FieldDefinitionPagedSearchRequest search = new(1, 10, null, null);
-        MockedFieldDefinitionService.SearchFields("Project", "Class", Arg.Any<FieldDefinitionPagedSearchRequest>())
+        MockedFieldDefinitionService.SearchFieldsAsync("Project", "Class", Arg.Any<FieldDefinitionPagedSearchRequest>())
             .Returns(new Model.PagedSearchResult<FieldDefinitionModel>(1, 10, expectedFieldDefinitions.Count, expectedFieldDefinitions));
 
         // WHEN
@@ -56,7 +56,7 @@ public class FieldDefinitionEndpointsTests
     {
         // GIVEN
         List<FieldDefinitionModel> expectedFieldDefinitions = [new IntFieldDefinitionModel("IntField", default, null)];
-        MockedFieldDefinitionService.GetFields("Project", "Class")
+        MockedFieldDefinitionService.GetFieldsAsync("Project", "Class")
             .Returns(expectedFieldDefinitions);
 
         // WHEN
@@ -72,8 +72,8 @@ public class FieldDefinitionEndpointsTests
     public async Task WhenGettingUnknownClassFieldDefinitions_ThenNotFoundIsReturned()
     {
         // GIVEN
-        MockedFieldDefinitionService.GetFields("Project", "UnknownClass")
-            .Throws<UnknownEntityException>();
+        MockedFieldDefinitionService.GetFieldsAsync("Project", "UnknownClass")
+            .ThrowsAsync<UnknownEntityException>();
 
         // WHEN
         var response = await client.GetAsync("/fields/Project/UnknownClass");
@@ -169,7 +169,7 @@ public class FieldDefinitionEndpointsTests
     private async Task GivenExistingFieldDefinitionsInClass_WhenGettingClassFieldDefinition_ThenFieldDefinitionIsReturned<T>(T expectedFieldDefinition) where T : FieldDefinitionModel
     {
         // GIVEN
-        MockedFieldDefinitionService.GetField("Project", "Class", expectedFieldDefinition.Name)
+        MockedFieldDefinitionService.GetFieldAsync("Project", "Class", expectedFieldDefinition.Name)
             .Returns(expectedFieldDefinition);
 
         // WHEN
@@ -185,8 +185,8 @@ public class FieldDefinitionEndpointsTests
     public async Task WhenGettingClassUnknownFieldDefinition_ThenNotFoundIsReturned()
     {
         // GIVEN
-        MockedFieldDefinitionService.GetField("Project", "Class", "UnknownFieldDefinition")
-            .Throws<UnknownEntityException>();
+        MockedFieldDefinitionService.GetFieldAsync("Project", "Class", "UnknownFieldDefinition")
+            .ThrowsAsync<UnknownEntityException>();
 
         // WHEN
         var response = await client.GetAsync($"/fields/Project/Class/UnknownFieldDefinition");
@@ -200,7 +200,7 @@ public class FieldDefinitionEndpointsTests
     {
         // GIVEN
         List<FieldDefinitionModel> expectedFieldDefinitions = [new IntFieldDefinitionModel("IntField", default, null)];
-        MockedFieldDefinitionService.CreateFields("Project", "Class", Arg.Any<List<FieldDefinitionModel>>())
+        MockedFieldDefinitionService.CreateFieldsAsync("Project", "Class", Arg.Any<List<FieldDefinitionModel>>())
             .Returns(expectedFieldDefinitions);
 
         // WHEN
@@ -217,8 +217,8 @@ public class FieldDefinitionEndpointsTests
     {
         // GIVEN
         List<FieldDefinitionModel> expectedFieldDefinitions = [new IntFieldDefinitionModel("UnknownField", default, null)];
-        MockedFieldDefinitionService.CreateFields("Project", "Class", Arg.Any<List<FieldDefinitionModel>>())
-            .Throws<UnknownEntityException>();
+        MockedFieldDefinitionService.CreateFieldsAsync("Project", "Class", Arg.Any<List<FieldDefinitionModel>>())
+            .ThrowsAsync<UnknownEntityException>();
 
         // WHEN
         var response = await client.PostAsJsonAsync("/fields/Project/Class", expectedFieldDefinitions);
@@ -232,8 +232,8 @@ public class FieldDefinitionEndpointsTests
     {
         // GIVEN
         List<FieldDefinitionModel> expectedFieldDefinitions = [new IntFieldDefinitionModel("IntField", default, null)];
-        MockedFieldDefinitionService.CreateFields("RunnableProject", "Class", Arg.Any<List<FieldDefinitionModel>>())
-            .Throws<NonWipProjectException>();
+        MockedFieldDefinitionService.CreateFieldsAsync("RunnableProject", "Class", Arg.Any<List<FieldDefinitionModel>>())
+            .ThrowsAsync<NonWipProjectException>();
 
         // WHEN
         var response = await client.PostAsJsonAsync("/fields/RunnableProject/Class", expectedFieldDefinitions);
@@ -247,7 +247,7 @@ public class FieldDefinitionEndpointsTests
     {
         // GIVEN
         FieldDefinitionModel expectedFieldDefinition = new IntFieldDefinitionModel("IntField", default, null);
-        MockedFieldDefinitionService.UpdateField("Project", "Class", expectedFieldDefinition.Name, Arg.Any<FieldDefinitionModel>())
+        MockedFieldDefinitionService.UpdateFieldAsync("Project", "Class", expectedFieldDefinition.Name, Arg.Any<FieldDefinitionModel>())
             .Returns(expectedFieldDefinition);
 
         // WHEN
@@ -264,8 +264,8 @@ public class FieldDefinitionEndpointsTests
     {
         // GIVEN
         FieldDefinitionModel expectedFieldDefinition = new IntFieldDefinitionModel("UnknownField", default, null);
-        MockedFieldDefinitionService.UpdateField("Project", "Class", expectedFieldDefinition.Name, Arg.Any<FieldDefinitionModel>())
-            .Throws<UnknownEntityException>();
+        MockedFieldDefinitionService.UpdateFieldAsync("Project", "Class", expectedFieldDefinition.Name, Arg.Any<FieldDefinitionModel>())
+            .ThrowsAsync<UnknownEntityException>();
 
         // WHEN
         var response = await client.PutAsJsonAsync($"/fields/Project/Class/{expectedFieldDefinition.Name}", expectedFieldDefinition);
@@ -279,8 +279,8 @@ public class FieldDefinitionEndpointsTests
     {
         // GIVEN
         FieldDefinitionModel expectedFieldDefinition = new IntFieldDefinitionModel("IntField", default, null);
-        MockedFieldDefinitionService.UpdateField("RunnableProject", "Class", expectedFieldDefinition.Name, Arg.Any<FieldDefinitionModel>())
-            .Throws<NonWipProjectException>();
+        MockedFieldDefinitionService.UpdateFieldAsync("RunnableProject", "Class", expectedFieldDefinition.Name, Arg.Any<FieldDefinitionModel>())
+            .ThrowsAsync<NonWipProjectException>();
 
         // WHEN
         var response = await client.PutAsJsonAsync($"/fields/RunnableProject/Class/{expectedFieldDefinition.Name}", expectedFieldDefinition);
@@ -305,7 +305,7 @@ public class FieldDefinitionEndpointsTests
     public async Task WhenDeletingUnknownClassFieldDefinition_ThenNotFoundIsReturned()
     {
         // GIVEN
-        MockedFieldDefinitionService.When(fake => fake.DeleteField("Project", "UnknownClass", "IntField"))
+        MockedFieldDefinitionService.When(async (fake) => await fake.DeleteFieldAsync("Project", "UnknownClass", "IntField"))
             .Do(call => { throw new UnknownEntityException(); });
 
         // WHEN
@@ -319,7 +319,7 @@ public class FieldDefinitionEndpointsTests
     public async Task WhenDeletingClassFieldDefinitionOnNonWipProject_ThenBadRequestIsReturned()
     {
         // GIVEN
-        MockedFieldDefinitionService.When(fake => fake.DeleteField("RunnableProject", "Class", "IntField"))
+        MockedFieldDefinitionService.When(async (fake) => await fake.DeleteFieldAsync("RunnableProject", "Class", "IntField"))
             .Do(call => { throw new NonWipProjectException(); });
 
         // WHEN

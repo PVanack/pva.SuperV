@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using pva.SuperV.Api.Services.Instances;
 using pva.SuperV.Model;
 using pva.SuperV.Model.FieldDefinitions;
 using pva.SuperV.Model.Instances;
+using pva.SuperV.Model.Services;
 using System.ComponentModel;
 
 namespace pva.SuperV.Api.Routes.Instances
@@ -77,11 +77,11 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             instancesApi.MapGet("/{runnableProjectId}/{instanceName}/{fieldName}/value",
-                (IFieldValueService fieldValueService,
+                async (IFieldValueService fieldValueService,
                 [Description("ID of runnable project")] string runnableProjectId,
                 [Description("Name of instance")] string instanceName,
                 [Description("Name of field")] string fieldName)
-                    => GetInstanceField.Handle(fieldValueService, runnableProjectId, instanceName, fieldName))
+                    => await GetInstanceField.Handle(fieldValueService, runnableProjectId, instanceName, fieldName))
                 .WithName("GetField")
                 .WithDisplayName("GetField")
                 .WithSummary("Gets the field of an instance from a project by its name")
@@ -91,12 +91,12 @@ namespace pva.SuperV.Api.Routes.Instances
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             instancesApi.MapPut("/{runnableProjectId}/{instanceName}/{fieldName}/value",
-                (IFieldValueService fieldValueService,
+                async (IFieldValueService fieldValueService,
                 [Description("ID of runnable project")] string runnableProjectId,
                 [Description("Name of instance")] string instanceName,
                 [Description("Name of field")] string fieldName,
                 [Description("Value of field")][FromBody] FieldValueModel value)
-                    => UpdateInstanceFieldValue.Handle(fieldValueService, runnableProjectId, instanceName, fieldName, value))
+                    => await UpdateInstanceFieldValue.Handle(fieldValueService, runnableProjectId, instanceName, fieldName, value))
                 .WithName("UpdateFieldValue")
                 .WithDisplayName("UpdateFieldValue")
                 .WithSummary("Updates the value of a field of an instance from a project by its name")

@@ -27,7 +27,7 @@
 </style>
 
 <h1>Projects</h1>
-<MudTable T="ProjectModel" @ref="projectsTable" ServerData="ServerReload" RowClassFunc="SelectedRowClassFunc" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
+<MudTable T="ProjectModel" @ref="itemsTable" ServerData="ServerReload" RowClassFunc="SelectedRowClassFunc" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
 	<ToolBarContent>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
 			<MudButton StartIcon="@Icons.Material.Filled.Add"
@@ -47,55 +47,55 @@
 				Edit project
 			</MudButton>
 			<MudButton StartIcon="@Icons.Material.Filled.DesignServices"
-					   hidden="@(SelectedProject == null || !SelectedProject.Runnable)" OnClick="@((e)=> CreateWipProjectFromRunnable(SelectedProject!.Id))">
+					   hidden="@(SelectedItem == null || !SelectedItem.Runnable)" OnClick="@((e)=> CreateWipProjectFromRunnable(SelectedItem!.Id))">
 				Create WIP project
 			</MudButton>
 			<MudButton StartIcon="@Icons.Material.Filled.Save"
-					   hidden="@(SelectedProject == null || !SelectedProject.Runnable)" OnClick="@((e) => SaveProjectInstances(SelectedProject!))">
+					   hidden="@(SelectedItem == null || !SelectedItem.Runnable)" OnClick="@((e) => SaveProjectInstances(SelectedItem!))">
 				Save project instances
 			</MudButton>
-			<MudFileUpload T="IBrowserFile" FilesChanged="@((e) => LoadProjectInstancesFromFile(e, SelectedProject!))">
+			<MudFileUpload T="IBrowserFile" FilesChanged="@((e) => LoadProjectInstancesFromFile(e, SelectedItem!))">
 				<ActivatorContent>
 					<MudButton StartIcon="@Icons.Material.Filled.FileOpen"
-							   hidden="@(SelectedProject == null || !SelectedProject.Runnable)">
+							   hidden="@(SelectedItem == null || !SelectedItem.Runnable)">
 						Load project instances
 					</MudButton>
 				</ActivatorContent>
 			</MudFileUpload>
 			<MudButton StartIcon="@Icons.Material.Filled.MiscellaneousServices"
-					   hidden="@(SelectedProject == null || SelectedProject.Runnable)" OnClick="@((e)=> BuildWipProject(SelectedProject!.Id))">
+					   hidden="@(SelectedItem == null || SelectedItem.Runnable)" OnClick="@((e)=> BuildWipProject(SelectedItem!.Id))">
 				Build project
 			</MudButton>
 			<MudButton StartIcon="@Icons.Material.Filled.Save"
-					   hidden="@(SelectedProject == null || SelectedProject.Runnable)" OnClick="@((e)=> SaveProjectDefinitions(SelectedProject!))">
+					   hidden="@(SelectedItem == null || SelectedItem.Runnable)" OnClick="@((e)=> SaveProjectDefinitions(SelectedItem!))">
 				Save project definitions
 			</MudButton>
 			<MudButton IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.DeleteForever"
-					   hidden="@(SelectedProject == null)" OnClick="@((e)=> DeleteProject(SelectedProject!.Id))">
+					   hidden="@(SelectedItem == null)" OnClick="@((e)=> DeleteProject(SelectedItem!.Id))">
 				Delete project
 			</MudButton>
 		</MudButtonGroup>
 		<MudSpacer />
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
 			<MudButton StartIcon="@Icons.Material.Filled.DataObject"
-					   hidden="@(SelectedProject == null || !SelectedProject.Runnable)" Href=@($"/instances/{SelectedProject?.Id}")>
+					   hidden="@(SelectedItem == null || !SelectedItem.Runnable)" Href=@($"/instances/{SelectedItem?.Id}")>
 				Instances
 			</MudButton>
 			<MudButton StartIcon="@Icons.Material.Filled.Class"
-					   hidden="@(SelectedProject == null || SelectedProject.Runnable)" Href=@($"/classes/{SelectedProject?.Id}")>
+					   hidden="@(SelectedItem == null || SelectedItem.Runnable)" Href=@($"/classes/{SelectedItem?.Id}")>
 				Classes
 			</MudButton>
 			<MudButton StartIcon="@Icons.Material.Filled.FormatListNumbered"
-					   hidden="@(SelectedProject == null || SelectedProject.Runnable)" Href=@($"/field-formatters/{SelectedProject?.Id}")>
+					   hidden="@(SelectedItem == null || SelectedItem.Runnable)" Href=@($"/field-formatters/{SelectedItem?.Id}")>
 				Field formatters
 			</MudButton>
 			<MudButton StartIcon="@Icons.Material.Filled.Storage"
-					   hidden="@(SelectedProject == null || SelectedProject.Runnable)" Href=@($"/history-repositories/{SelectedProject?.Id}")>
+					   hidden="@(SelectedItem == null || SelectedItem.Runnable)" Href=@($"/history-repositories/{SelectedItem?.Id}")>
 				History repositories
 			</MudButton>
 		</MudButtonGroup>
 		<MudSpacer />
-		<MudTextField @bind-Value="projectNameSearchString" Placeholder="Search" Clearable=true Immediate=true TextChanged="Search"
+		<MudTextField @bind-Value="itemNameSearchString" Placeholder="Search" Clearable=true Immediate=true TextChanged="Search"
 					  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
 	</ToolBarContent>
 	<ColGroup>
