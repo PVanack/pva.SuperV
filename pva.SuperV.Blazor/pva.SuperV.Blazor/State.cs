@@ -1,5 +1,6 @@
 ﻿using MudBlazor;
 using pva.SuperV.Blazor.Components.Layout;
+using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.FieldFormatters;
 using pva.SuperV.Model.HistoryRepositories;
 using pva.SuperV.Model.Projects;
@@ -12,6 +13,7 @@ namespace pva.SuperV.Blazor
         public ProjectModel? EditedProject { get; set; } = default!;
         public FieldFormatterModel? EditedFieldFormatter { get; set; } = default!;
         public HistoryRepositoryModel? EditedHistoryRepository { get; set; } = default!;
+        public ClassModel? EditedClass { get; set; } = default!;
         public MainLayout MainlLayout { get; set; } = default!;
 
         public void SetHomeBreadCrumb(bool refreshBreadcrumbs = true)
@@ -93,5 +95,21 @@ namespace pva.SuperV.Blazor
                 RefreshBreadcrumbsIfNeeded();
             }
         }
+        internal void AddClassesBreadcrumb(string projectId, bool refreshBreadCrumbs = true)
+        {
+            AddProjectBreadcrumb(EditedProject, refreshBreadCrumbs);
+            Breadcrumbs.Add(new("Classes", $"/classes/{projectId}"));
+            RefreshBreadcrumbsIfNeeded();
+        }
+
+        internal void AddClassBreadcrumb(string projectId, ClassModel? editedClass)
+        {
+            if (editedClass != null)
+            {
+                Breadcrumbs.Add(new($"Class {editedClass.Name}", $"/class/{projectId}/{editedClass?.Name}"));
+                RefreshBreadcrumbsIfNeeded();
+            }
+        }
+
     }
 }
