@@ -1,0 +1,42 @@
+﻿@page "/class/{ProjectId}"
+@page "/class/{ProjectId}/{ClassName}"
+
+<PageTitle>@pageTitle</PageTitle>
+
+<h1>@pageTitle</h1>
+
+<EditForm Model="@EditedClass" OnValidSubmit="OnValidSubmit">
+	<DataAnnotationsValidator />
+	<MudGrid>
+		<MudItem xs="12" sm="7">
+			<MudCard>
+				<MudCardContent>
+					<MudFocusTrap DefaultFocus=DefaultFocus.FirstChild>
+						<MudTextField Disabled="@isModification" Label="Field formatter name"
+									  @bind-Value="EditedClass.Name" For="@(() => EditedClass.Name)" />
+						<MudSelect T="string" Disabled="@isModification" ValueChanged="@OnFormatterTypeChanged" Label="Select field base class" Placeholder="Base class" Value="EditedClass?.BaseClassName">
+							@foreach (var baseClassName in BaseClasses)
+							{
+								<MudSelectItem Value="baseClassName">@baseClassName</MudSelectItem>
+							}
+						</MudSelect>
+					</MudFocusTrap>
+				</MudCardContent>
+				<MudCardActions>
+					<MudSpacer />
+					<MudButton @onclick="CancelSubmit" Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto">Cancel</MudButton>
+					&nbsp;
+					<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">OK</MudButton>
+				</MudCardActions>
+			</MudCard>
+		</MudItem>
+		<MudItem hidden="@success" xs="12" sm="5">
+			<MudPaper Class="pa-4 mud-height-full">
+				<MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+				<MudText Color="@Color.Error">
+					<ValidationSummary />
+				</MudText>
+			</MudPaper>
+		</MudItem>
+	</MudGrid>
+</EditForm>

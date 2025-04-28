@@ -25,6 +25,7 @@ namespace pva.SuperV.Blazor
 
             builder.Services
                 .AddScoped<State>()
+                .AddScoped<IClassService, ClassService>((service) => new(BuildHttpClient(builder)))
                 .AddScoped<IProjectService, ProjectService>((service) => new(BuildHttpClient(builder)))
                 .AddScoped<IFieldFormatterService, FieldFormatterService>((service) => new(BuildHttpClient(builder)))
                 .AddScoped<IHistoryRepositoryService, HistoryRepositoryService>((service) => new(BuildHttpClient(builder)));
