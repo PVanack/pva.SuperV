@@ -45,7 +45,7 @@ public partial class HistoryRepositories
     {
         SelectedItem = null;
         State.EditedFieldFormatter = null;
-        NavigationManager.NavigateTo($"/history-respository/{ProjectId}");
+        NavigationManager.NavigateTo($"/history-repository/{ProjectId}");
         await ReloadTable();
     }
 
@@ -53,7 +53,7 @@ public partial class HistoryRepositories
     {
         if (SelectedItem != null)
         {
-            NavigationManager.NavigateTo($"/history-respository/{ProjectId}/{SelectedItem.Name}");
+            NavigationManager.NavigateTo($"/history-repository/{ProjectId}/{SelectedItem.Name}");
             await ReloadTable();
         }
     }
@@ -86,7 +86,7 @@ public partial class HistoryRepositories
 
     private async Task DeleteItem(string itemId)
     {
-        var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.EntityDescription, $"history repository{itemId}" } };
+        var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.EntityDescription, $"history repository {itemId}" } };
 
         var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>($"Delete history repository", parameters);
         var result = await dialog.Result;
