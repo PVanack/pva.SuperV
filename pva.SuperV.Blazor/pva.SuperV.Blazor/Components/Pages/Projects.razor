@@ -31,7 +31,7 @@
 	<ToolBarContent>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
 			<MudButton StartIcon="@Icons.Material.Filled.Add"
-					   OnClick="@CreateProject">
+					   OnClick="@CreateItem">
 				Create project
 			</MudButton>
 			<MudFileUpload T="IBrowserFile" FilesChanged="LoadProjectFromDefinition">
@@ -43,7 +43,7 @@
 			</MudFileUpload>
 		</MudButtonGroup>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
-			<MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="@EditProject">
+			<MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="@EditItem">
 				Edit project
 			</MudButton>
 			<MudButton StartIcon="@Icons.Material.Filled.DesignServices"

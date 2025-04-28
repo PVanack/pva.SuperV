@@ -30,13 +30,13 @@
 	<ToolBarContent>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
 			<MudButton StartIcon="@Icons.Material.Filled.Add"
-					   OnClick="@CreateFieldFormatter">
+					   OnClick="@CreateItem">
 				Create field formatter
 			</MudButton>
 		</MudButtonGroup>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
 			<MudButton StartIcon="@Icons.Material.Filled.Edit"
-					   hidden="@(SelectedItem == null)" OnClick="@EditFieldFormatter">
+					   hidden="@(SelectedItem == null)" OnClick="@EditItem">
 				Edit field formatter
 			</MudButton>
 			<MudButton IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.DeleteForever"

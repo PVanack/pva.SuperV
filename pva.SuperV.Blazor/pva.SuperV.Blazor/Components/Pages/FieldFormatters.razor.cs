@@ -44,7 +44,7 @@ public partial class FieldFormatters
         return itemsTableData;
     }
 
-    private async Task CreateFieldFormatter(MouseEventArgs e)
+    private async Task CreateItem(MouseEventArgs e)
     {
         SelectedItem = null;
         State.EditedFieldFormatter = null;
@@ -52,7 +52,7 @@ public partial class FieldFormatters
         await ReloadTable();
     }
 
-    private async Task EditFieldFormatter(MouseEventArgs e)
+    private async Task EditItem(MouseEventArgs e)
     {
         if (SelectedItem != null)
         {
