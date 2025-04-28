@@ -93,7 +93,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenExistingProjects_WhenSearchingProjects_ThenProjectsAreReturned()
         {
             // GIVEN
-            List<ProjectModel> expectedProjects = [new ProjectModel("Project1", "a", 1, "Descr", false)];
+            List<ProjectModel> expectedProjects = [new ProjectModel("Project1", "a", 1, "Descr", false, false)];
             ProjectPagedSearchRequest searchRequest = new(1, 10, null, null);
             MockedProjectService.SearchProjectsAsync(Arg.Any<ProjectPagedSearchRequest>())
                 .Returns(new PagedSearchResult<ProjectModel>(1, 10, expectedProjects.Count, expectedProjects));
@@ -115,7 +115,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenExistingProjects_WhenGettingProjects_ThenProjectsAreReturned()
         {
             // GIVEN
-            List<ProjectModel> expectedProjects = [new ProjectModel("Project1", "a", 1, "Descr", false)];
+            List<ProjectModel> expectedProjects = [new ProjectModel("Project1", "a", 1, "Descr", false, false)];
             MockedProjectService.GetProjectsAsync()
                 .Returns(expectedProjects);
 
@@ -132,7 +132,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenExistingProject_WhenGettingExistingProject_ThenProjectIsReturned()
         {
             // GIVEN
-            ProjectModel expectedProject = new("Project1", "Project1", 1, "Descr", false);
+            ProjectModel expectedProject = new("Project1", "Project1", 1, "Descr", false, false);
             MockedProjectService.GetProjectAsync("Project1")
                 .Returns(expectedProject);
 
@@ -164,7 +164,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             CreateProjectRequest createProjectRequest = new("NewProject", "Description");
-            ProjectModel expectedCreatedProject = new("1", "NewProject", 1, "descriptioon", false);
+            ProjectModel expectedCreatedProject = new("1", "NewProject", 1, "Description", false, false);
             MockedProjectService.CreateProjectAsync(createProjectRequest)
                 .Returns(expectedCreatedProject);
 
@@ -182,7 +182,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             UpdateProjectRequest updateProjectRequest = new("NewProject", "Description");
-            ProjectModel expectedUpdatedProject = new("1", "NewProject", 1, "descriptioon", false);
+            ProjectModel expectedUpdatedProject = new("1", "NewProject", 1, "descriptioon", false, false);
             MockedProjectService.UpdateProjectAsync(expectedUpdatedProject.Name, updateProjectRequest)
                 .Returns(expectedUpdatedProject);
 
@@ -199,7 +199,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenRunnableProject_WhenCreatingWipProjectFromRunnable_ThenWipProjectIsCreated()
         {
             // GIVEN
-            ProjectModel expectedCreatedProject = new("1", "NewProject", 2, "descriptioon", false);
+            ProjectModel expectedCreatedProject = new("1", "NewProject", 2, "descriptioon", false, false);
             MockedProjectService.CreateProjectFromRunnableAsync("NewProject")
                 .Returns(expectedCreatedProject);
 
@@ -230,7 +230,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenWipProject_WhenBuildigProjectFromIt_ThenRunnableProjectIsBuilt()
         {
             // GIVEN
-            ProjectModel expectedRunnableProject = new("Project-Wip", "a", 2, "description", true);
+            ProjectModel expectedRunnableProject = new("Project-Wip", "a", 2, "description", true, false);
             MockedProjectService.BuildProjectAsync("Project-Wip")
                 .Returns(expectedRunnableProject);
 
@@ -261,7 +261,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenProject_WhenSavingProjectDefinitions_ThenJsonDefinitionsAreReturned()
         {
             // GIVEN
-            ProjectModel projectToSave = new("Project", "Project", 1, "Description", true);
+            ProjectModel projectToSave = new("Project", "Project", 1, "Description", true, false);
             StreamWriter stream = new(new MemoryStream());
             await stream.WriteAsync(projectDefinitionsJson);
             await stream.FlushAsync();
@@ -298,7 +298,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenProjectDefinitionJson_WhenCreatingProjectFromDefinitions_ThenProjectIsCreated()
         {
             // GIVEN
-            ProjectModel expectedProject = new("TestProject", "TestProject", 11, null, true);
+            ProjectModel expectedProject = new("TestProject", "TestProject", 11, null, true, false);
             MockedProjectService.CreateProjectFromJsonDefinitionAsync(Arg.Any<StreamReader>())
                 .Returns(expectedProject);
 
@@ -316,7 +316,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenRunnableProject_WhenSavingProjectInstances_ThenJsonInstancesAreReturned()
         {
             // GIVEN
-            ProjectModel projectToSave = new("Project", "Project", 1, "Description", true);
+            ProjectModel projectToSave = new("Project", "Project", 1, "Description", true, false);
             StreamWriter stream = new(new MemoryStream());
             await stream.WriteAsync(projectInstancesJson);
             await stream.FlushAsync();

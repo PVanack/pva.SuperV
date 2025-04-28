@@ -90,7 +90,7 @@
 				Field formatters
 			</MudButton>
 			<MudButton StartIcon="@Icons.Material.Filled.Storage"
-					   hidden="@(SelectedItem == null || SelectedItem.Runnable)" Href=@($"/history-repositories/{SelectedItem?.Id}")>
+					   hidden="@(SelectedItem == null || SelectedItem.Runnable || !SelectedItem.HistoryEnabled)" Href=@($"/history-repositories/{SelectedItem?.Id}")>
 				History repositories
 			</MudButton>
 		</MudButtonGroup>
@@ -103,12 +103,14 @@
 		<col />
 		<col />
 		<col style="width:25px;" />
+		<col style="width:25px;" />
 	</ColGroup>
 	<HeaderContent>
 		<MudTh Style="text-align:center">Name</MudTh>
 		<MudTh Style="text-align:center">Description</MudTh>
 		<MudTh Style="text-align:center">Version</MudTh>
 		<MudTh Style="text-align:center">State</MudTh>
+		<MudTh Style="text-align:center">History enabled</MudTh>
 	</HeaderContent>
 	<RowTemplate>
 		<MudTd DataLabel="Name">@context.Name</MudTd>
@@ -117,6 +119,10 @@
 		<MudTd DataLabel="Runnable" Style="text-align:center">
 			<MudIcon Icon="@(context.Runnable ? Icons.Material.Filled.MiscellaneousServices : Icons.Material.Filled.DesignServices)"
 					 Title="@(context.Runnable ? "Runnable" : "WIP")" />
+		</MudTd>
+		<MudTd DataLabel="HistoryEnabled" Style="text-align:center">
+			<MudIcon Icon="@(context.HistoryEnabled ? Icons.Material.Filled.Storage : null)"
+					 Title="@(context.HistoryEnabled? "History enabled" : "No history storage")" />
 		</MudTd>
 	</RowTemplate>
 	<NoRecordsContent>
