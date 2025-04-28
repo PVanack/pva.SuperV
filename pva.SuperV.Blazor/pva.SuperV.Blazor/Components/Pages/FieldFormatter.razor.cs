@@ -47,14 +47,14 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private static FieldFormatterModel CreateEnumFormatterModel(EditedFieldFormatter editedFieldFormatter)
         {
-            EditedEnumFieldFormatter enumFormatter = editedFieldFormatter as EditedEnumFieldFormatter;
-            return new EnumFormatterModel(editedFieldFormatter.Name, enumFormatter.GetEnumValues());
+            EditedEnumFieldFormatter? enumFormatter = editedFieldFormatter! as EditedEnumFieldFormatter;
+            return new EnumFormatterModel(editedFieldFormatter!.Name, enumFormatter!.GetEnumValues());
         }
 
         private static EditedFieldFormatter CreateEditableEnumFormatter(FieldFormatterModel fieldFormatter)
         {
-            EnumFormatterModel enumFormatter = fieldFormatter as EnumFormatterModel;
-            return new EditedEnumFieldFormatter(enumFormatter);
+            EnumFormatterModel? enumFormatter = fieldFormatter as EnumFormatterModel;
+            return new EditedEnumFieldFormatter(enumFormatter!);
         }
 
         private string pageTitle = default!;
@@ -66,11 +66,11 @@ namespace pva.SuperV.Blazor.Components.Pages
         protected override Task OnInitializedAsync()
         {
             isModification = !String.IsNullOrEmpty(FieldFormatterName) && State.EditedFieldFormatter != null;
-            pageTitle = isModification ? $"{GetFormatterType(State.EditedFieldFormatter)} {State.EditedFieldFormatter.Name}" : "New field formatter";
+            pageTitle = isModification ? $"{GetFormatterType(State.EditedFieldFormatter)} {State.EditedFieldFormatter!.Name}" : "New field formatter";
             EditedFieldFormatter = new();
             if (isModification)
             {
-                if (fieldFormatterFromModel.TryGetValue(State.EditedFieldFormatter.GetType(), out var createFunc))
+                if (fieldFormatterFromModel.TryGetValue(State.EditedFieldFormatter!.GetType(), out var createFunc))
                 {
                     EditedFieldFormatter = createFunc(State.EditedFieldFormatter);
                 }
@@ -130,8 +130,10 @@ namespace pva.SuperV.Blazor.Components.Pages
             throw new InvalidOperationException($"No mapping for field formatter type {editedFieldFormatter.GetType()}");
         }
 
-        public static string GetFormatterType(FieldFormatterModel fieldFormatter)
+        public static string GetFormatterType(FieldFormatterModel? fieldFormatter)
         {
+            if (fieldFormatter is null)
+                return String.Empty;
             return fieldFormatter switch
             {
                 EnumFormatterModel => FieldFormatter.EnumFormatterType,
