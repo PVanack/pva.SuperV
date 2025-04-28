@@ -21,5 +21,7 @@ namespace pva.SuperV.Model.Projects
         [property : Description("Description of the project.")]
         string? Description,
         [property: Description("Indicates if the project is runnable.")]
-        bool Runnable);
+        bool Runnable,
+        [property: Description("Indicates if the project has history enabled.")]
+        bool HistoryEnabled);
 }

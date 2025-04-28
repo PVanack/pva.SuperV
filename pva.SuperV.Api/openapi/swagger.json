@@ -5252,7 +5252,8 @@
           "name",
           "version",
           "description",
-          "runnable"
+          "runnable",
+          "historyEnabled"
         ],
         "type": "object",
         "properties": {
@@ -5277,6 +5278,10 @@
           "runnable": {
             "type": "boolean",
             "description": "Indicates if the project is runnable."
+          },
+          "historyEnabled": {
+            "type": "boolean",
+            "description": "Indicates if the project has history enabled."
           }
         }
       },

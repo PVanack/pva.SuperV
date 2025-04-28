@@ -43,7 +43,7 @@ namespace pva.SuperV.Blazor.Components.Pages
             return itemsTableData;
         }
 
-        private async Task CreateProject(MouseEventArgs e)
+        private async Task CreateItem(MouseEventArgs e)
         {
             SelectedItem = null;
             State.EditedProject = null;
@@ -51,7 +51,7 @@ namespace pva.SuperV.Blazor.Components.Pages
             await ReloadTable();
         }
 
-        private async Task EditProject(MouseEventArgs e)
+        private async Task EditItem(MouseEventArgs e)
         {
             if (SelectedItem != null)
             {

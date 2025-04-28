@@ -3,17 +3,16 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using MudBlazor;
 using pva.SuperV.Blazor.Components.Dialogs;
-using pva.SuperV.Model;
-using pva.SuperV.Model.FieldFormatters;
+using pva.SuperV.Model.HistoryRepositories;
 using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Blazor.Components.Pages;
-public partial class FieldFormatters
+public partial class HistoryRepositories
 {
     [Inject]
     private IJSRuntime JSRuntime { get; set; } = default!;
     [Inject]
-    private IFieldFormatterService FieldFormatterService { get; set; } = default!;
+    private IHistoryRepositoryService HistoryRepositoryService { get; set; } = default!;
     [Inject]
     private NavigationManager NavigationManager { get; set; } = default!;
     [Inject]
@@ -24,23 +23,21 @@ public partial class FieldFormatters
     [Parameter]
     public string ProjectId { get; set; } = default!;
 
-    private MudTable<FieldFormatterModel> itemsTable = default!;
-    private string itemNameSearchString = default!;
+    private MudTable<HistoryRepositoryModel> itemsTable = default!;
     private int selectedRowNumber;
 
-    private FieldFormatterModel? SelectedItem { get; set; } = default!;
+    private HistoryRepositoryModel? SelectedItem { get; set; } = default!;
 
     protected override void OnInitialized()
     {
-        State.AddFieldFormattersBreadcrumb(ProjectId);
+        State.AddHistoryRepositoriesBreadcrumb(ProjectId);
         base.OnInitialized();
     }
 
-    private async Task<TableData<FieldFormatterModel>> ServerReload(TableState state, CancellationToken token)
+    private async Task<TableData<HistoryRepositoryModel>> ServerReload(TableState state, CancellationToken token)
     {
-        FieldFormatterPagedSearchRequest request = new(state.Page + 1, state.PageSize, itemNameSearchString, null);
-        PagedSearchResult<FieldFormatterModel> projects = await FieldFormatterService.SearchFieldFormattersAsync(ProjectId, request);
-        TableData<FieldFormatterModel> itemsTableData = new() { TotalItems = projects.Count, Items = projects.Result };
+        List<HistoryRepositoryModel> historyRepositories = await HistoryRepositoryService.GetHistoryRepositoriesAsync(ProjectId);
+        TableData<HistoryRepositoryModel> itemsTableData = new() { TotalItems = historyRepositories.Count, Items = historyRepositories };
         return itemsTableData;
     }
 
@@ -48,7 +45,7 @@ public partial class FieldFormatters
     {
         SelectedItem = null;
         State.EditedFieldFormatter = null;
-        NavigationManager.NavigateTo($"/field-formatter/{ProjectId}");
+        NavigationManager.NavigateTo($"/history-repository/{ProjectId}");
         await ReloadTable();
     }
 
@@ -56,18 +53,18 @@ public partial class FieldFormatters
     {
         if (SelectedItem != null)
         {
-            NavigationManager.NavigateTo($"/field-formatter/{ProjectId}/{SelectedItem.Name}");
+            NavigationManager.NavigateTo($"/history-repository/{ProjectId}/{SelectedItem.Name}");
             await ReloadTable();
         }
     }
 
-    private void RowClickedEvent(TableRowClickEventArgs<FieldFormatterModel> _)
+    private void RowClickedEvent(TableRowClickEventArgs<HistoryRepositoryModel> _)
     {
         SelectedItem = itemsTable.SelectedItem;
-        State.EditedFieldFormatter = SelectedItem;
+        State.EditedHistoryRepository = SelectedItem;
     }
 
-    private string SelectedRowClassFunc(FieldFormatterModel item, int rowNumber)
+    private string SelectedRowClassFunc(HistoryRepositoryModel item, int rowNumber)
     {
         if (selectedRowNumber == rowNumber)
         {
@@ -87,21 +84,16 @@ public partial class FieldFormatters
         }
     }
 
-    private async Task Search(string args)
-    {
-        await ReloadTable();
-    }
-
     private async Task DeleteItem(string itemId)
     {
-        var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.EntityDescription, $"field formatter {itemId}" } };
+        var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.EntityDescription, $"history repository {itemId}" } };
 
-        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>($"Delete field formatter", parameters);
+        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>($"Delete history repository", parameters);
         var result = await dialog.Result;
 
         if (result is not null && !result.Canceled)
         {
-            await FieldFormatterService.DeleteFieldFormatterAsync(ProjectId, itemId);
+            await HistoryRepositoryService.DeleteHistoryRepositoryAsync(ProjectId, itemId);
             await ReloadTable();
         }
     }

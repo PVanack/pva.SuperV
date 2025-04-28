@@ -32,7 +32,7 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private static readonly Dictionary<string, Func<EditedFieldFormatter, EditedFieldFormatter>> fieldFormatterToSubtype = new()
         {
-            { EnumFormatterType , (editedFieldFormatter) => new EditedEnumFieldFormatter(editedFieldFormatter.Name, editedFieldFormatter.FormatterType, new Dictionary<int, string>()) }
+            { EnumFormatterType , (editedFieldFormatter) => new EditedEnumFieldFormatter(editedFieldFormatter.Name, editedFieldFormatter.FormatterType, []) }
         };
 
         private static readonly Dictionary<Type, Func<EditedFieldFormatter, FieldFormatterModel>> fieldFormatterToModel = new()
@@ -45,16 +45,16 @@ namespace pva.SuperV.Blazor.Components.Pages
             {typeof(EnumFormatterModel) , (fieldFormatter) => CreateEditableEnumFormatter(fieldFormatter)}
         };
 
-        private static FieldFormatterModel CreateEnumFormatterModel(EditedFieldFormatter editedFieldFormatter)
+        private static EnumFormatterModel CreateEnumFormatterModel(EditedFieldFormatter editedFieldFormatter)
         {
-            EditedEnumFieldFormatter enumFormatter = editedFieldFormatter as EditedEnumFieldFormatter;
-            return new EnumFormatterModel(editedFieldFormatter.Name, enumFormatter.GetEnumValues());
+            EditedEnumFieldFormatter? enumFormatter = editedFieldFormatter! as EditedEnumFieldFormatter;
+            return new EnumFormatterModel(editedFieldFormatter!.Name, enumFormatter!.GetEnumValues());
         }
 
-        private static EditedFieldFormatter CreateEditableEnumFormatter(FieldFormatterModel fieldFormatter)
+        private static EditedEnumFieldFormatter CreateEditableEnumFormatter(FieldFormatterModel fieldFormatter)
         {
-            EnumFormatterModel enumFormatter = fieldFormatter as EnumFormatterModel;
-            return new EditedEnumFieldFormatter(enumFormatter);
+            EnumFormatterModel? enumFormatter = fieldFormatter as EnumFormatterModel;
+            return new EditedEnumFieldFormatter(enumFormatter!);
         }
 
         private string pageTitle = default!;
@@ -66,14 +66,11 @@ namespace pva.SuperV.Blazor.Components.Pages
         protected override Task OnInitializedAsync()
         {
             isModification = !String.IsNullOrEmpty(FieldFormatterName) && State.EditedFieldFormatter != null;
-            pageTitle = isModification ? $"{GetFormatterType(State.EditedFieldFormatter)} {State.EditedFieldFormatter.Name}" : "New field formatter";
+            pageTitle = isModification ? $"{GetFormatterType(State.EditedFieldFormatter)} {State.EditedFieldFormatter!.Name}" : "New field formatter";
             EditedFieldFormatter = new();
-            if (isModification)
+            if (isModification && fieldFormatterFromModel.TryGetValue(State.EditedFieldFormatter!.GetType(), out var createFunc))
             {
-                if (fieldFormatterFromModel.TryGetValue(State.EditedFieldFormatter.GetType(), out var createFunc))
-                {
-                    EditedFieldFormatter = createFunc(State.EditedFieldFormatter);
-                }
+                EditedFieldFormatter = createFunc(State.EditedFieldFormatter);
             }
             State.AddFieldFormatterBreadcrumb(ProjectId, State.EditedFieldFormatter);
             return base.OnInitializedAsync();
@@ -89,7 +86,7 @@ namespace pva.SuperV.Blazor.Components.Pages
             }
             else
             {
-                CreateFieldFormatterRequest createRequest = new CreateFieldFormatterRequest(fieldFormatter);
+                CreateFieldFormatterRequest createRequest = new(fieldFormatter);
                 await FieldFormatterService.CreateFieldFormatterAsync(ProjectId, createRequest);
             }
             GoBackToFieldFormatters();
@@ -107,9 +104,9 @@ namespace pva.SuperV.Blazor.Components.Pages
             NavigationManager.NavigateTo($"/field-formatters/{ProjectId}");
         }
 
-        private List<string> GetFieldFormatterTypes()
+        private static List<string> GetFieldFormatterTypes()
         {
-            return fieldFormatterToSubtype.Keys.ToList();
+            return [.. fieldFormatterToSubtype.Keys];
         }
 
         private void OnFormatterTypeChanged(string selectedType)
@@ -121,7 +118,7 @@ namespace pva.SuperV.Blazor.Components.Pages
             }
             StateHasChanged();
         }
-        private FieldFormatterModel MapFieldFormatter(EditedFieldFormatter editedFieldFormatter)
+        private static FieldFormatterModel MapFieldFormatter(EditedFieldFormatter editedFieldFormatter)
         {
             if (fieldFormatterToModel.TryGetValue(editedFieldFormatter.GetType(), out var mapFunc))
             {
@@ -130,8 +127,10 @@ namespace pva.SuperV.Blazor.Components.Pages
             throw new InvalidOperationException($"No mapping for field formatter type {editedFieldFormatter.GetType()}");
         }
 
-        public static string GetFormatterType(FieldFormatterModel fieldFormatter)
+        public static string GetFormatterType(FieldFormatterModel? fieldFormatter)
         {
+            if (fieldFormatter is null)
+                return String.Empty;
             return fieldFormatter switch
             {
                 EnumFormatterModel => FieldFormatter.EnumFormatterType,
@@ -142,44 +141,32 @@ namespace pva.SuperV.Blazor.Components.Pages
 
     public class EditedFieldFormatter
     {
-        private string name;
-        private string formatterType;
         public EditedFieldFormatter() : this("", "") { }
         protected EditedFieldFormatter(string name, string formatterType)
         {
-            this.name = name;
-            this.formatterType = formatterType;
+            this.Name = name;
+            this.FormatterType = formatterType;
         }
 
         protected EditedFieldFormatter(FieldFormatterModel fieldFormatter)
         {
-            this.name = fieldFormatter.Name;
-            this.formatterType = FieldFormatter.GetFormatterType(fieldFormatter);
+            this.Name = fieldFormatter.Name;
+            this.FormatterType = FieldFormatter.GetFormatterType(fieldFormatter);
         }
 
         [Required(AllowEmptyStrings = false)]
-        public string Name { get => name; set => name = value; }
-        public string FormatterType { get => formatterType; set => formatterType = value; }
+        public string Name { get; set; }
+        public string FormatterType { get; set; }
     }
 
-    public class EnumValue
+    public class EnumValue(int value, string stringValue)
     {
-        private int value;
-        private string stringValue;
-
-        public EnumValue(int value, string stringValue)
-        {
-            this.value = value;
-            this.stringValue = stringValue;
-        }
-
-        public int Value { get => value; set => this.value = value; }
-        public string StringValue { get => stringValue; set => this.stringValue = value; }
+        public int Value { get; set; } = value;
+        public string StringValue { get; set; } = stringValue;
     }
 
     public class EditedEnumFieldFormatter : EditedFieldFormatter
     {
-        private List<EnumValue> enumValues = [];
         public EditedEnumFieldFormatter(string name, string formatterType, Dictionary<int, string> enumValues) : base(name, formatterType)
         {
             enumValues.ForEach(entry
@@ -192,12 +179,13 @@ namespace pva.SuperV.Blazor.Components.Pages
                 => EnumValues.Add(new EnumValue(entry.Key, entry.Value)));
         }
 
-        public List<EnumValue> EnumValues { get => enumValues; set => enumValues = value; }
+        public List<EnumValue> EnumValues { get; set; } = [];
 
         public Dictionary<int, string> GetEnumValues()
         {
             Dictionary<int, string> enumDict = [];
-            enumValues.ForEach(enumValue => enumDict.Add(enumValue.Value, enumValue.StringValue));
+            EnumValues.ForEach(enumValue
+                => enumDict.Add(enumValue.Value, enumValue.StringValue));
             return enumDict;
         }
     }

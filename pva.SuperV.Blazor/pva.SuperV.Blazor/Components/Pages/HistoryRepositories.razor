@@ -1,5 +1,5 @@
-﻿@page "/field-formatters/{projectId}"
-<PageTitle>Field formatters</PageTitle>
+﻿@page "/history-repositories/{projectId}"
+<PageTitle>History respoitories</PageTitle>
 
 <script>
 	window.saveFile = async (filename, Content) => {
@@ -26,27 +26,25 @@
 </style>
 
 <h1>Projects</h1>
-<MudTable T="FieldFormatterModel" @ref="itemsTable" ServerData="ServerReload" RowClassFunc="SelectedRowClassFunc" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
+<MudTable T="HistoryRepositoryModel" @ref="itemsTable" ServerData="ServerReload" RowClassFunc="SelectedRowClassFunc" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
 	<ToolBarContent>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
 			<MudButton StartIcon="@Icons.Material.Filled.Add"
 					   OnClick="@CreateItem">
-				Create field formatter
+				Create history repository
 			</MudButton>
 		</MudButtonGroup>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
 			<MudButton StartIcon="@Icons.Material.Filled.Edit"
 					   hidden="@(SelectedItem == null)" OnClick="@EditItem">
-				Edit field formatter
+				Edit history repository
 			</MudButton>
 			<MudButton IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.DeleteForever"
 					   hidden="@(SelectedItem == null)" OnClick="@((e)=> DeleteItem(SelectedItem!.Name))">
-				Delete field formatter
+				Delete history repository
 			</MudButton>
 		</MudButtonGroup>
 		<MudSpacer />
-		<MudTextField @bind-Value="itemNameSearchString" Placeholder="Search" Clearable=true Immediate=true TextChanged="Search"
-					  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
 	</ToolBarContent>
 	<ColGroup>
 		<col />
@@ -54,11 +52,9 @@
 	</ColGroup>
 	<HeaderContent>
 		<MudTh Style="text-align:center">Name</MudTh>
-		<MudTh Style="text-align:center">Type</MudTh>
 	</HeaderContent>
 	<RowTemplate>
 		<MudTd DataLabel="Name">@context.Name</MudTd>
-		<MudTd DataLabel="Type">@FieldFormatter.GetFormatterType(context)</MudTd>
 	</RowTemplate>
 	<NoRecordsContent>
 		<MudText>No matching records found</MudText>

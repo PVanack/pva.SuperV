@@ -1,23 +1,31 @@
-﻿
-<MudDataGrid hidden="@(editedEnumFieldFormatter == null)" T="EnumValue" Items="@editedEnumFieldFormatter?.EnumValues" Bordered="true" Dense="true" ReadOnly="false"
-             EditMode="DataGridEditMode.Cell" EditTrigger="DataGridEditTrigger.OnRowClick"
-             StartedEditingItem="@StartedEditingItem" CanceledEditingItem="@CanceledEditingItem" CommittedItemChanges="@CommittedItemChanges">
-    <Columns>
-        <PropertyColumn Property="x => x.Value" Title="Value"/>
-        <PropertyColumn Property="x => x.StringValue" Title="String" />
-        <TemplateColumn CellClass="d-flex justify-end">
-            <CellTemplate>
-                <MudButtonGroup Size="@Size.Small">
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="((e) => editedEnumFieldFormatter?.EnumValues.Remove(context.Item))" />
-                </MudButtonGroup>
-            </CellTemplate>
-            <EditTemplate>
-                <MudButtonGroup Size="@Size.Small">
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="((e) => editedEnumFieldFormatter?.EnumValues.Remove(context.Item))" />
-                </MudButtonGroup>
-            </EditTemplate>
-        </TemplateColumn>
-    </Columns>
-</MudDataGrid>
-<MudIconButton hidden="@(editedEnumFieldFormatter == null)" Icon="@Icons.Material.Filled.Add" aria-label="Add value"
-    OnClick="((e) => editedEnumFieldFormatter?.EnumValues.Add(new EnumValue(int.MaxValue, String.Empty)))" />
+﻿@if (editedEnumFieldFormatter != null)
+{
+	<MudText Align="Align.Center" Typo="Typo.subtitle1"></MudText>
+	<MudText Align="Align.Center" Typo="Typo.subtitle1">Values</MudText>
+	<MudText Align="Align.Center" Typo="Typo.subtitle1"></MudText>
+	<MudDataGrid T="EnumValue" Items="@editedEnumFieldFormatter?.EnumValues" Bordered="true" Dense="true" ReadOnly="false"
+				 EditMode="DataGridEditMode.Cell" EditTrigger="DataGridEditTrigger.OnRowClick"
+				 StartedEditingItem="@StartedEditingItem" CanceledEditingItem="@CanceledEditingItem" CommittedItemChanges="@CommittedItemChanges">
+		<Columns>
+			<PropertyColumn Property="x => x.Value" Title="Value" />
+			<PropertyColumn Property="x => x.StringValue" Title="String" />
+			<TemplateColumn CellClass="d-flex justify-end">
+				<CellTemplate>
+					<MudButtonGroup Size="@Size.Small">
+						<MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="((e) => editedEnumFieldFormatter?.EnumValues.Remove(context.Item))" />
+					</MudButtonGroup>
+				</CellTemplate>
+				<EditTemplate>
+					<MudButtonGroup Size="@Size.Small">
+						<MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="((e) => editedEnumFieldFormatter?.EnumValues.Remove(context.Item))" />
+					</MudButtonGroup>
+				</EditTemplate>
+			</TemplateColumn>
+		</Columns>
+	</MudDataGrid>
+	<MudSpacer/>
+	<MudButton StartIcon="@Icons.Material.Filled.Add"
+			   OnClick="((e) => editedEnumFieldFormatter?.EnumValues.Add(new EnumValue(GetNextValue(), String.Empty)))">
+		Add value
+	</MudButton>
+}
