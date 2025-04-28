@@ -1,6 +1,7 @@
 ﻿using MudBlazor;
 using pva.SuperV.Blazor.Components.Layout;
 using pva.SuperV.Model.FieldFormatters;
+using pva.SuperV.Model.HistoryRepositories;
 using pva.SuperV.Model.Projects;
 
 namespace pva.SuperV.Blazor
@@ -10,6 +11,7 @@ namespace pva.SuperV.Blazor
         public List<BreadcrumbItem> Breadcrumbs { get; set; } = default!;
         public ProjectModel? EditedProject { get; set; } = default!;
         public FieldFormatterModel? EditedFieldFormatter { get; set; } = default!;
+        public HistoryRepositoryModel? EditedHistoryRepository { get; set; } = default!;
         public MainLayout MainlLayout { get; set; } = default!;
 
         public void SetHomeBreadCrumb(bool refreshBreadcrumbs = true)
@@ -62,7 +64,7 @@ namespace pva.SuperV.Blazor
 
         internal void AddFieldFormattersBreadcrumb(string projectId, bool refreshBreadCrumbs = true)
         {
-            AddProjectBreadcrumb(EditedProject, false);
+            AddProjectBreadcrumb(EditedProject, refreshBreadCrumbs);
             Breadcrumbs.Add(new("Field formatters", $"/field-formatters/{projectId}"));
             RefreshBreadcrumbsIfNeeded();
         }
@@ -72,6 +74,22 @@ namespace pva.SuperV.Blazor
             if (editedFieldFormatter != null)
             {
                 Breadcrumbs.Add(new($"Field formatter {editedFieldFormatter.Name}", $"/field-formatter/{projectId}/{editedFieldFormatter?.Name}"));
+                RefreshBreadcrumbsIfNeeded();
+            }
+        }
+
+        internal void AddHistoryRepositoriesBreadcrumb(string projectId, bool refreshBreadCrumbs = true)
+        {
+            AddProjectBreadcrumb(EditedProject, refreshBreadCrumbs);
+            Breadcrumbs.Add(new("History repositories", $"/history-repositories/{projectId}"));
+            RefreshBreadcrumbsIfNeeded();
+        }
+
+        internal void AddHistoryRepositoryBreadcrumb(string projectId, HistoryRepositoryModel? historyRepository)
+        {
+            if (historyRepository != null)
+            {
+                Breadcrumbs.Add(new($"History repository {historyRepository.Name}", $"/history-repositories/{projectId}/{historyRepository?.Name}"));
                 RefreshBreadcrumbsIfNeeded();
             }
         }

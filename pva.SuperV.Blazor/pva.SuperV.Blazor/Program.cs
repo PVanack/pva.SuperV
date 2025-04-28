@@ -23,9 +23,11 @@ namespace pva.SuperV.Blazor
                 .AddInteractiveWebAssemblyComponents();
             builder.Services.AddMudServices();
 
-            builder.Services.AddScoped<IProjectService, ProjectService>((service) => new(BuildHttpClient(builder)));
-            builder.Services.AddScoped<IFieldFormatterService, FieldFormatterService>((service) => new(BuildHttpClient(builder)));
-            builder.Services.AddScoped<State>();
+            builder.Services
+                .AddScoped<State>()
+                .AddScoped<IProjectService, ProjectService>((service) => new(BuildHttpClient(builder)))
+                .AddScoped<IFieldFormatterService, FieldFormatterService>((service) => new(BuildHttpClient(builder)))
+                .AddScoped<IHistoryRepositoryService, HistoryRepositoryService>((service) => new(BuildHttpClient(builder)));
 
             var app = builder.Build();
 
