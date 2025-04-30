@@ -1,0 +1,51 @@
+﻿@page "/field-definition/{ProjectId}/{ClassName}"
+@page "/field-definition/{ProjectId}/{ClassName}/{FieldName}"
+
+<PageTitle>@pageTitle</PageTitle>
+
+<h1>@pageTitle</h1>
+
+<EditForm Model="@EditedFieldDefinition" OnValidSubmit="OnValidSubmit">
+	<DataAnnotationsValidator />
+	<MudGrid>
+		<MudItem xs="12" sm="7">
+			<MudCard>
+				<MudCardContent>
+					<MudFocusTrap DefaultFocus=DefaultFocus.FirstChild>
+						<MudTextField Disabled="@isModification" @bind-Value="EditedFieldDefinition.Name"
+									  Label="Field name" For="@(() => EditedFieldDefinition.Name)" Variant="Variant.Outlined"/>
+						<MudSelect T="string" Disabled="@isModification" Value="EditedFieldDefinition?.FieldType" ValueChanged="@OnFieldTypeChanged"
+								   Label="Field type" Placeholder="Field type" Variant="Variant.Outlined">
+							@foreach (var formatterType in GetFieldTypes())
+							{
+								<MudSelectItem Value="formatterType">@formatterType</MudSelectItem>
+							}
+						</MudSelect>
+						<FieldValue @ref="DefaultValue" Value="EditedFieldDefinition!.DefaultValue" ValueLabel="@($"Default value")" />
+						<MudSelect T="string" Value="EditedFieldDefinition!.ValueFormatter" ValueChanged="@OnValueFormatterChanged"
+								Label="Value formatter" Placeholder="Value formatter" Variant="Variant.Outlined">
+							@foreach (var formatterName in GetFieldFormatters().Select(formatter => formatter.Name))
+							{
+								<MudSelectItem Value="formatterName">@formatterName</MudSelectItem>
+							}
+						</MudSelect>
+					</MudFocusTrap>
+				</MudCardContent>
+				<MudCardActions>
+					<MudSpacer />
+					<MudButton @onclick="CancelSubmit" Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto">Cancel</MudButton>
+					&nbsp;
+					<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">OK</MudButton>
+				</MudCardActions>
+			</MudCard>
+		</MudItem>
+		<MudItem hidden="@success" xs="12" sm="5">
+			<MudPaper Class="pa-4 mud-height-full">
+				<MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+				<MudText Color="@Color.Error">
+					<ValidationSummary />
+				</MudText>
+			</MudPaper>
+		</MudItem>
+	</MudGrid>
+</EditForm>

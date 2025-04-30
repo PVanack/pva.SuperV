@@ -1,0 +1,55 @@
+﻿@if (Value != null)
+{
+	@if (Value is bool)
+	{
+		<MudCheckBox T="bool?" @bind-Value="BoolValue" Label="@ValueLabel" Variant="Variant.Outlined"></MudCheckBox>
+	}
+	else if (Value is DateTime)
+	{
+		<MudDatePicker @bind-Value="DateTimeValue" Label="@ValueLabel" DateFormat="dd/MM/yy HH:mm:ss" Variant="Variant.Outlined" />
+	}
+	else if (Value is double)
+	{
+		<MudNumericField T="double?" @bind-Value="DoubleValue" Format="F4" Label="@ValueLabel" Variant="Variant.Outlined" />
+	}
+	else if (Value is float)
+	{
+		<MudNumericField T="float?" @bind-Value="FloatValue" Format="F4" Label="@ValueLabel" Variant="Variant.Outlined" />
+	}
+	else if (Value is int)
+	{
+		<MudNumericField T="int?" @bind-Value="IntValue" Label="@ValueLabel" Variant="Variant.Outlined" />
+	}
+	else if (Value is long)
+	{
+		<MudNumericField T="long?" @bind-Value="LongValue" Label="@ValueLabel" Variant="Variant.Outlined" />
+	}
+	else if (Value is short)
+	{
+		<MudNumericField T="short?" @bind-Value="ShortValue" Label="@ValueLabel" Variant="Variant.Outlined" />
+	}
+	else if (Value is string)
+	{
+		<MudTextField T="string" @bind-Value="StringValue" Label="@ValueLabel" Variant="Variant.Outlined"/>
+	}
+	else if (Value is TimeSpan)
+	{
+		<MudTimePicker @bind-Time="TimeSpanValue" Label="@ValueLabel" Variant="Variant.Outlined" />
+	}
+	else if (Value is uint)
+	{
+		<MudNumericField T="uint?" @bind-Value="UintValue" Label="@ValueLabel" Variant="Variant.Outlined" />
+	}
+	else if (Value is ulong)
+	{
+		<MudNumericField T="ulong?" @bind-Value="UlongValue" Label="@ValueLabel" Variant="Variant.Outlined" />
+	}
+	else if (Value is ushort)
+	{
+		<MudNumericField T="ushort?" @bind-Value="UshortValue" Label="@ValueLabel" Variant="Variant.Outlined" />
+	}
+	else
+	{
+		<h1>Unhandled type @Value.GetType()</h1>
+	}
+}
