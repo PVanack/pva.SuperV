@@ -11,12 +11,12 @@
 			<MudCard>
 				<MudCardContent>
 					<MudFocusTrap DefaultFocus=DefaultFocus.FirstChild>
-						<MudTextField Disabled="@isModification" Label="Project name"
-									  @bind-Value="EditedProject.Name" For="@(() => EditedProject.Name)" />
-						<MudTextField Label="Project description" Class="mt-3"
-									  @bind-Value="EditedProject.Description" For="@(() => EditedProject.Description)" />
-						<MudTextField Label="History storage connection string" Class="mt-3"
-									  @bind-Value="EditedProject.HistoryStorageConnectionString" For="@(() => EditedProject.HistoryStorageConnectionString)" />
+						<MudTextField Disabled="@isModification" @bind-Value="EditedProject.Name"
+									  Label="Project name" For="@(() => EditedProject.Name)" Variant="Variant.Outlined" />
+						<MudTextField @bind-Value="EditedProject.Description" For="@(() => EditedProject.Description)"
+									  Label="Project description" Class="mt-3" Variant="Variant.Outlined"/>
+						<MudTextField @bind-Value="EditedProject.HistoryStorageConnectionString"
+									  Label="History storage connection string" For="@(() => EditedProject.HistoryStorageConnectionString)" Class="mt-3" Variant="Variant.Outlined"/>
 					</MudFocusTrap>
 				</MudCardContent>
 				<MudCardActions>

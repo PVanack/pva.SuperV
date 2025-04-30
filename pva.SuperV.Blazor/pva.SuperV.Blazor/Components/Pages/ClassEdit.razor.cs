@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.JSInterop;
 using MudBlazor;
 using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.Services;
@@ -11,13 +10,9 @@ namespace pva.SuperV.Blazor.Components.Pages
     public partial class ClassEdit
     {
         [Inject]
-        private IJSRuntime JSRuntime { get; set; } = default!;
-        [Inject]
         private IClassService ClassService { get; set; } = default!;
         [Inject]
         private NavigationManager NavigationManager { get; set; } = default!;
-        [Inject]
-        private IDialogService DialogService { get; set; } = default!;
         [Inject]
         private State State { get; set; } = default!;
 
@@ -33,25 +28,26 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private EditedClass EditedClass { get; set; } = default!;
 
-        private List<string> BaseClasses { get; set; } = default!;
+        private List<string> BaseClasses { get; set; } = [];
 
-        protected override Task OnInitializedAsync()
+        protected async override Task OnInitializedAsync()
         {
-            isModification = !String.IsNullOrEmpty(ClassName) && State.EditedClass != null;
-            pageTitle = isModification ? $"Class {State.EditedClass!.Name}" : "New class";
+            isModification = !String.IsNullOrEmpty(ClassName);
             EditedClass = new();
             if (isModification)
             {
-                EditedClass = new(State.EditedClass!);
+                ClassModel clazz = await ClassService.GetClassAsync(ProjectId, ClassName);
+                EditedClass = new(clazz);
+                State.SetClassBreadcrumb(ProjectId, EditedClass!.Name);
             }
-            State.AddClassBreadcrumb(ProjectId, State.EditedClass);
-            BaseClasses = GetBaseClasses();
-            return base.OnInitializedAsync();
+            pageTitle = isModification ? $"Class {EditedClass!.Name}" : "New class";
+            BaseClasses = await GetBaseClasses();
+            await base.OnInitializedAsync();
         }
 
-        private List<string> GetBaseClasses()
+        private async Task<List<string>> GetBaseClasses()
         {
-            List<ClassModel> allClasses = Task.Run(async () => await ClassService.GetClassesAsync(ProjectId)).Result;
+            List<ClassModel> allClasses = await ClassService.GetClassesAsync(ProjectId);
             return [.. allClasses
                  .Where(clazz => clazz.Name != EditedClass.Name)
                  .Select(clazz => clazz.Name)];
@@ -85,8 +81,6 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private void GoBackToHistoryRepositories()
         {
-            State.EditedClass = null;
-            State.RemoveLastBreadcrumb();
             NavigationManager.NavigateTo($"/classes/{ProjectId}");
         }
     }

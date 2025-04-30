@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.JSInterop;
-using MudBlazor;
 using pva.SuperV.Model.HistoryRepositories;
 using pva.SuperV.Model.Services;
 using System.ComponentModel.DataAnnotations;
@@ -11,13 +9,9 @@ namespace pva.SuperV.Blazor.Components.Pages
     public partial class HistoryRepository
     {
         [Inject]
-        private IJSRuntime JSRuntime { get; set; } = default!;
-        [Inject]
         private IHistoryRepositoryService HistoryRepositoryService { get; set; } = default!;
         [Inject]
         private NavigationManager NavigationManager { get; set; } = default!;
-        [Inject]
-        private IDialogService DialogService { get; set; } = default!;
         [Inject]
         private State State { get; set; } = default!;
 
@@ -33,17 +27,18 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private EditedHistoryRepository EditedHistoryRepository { get; set; } = default!;
 
-        protected override Task OnInitializedAsync()
+        protected override async Task OnInitializedAsync()
         {
-            isModification = !String.IsNullOrEmpty(HistoryRepositoryName) && State.EditedHistoryRepository != null;
-            pageTitle = isModification ? $"History respoitory {State.EditedHistoryRepository!.Name}" : "New history repository";
+            isModification = !String.IsNullOrEmpty(HistoryRepositoryName);
             EditedHistoryRepository = new();
             if (isModification)
             {
-                EditedHistoryRepository = new(State.EditedHistoryRepository!);
+                HistoryRepositoryModel historyRepository = await HistoryRepositoryService.GetHistoryRepositoryAsync(ProjectId, HistoryRepositoryName);
+                EditedHistoryRepository = new(historyRepository);
+                State.SetHistoryRepositoryBreadcrumb(ProjectId, EditedHistoryRepository.Name);
             }
-            State.AddHistoryRepositoryBreadcrumb(ProjectId, State.EditedHistoryRepository);
-            return base.OnInitializedAsync();
+            pageTitle = isModification ? $"History respoitory {EditedHistoryRepository.Name}" : "New history repository";
+            await base.OnInitializedAsync();
         }
 
         private async Task OnValidSubmit(EditContext context)
@@ -68,8 +63,6 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private void GoBackToHistoryRepositories()
         {
-            State.EditedHistoryRepository = null;
-            State.RemoveLastBreadcrumb();
             NavigationManager.NavigateTo($"/history-repositories/{ProjectId}");
         }
 

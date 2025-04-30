@@ -12,9 +12,10 @@
 			<MudCard>
 				<MudCardContent>
 					<MudFocusTrap DefaultFocus=DefaultFocus.FirstChild>
-						<MudTextField Disabled="@isModification" Label="Field formatter name"
-									  @bind-Value="EditedClass.Name" For="@(() => EditedClass.Name)" />
-						<MudSelect T="string" Disabled="@isModification" ValueChanged="@OnFormatterTypeChanged" Label="Select field base class" Placeholder="Base class" Value="EditedClass?.BaseClassName">
+						<MudTextField Disabled="@isModification" @bind-Value="EditedClass.Name"
+									  Label="Class name" For="@(() => EditedClass.Name)" Variant="Variant.Outlined"/>
+						<MudSelect T="string" ValueChanged="@OnFormatterTypeChanged" Value="EditedClass?.BaseClassName"
+								   Label="Select base class" Placeholder="Base class" Variant="Variant.Outlined">
 							@foreach (var baseClassName in BaseClasses)
 							{
 								<MudSelectItem Value="baseClassName">@baseClassName</MudSelectItem>

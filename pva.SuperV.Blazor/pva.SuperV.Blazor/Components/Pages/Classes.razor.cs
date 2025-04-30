@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 using MudBlazor;
 using pva.SuperV.Blazor.Components.Dialogs;
 using pva.SuperV.Model;
@@ -10,8 +8,6 @@ using pva.SuperV.Model.Services;
 namespace pva.SuperV.Blazor.Components.Pages;
 public partial class Classes
 {
-    [Inject]
-    private IJSRuntime JSRuntime { get; set; } = default!;
     [Inject]
     private IClassService ClassService { get; set; } = default!;
     [Inject]
@@ -32,7 +28,7 @@ public partial class Classes
 
     protected override void OnInitialized()
     {
-        State.AddClassesBreadcrumb(ProjectId);
+        State.SetClassesBreadcrumb(ProjectId);
         base.OnInitialized();
     }
 
@@ -44,27 +40,9 @@ public partial class Classes
         return itemsTableData;
     }
 
-    private async Task CreateItem(MouseEventArgs e)
-    {
-        SelectedItem = null;
-        State.EditedClass = null;
-        NavigationManager.NavigateTo($"/class/{ProjectId}");
-        await ReloadTable();
-    }
-
-    private async Task EditItem(MouseEventArgs e)
-    {
-        if (SelectedItem != null)
-        {
-            NavigationManager.NavigateTo($"/class/{ProjectId}/{SelectedItem.Name}");
-            await ReloadTable();
-        }
-    }
-
     private void RowClickedEvent(TableRowClickEventArgs<ClassModel> _)
     {
         SelectedItem = itemsTable.SelectedItem;
-        State.EditedClass = SelectedItem;
     }
 
     private string SelectedRowClassFunc(ClassModel item, int rowNumber)

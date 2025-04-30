@@ -1,5 +1,5 @@
 ﻿@page "/field-formatters/{projectId}"
-<PageTitle>Field formatters</PageTitle>
+<PageTitle>@pageTitle</PageTitle>
 
 <script>
 	window.saveFile = async (filename, Content) => {
@@ -25,22 +25,20 @@
 			}
 </style>
 
-<h1>Projects</h1>
+<h1>@pageTitle</h1>
 <MudTable T="FieldFormatterModel" @ref="itemsTable" ServerData="ServerReload" RowClassFunc="SelectedRowClassFunc" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
 	<ToolBarContent>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
-			<MudButton StartIcon="@Icons.Material.Filled.Add"
-					   OnClick="@CreateItem">
+			<MudButton Href=@($"/field-formatter/{ProjectId}") StartIcon="@Icons.Material.Filled.Add">
 				Create field formatter
 			</MudButton>
 		</MudButtonGroup>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
-			<MudButton StartIcon="@Icons.Material.Filled.Edit"
-					   hidden="@(SelectedItem == null)" OnClick="@EditItem">
+			<MudButton hidden="@(SelectedItem == null)" Href=@($"/field-formatter/{ProjectId}/{SelectedItem?.Name}") StartIcon="@Icons.Material.Filled.Edit">
 				Edit field formatter
 			</MudButton>
-			<MudButton IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.DeleteForever"
-					   hidden="@(SelectedItem == null)" OnClick="@((e)=> DeleteItem(SelectedItem!.Name))">
+			<MudButton hidden="@(SelectedItem == null)" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.DeleteForever"
+					   OnClick="@((e)=> DeleteItem(SelectedItem!.Name))">
 				Delete field formatter
 			</MudButton>
 		</MudButtonGroup>
