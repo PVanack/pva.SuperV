@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 using MudBlazor;
 using pva.SuperV.Blazor.Components.Dialogs;
 using pva.SuperV.Model.HistoryRepositories;
@@ -9,8 +7,6 @@ using pva.SuperV.Model.Services;
 namespace pva.SuperV.Blazor.Components.Pages;
 public partial class HistoryRepositories
 {
-    [Inject]
-    private IJSRuntime JSRuntime { get; set; } = default!;
     [Inject]
     private IHistoryRepositoryService HistoryRepositoryService { get; set; } = default!;
     [Inject]
@@ -30,7 +26,7 @@ public partial class HistoryRepositories
 
     protected override void OnInitialized()
     {
-        State.AddHistoryRepositoriesBreadcrumb(ProjectId);
+        State.SetHistoryRepositoriesBreadcrumb(ProjectId);
         base.OnInitialized();
     }
 
@@ -41,27 +37,9 @@ public partial class HistoryRepositories
         return itemsTableData;
     }
 
-    private async Task CreateItem(MouseEventArgs e)
-    {
-        SelectedItem = null;
-        State.EditedFieldFormatter = null;
-        NavigationManager.NavigateTo($"/history-repository/{ProjectId}");
-        await ReloadTable();
-    }
-
-    private async Task EditItem(MouseEventArgs e)
-    {
-        if (SelectedItem != null)
-        {
-            NavigationManager.NavigateTo($"/history-repository/{ProjectId}/{SelectedItem.Name}");
-            await ReloadTable();
-        }
-    }
-
     private void RowClickedEvent(TableRowClickEventArgs<HistoryRepositoryModel> _)
     {
         SelectedItem = itemsTable.SelectedItem;
-        State.EditedHistoryRepository = SelectedItem;
     }
 
     private string SelectedRowClassFunc(HistoryRepositoryModel item, int rowNumber)

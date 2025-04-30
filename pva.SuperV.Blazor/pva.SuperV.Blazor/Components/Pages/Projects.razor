@@ -30,8 +30,7 @@
 <MudTable T="ProjectModel" @ref="itemsTable" ServerData="ServerReload" RowClassFunc="SelectedRowClassFunc" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
 	<ToolBarContent>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
-			<MudButton StartIcon="@Icons.Material.Filled.Add"
-					   OnClick="@CreateItem">
+			<MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="@CreateItem">
 				Create project
 			</MudButton>
 			<MudFileUpload T="IBrowserFile" FilesChanged="LoadProjectFromDefinition">
@@ -43,7 +42,7 @@
 			</MudFileUpload>
 		</MudButtonGroup>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
-			<MudButton StartIcon="@Icons.Material.Filled.Edit" OnClick="@EditItem">
+			<MudButton hidden="@(SelectedItem == null)" StartIcon="@Icons.Material.Filled.Edit" OnClick="@EditItem">
 				Edit project
 			</MudButton>
 			<MudButton StartIcon="@Icons.Material.Filled.DesignServices"

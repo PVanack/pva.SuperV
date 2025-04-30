@@ -12,15 +12,16 @@
 			<MudCard>
 				<MudCardContent>
 					<MudFocusTrap DefaultFocus=DefaultFocus.FirstChild>
-						<MudTextField Disabled="@isModification" Label="Field formatter name"
-									  @bind-Value="EditedFieldFormatter.Name" For="@(() => EditedFieldFormatter.Name)" />
-						<MudSelect T="string"  Disabled="@isModification" ValueChanged="@OnFormatterTypeChanged" Label="Select field formatter type" Placeholder="Field formatter type" Value="EditedFieldFormatter?.FormatterType">
+						<MudTextField Disabled="@isModification" @bind-Value="EditedFieldFormatter.Name"
+									  Label="Field formatter name" For="@(() => EditedFieldFormatter.Name)" Variant="Variant.Outlined"/>
+						<MudSelect T="string"  Disabled="@isModification" ValueChanged="@OnFormatterTypeChanged" Value="EditedFieldFormatter?.FormatterType"
+								   Label="Select field formatter type" Placeholder="Field formatter type" Variant="Variant.Outlined">
 							@foreach (var formatterType in GetFieldFormatterTypes())
 							{
 								<MudSelectItem Value="formatterType">@formatterType</MudSelectItem>
 							}
 						</MudSelect>
-						<CascadingValue Value="EditedFieldFormatter" Name="EditedFieldFormatter">
+						<CascadingValue Name="EditedFieldFormatter" Value="EditedFieldFormatter">
 							<EnumFormatter/>
 						</CascadingValue>
 					</MudFocusTrap>

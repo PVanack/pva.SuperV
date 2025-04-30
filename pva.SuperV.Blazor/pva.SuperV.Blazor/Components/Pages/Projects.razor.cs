@@ -43,28 +43,26 @@ namespace pva.SuperV.Blazor.Components.Pages
             return itemsTableData;
         }
 
-        private async Task CreateItem(MouseEventArgs e)
+        private void CreateItem(MouseEventArgs e)
         {
             SelectedItem = null;
-            State.EditedProject = null;
+            State.CurrentProject = null;
             NavigationManager.NavigateTo("/project");
-            await ReloadTable();
         }
 
-        private async Task EditItem(MouseEventArgs e)
+        private void EditItem(MouseEventArgs e)
         {
             if (SelectedItem != null)
             {
-                State.EditedProject = SelectedItem;
+                State.CurrentProject = SelectedItem;
                 NavigationManager.NavigateTo($"/project/{SelectedItem.Id}");
-                await ReloadTable();
             }
         }
 
         private void RowClickedEvent(TableRowClickEventArgs<ProjectModel> _)
         {
             SelectedItem = itemsTable.SelectedItem;
-            State.EditedProject = SelectedItem;
+            State.CurrentProject = SelectedItem;
         }
 
         private string SelectedRowClassFunc(ProjectModel project, int rowNumber)
@@ -120,17 +118,23 @@ namespace pva.SuperV.Blazor.Components.Pages
         private async Task SaveProjectDefinitions(ProjectModel project)
         {
             StreamReader? streamReader = await ProjectServiceClient.GetProjectDefinitionsAsync(project.Id);
-            string json = await streamReader.ReadToEndAsync();
-            string fileName = $"{project.Name}-{project.Version}.prj";
-            await JSRuntime.InvokeAsync<object>("saveFile", fileName, json);
+            if (streamReader != null)
+            {
+                string json = await streamReader.ReadToEndAsync();
+                string fileName = $"{project.Name}-{project.Version}.prj";
+                await JSRuntime.InvokeAsync<object>("saveFile", fileName, json);
+            }
         }
 
         private async Task SaveProjectInstances(ProjectModel project)
         {
             StreamReader? streamReader = await ProjectServiceClient.GetProjectInstancesAsync(project.Id);
-            string json = await streamReader.ReadToEndAsync();
-            string fileName = $"{project.Name}-{project.Version}.snp";
-            await JSRuntime.InvokeAsync<object>("saveFile", fileName, json);
+            if (streamReader != null)
+            {
+                string json = await streamReader.ReadToEndAsync();
+                string fileName = $"{project.Name}-{project.Version}.snp";
+                await JSRuntime.InvokeAsync<object>("saveFile", fileName, json);
+            }
         }
 
         private async Task LoadProjectFromDefinition(IBrowserFile file)

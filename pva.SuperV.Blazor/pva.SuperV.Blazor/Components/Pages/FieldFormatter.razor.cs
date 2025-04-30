@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.JSInterop;
-using MudBlazor;
 using pva.Helpers.Extensions;
 using pva.SuperV.Model.FieldFormatters;
 using pva.SuperV.Model.Services;
@@ -14,13 +12,9 @@ namespace pva.SuperV.Blazor.Components.Pages
         public const string EnumFormatterType = "Enum";
 
         [Inject]
-        private IJSRuntime JSRuntime { get; set; } = default!;
-        [Inject]
         private IFieldFormatterService FieldFormatterService { get; set; } = default!;
         [Inject]
         private NavigationManager NavigationManager { get; set; } = default!;
-        [Inject]
-        private IDialogService DialogService { get; set; } = default!;
         [Inject]
         private State State { get; set; } = default!;
 
@@ -63,17 +57,21 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private EditedFieldFormatter EditedFieldFormatter { get; set; } = default!;
 
-        protected override Task OnInitializedAsync()
+        protected override async Task OnInitializedAsync()
         {
-            isModification = !String.IsNullOrEmpty(FieldFormatterName) && State.EditedFieldFormatter != null;
-            pageTitle = isModification ? $"{GetFormatterType(State.EditedFieldFormatter)} {State.EditedFieldFormatter!.Name}" : "New field formatter";
+            isModification = !String.IsNullOrEmpty(FieldFormatterName);
             EditedFieldFormatter = new();
-            if (isModification && fieldFormatterFromModel.TryGetValue(State.EditedFieldFormatter!.GetType(), out var createFunc))
+            if (isModification)
             {
-                EditedFieldFormatter = createFunc(State.EditedFieldFormatter);
+                FieldFormatterModel fieldFormatter = await FieldFormatterService.GetFieldFormatterAsync(ProjectId, FieldFormatterName);
+                if (fieldFormatterFromModel.TryGetValue(fieldFormatter!.GetType(), out var createFunc))
+                {
+                    EditedFieldFormatter = createFunc(fieldFormatter);
+                    State.SetFieldFormatterBreadcrumb(ProjectId, EditedFieldFormatter.Name);
+                }
             }
-            State.AddFieldFormatterBreadcrumb(ProjectId, State.EditedFieldFormatter);
-            return base.OnInitializedAsync();
+            pageTitle = isModification ? $"{EditedFieldFormatter.FormatterType} {EditedFieldFormatter!.Name}" : "New field formatter";
+            await base.OnInitializedAsync();
         }
 
         private async Task OnValidSubmit(EditContext context)
@@ -99,8 +97,6 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private void GoBackToFieldFormatters()
         {
-            State.EditedFieldFormatter = null;
-            State.RemoveLastBreadcrumb();
             NavigationManager.NavigateTo($"/field-formatters/{ProjectId}");
         }
 

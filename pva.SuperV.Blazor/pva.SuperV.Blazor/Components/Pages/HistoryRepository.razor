@@ -12,8 +12,8 @@
 			<MudCard>
 				<MudCardContent>
 					<MudFocusTrap DefaultFocus=DefaultFocus.FirstChild>
-						<MudTextField Disabled="@isModification" Label="Field formatter name"
-									  @bind-Value="EditedHistoryRepository.Name" For="@(() => EditedHistoryRepository.Name)" />
+						<MudTextField Disabled="@isModification" @bind-Value="EditedHistoryRepository.Name"
+									  Label="Field formatter name" For="@(() => EditedHistoryRepository.Name)" Variant="Variant.Outlined"/>
 					</MudFocusTrap>
 				</MudCardContent>
 				<MudCardActions>

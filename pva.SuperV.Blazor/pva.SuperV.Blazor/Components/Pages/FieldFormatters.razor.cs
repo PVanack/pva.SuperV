@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 using MudBlazor;
 using pva.SuperV.Blazor.Components.Dialogs;
 using pva.SuperV.Model;
@@ -10,8 +8,6 @@ using pva.SuperV.Model.Services;
 namespace pva.SuperV.Blazor.Components.Pages;
 public partial class FieldFormatters
 {
-    [Inject]
-    private IJSRuntime JSRuntime { get; set; } = default!;
     [Inject]
     private IFieldFormatterService FieldFormatterService { get; set; } = default!;
     [Inject]
@@ -24,6 +20,7 @@ public partial class FieldFormatters
     [Parameter]
     public string ProjectId { get; set; } = default!;
 
+    private string pageTitle = default!;
     private MudTable<FieldFormatterModel> itemsTable = default!;
     private string itemNameSearchString = default!;
     private int selectedRowNumber;
@@ -32,7 +29,8 @@ public partial class FieldFormatters
 
     protected override void OnInitialized()
     {
-        State.AddFieldFormattersBreadcrumb(ProjectId);
+        pageTitle = "Field formatters";
+        State.SetFieldFormattersBreadcrumb(ProjectId);
         base.OnInitialized();
     }
 
@@ -44,27 +42,9 @@ public partial class FieldFormatters
         return itemsTableData;
     }
 
-    private async Task CreateItem(MouseEventArgs e)
-    {
-        SelectedItem = null;
-        State.EditedFieldFormatter = null;
-        NavigationManager.NavigateTo($"/field-formatter/{ProjectId}");
-        await ReloadTable();
-    }
-
-    private async Task EditItem(MouseEventArgs e)
-    {
-        if (SelectedItem != null)
-        {
-            NavigationManager.NavigateTo($"/field-formatter/{ProjectId}/{SelectedItem.Name}");
-            await ReloadTable();
-        }
-    }
-
     private void RowClickedEvent(TableRowClickEventArgs<FieldFormatterModel> _)
     {
         SelectedItem = itemsTable.SelectedItem;
-        State.EditedFieldFormatter = SelectedItem;
     }
 
     private string SelectedRowClassFunc(FieldFormatterModel item, int rowNumber)

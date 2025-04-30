@@ -1,16 +1,6 @@
-﻿@page "/classes/{projectId}"
-<PageTitle>Field formatters</PageTitle>
+﻿@page "/field-definitions/{projectId}/{className}"
+<PageTitle>@pageTitle</PageTitle>
 
-<script>
-	window.saveFile = async (filename, Content) => {
-		let link = document.createElement('a');
-		link.download = filename;
-		link.href = "data:text/plain;charset=utf-8," + encodeURIComponent(Content)
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-	}
-</script>
 <style>
 	.selected {
 		background-color: #1E88E5 !important;
@@ -25,23 +15,21 @@
 			}
 </style>
 
-<h1>Classes</h1>
-<MudTable T="ClassModel" @ref="itemsTable" ServerData="ServerReload" RowClassFunc="SelectedRowClassFunc" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
+<h1>@pageTitle</h1>
+<MudTable T="FieldDefinitionModel" @ref="itemsTable" ServerData="ServerReload" RowClassFunc="SelectedRowClassFunc" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
 	<ToolBarContent>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
-			<MudButton StartIcon="@Icons.Material.Filled.Add" Href="@($"/class/{ProjectId}")">
-				Create class
+			<MudButton StartIcon="@Icons.Material.Filled.Add"
+					   OnClick="@CreateItem">
+				Create field
 			</MudButton>
 		</MudButtonGroup>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
-			<MudButton hidden="@(SelectedItem == null)" StartIcon="@Icons.Material.Filled.Edit" Href="@($"/class/{ProjectId}/{SelectedItem?.Name}")">
-				Edit class
-			</MudButton>
-			<MudButton hidden="@(SelectedItem == null)" StartIcon="@Icons.Material.Filled.TextFields" Href="@($"/field-definitions/{ProjectId}/{SelectedItem?.Name}")">
-				Fields
+			<MudButton hidden="@(SelectedItem == null)" Href="@($"/field-definition/{ProjectId}/{ClassName}/{SelectedItem?.Name}")" StartIcon="@Icons.Material.Filled.Edit">
+				Edit field
 			</MudButton>
 			<MudButton hidden="@(SelectedItem == null)" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.DeleteForever" OnClick="@((e)=> DeleteItem(SelectedItem!.Name))">
-				Delete class
+				Delete field
 			</MudButton>
 		</MudButtonGroup>
 		<MudSpacer />
@@ -54,11 +42,11 @@
 	</ColGroup>
 	<HeaderContent>
 		<MudTh Style="text-align:center">Name</MudTh>
-		<MudTh Style="text-align:center">Base class</MudTh>
+		<MudTh Style="text-align:center">Type</MudTh>
 	</HeaderContent>
 	<RowTemplate>
 		<MudTd DataLabel="Name">@context.Name</MudTd>
-		<MudTd DataLabel="Type">@context.BaseClassName</MudTd>
+		<MudTd DataLabel="Type">@GetFieldType(context)</MudTd>
 	</RowTemplate>
 	<NoRecordsContent>
 		<MudText>No matching records found</MudText>
