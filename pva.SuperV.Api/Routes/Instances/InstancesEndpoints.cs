@@ -53,8 +53,9 @@ namespace pva.SuperV.Api.Routes.Instances
             instancesApi.MapPost("/{runnableProjectId}",
                 (IInstanceService instanceService,
                 [Description("ID of runnable project")] string runnableProjectId,
-                [Description("Instance creation request")][FromBody] InstanceModel createRequest)
-                    => CreateInstance.Handle(instanceService, runnableProjectId, createRequest))
+                [Description("Instance creation request")][FromBody] InstanceModel createRequest,
+                [FromQuery] bool addToRunningInstances = true)
+                    => CreateInstance.Handle(instanceService, runnableProjectId, createRequest, addToRunningInstances))
                 .WithName("CreateInstance")
                 .WithDisplayName("CreateInstance")
                 .WithSummary("Creates an instance with a class of a project")

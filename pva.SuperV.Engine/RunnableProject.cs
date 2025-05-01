@@ -114,9 +114,10 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="className">Name of the class.</param>
         /// <param name="instanceName">Name of the instance.</param>
+        /// <param name="addToRunningInstances">Indicates if the created instances should be added to running instances or not.</param>
         /// <returns>The newly created instance.</returns>
         /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
-        public Instance? CreateInstance(string className, string instanceName)
+        public Instance? CreateInstance(string className, string instanceName, bool addToRunningInstances = true)
         {
             SetupProjectAssemblyLoader();
             if (Instances.ContainsKey(instanceName))
@@ -145,7 +146,10 @@ namespace pva.SuperV.Engine
                 });
                 currentClass = currentClass.BaseClass;
             }
-            Instances.Add(instanceName, instance);
+            if (addToRunningInstances)
+            {
+                Instances.Add(instanceName, instance);
+            }
             return instance;
         }
 
