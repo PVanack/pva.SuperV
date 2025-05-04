@@ -16,7 +16,7 @@ namespace pva.SuperV.Blazor.Services
                 if (result.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     List<FieldDefinitionModel>? fields = await result.Content.ReadFromJsonAsync<List<FieldDefinitionModel>>();
-                    return fields ?? throw new ApiException("No field formatter in response");
+                    return fields ?? throw new ApiException("No field definition in response");
                 }
                 else
                 {
@@ -55,7 +55,7 @@ namespace pva.SuperV.Blazor.Services
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     FieldDefinitionModel? field = await result.Content.ReadFromJsonAsync<FieldDefinitionModel>();
-                    return field ?? throw new ApiException("No field formatter in response");
+                    return field ?? throw new ApiException("No field definition in response");
                 }
                 else
                 {
@@ -77,7 +77,7 @@ namespace pva.SuperV.Blazor.Services
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     List<FieldDefinitionModel>? fields = await result.Content.ReadFromJsonAsync<List<FieldDefinitionModel>>();
-                    return fields ?? throw new ApiException("No field formatters in response");
+                    return fields ?? throw new ApiException("No field definitions in response");
                 }
                 else
                 {
@@ -99,7 +99,7 @@ namespace pva.SuperV.Blazor.Services
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     PagedSearchResult<FieldDefinitionModel>? fieldsPagedSearch = await result.Content.ReadFromJsonAsync<PagedSearchResult<FieldDefinitionModel>>();
-                    return fieldsPagedSearch ?? throw new ApiException("No field formatters in response");
+                    return fieldsPagedSearch ?? throw new ApiException("No field definitions in response");
                 }
                 else
                 {

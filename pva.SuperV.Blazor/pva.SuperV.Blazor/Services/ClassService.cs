@@ -17,7 +17,7 @@ namespace pva.SuperV.Blazor.Services
                 if (result.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     ClassModel? clazz = await result.Content.ReadFromJsonAsync<ClassModel>();
-                    return clazz ?? throw new ApiException("No field formatter in response");
+                    return clazz ?? throw new ApiException("No class in response");
                 }
                 else
                 {
@@ -56,7 +56,7 @@ namespace pva.SuperV.Blazor.Services
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     ClassModel? clazz = await result.Content.ReadFromJsonAsync<ClassModel>();
-                    return clazz ?? throw new ApiException("No field formatter in response");
+                    return clazz ?? throw new ApiException("No class in response");
                 }
                 else
                 {
@@ -78,7 +78,7 @@ namespace pva.SuperV.Blazor.Services
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     List<ClassModel>? classes = await result.Content.ReadFromJsonAsync<List<ClassModel>>();
-                    return classes ?? throw new ApiException("No field formatters in response");
+                    return classes ?? throw new ApiException("No classes in response");
                 }
                 else
                 {
@@ -100,7 +100,7 @@ namespace pva.SuperV.Blazor.Services
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     PagedSearchResult<ClassModel>? classesPagedSearch = await result.Content.ReadFromJsonAsync<PagedSearchResult<ClassModel>>();
-                    return classesPagedSearch ?? throw new ApiException("No field formatters in response");
+                    return classesPagedSearch ?? throw new ApiException("No classes in response");
                 }
                 else
                 {
