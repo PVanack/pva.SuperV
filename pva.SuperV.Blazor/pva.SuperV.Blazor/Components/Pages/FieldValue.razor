@@ -6,7 +6,7 @@
 	}
 	else if (Value is DateTime)
 	{
-		<MudDatePicker @bind-Value="DateTimeValue" Label="@ValueLabel" DateFormat="dd/MM/yy HH:mm:ss" Variant="Variant.Outlined" />
+		<MudTextField T="DateTime?" @bind-Value="DateTimeValue" Label="@ValueLabel" InputType="InputType.DateTimeLocal" Format="s" Variant="Variant.Outlined" />
 	}
 	else if (Value is double)
 	{
