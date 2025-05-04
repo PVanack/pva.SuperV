@@ -80,7 +80,7 @@ namespace pva.SuperV.Api.Services.Projects
             throw new NonWipProjectException(projectId);
         }
 
-        public async Task<StreamReader?> GetProjectDefinitionsAsync(string projectId)
+        public async Task<Stream?> GetProjectDefinitionsAsync(string projectId)
         {
             Project project = GetProjectEntity(projectId);
             StreamWriter stream = new(new MemoryStream());
@@ -92,7 +92,7 @@ namespace pva.SuperV.Api.Services.Projects
             return await Task.FromResult(ProjectMapper.ToDto(ProjectStorage.CreateProjectFromJsonDefinition<RunnableProject>(streamReader)));
         }
 
-        public async Task<StreamReader?> GetProjectInstancesAsync(string projectId)
+        public async Task<Stream?> GetProjectInstancesAsync(string projectId)
         {
             if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {

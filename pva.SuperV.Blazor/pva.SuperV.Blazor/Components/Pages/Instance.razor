@@ -1,0 +1,55 @@
+﻿@page "/instance/{ProjectId}"
+@page "/instance/{ProjectId}/{InstanceName}"
+
+<PageTitle>@pageTitle</PageTitle>
+
+<h1>@pageTitle</h1>
+
+<EditForm Model="@EditedInstance" OnValidSubmit="OnValidSubmit">
+	<DataAnnotationsValidator />
+	<MudGrid>
+		<MudItem xs="12" sm="7">
+			<MudCard>
+				<MudCardContent>
+					<MudFocusTrap DefaultFocus=DefaultFocus.FirstChild>
+						<MudTextField Disabled="@isModification" @bind-Value="EditedInstance.Name"
+									  Label="Instance name" For="@(() => EditedInstance.Name)" Variant="Variant.Outlined" />
+						<MudSelect T="string" Disabled="@isModification" Value="EditedInstance?.ClassName" ValueChanged="@OnClassNameChanged"
+								   Label="Class" Placeholder="Class" Variant="Variant.Outlined">
+							@foreach (var className in ClassNames)
+							{
+								<MudSelectItem Value="className">@className</MudSelectItem>
+							}
+						</MudSelect>
+						<MudTable T="InstanceField" Items="@(EditedInstance?.Fields)" Bordered=true Striped=true>
+							<HeaderContent>
+								<MudTh>Name</MudTh>
+								<MudTh>Value</MudTh>
+							</HeaderContent>
+							<RowTemplate Context="fieldContext">
+								<MudTd DataLabel="Name">@fieldContext.Name</MudTd>
+								<MudTd DataLabel="Value">
+									<FieldValue @ref="@(FieldValues[fieldContext.Name])" Value="@fieldContext.Value" ValueLabel="Value" />
+								</MudTd>
+							</RowTemplate>
+						</MudTable>
+					</MudFocusTrap>
+				</MudCardContent>
+				<MudCardActions>
+					<MudSpacer />
+					<MudButton @onclick="CancelSubmit" Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto">Cancel</MudButton>
+					&nbsp;
+					<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">OK</MudButton>
+				</MudCardActions>
+			</MudCard>
+		</MudItem>
+		<MudItem hidden="@success" xs="12" sm="5">
+			<MudPaper Class="pa-4 mud-height-full">
+				<MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+				<MudText Color="@Color.Error">
+					<ValidationSummary />
+				</MudText>
+			</MudPaper>
+		</MudItem>
+	</MudGrid>
+</EditForm>

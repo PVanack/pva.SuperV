@@ -439,9 +439,9 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/json": {
+              "application/octet-stream": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/Stream"
                 }
               }
             }
@@ -458,16 +458,6 @@
           },
           "400": {
             "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -546,9 +536,9 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/json": {
+              "application/octet-stream": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/Stream"
                 }
               }
             }
@@ -565,16 +555,6 @@
           },
           "400": {
             "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -2629,6 +2609,14 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "addToRunningInstances",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
             }
           }
         ],
@@ -5319,6 +5307,10 @@
       "QualityLevel": {
         "type": "integer",
         "description": "Quality level of row."
+      },
+      "Stream": {
+        "type": "string",
+        "format": "binary"
       },
       "UpdateProjectRequest": {
         "required": [

@@ -29,6 +29,8 @@ namespace pva.SuperV.Blazor
                 .AddScoped<IProjectService, ProjectService>((service) => new(BuildHttpClient(builder)))
                 .AddScoped<IFieldDefinitionService, FieldDefinitionService>((service) => new(BuildHttpClient(builder)))
                 .AddScoped<IFieldFormatterService, FieldFormatterService>((service) => new(BuildHttpClient(builder)))
+                .AddScoped<IInstanceService, InstanceService>((service) => new(BuildHttpClient(builder)))
+                .AddScoped<IFieldValueService, FieldValueService>((service) => new(BuildHttpClient(builder)))
                 .AddScoped<IHistoryRepositoryService, HistoryRepositoryService>((service) => new(BuildHttpClient(builder)));
 
             var app = builder.Build();

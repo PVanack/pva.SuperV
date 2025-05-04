@@ -85,11 +85,11 @@ namespace pva.SuperV.Api.Services.Instances
             return await Task.FromException<InstanceModel>(new NonRunnableProjectException(projectId));
         }
 
-        public async Task<InstanceModel> CreateInstanceAsync(string projectId, InstanceModel createRequest)
+        public async Task<InstanceModel> CreateInstanceAsync(string projectId, InstanceModel createRequest, bool addToRunningInstances = true)
         {
             if (GetProjectEntity(projectId) is RunnableProject runnableProject)
             {
-                Instance? createdInstance = runnableProject.CreateInstance(createRequest.ClassName, createRequest.Name);
+                Instance? createdInstance = runnableProject.CreateInstance(createRequest.ClassName, createRequest.Name, addToRunningInstances);
                 createRequest.Fields.ForEach(fieldModel =>
                 {
                     IField? field = createdInstance!.GetField(fieldModel.Name) ?? throw new UnknownEntityException("Field", fieldModel.Name);

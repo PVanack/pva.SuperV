@@ -57,7 +57,7 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 string json = await streamReader.ReadToEndAsync();
-                var jsonContent = JsonContent.Create(System.Text.UTF8Encoding.UTF8.GetBytes(json));
+                var jsonContent = JsonContent.Create(System.Text.Encoding.UTF8.GetBytes(json));
                 var result = await httpClient.PostAsync($"{baseUri}/load-from-definitions", jsonContent)
                     ?? throw new ApiException("No content available");
                 if (result.StatusCode == System.Net.HttpStatusCode.Created)
@@ -120,7 +120,7 @@ namespace pva.SuperV.Blazor.Services
             }
         }
 
-        public async Task<StreamReader?> GetProjectDefinitionsAsync(string projectId)
+        public async Task<Stream?> GetProjectDefinitionsAsync(string projectId)
         {
             try
             {
@@ -128,8 +128,7 @@ namespace pva.SuperV.Blazor.Services
                     ?? throw new ApiException("No content available");
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Stream stream = await result.Content.ReadAsStreamAsync();
-                    return new StreamReader(stream);
+                    return await result.Content.ReadAsStreamAsync();
                 }
                 else
                 {
@@ -142,7 +141,7 @@ namespace pva.SuperV.Blazor.Services
             }
         }
 
-        public async Task<StreamReader?> GetProjectInstancesAsync(string projectId)
+        public async Task<Stream?> GetProjectInstancesAsync(string projectId)
         {
             try
             {
@@ -150,8 +149,7 @@ namespace pva.SuperV.Blazor.Services
                     ?? throw new ApiException("No content available");
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Stream stream = await result.Content.ReadAsStreamAsync();
-                    return new StreamReader(stream);
+                    return await result.Content.ReadAsStreamAsync();
                 }
                 else
                 {
@@ -191,7 +189,7 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 string json = await reader.ReadToEndAsync();
-                var jsonContent = JsonContent.Create(System.Text.UTF8Encoding.UTF8.GetBytes(json));
+                var jsonContent = JsonContent.Create(System.Text.Encoding.UTF8.GetBytes(json));
                 var result = await httpClient.PostAsync($"{baseUri}/{projectId}/instances", jsonContent)
                     ?? throw new ApiException("No content available");
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)

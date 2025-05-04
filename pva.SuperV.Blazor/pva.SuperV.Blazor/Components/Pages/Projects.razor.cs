@@ -117,9 +117,10 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private async Task SaveProjectDefinitions(ProjectModel project)
         {
-            StreamReader? streamReader = await ProjectServiceClient.GetProjectDefinitionsAsync(project.Id);
-            if (streamReader != null)
+            Stream? stream = await ProjectServiceClient.GetProjectDefinitionsAsync(project.Id);
+            if (stream != null)
             {
+                using StreamReader streamReader = new(stream);
                 string json = await streamReader.ReadToEndAsync();
                 string fileName = $"{project.Name}-{project.Version}.prj";
                 await JSRuntime.InvokeAsync<object>("saveFile", fileName, json);
@@ -128,9 +129,10 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private async Task SaveProjectInstances(ProjectModel project)
         {
-            StreamReader? streamReader = await ProjectServiceClient.GetProjectInstancesAsync(project.Id);
-            if (streamReader != null)
+            Stream? stream = await ProjectServiceClient.GetProjectInstancesAsync(project.Id);
+            if (stream != null)
             {
+                using StreamReader streamReader = new(stream);
                 string json = await streamReader.ReadToEndAsync();
                 string fileName = $"{project.Name}-{project.Version}.snp";
                 await JSRuntime.InvokeAsync<object>("saveFile", fileName, json);

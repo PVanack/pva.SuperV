@@ -1,0 +1,77 @@
+﻿@page "/instances/{projectId}"
+<PageTitle>@pageTitle</PageTitle>
+
+<script>
+	window.saveFile = async (filename, Content) => {
+		let link = document.createElement('a');
+		link.download = filename;
+		link.href = "data:text/plain;charset=utf-8," + encodeURIComponent(Content)
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	}
+</script>
+<style>
+	.selected {
+		background-color: #1E88E5 !important;
+	}
+
+		.selected > td {
+			color: white !important;
+		}
+
+			.selected > td .mud-input {
+				color: white !important;
+			}
+</style>
+
+<h1>@pageTitle</h1>
+<MudTable T="InstanceModel" @ref="itemsTable" ServerData="ServerReload" RowClassFunc="SelectedRowClassFunc" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
+	<ToolBarContent>
+		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
+			<MudButton Href=@($"/instance/{ProjectId}") StartIcon="@Icons.Material.Filled.Add">
+				Create instance
+			</MudButton>
+		</MudButtonGroup>
+		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
+			<MudButton hidden="@(SelectedItem == null)" Href=@($"/instance/{ProjectId}/{SelectedItem?.Name}") StartIcon="@Icons.Material.Filled.Edit">
+				Edit instance
+			</MudButton>
+			<MudButton hidden="@(SelectedItem == null)" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.DeleteForever"
+					   OnClick="@((e)=> DeleteItem(SelectedItem!.Name))">
+				Delete instance
+			</MudButton>
+		</MudButtonGroup>
+		<MudSpacer />
+		<MudTextField @bind-Value="itemNameSearchString" Placeholder="Search" Clearable=true Immediate=true TextChanged="Search"
+					  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+	</ToolBarContent>
+	<ColGroup>
+		<col />
+		<col />
+	</ColGroup>
+	<HeaderContent>
+		<MudTh Style="text-align:center">Name</MudTh>
+		<MudTh Style="text-align:center">Class</MudTh>
+	</HeaderContent>
+	<RowTemplate>
+		<MudTd DataLabel="Name">@context.Name</MudTd>
+		<MudTd DataLabel="Type">@context.ClassName</MudTd>
+	</RowTemplate>
+	<NoRecordsContent>
+		<MudText>No matching records found</MudText>
+	</NoRecordsContent>
+	<LoadingContent>
+		<MudText>Loading...</MudText>
+	</LoadingContent>
+	<PagerContent>
+		<MudTablePager PageSizeOptions="@Constants.pageSizeOptions"
+					   RowsPerPageString="@Constants.rowsPerPageString"
+					   InfoFormat="@Constants.infoFormat"
+					   AllItemsText="@Constants.allItemsText"
+					   HorizontalAlignment="@Constants.horizontalAlignment"
+					   HideRowsPerPage="@Constants.hideRowsPerPage"
+					   HidePageNumber="@Constants.hidePageNumber"
+					   HidePagination="@Constants.hidePagination" />
+	</PagerContent>
+</MudTable>

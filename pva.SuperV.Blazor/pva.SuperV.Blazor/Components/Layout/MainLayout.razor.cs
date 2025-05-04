@@ -10,7 +10,7 @@ namespace pva.SuperV.Blazor.Components.Layout
         private MudBreadcrumbs BreadcrumbsComponent { get; set; } = default!;
 
         private MudThemeProvider themeProvider = default!;
-        private MudTheme theme = new();
+        private readonly MudTheme theme = new();
         private bool isDarkMode = true;
         private bool drawerOpen = false;
 

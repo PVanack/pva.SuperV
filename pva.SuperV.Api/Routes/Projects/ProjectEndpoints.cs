@@ -92,7 +92,7 @@ namespace pva.SuperV.Api.Routes.Projects
                 .WithName("SaveProjectDefinitions")
                 .WithSummary("Saves the definitions of project")
                 .WithDescription("Saves the definitions of project")
-                .Produces<string>(StatusCodes.Status200OK, "application/json")
+                .Produces<Stream>(StatusCodes.Status200OK, "application/octet-stream")
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
@@ -114,7 +114,7 @@ namespace pva.SuperV.Api.Routes.Projects
                 .WithName("SaveProjectInstances")
                 .WithSummary("Saves the instances of runnable project")
                 .WithDescription("Saves the instances of a runnable project")
-                .Produces<string>(StatusCodes.Status200OK, "application/json")
+                .Produces<Stream>(StatusCodes.Status200OK, "application/octet-stream")
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
