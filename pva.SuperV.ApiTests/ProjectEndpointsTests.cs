@@ -267,16 +267,14 @@ namespace pva.SuperV.ApiTests
             await stream.FlushAsync();
             stream.BaseStream.Position = 0;
             MockedProjectService.GetProjectDefinitionsAsync(projectToSave.Id)
-                .Returns(Task.FromResult<StreamReader?>(new StreamReader(stream.BaseStream)));
+                .Returns(Task.FromResult<Stream?>(stream.BaseStream));
             // WHEN
             var response = await client.GetAsync($"/projects/{projectToSave.Id}/definitions");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
             string definitionsJson = await response.Content.ReadAsStringAsync();
-            definitionsJson.ShouldNotBeNull();
-            definitionsJson = definitionsJson.Replace("\"{", "{").Replace("\\r", "\r").Replace("\\n", "\n").Replace("\\\"", "\"").Replace("}\"", "}");
-            definitionsJson
+            definitionsJson.ShouldNotBeNull()
                 .ShouldBe(projectDefinitionsJson);
             await stream.DisposeAsync();
         }
@@ -317,21 +315,18 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             ProjectModel projectToSave = new("Project", "Project", 1, "Description", true, false);
-            StreamWriter stream = new(new MemoryStream());
-            await stream.WriteAsync(projectInstancesJson);
-            await stream.FlushAsync();
-            stream.BaseStream.Position = 0;
+            byte[] buffer = Encoding.UTF8.GetBytes(projectInstancesJson);
+            MemoryStream stream = new(buffer);
             MockedProjectService.GetProjectInstancesAsync(projectToSave.Id)
-                .Returns(Task.FromResult<StreamReader?>(new StreamReader(stream.BaseStream)));
+                .Returns(Task.FromResult<Stream?>(stream));
             // WHEN
             var response = await client.GetAsync($"/projects/{projectToSave.Id}/instances");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            string instancesJson = await response.Content.ReadAsStringAsync();
-            instancesJson.ShouldNotBeNull();
-            instancesJson = instancesJson.Replace("\"{", "{").Replace("\\r", "\r").Replace("\\n", "\n").Replace("\\\"", "\"").Replace("}\"", "}");
-            instancesJson
+            byte[] returnedBuffer = await response.Content.ReadAsByteArrayAsync();
+            string instancesJson = Encoding.UTF8.GetString(returnedBuffer);
+            instancesJson.ShouldNotBeNull()
                 .ShouldBe(projectInstancesJson);
             await stream.DisposeAsync();
         }

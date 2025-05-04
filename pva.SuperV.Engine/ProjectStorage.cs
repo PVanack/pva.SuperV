@@ -41,12 +41,12 @@ namespace pva.SuperV.Engine
         /// <typeparam name="T"></typeparam>
         /// <param name="project">The project.</param>
         /// <param name="filename">The filename.</param>
-        public static async Task<StreamReader?> StreamProjectDefinitionAsync<T>(T project, StreamWriter streamWriter) where T : Project
+        public static async Task<Stream?> StreamProjectDefinitionAsync<T>(T project, StreamWriter streamWriter) where T : Project
         {
             await streamWriter.WriteAsync(JsonSerializer.Serialize(project));
             await streamWriter.FlushAsync();
             streamWriter.BaseStream.Position = 0;
-            return (streamWriter.BaseStream.CanRead) ? new StreamReader(streamWriter.BaseStream) : null;
+            return streamWriter.BaseStream;
         }
 
 
@@ -123,7 +123,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="project">The project.</param>
         /// <param name="filename">The filename.</param>
-        public static async Task<StreamReader?> StreamProjectInstancesAsync(RunnableProject project, StreamWriter streamWriter)
+        public static async Task<Stream?> StreamProjectInstancesAsync(RunnableProject project, StreamWriter streamWriter)
         {
             Dictionary<string, IInstance> instances = new(project.Instances.Count);
             project.Instances.ForEach((k, v) =>
@@ -134,7 +134,7 @@ namespace pva.SuperV.Engine
             await streamWriter.WriteAsync(JsonSerializer.Serialize(instances));
             await streamWriter.FlushAsync();
             streamWriter.BaseStream.Position = 0;
-            return (streamWriter.BaseStream.CanRead) ? new StreamReader(streamWriter.BaseStream) : null;
+            return streamWriter.BaseStream;
 
         }
 

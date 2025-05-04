@@ -1,20 +1,23 @@
-﻿
-using Microsoft.AspNetCore.Http.HttpResults;
-using pva.SuperV.Engine.Exceptions;
+﻿using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Api.Routes.Projects
 {
     internal static class SaveProjectInstances
     {
-        internal static async Task<Results<Ok<string>, NotFound<string>, BadRequest<string>, InternalServerError<string>>> Handle(IProjectService projectService, string projectId)
+        internal static async Task<IResult> Handle(IProjectService projectService, string projectId)
         {
             try
             {
-                StreamReader? stream = await projectService.GetProjectInstancesAsync(projectId);
-                return stream is not null
-                    ? TypedResults.Ok(await stream.ReadToEndAsync())
-                    : TypedResults.InternalServerError("Project instances stream is null");
+                Stream? stream = await projectService.GetProjectInstancesAsync(projectId);
+                if (stream is null)
+                {
+                    return TypedResults.InternalServerError("Project instances stream is null");
+                }
+                MemoryStream memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+                return Results.Stream(memoryStream);
             }
             catch (UnknownEntityException e)
             {

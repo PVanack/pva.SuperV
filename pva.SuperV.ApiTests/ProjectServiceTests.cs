@@ -295,11 +295,12 @@ namespace pva.SuperV.ApiTests
         public async Task SaveProjectDefinitionToJson_ShouldReturnProjectDefinitionsAsJsonAsync()
         {
             // Act
-            var result = await projectService.GetProjectDefinitionsAsync(runnableProject.GetId());
+            var stream = await projectService.GetProjectDefinitionsAsync(runnableProject.GetId());
 
             // Assert
-            result.ShouldNotBeNull();
-            string projectDefinitions = await result.ReadToEndAsync();
+            stream.ShouldNotBeNull();
+            using StreamReader streamReader = new(stream);
+            string projectDefinitions = await streamReader.ReadToEndAsync();
             projectDefinitions.ShouldNotBeNullOrEmpty();
         }
 
@@ -322,11 +323,12 @@ namespace pva.SuperV.ApiTests
         public async Task SaveRunnableProjectInstancesToJson_ShouldReturnProjectInstancesAsJsonAsync()
         {
             // Act
-            var result = await projectService.GetProjectInstancesAsync(runnableProject.GetId());
+            var stream = await projectService.GetProjectInstancesAsync(runnableProject.GetId());
 
             // Assert
-            result.ShouldNotBeNull();
-            string projectInstances = await result.ReadToEndAsync();
+            stream.ShouldNotBeNull();
+            using StreamReader streamReader = new(stream);
+            string projectInstances = await streamReader.ReadToEndAsync();
             projectInstances.ShouldNotBeNullOrEmpty();
         }
 
