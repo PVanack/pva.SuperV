@@ -33,7 +33,7 @@ namespace pva.SuperV.Blazor.Components.Pages
                 FieldsToHistorizeSelects.Clear();
                 for (int index = 0; index < editedHistorizationFieldProcessing!.FieldsToHistorize.Count; index++)
                 {
-                    FieldsToHistorizeSelects.Add(index, null);
+                    FieldsToHistorizeSelects.Add(index, new MudSelect<string>());
                 }
             }
             await base.OnParametersSetAsync();
