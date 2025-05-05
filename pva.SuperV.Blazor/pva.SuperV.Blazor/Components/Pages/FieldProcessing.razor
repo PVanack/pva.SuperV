@@ -1,0 +1,54 @@
+﻿@page "/field-processing/{ProjectId}/{ClassName}/{FieldName}"
+@page "/field-processing/{ProjectId}/{ClassName}/{FieldName}/{ProcessingName}"
+
+@if (EditedFieldProcessing != null)
+{
+<PageTitle>@pageTitle</PageTitle>
+
+<h1>@pageTitle</h1>
+
+<EditForm Model="@EditedFieldProcessing" OnValidSubmit="OnValidSubmit">
+	<DataAnnotationsValidator />
+	<MudGrid>
+		<MudItem xs="12" sm="7">
+			<MudCard>
+				<MudCardContent>
+					<MudFocusTrap DefaultFocus=DefaultFocus.FirstChild>
+						<MudTextField Disabled="@isModification" @bind-Value="EditedFieldProcessing.Name"
+									  Label="Field processing name" For="@(() => EditedFieldProcessing.Name)" Variant="Variant.Outlined" />
+						<MudSelect T="string" Disabled="@isModification" ValueChanged="@OnFormatterTypeChanged" Value="EditedFieldProcessing.ProcessingType"
+								   Label="Select field processing type" Placeholder="Field processing type" Variant="Variant.Outlined">
+							@foreach (var processingType in GetFieldProcessingTypes())
+							{
+								<MudSelectItem Value="processingType">@processingType</MudSelectItem>
+							}
+						</MudSelect>
+							<CascadingValue Name="EditedFieldProcessing" Value="EditedFieldProcessing">
+							<CascadingValue Name="ClassAvailableFields" Value="ClassAvailableFields">
+								<CascadingValue Name="TriggeringFieldName" Value="FieldName">
+									<AlarmStateProcessing />
+ 									<HistorizationProcessing />
+ 								</CascadingValue>
+							</CascadingValue>
+						</CascadingValue>
+					</MudFocusTrap>
+				</MudCardContent>
+				<MudCardActions>
+					<MudSpacer />
+					<MudButton @onclick="CancelSubmit" Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto">Cancel</MudButton>
+					&nbsp;
+					<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">OK</MudButton>
+				</MudCardActions>
+			</MudCard>
+		</MudItem>
+		<MudItem hidden="@success" xs="12" sm="5">
+			<MudPaper Class="pa-4 mud-height-full">
+				<MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+				<MudText Color="@Color.Error">
+					<ValidationSummary />
+				</MudText>
+			</MudPaper>
+		</MudItem>
+	</MudGrid>
+</EditForm>
+}

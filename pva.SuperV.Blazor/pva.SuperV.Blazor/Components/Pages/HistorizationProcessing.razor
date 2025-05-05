@@ -1,0 +1,47 @@
+﻿@if (editedHistorizationFieldProcessing != null)
+{
+	if (State!.CurrentProject!.HistoryEnabled!)
+	{
+		<MudSelect T="string" @bind-Value="editedHistorizationFieldProcessing.HistoryRepositoryName"
+				   Label="Select history repository" Placeholder="History repository" Variant="Variant.Outlined">
+			@foreach (var historyRepositoryName in HistoryRepositoryNames)
+			{
+				<MudSelectItem Value="historyRepositoryName">@historyRepositoryName</MudSelectItem>
+			}
+		</MudSelect>
+		<MudSelect T="string" @bind-Value="editedHistorizationFieldProcessing.TimestampFieldName"
+				   Label="Select timestamp field" Placeholder="Timestamp field" Variant="Variant.Outlined">
+			@foreach (var fieldName in GetFieldNames())
+			{
+				<MudSelectItem Value="fieldName">@fieldName</MudSelectItem>
+			}
+		</MudSelect>
+		<MudSpacer />
+		<MudText Align="Align.Center" Typo="Typo.subtitle1"></MudText>
+		<MudText Align="Align.Center" Typo="Typo.subtitle1">Fields to historize</MudText>
+		<MudText Align="Align.Center" Typo="Typo.subtitle1"></MudText>
+		<MudToggleGroup T="MudSelect<string>">
+			@for (int index = 0; index < editedHistorizationFieldProcessing.FieldsToHistorize.Count; index++)
+			{
+				<MudSelect T="string" @ref="FieldsToHistorizeSelects[index-1]" ValueChanged="@((e) => SetFieldToHistorize(index-1))"
+						   Label="Select field to historize" Placeholder="Field to historize" Variant="Variant.Outlined">
+					@foreach (var fieldName in GetFieldNames())
+					{
+						<MudSelectItem Value="fieldName">@fieldName</MudSelectItem>
+					}
+				</MudSelect>
+				<MudButtonGroup Size="@Size.Small">
+				<MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="((e) => RemoveFieldToHistorize(index-1))" />
+				</MudButtonGroup>
+			}
+		</MudToggleGroup>
+		<MudButton StartIcon="@Icons.Material.Filled.Add"
+				   OnClick="((e) => editedHistorizationFieldProcessing.FieldsToHistorize.Add(String.Empty))">
+			Add field
+		</MudButton>
+	}
+	else
+	{
+		<h1>History not enabled on project</h1>
+	}
+}

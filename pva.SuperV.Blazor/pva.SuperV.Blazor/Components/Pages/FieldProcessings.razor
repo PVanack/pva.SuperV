@@ -1,4 +1,4 @@
-﻿@page "/field-definitions/{projectId}/{className}"
+﻿@page "/field-processings/{projectId}/{className}/{fieldName}"
 <PageTitle>@pageTitle</PageTitle>
 
 <style>
@@ -16,26 +16,20 @@
 </style>
 
 <h1>@pageTitle</h1>
-<MudTable T="FieldDefinitionModel" @ref="itemsTable" ServerData="ServerReload" RowClassFunc="SelectedRowClassFunc" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
+<MudTable T="FieldValueProcessingModel" @ref="itemsTable" ServerData="ServerReload" RowClassFunc="SelectedRowClassFunc" OnRowClick="RowClickedEvent" Bordered=true Striped=true>
 	<ToolBarContent>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
-			<MudButton StartIcon="@Icons.Material.Filled.Add"
-					   OnClick="@CreateItem">
-				Create field
+			<MudButton Href=@($"/field-processing/{ProjectId}/{ClassName}/{FieldName}") StartIcon="@Icons.Material.Filled.Add">
+				Create field value processing
 			</MudButton>
 		</MudButtonGroup>
 		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
-			<MudButton hidden="@(SelectedItem == null)" Href="@($"/field-definition/{ProjectId}/{ClassName}/{SelectedItem?.Name}")" StartIcon="@Icons.Material.Filled.Edit">
-				Edit field
+			<MudButton hidden="@(SelectedItem == null)" Href=@($"/field-processing/{ProjectId}/{ClassName}/{FieldName}/{SelectedItem?.Name}") StartIcon="@Icons.Material.Filled.Edit">
+				Edit field value processing
 			</MudButton>
-			<MudButton hidden="@(SelectedItem == null)" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.DeleteForever" OnClick="@((e)=> DeleteItem(SelectedItem!.Name))">
-				Delete field
-			</MudButton>
-		</MudButtonGroup>
-		<MudSpacer/>
-		<MudButtonGroup Color="Color.Primary" Size="Size.Small" Variant="Variant.Outlined">
-			<MudButton hidden="@(SelectedItem == null)" Href="@($"/field-processings/{ProjectId}/{ClassName}/{SelectedItem?.Name}")" StartIcon="@Icons.Material.Filled.Edit">
-				Field processings
+			<MudButton hidden="@(SelectedItem == null)" IconColor="Color.Secondary" StartIcon="@Icons.Material.Filled.DeleteForever"
+					   OnClick="@((e)=> DeleteItem(SelectedItem!.Name))">
+				Delete field value processing
 			</MudButton>
 		</MudButtonGroup>
 		<MudSpacer />
@@ -52,7 +46,7 @@
 	</HeaderContent>
 	<RowTemplate>
 		<MudTd DataLabel="Name">@context.Name</MudTd>
-		<MudTd DataLabel="Type">@GetFieldType(context)</MudTd>
+		<MudTd DataLabel="Type">@FieldProcessing.GetProcessingType(context)</MudTd>
 	</RowTemplate>
 	<NoRecordsContent>
 		<MudText>No matching records found</MudText>

@@ -38,13 +38,13 @@ namespace pva.SuperV.Api.Services.FieldProcessings
             return await Task.FromException<FieldValueProcessingModel>(new NonWipProjectException(projectId));
         }
 
-        public async Task<FieldValueProcessingModel> UpdateFieldProcessingAsync(string projectId, string className, string fieldName, string processingName, FieldValueProcessingModel createRequest)
+        public async Task<FieldValueProcessingModel> UpdateFieldProcessingAsync(string projectId, string className, string fieldName, string processingName, FieldValueProcessingModel updateRequest)
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 Class clazz = GetClassEntity(wipProject, className);
                 IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(clazz, fieldName);
-                IFieldValueProcessing fieldProcessing = FieldProcessingMapper.FromDto(wipProject, clazz, fieldDefinition, createRequest);
+                IFieldValueProcessing fieldProcessing = FieldProcessingMapper.FromDto(wipProject, clazz, fieldDefinition, updateRequest);
                 wipProject.UpdateFieldChangePostProcessing(className, fieldName, processingName, fieldProcessing);
                 return await Task.FromResult(FieldProcessingMapper.ToDto(fieldProcessing));
             }

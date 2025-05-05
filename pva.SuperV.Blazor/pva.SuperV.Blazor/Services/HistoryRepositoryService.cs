@@ -16,7 +16,7 @@ namespace pva.SuperV.Blazor.Services
                 if (result.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>();
-                    return historyRepository ?? throw new ApiException("No field formatter in response");
+                    return historyRepository ?? throw new ApiException("No history repository in response");
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace pva.SuperV.Blazor.Services
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     List<HistoryRepositoryModel>? historyRepositories = await result.Content.ReadFromJsonAsync<List<HistoryRepositoryModel>>();
-                    return historyRepositories ?? throw new ApiException("No field formatters in response");
+                    return historyRepositories ?? throw new ApiException("No history repository in response");
                 }
                 else
                 {
@@ -82,7 +82,7 @@ namespace pva.SuperV.Blazor.Services
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>();
-                    return historyRepository ?? throw new ApiException("No field formatter in response");
+                    return historyRepository ?? throw new ApiException("No history repository in response");
                 }
                 else
                 {
@@ -104,7 +104,7 @@ namespace pva.SuperV.Blazor.Services
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>();
-                    return historyRepository ?? throw new ApiException("No field formatter in response");
+                    return historyRepository ?? throw new ApiException("No history repositories in response");
                 }
                 else
                 {
