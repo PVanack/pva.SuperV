@@ -102,8 +102,8 @@ namespace pva.SuperV.EngineTests
 
             // THEN
             HistoryTimeRange query = new(endTime, endTime);
-            Assert.Throws<BadHistoryStartTimeException>(()
-                => _ = runnableProject?.GetHistoryValues(instance!.Name, query, new List<string>([ValueFieldName])));
+            await Assert.ThrowsAsync<BadHistoryStartTimeException>(async ()
+                => _ = await runnableProject?.GetHistoryValues(instance!.Name, query, new List<string>([ValueFieldName])));
             instance?.Dispose();
 
         }
@@ -164,8 +164,8 @@ namespace pva.SuperV.EngineTests
                 new(ValueFieldName, HistoryStatFunction.AVG)
                 ];
             HistoryStatisticTimeRange query = new(endTime, endTime, new TimeSpan(1, 0, 0), FillMode.LINEAR);
-            Assert.Throws<BadHistoryStartTimeException>(()
-                => _ = runnableProject?.GetHistoryStatistics(instance!.Name, query, fields));
+            await Assert.ThrowsAsync<BadHistoryStartTimeException>(async ()
+                => _ = await runnableProject?.GetHistoryStatistics(instance!.Name, query, fields));
 
             instance?.Dispose();
         }
@@ -186,8 +186,8 @@ namespace pva.SuperV.EngineTests
                 new(ValueFieldName, HistoryStatFunction.AVG)
                 ];
             HistoryStatisticTimeRange query = new(startTime, endTime, TimeSpan.FromDays(1), FillMode.LINEAR);
-            Assert.Throws<BadHistoryIntervalException>(()
-                => _ = runnableProject?.GetHistoryStatistics(instance!.Name, query, fields));
+            await Assert.ThrowsAsync<BadHistoryIntervalException>(async ()
+                => _ = await runnableProject?.GetHistoryStatistics(instance!.Name, query, fields));
 
             instance?.Dispose();
         }

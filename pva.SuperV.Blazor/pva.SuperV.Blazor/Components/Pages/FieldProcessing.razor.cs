@@ -60,7 +60,8 @@ namespace pva.SuperV.Blazor.Components.Pages
         {
             EditedHistorizationProcessing? historizationProcessing = editedFieldProcessing! as EditedHistorizationProcessing;
             return new HistorizationProcessingModel(editedFieldProcessing!.Name, triggeringFieldName,
-                historizationProcessing!.HistoryRepositoryName, historizationProcessing.TimestampFieldName, historizationProcessing.FieldsToHistorize);
+                historizationProcessing!.HistoryRepositoryName, historizationProcessing.TimestampFieldName,
+                [.. historizationProcessing.FieldsToHistorize.Select(f => f.Name)]);
         }
 
         private static EditedAlarmStateProcessing CreateEditableAlarmStateProcessing(FieldValueProcessingModel fieldProcessingModel)
@@ -212,6 +213,10 @@ namespace pva.SuperV.Blazor.Components.Pages
         public string? AckStateFieldName { get; set; } = null;
     }
 
+    public class HistorizedField(string fieldName)
+    {
+        public string Name { get; set; } = fieldName;
+    }
     public class EditedHistorizationProcessing : EditedFieldProcessing
     {
         public EditedHistorizationProcessing(string name, string trigerringFieldName) : base(name, FieldProcessing.HistorizationProcessingType, trigerringFieldName)
@@ -222,11 +227,11 @@ namespace pva.SuperV.Blazor.Components.Pages
         {
             HistoryRepositoryName = historizationProcessing.HistoryRepositoryName;
             TimestampFieldName = historizationProcessing.TimestampFieldName;
-            FieldsToHistorize = historizationProcessing.FieldsToHistorize;
+            FieldsToHistorize = [.. historizationProcessing.FieldsToHistorize.Select(fieldName => new HistorizedField(fieldName))];
         }
 
         public string HistoryRepositoryName { get; set; } = "";
         public string? TimestampFieldName { get; set; } = null;
-        public List<string> FieldsToHistorize { get; set; } = [];
+        public List<HistorizedField> FieldsToHistorize { get; set; } = [];
     }
 }
