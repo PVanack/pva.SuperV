@@ -145,7 +145,7 @@ namespace pva.SuperV.Blazor.Components.Pages
             await file.OpenReadStream().CopyToAsync(memoryStream);
             byte[] fileContent = memoryStream.ToArray();
             using MemoryStream memoryStream2 = new(fileContent);
-            _ = ProjectServiceClient.CreateProjectFromJsonDefinitionAsync(new StreamReader(memoryStream2));
+            _ = await ProjectServiceClient.CreateProjectFromJsonDefinitionAsync(new StreamReader(memoryStream2));
             await ReloadTable();
         }
 

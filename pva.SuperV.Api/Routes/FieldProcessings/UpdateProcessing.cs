@@ -8,11 +8,11 @@ namespace pva.SuperV.Api.Routes.FieldProcessings
     internal static class UpdateProcessing
     {
         internal static async Task<Results<Ok<FieldValueProcessingModel>, NotFound<string>, BadRequest<string>>>
-            Handle(IFieldProcessingService fieldProcessingService, string projectId, string className, string fieldName, string processingName, FieldValueProcessingModel createRequest)
+            Handle(IFieldProcessingService fieldProcessingService, string projectId, string className, string fieldName, string processingName, FieldValueProcessingModel updateRequest)
         {
             try
             {
-                FieldValueProcessingModel updatedFieldProcessing = await fieldProcessingService.UpdateFieldProcessingAsync(projectId, className, fieldName, processingName, createRequest);
+                FieldValueProcessingModel updatedFieldProcessing = await fieldProcessingService.UpdateFieldProcessingAsync(projectId, className, fieldName, processingName, updateRequest);
                 return TypedResults.Ok<FieldValueProcessingModel>(updatedFieldProcessing);
             }
             catch (UnknownEntityException e)

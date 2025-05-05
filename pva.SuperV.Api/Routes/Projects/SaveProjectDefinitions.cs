@@ -14,7 +14,7 @@ namespace pva.SuperV.Api.Routes.Projects
                 {
                     return TypedResults.InternalServerError("Project definitions stream is null");
                 }
-                MemoryStream memoryStream = new MemoryStream();
+                MemoryStream memoryStream = new();
                 await stream.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
                 return Results.Stream(memoryStream);
