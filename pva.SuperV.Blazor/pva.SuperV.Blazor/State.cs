@@ -16,11 +16,11 @@ namespace pva.SuperV.Blazor
             RefreshBreadcrumbsIfNeeded(refreshBreadcrumbs);
         }
 
-        internal void SetAboutBreadcrumb()
+        internal void SetAboutBreadcrumb(bool refreshBreadcrumbs = true)
         {
             SetHomeBreadCrumb(false);
             Breadcrumbs.Add(new("About", "/about"));
-            RefreshBreadcrumbsIfNeeded();
+            RefreshBreadcrumbsIfNeeded(refreshBreadcrumbs);
 
         }
 
@@ -45,7 +45,7 @@ namespace pva.SuperV.Blazor
         {
             SetProjectBreadcrumb(CurrentProject, refreshBreadCrumbs);
             Breadcrumbs.Add(new("Field formatters", $"/field-formatters/{projectId}"));
-            RefreshBreadcrumbsIfNeeded(refreshBreadCrumbs);
+            RefreshBreadcrumbsIfNeeded();
         }
 
         internal void SetFieldFormatterBreadcrumb(string projectId, string fieldFormatterName)
@@ -59,7 +59,7 @@ namespace pva.SuperV.Blazor
         {
             SetProjectBreadcrumb(CurrentProject, refreshBreadCrumbs);
             Breadcrumbs.Add(new("History repositories", $"/history-repositories/{projectId}"));
-            RefreshBreadcrumbsIfNeeded(refreshBreadCrumbs);
+            RefreshBreadcrumbsIfNeeded();
         }
 
         internal void SetHistoryRepositoryBreadcrumb(string projectId, string historyRepositoryName)
@@ -78,23 +78,29 @@ namespace pva.SuperV.Blazor
 
         internal void SetClassBreadcrumb(string projectId, string className, bool refreshBreadCrumbs = true)
         {
-            SetClassesBreadcrumb(projectId, false);
-            Breadcrumbs.Add(new(className, $"/class/{projectId}/{className}"));
-            RefreshBreadcrumbsIfNeeded(refreshBreadCrumbs);
+            if (className != null)
+            {
+                SetClassesBreadcrumb(projectId, false);
+                Breadcrumbs.Add(new(className, $"/class/{projectId}/{className}"));
+                RefreshBreadcrumbsIfNeeded(refreshBreadCrumbs);
+            }
         }
 
         internal void SetFieldDefinitionsBreadcrumb(string projectId, string className, bool refreshBreadCrumbs = true)
         {
             SetClassBreadcrumb(projectId, className, false);
-            Breadcrumbs.Add(new("Fields", $"/field/{projectId}/{className}"));
+            Breadcrumbs.Add(new("Fields", $"/field-definitions/{projectId}/{className}"));
             RefreshBreadcrumbsIfNeeded(refreshBreadCrumbs);
         }
 
-        internal void AddFieldDefinitionBreadcrumb(string projectId, string className, string fieldDefinitionName)
+        internal void SetFieldDefinitionBreadcrumb(string projectId, string className, string fieldDefinitionName, bool refreshBreadCrumbs = true)
         {
-            SetFieldDefinitionsBreadcrumb(projectId, className, false);
-            Breadcrumbs.Add(new(fieldDefinitionName, $"/field-definition/{projectId}/{className}/{fieldDefinitionName}"));
-            RefreshBreadcrumbsIfNeeded();
+            if (fieldDefinitionName != null)
+            {
+                SetFieldDefinitionsBreadcrumb(projectId, className, false);
+                Breadcrumbs.Add(new(fieldDefinitionName, $"/field-definition/{projectId}/{className}/{fieldDefinitionName}"));
+                RefreshBreadcrumbsIfNeeded(refreshBreadCrumbs);
+            }
         }
 
         internal void SetInstancesBreadcrumb(string projectId, bool refreshBreadCrumbs = true)
@@ -111,6 +117,26 @@ namespace pva.SuperV.Blazor
             RefreshBreadcrumbsIfNeeded();
         }
 
+        internal void SetFieldProcessingsBreadcrumb(string projectId, string className, string fieldName, bool refreshBreadCrumbs = true)
+        {
+            if (fieldName != null)
+            {
+                SetFieldDefinitionBreadcrumb(projectId, className, fieldName, false);
+                Breadcrumbs.Add(new("Field value processings", $"/field-processings/{projectId}/{className}/{fieldName}"));
+                RefreshBreadcrumbsIfNeeded(refreshBreadCrumbs);
+            }
+        }
+
+        internal void SetFieldProcessingBreadcrumb(string projectId, string className, string fieldName, string processingName)
+        {
+            if (fieldName != null)
+            {
+                SetFieldProcessingsBreadcrumb(projectId, className, fieldName, false);
+                Breadcrumbs.Add(new(processingName, $"/field-processing/{projectId}/{className}/{fieldName}/{processingName}"));
+                RefreshBreadcrumbsIfNeeded(true);
+            }
+        }
+
         private void RefreshBreadcrumbsIfNeeded(bool refreshBreadcrumbs = true)
         {
             if (refreshBreadcrumbs)
@@ -118,6 +144,5 @@ namespace pva.SuperV.Blazor
                 MainlLayout?.Refresh();
             }
         }
-
     }
 }

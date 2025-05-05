@@ -116,7 +116,7 @@ namespace pva.SuperV.Blazor.Components.Pages
                 {
                     EditedFieldDefinition = createFunc(fieldDefinition);
                 }
-                State.AddFieldDefinitionBreadcrumb(ProjectId, ClassName, EditedFieldDefinition.Name);
+                State.SetFieldDefinitionBreadcrumb(ProjectId, ClassName, EditedFieldDefinition.Name);
             }
             pageTitle = isModification ? $"{EditedFieldDefinition.FieldType} {EditedFieldDefinition!.Name}" : "New field";
             await base.OnInitializedAsync();

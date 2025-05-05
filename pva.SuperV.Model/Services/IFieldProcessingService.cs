@@ -8,6 +8,6 @@ namespace pva.SuperV.Model.Services
         ValueTask DeleteFieldProcessingAsync(string projectId, string className, string fieldName, string processingName);
         Task<FieldValueProcessingModel> GetFieldProcessingAsync(string projectId, string className, string fieldName, string processingName);
         Task<List<FieldValueProcessingModel>> GetFieldProcessingsAsync(string projectId, string className, string fieldName);
-        Task<FieldValueProcessingModel> UpdateFieldProcessingAsync(string projectId, string className, string fieldName, string processingName, FieldValueProcessingModel createRequest);
+        Task<FieldValueProcessingModel> UpdateFieldProcessingAsync(string projectId, string className, string fieldName, string processingName, FieldValueProcessingModel updateRequest);
     }
 }

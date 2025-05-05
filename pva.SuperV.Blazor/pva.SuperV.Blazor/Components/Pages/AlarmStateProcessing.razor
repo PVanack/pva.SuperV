@@ -1,0 +1,53 @@
+﻿@if (editedAlarmStateFieldProcessing != null)
+{
+	<MudSelect T="string" @bind-Value="editedAlarmStateFieldProcessing.HighHighLimitFieldName"
+			   Label="Select high high limit field" Placeholder="High high limit field" Variant="Variant.Outlined">
+		@foreach (var fieldName in GetFieldNamesForType(triggeringField))
+		{
+			<MudSelectItem Value="fieldName">@fieldName</MudSelectItem>
+		}
+	</MudSelect>
+	<MudSelect T="string" @bind-Value="editedAlarmStateFieldProcessing.HighLimitFieldName"
+			   Label="Select high limit field" Placeholder="High limit field" Variant="Variant.Outlined">
+		@foreach (var fieldName in GetFieldNamesForType(triggeringField))
+		{
+			<MudSelectItem Value="fieldName">@fieldName</MudSelectItem>
+		}
+	</MudSelect>
+	<MudSelect T="string" @bind-Value="editedAlarmStateFieldProcessing.LowLimitFieldName"
+			   Label="Select low limit field" Placeholder="Low limit field" Variant="Variant.Outlined">
+		@foreach (var fieldName in GetFieldNamesForType(triggeringField))
+		{
+			<MudSelectItem Value="fieldName">@fieldName</MudSelectItem>
+		}
+	</MudSelect>
+	<MudSelect T="string" @bind-Value="editedAlarmStateFieldProcessing.LowLowLimitFieldName"
+			   Label="Select low low limit field" Placeholder="Low low limit field" Variant="Variant.Outlined">
+		@foreach (var fieldName in GetFieldNamesForType(triggeringField))
+		{
+			<MudSelectItem Value="fieldName">@fieldName</MudSelectItem>
+		}
+	</MudSelect>
+	<MudSelect T="string" @bind-Value="editedAlarmStateFieldProcessing.DeadbandFieldName"
+			   Label="Select deadband field" Placeholder="Deadband field" Variant="Variant.Outlined">
+		@foreach (var fieldName in GetFieldNamesForType(triggeringField))
+		{
+			<MudSelectItem Value="fieldName">@fieldName</MudSelectItem>
+		}
+	</MudSelect>
+	<MudSelect T="string" @bind-Value="editedAlarmStateFieldProcessing.AlarmStateFieldName"
+			   Label="Select alarm state field" Placeholder="Alarm state field" Variant="Variant.Outlined">
+		@foreach (var fieldName in GetFieldNames())
+		{
+			<MudSelectItem Value="fieldName">@fieldName</MudSelectItem>
+		}
+	</MudSelect>
+	<MudSelect T="string" @bind-Value="editedAlarmStateFieldProcessing.AckStateFieldName"
+			   Label="Select Acknowledgement state field" Placeholder="Acknowledgement state field" Variant="Variant.Outlined">
+		@foreach (var fieldName in GetFieldNames())
+		{
+			<MudSelectItem Value="fieldName">@fieldName</MudSelectItem>
+		}
+	</MudSelect>
+	<MudSpacer />
+}

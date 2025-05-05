@@ -129,7 +129,7 @@ namespace pva.SuperV.Blazor.Components.Pages
                 return String.Empty;
             return fieldFormatter switch
             {
-                EnumFormatterModel => FieldFormatter.EnumFormatterType,
+                EnumFormatterModel => EnumFormatterType,
                 _ => "Unknown"
             };
         }
