@@ -59,14 +59,19 @@ namespace pva.SuperV.Blazor.Components.Pages
             return [.. repositories.Select(historyRepository => historyRepository.Name)];
         }
 
-        private void SetFieldToHistorize(int index)
+        private static void StartedEditingItem(HistorizedField item)
         {
-            editedHistorizationFieldProcessing!.FieldsToHistorize[index] = FieldsToHistorizeSelects[index]!.Value!;
+            // Needs to be there to allow in line editing
         }
 
-        private void RemoveFieldToHistorize(int index)
+        private static void CanceledEditingItem(HistorizedField item)
         {
-            editedHistorizationFieldProcessing!.FieldsToHistorize.RemoveAt(index);
+            // Needs to be there to allow in line editing
+        }
+
+        private static void CommittedItemChanges(HistorizedField field)
+        {
+            // Needs to be there to allow in line editing
         }
     }
 }
