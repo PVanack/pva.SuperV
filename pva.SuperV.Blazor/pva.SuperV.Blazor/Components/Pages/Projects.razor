@@ -33,7 +33,7 @@
 			<MudButton StartIcon="@Icons.Material.Filled.Add" OnClick="@CreateItem">
 				Create project
 			</MudButton>
-			<MudFileUpload T="IBrowserFile" FilesChanged="LoadProjectFromDefinition">
+			<MudFileUpload T="IBrowserFile" Accept=".prj" FilesChanged="LoadProjectFromDefinition">
 				<ActivatorContent>
 					<MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.FileOpen">
 						Load project"
@@ -53,7 +53,7 @@
 					   hidden="@(SelectedItem == null || !SelectedItem.Runnable)" OnClick="@((e) => SaveProjectInstances(SelectedItem!))">
 				Save project instances
 			</MudButton>
-			<MudFileUpload T="IBrowserFile" FilesChanged="@((e) => LoadProjectInstancesFromFile(e, SelectedItem!))">
+			<MudFileUpload T="IBrowserFile" Accept=".snp" FilesChanged="@((e) => LoadProjectInstancesFromFile(e, SelectedItem!))">
 				<ActivatorContent>
 					<MudButton StartIcon="@Icons.Material.Filled.FileOpen"
 							   hidden="@(SelectedItem == null || !SelectedItem.Runnable)">
