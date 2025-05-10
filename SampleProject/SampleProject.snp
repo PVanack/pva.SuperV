@@ -1,0 +1,35 @@
+{
+    "BaseInstance": {
+        "Class": "BaseClass",
+        "Name": "BaseInstance",
+        "Fields": [
+            {
+                "Type": "System.Int64",
+                "Name": "IntBaseField",
+                "Value": 1,
+                "Timestamp": "2025-05-04T12:27:25.25Z",
+                "Quality": "Good"
+            }
+        ]
+    },
+    "FinalInstance": {
+        "Class": "FinalClass",
+        "Name": "FinalInstance",
+        "Fields": [
+            {
+                "Type": "System.Int64",
+                "Name": "IntBaseField",
+                "Value": 32,
+                "Timestamp": "2025-05-04T12:27:42.42Z",
+                "Quality": "Good"
+            },
+            {
+                "Type": "System.Boolean",
+                "Name": "FinalField",
+                "Value": false,
+                "Timestamp": "2025-05-04T12:27:42.42Z",
+                "Quality": "Good"
+            }
+        ]
+    }
+}

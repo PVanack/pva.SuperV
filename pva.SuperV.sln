@@ -45,7 +45,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.AspireAppHost", 
 		{C1374A7E-7E2F-41B2-842E-D05EF1D890B7} = {C1374A7E-7E2F-41B2-842E-D05EF1D890B7}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tdEngine.AspireHosting", "tdEngine.AspireHosting\tdEngine.AspireHosting.csproj", "{E3A69F5B-5AC9-4B3F-907F-08BAE65FA487}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDengine.AspireHosting", "TDengine.AspireHosting\TDengine.AspireHosting.csproj", "{E3A69F5B-5AC9-4B3F-907F-08BAE65FA487}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleProject", "SampleProject", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		SampleProject\SampleProject.prj = SampleProject\SampleProject.prj
+		SampleProject\SampleProject.snp = SampleProject\SampleProject.snp
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +109,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {3F372F59-056F-4D2E-B940-8A5BD95DD255}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {57305A2D-A160-4425-8124-33CD5C95C25C}

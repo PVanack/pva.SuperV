@@ -2,7 +2,7 @@
 {
 	@if (Value is bool)
 	{
-		<MudCheckBox T="bool?" @bind-Value="BoolValue" Label="@ValueLabel" Variant="Variant.Outlined"></MudCheckBox>
+		<MudCheckBox T="bool?" @bind-Value="BoolValue" Label="@ValueLabel" />
 	}
 	else if (Value is DateTime)
 	{

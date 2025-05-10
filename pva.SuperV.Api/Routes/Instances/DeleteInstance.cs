@@ -6,11 +6,11 @@ namespace pva.SuperV.Api.Routes.Instances
 {
     internal static class DeleteInstance
     {
-        internal static Results<NoContent, NotFound<string>, BadRequest<string>> Handle(IInstanceService instanceService, string projectId, string instanceName)
+        internal static async Task<Results<NoContent, NotFound<string>, BadRequest<string>>> Handle(IInstanceService instanceService, string projectId, string instanceName)
         {
             try
             {
-                instanceService.DeleteInstanceAsync(projectId, instanceName);
+                await instanceService.DeleteInstanceAsync(projectId, instanceName);
                 return TypedResults.NoContent();
             }
             catch (UnknownEntityException e)

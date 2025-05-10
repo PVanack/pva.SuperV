@@ -18,7 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\pva.SuperV.Api\pva.SuperV.Api.csproj" />
     <ProjectReference Include="..\pva.SuperV.Blazor\pva.SuperV.Blazor\pva.SuperV.Blazor.csproj" />
-    <ProjectReference Include="..\tdEngine.AspireHosting\tdEngine.AspireHosting.csproj" IsAspireProjectResource="false" />
+    <ProjectReference Include="..\TDengine.AspireHosting\TDengine.AspireHosting.csproj" IsAspireProjectResource="false" />
   </ItemGroup>
 
 </Project>
