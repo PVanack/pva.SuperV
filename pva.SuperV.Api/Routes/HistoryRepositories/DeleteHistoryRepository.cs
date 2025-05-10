@@ -7,11 +7,11 @@ namespace pva.SuperV.Api.Routes.HistoryRepositories
 {
     internal static class DeleteHistoryRepository
     {
-        internal static Results<NoContent, NotFound<string>, BadRequest<string>> Handle(IHistoryRepositoryService historyRepositoryService, string projectId, string historyRepositoryName)
+        internal static async Task<Results<NoContent, NotFound<string>, BadRequest<string>>> Handle(IHistoryRepositoryService historyRepositoryService, string projectId, string historyRepositoryName)
         {
             try
             {
-                historyRepositoryService.DeleteHistoryRepositoryAsync(projectId, historyRepositoryName);
+                await historyRepositoryService.DeleteHistoryRepositoryAsync(projectId, historyRepositoryName);
                 return TypedResults.NoContent();
             }
             catch (UnknownEntityException e)

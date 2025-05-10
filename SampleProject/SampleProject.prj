@@ -1,0 +1,207 @@
+{
+    "Name": "SampleProject",
+    "Description": "Sample project",
+    "Version": 1,
+    "Classes": {
+        "BaseClass": {
+            "Name": "BaseClass",
+            "BaseClassName": null,
+            "FieldDefinitions": {
+                "IntBaseField": {
+                    "Type": "System.Int64",
+                    "Name": "IntBaseField",
+                    "DefaultValue": 1,
+                    "ValuePostChangeProcessings": [],
+                    "Formatter": {
+                        "$type": "Enum",
+                        "Values": {
+                            "0": "Stop",
+                            "1": "Run"
+                        },
+                        "Name": "Enum"
+                    }
+                }
+            }
+        },
+        "FinalClass": {
+            "Name": "FinalClass",
+            "BaseClassName": "BaseClass",
+            "FieldDefinitions": {
+                "FinalField": {
+                    "Type": "System.Boolean",
+                    "Name": "FinalField",
+                    "DefaultValue": true,
+                    "ValuePostChangeProcessings": []
+                },
+                "Low": {
+                    "Type": "System.Single",
+                    "Name": "Low",
+                    "DefaultValue": 0,
+                    "ValuePostChangeProcessings": []
+                },
+                "High": {
+                    "Type": "System.Single",
+                    "Name": "High",
+                    "DefaultValue": 0,
+                    "ValuePostChangeProcessings": []
+                },
+                "HighHigh": {
+                    "Type": "System.Single",
+                    "Name": "HighHigh",
+                    "DefaultValue": 0,
+                    "ValuePostChangeProcessings": []
+                },
+                "Value": {
+                    "Type": "System.Single",
+                    "Name": "Value",
+                    "DefaultValue": 0,
+                    "ValuePostChangeProcessings": [
+                        {
+                            "Type": "pva.SuperV.Engine.Processing.AlarmStateProcessing\u00601[System.Single]",
+                            "Name": "AlmOnValue",
+                            "Params": [
+                                {
+                                    "Type": "System.String",
+                                    "Value": "Value"
+                                },
+                                {
+                                    "Type": "System.String",
+                                    "Value": "HighHigh"
+                                },
+                                {
+                                    "Type": "System.String",
+                                    "Value": "High"
+                                },
+                                {
+                                    "Type": "System.String",
+                                    "Value": "Low"
+                                },
+                                {
+                                    "Type": "System.String",
+                                    "Value": "LowLow"
+                                },
+                                {
+                                    "Type": "System.String",
+                                    "Value": "Deadband"
+                                },
+                                {
+                                    "Type": "System.String",
+                                    "Value": "AlarmState"
+                                },
+                                {
+                                    "Type": "System.String",
+                                    "Value": "AckState"
+                                }
+                            ]
+                        },
+                        {
+                            "Type": "pva.SuperV.Engine.Processing.HistorizationProcessing\u00601[System.Single]",
+                            "Name": "ValueHisto",
+                            "Params": [
+                                {
+                                    "Type": "System.String",
+                                    "Value": "Value"
+                                },
+                                {
+                                    "Type": "System.String",
+                                    "Value": "HistoRepo"
+                                },
+                                {
+                                    "Type": "System.String",
+                                    "Value": ""
+                                },
+                                {
+                                    "Type": "System.String",
+                                    "Value": "Value"
+                                },
+                                {
+                                    "Type": "System.String",
+                                    "Value": "AlarmState"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "LowLow": {
+                    "Type": "System.Single",
+                    "Name": "LowLow",
+                    "DefaultValue": 0,
+                    "ValuePostChangeProcessings": []
+                },
+                "AckState": {
+                    "Type": "System.Int32",
+                    "Name": "AckState",
+                    "DefaultValue": 0,
+                    "ValuePostChangeProcessings": [],
+                    "Formatter": {
+                        "$type": "Enum",
+                        "Values": {
+                            "0": "ACK",
+                            "1": "UNACK"
+                        },
+                        "Name": "AckStates"
+                    }
+                },
+                "AlarmState": {
+                    "Type": "System.Int32",
+                    "Name": "AlarmState",
+                    "DefaultValue": 0,
+                    "ValuePostChangeProcessings": [],
+                    "Formatter": {
+                        "$type": "Enum",
+                        "Values": {
+                            "-2": "Low low",
+                            "-1": "Low",
+                            "0": "OK",
+                            "1": "High",
+                            "2": "High high"
+                        },
+                        "Name": "AlarmStates"
+                    }
+                },
+                "Deadband": {
+                    "Type": "System.Single",
+                    "Name": "Deadband",
+                    "DefaultValue": 0,
+                    "ValuePostChangeProcessings": []
+                }
+            }
+        }
+    },
+    "FieldFormatters": {
+        "Enum": {
+            "$type": "Enum",
+            "Values": {
+                "0": "Stop",
+                "1": "Run"
+            },
+            "Name": "Enum"
+        },
+        "AlarmStates": {
+            "$type": "Enum",
+            "Values": {
+                "-2": "Low low",
+                "-1": "Low",
+                "0": "OK",
+                "1": "High",
+                "2": "High high"
+            },
+            "Name": "AlarmStates"
+        },
+        "AckStates": {
+            "$type": "Enum",
+            "Values": {
+                "0": "ACK",
+                "1": "UNACK"
+            },
+            "Name": "AckStates"
+        }
+    },
+    "HistoryStorageEngineConnectionString": "TDengine:host=localhost;port=6030;username=root;password=taosdata",
+    "HistoryRepositories": {
+        "HistoRepo": {
+            "Name": "HistoRepo",
+            "HistoryStorageId": "sampleprojecthistorepo"
+        }
+    }
+}
