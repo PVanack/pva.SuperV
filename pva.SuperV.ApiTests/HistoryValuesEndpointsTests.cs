@@ -52,6 +52,11 @@ namespace pva.SuperV.ApiTests
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
             HistoryRawResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryRawResultModel>();
+            CheckHistoryResult(expectedHistoryResult, historyResult);
+        }
+
+        private static void CheckHistoryResult(HistoryRawResultModel expectedHistoryResult, HistoryRawResultModel? historyResult)
+        {
             // This doesn' work, as comparison of the object values use Object Equals().
             //historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
             // As a workaround, we compare each element :-(
@@ -178,6 +183,11 @@ namespace pva.SuperV.ApiTests
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
             HistoryStatisticsRawResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryStatisticsRawResultModel>();
+            CheckHistoryStatisticsResult(expectedHistoryResult, historyResult);
+        }
+
+        private static void CheckHistoryStatisticsResult(HistoryStatisticsRawResultModel expectedHistoryResult, HistoryStatisticsRawResultModel? historyResult)
+        {
             // This doesn' work, as comparison of the object values use Object Equals().
             //historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
             // As a workaround, we compare each element :-(

@@ -60,6 +60,11 @@ namespace pva.SuperV.ApiTests
             HistoryRawResultModel historyResult = await historyValuesService.GetInstanceRawHistoryValuesAsync(runnableProject.GetId(), InstanceName, request);
 
             // Assert
+            CheckHistoryResult(expectedHistoryResult, historyResult);
+        }
+
+        private static void CheckHistoryResult(HistoryRawResultModel expectedHistoryResult, HistoryRawResultModel historyResult)
+        {
             // This doesn' work, as comparison of the object values uses Object Equals().
             //historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
             // As a workaround, we compare each element :-(
@@ -154,23 +159,7 @@ namespace pva.SuperV.ApiTests
             HistoryRawResultModel historyResult = await historyValuesService.GetInstanceRawHistoryValuesAsync(runnableProject.GetId(), AllFieldsInstanceName, request);
 
             // Assert
-            // This doesn' work, as comparison of the object values uses Object Equals().
-            //historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
-            // As a workaround, we compare each element :-(
-            historyResult.Header.ShouldBeEquivalentTo(expectedHistoryResult.Header);
-            historyResult.Rows.Count.ShouldBe(expectedHistoryResult.Rows.Count);
-            for (int rowIndex = 0; rowIndex < expectedHistoryResult.Rows.Count; rowIndex++)
-            {
-                var actualRow = historyResult.Rows[rowIndex];
-                var expectedRow = expectedHistoryResult.Rows[rowIndex];
-                actualRow.Timestamp.ShouldBe(expectedRow.Timestamp);
-                actualRow.Quality.ShouldBe(expectedRow.Quality);
-                actualRow.FieldValues.Count.ShouldBe(expectedRow.FieldValues.Count);
-                for (int fieldIndex = 0; fieldIndex < actualRow.FieldValues.Count; fieldIndex++)
-                {
-                    CheckHistoryValue(actualRow.FieldValues[fieldIndex], expectedRow.FieldValues[fieldIndex]);
-                }
-            }
+            CheckHistoryResult(expectedHistoryResult, historyResult);
         }
 
         [Fact]
@@ -285,6 +274,11 @@ namespace pva.SuperV.ApiTests
             HistoryStatisticsRawResultModel historyResult = await historyValuesService.GetInstanceRawHistoryStatisticsAsync(runnableProject.GetId(), InstanceName, request);
 
             // Assert
+            CheckHistoryStatisticsResult(expectedHistoryResult, historyResult);
+        }
+
+        private static void CheckHistoryStatisticsResult(HistoryStatisticsRawResultModel expectedHistoryResult, HistoryStatisticsRawResultModel historyResult)
+        {
             // This doesn' work, as comparison of the object values uses Object Equals().
             //historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
             // As a workaround, we compare each element :-(
