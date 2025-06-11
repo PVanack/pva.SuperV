@@ -35,6 +35,11 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
 
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
             HistoryRawResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryRawResultModel>();
+            CheckHistoryResult(expectedHistoryResult, historyResult);
+        }
+
+        private static void CheckHistoryResult(HistoryRawResultModel expectedHistoryResult, HistoryRawResultModel? historyResult)
+        {
             // This doesn' work, as comparison of the object values use Object Equals().
             //historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
             // As a workaround, we compare each element :-(

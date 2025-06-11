@@ -18,7 +18,7 @@ namespace pva.SuperV.Blazor.Components.Layout
         {
             if (firstRender)
             {
-                isDarkMode = await themeProvider.GetSystemPreference();
+                isDarkMode = await themeProvider.GetSystemDarkModeAsync();
                 State.MainlLayout = this;
                 StateHasChanged();
             }
