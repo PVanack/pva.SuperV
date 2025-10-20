@@ -102,7 +102,7 @@ namespace pva.SuperV.EngineTests
                     .WithExtraHost("buildkitsandbox", "127.0.0.1")
                     .WithWaitStrategy(
                         Wait.ForUnixContainer()
-                        .UntilPortIsAvailable(6030, strategy => strategy.WithTimeout(TimeSpan.FromSeconds(15)))
+                        .UntilExternalTcpPortIsAvailable(6030, strategy => strategy.WithTimeout(TimeSpan.FromSeconds(15)))
                     )
                     .Build();
 
@@ -283,7 +283,7 @@ namespace pva.SuperV.EngineTests
             return DateTime.Parse(fromString, CultureInfo.InvariantCulture.DateTimeFormat).ToUniversalTime();
         }
 
-        protected static TimeSpan ParseTimeSpan(string? intervalString)
+        protected static TimeSpan ParseTimeSpan(string intervalString)
         {
             ArgumentNullException.ThrowIfNull(intervalString);
             return TimeSpan.Parse(intervalString, CultureInfo.InvariantCulture.DateTimeFormat);

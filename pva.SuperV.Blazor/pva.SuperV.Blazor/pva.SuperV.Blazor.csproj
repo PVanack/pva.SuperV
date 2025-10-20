@@ -11,12 +11,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\pva.SuperV.Blazor.Client\pva.SuperV.Blazor.Client.csproj" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.6" />
-    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="9.0.6">
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="9.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="MudBlazor" Version="8.7.0" />
+    <PackageReference Include="MudBlazor" Version="8.13.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\" />
