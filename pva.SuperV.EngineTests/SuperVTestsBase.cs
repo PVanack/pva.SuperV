@@ -102,7 +102,7 @@ namespace pva.SuperV.EngineTests
                     .WithExtraHost("buildkitsandbox", "127.0.0.1")
                     .WithWaitStrategy(
                         Wait.ForUnixContainer()
-                        .UntilPortIsAvailable(6030, strategy => strategy.WithTimeout(TimeSpan.FromSeconds(15)))
+                        .UntilExternalTcpPortIsAvailable(6030, strategy => strategy.WithTimeout(TimeSpan.FromSeconds(15)))
                     )
                     .Build();
 
@@ -125,13 +125,12 @@ namespace pva.SuperV.EngineTests
 
         private async ValueTask WaitForTDengineToBeReady()
         {
-            Thread.Sleep(500);
             bool connected = false;
             int index = 0;
             while (!connected && index < 10)
             {
-                SystemCommand.Run("taos", $"-k -h {tdEngineContainer!.Hostname} -P {tdEngineContainer.GetMappedPublicPort(6030)}", out string output, out _);
-                connected = output.StartsWith("2: service ok");
+                SystemCommand.Run("taos", $"-h {tdEngineContainer!.Hostname} -P {tdEngineContainer.GetMappedPublicPort(6030)} -s \"show dnodes\"", out string output, out _);
+                connected = output.Contains("ready");
                 if (!connected)
                 {
                     Thread.Sleep(500);
@@ -283,7 +282,7 @@ namespace pva.SuperV.EngineTests
             return DateTime.Parse(fromString, CultureInfo.InvariantCulture.DateTimeFormat).ToUniversalTime();
         }
 
-        protected static TimeSpan ParseTimeSpan(string? intervalString)
+        protected static TimeSpan ParseTimeSpan(string intervalString)
         {
             ArgumentNullException.ThrowIfNull(intervalString);
             return TimeSpan.Parse(intervalString, CultureInfo.InvariantCulture.DateTimeFormat);
