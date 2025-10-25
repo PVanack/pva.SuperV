@@ -125,13 +125,12 @@ namespace pva.SuperV.EngineTests
 
         private async ValueTask WaitForTDengineToBeReady()
         {
-            Thread.Sleep(500);
             bool connected = false;
             int index = 0;
             while (!connected && index < 10)
             {
-                SystemCommand.Run("taos", $"-k -h {tdEngineContainer!.Hostname} -P {tdEngineContainer.GetMappedPublicPort(6030)}", out string output, out _);
-                connected = output.StartsWith("2: service ok");
+                SystemCommand.Run("taos", $"-h {tdEngineContainer!.Hostname} -P {tdEngineContainer.GetMappedPublicPort(6030)} -s \"show dnodes\"", out string output, out _);
+                connected = output.Contains("ready");
                 if (!connected)
                 {
                     Thread.Sleep(500);
