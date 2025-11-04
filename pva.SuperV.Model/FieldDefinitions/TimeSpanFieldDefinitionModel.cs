@@ -9,7 +9,5 @@ namespace pva.SuperV.Model.FieldDefinitions
             string Name,
             [property: Description("Default value")] TimeSpan DefaultValue,
             string? ValueFormatter)
-            : FieldDefinitionModel(Name, typeof(TimeSpan).ToString(), ValueFormatter)
-    {
-    }
+            : FieldDefinitionModel(Name, typeof(TimeSpan).ToString(), ValueFormatter);
 }

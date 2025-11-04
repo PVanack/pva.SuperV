@@ -7,7 +7,7 @@ namespace pva.SuperV.EngineTests
 {
     public class AlarmStateProcessingTests
     {
-        private const string ProcessingName = $"TestClass_AlmProcessing";
+        private const string ProcessingName = "TestClass_AlmProcessing";
         private const string ValueFieldName = "Value";
         private const string HighHighLimitFieldName = "HighHigh";
         private const string HighLimitFieldName = "High";

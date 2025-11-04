@@ -12,7 +12,5 @@ namespace pva.SuperV.Model.Classes
         [RegularExpression(Engine.Constants.IdentifierNamePattern, ErrorMessage = "Must be a valid identifier")]
         string Name,
         [property: Description("Base class (if any).")]
-        string? BaseClassName)
-    {
-    }
+        string? BaseClassName);
 }

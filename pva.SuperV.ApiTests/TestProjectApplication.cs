@@ -44,7 +44,7 @@ namespace pva.SuperV.ApiTests
                 services.Remove(item);
             }
             mockedService = Substitute.For([typeof(T)], []) as T;
-            services.AddSingleton<T>(provider => mockedService!);
+            services.AddSingleton<T>(_ => mockedService!);
             return mockedService;
         }
     }

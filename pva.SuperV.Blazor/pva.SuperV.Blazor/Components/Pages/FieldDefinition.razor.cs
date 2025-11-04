@@ -128,7 +128,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         }
 
 
-        private async Task OnValidSubmit(EditContext context)
+        private async Task OnValidSubmit(EditContext _)
         {
             success = true;
             FieldDefinitionModel fieldDefinition = MapFieldDefinition(EditedFieldDefinition, DefaultValue);

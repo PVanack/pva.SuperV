@@ -24,7 +24,5 @@ namespace pva.SuperV.Model.Instances
         [property: Description("Field value quality level.")]
         QualityLevel? Quality,
         [property: Description("Field value timestamp.")]
-        DateTime? Timestamp)
-    {
-    }
+        DateTime? Timestamp);
 }

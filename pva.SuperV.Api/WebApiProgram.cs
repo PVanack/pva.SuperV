@@ -43,15 +43,8 @@ namespace pva.SuperV.Api
             var builder = WebApplication.CreateSlimBuilder(args);
 
             builder.Services
-                .ConfigureHttpJsonOptions(options =>
-                {
-                    options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-
-                })
-                .AddHttpLogging(logging =>
-                {
-                    logging.LoggingFields = HttpLoggingFields.All;
-                })
+                .ConfigureHttpJsonOptions(options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default))
+                .AddHttpLogging(logging => logging.LoggingFields = HttpLoggingFields.All)
                 .AddProblemDetails()
                 .AddSingleton<IProjectService, ProjectService>()
                 .AddSingleton<IClassService, ClassService>()
@@ -64,7 +57,7 @@ namespace pva.SuperV.Api
                 .AddSingleton<IHistoryValuesService, HistoryValuesService>();
             builder.Services.AddOpenApi(options =>
             {
-                options.AddDocumentTransformer((document, context, cancellationToken) =>
+                options.AddDocumentTransformer((document, _, __) =>
                 {
                     document.Info = new()
                     {
@@ -75,10 +68,10 @@ namespace pva.SuperV.Api
                     return Task.CompletedTask;
                 });
             });
-            builder.Services.AddHttpLogging(o => { });
+            builder.Services.AddHttpLogging(_ => { });
             builder.Logging.AddConsole();
             builder.Logging.AddJsonConsole();
-            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+            const string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -86,7 +79,7 @@ namespace pva.SuperV.Api
                                       policy
                                       .AllowAnyMethod()
                                       .AllowAnyHeader()
-                                      .SetIsOriginAllowed(origin => true)
+                                      .SetIsOriginAllowed(_ => true)
                                       .AllowCredentials()
                                   );
             });
@@ -200,7 +193,5 @@ namespace pva.SuperV.Api
     [JsonSerializable(typeof(List<HistoryStatisticsRawRowModel>))]
     [JsonSerializable(typeof(HistoryStatisticsResultModel))]
     [JsonSerializable(typeof(List<HistoryStatisticsRowModel>))]
-    internal partial class AppJsonSerializerContext : JsonSerializerContext
-    {
-    }
+    internal partial class AppJsonSerializerContext : JsonSerializerContext;
 }

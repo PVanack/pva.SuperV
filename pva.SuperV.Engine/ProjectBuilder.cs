@@ -32,9 +32,9 @@ namespace pva.SuperV.Engine
                 string projectAssemblyFileName = runnableProject.GetAssemblyFileName();
                 string projectCode = runnableProject.GetCode();
                 var compilation = CreateCompilation(CSharpSyntaxTree.ParseText(projectCode), $"{runnableProject.Name}-V{runnableProject.Version}");
-                using MemoryStream dllStream = new();
-                using MemoryStream pdbStream = new();
-                using Stream win32ResStream = compilation.CreateDefaultWin32Resources(
+                await using MemoryStream dllStream = new();
+                await using MemoryStream pdbStream = new();
+                await using Stream win32ResStream = compilation.CreateDefaultWin32Resources(
                     versionResource: true, // Important!
                     noManifest: false,
                     manifestContents: null,

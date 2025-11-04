@@ -9,7 +9,5 @@ namespace pva.SuperV.Model.FieldDefinitions
             string Name,
             [property: Description("Default value")] ulong DefaultValue,
             string? ValueFormatter)
-            : FieldDefinitionModel(Name, typeof(ulong).ToString(), ValueFormatter)
-    {
-    }
+            : FieldDefinitionModel(Name, typeof(ulong).ToString(), ValueFormatter);
 }

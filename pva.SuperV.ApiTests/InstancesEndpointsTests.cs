@@ -120,7 +120,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.GetAsync($"/instances/Project1/UnknownInstance");
+            var response = await client.GetAsync("/instances/Project1/UnknownInstance");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -140,7 +140,7 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedInstance);
 
             // WHEN
-            var response = await client.PostAsJsonAsync($"/instances/Project1/", expectedInstance);
+            var response = await client.PostAsJsonAsync("/instances/Project1/", expectedInstance);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
@@ -162,7 +162,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.PostAsJsonAsync($"/instances/UnknownProject/", expectedInstance);
+            var response = await client.PostAsJsonAsync("/instances/UnknownProject/", expectedInstance);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -182,7 +182,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
-            var response = await client.PostAsJsonAsync($"/instances/RunnableProject/", expectedInstance);
+            var response = await client.PostAsJsonAsync("/instances/RunnableProject/", expectedInstance);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -211,10 +211,10 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             MockedInstanceService.When(async (fake) => await fake.DeleteInstanceAsync("Project", "UnknownInstance"))
-                .Do(call => { throw new UnknownEntityException(); });
+                .Do(_ => throw new UnknownEntityException());
 
             // WHEN
-            var response = await client.DeleteAsync($"/instances/Project/UnknownInstance");
+            var response = await client.DeleteAsync("/instances/Project/UnknownInstance");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -225,10 +225,10 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             MockedInstanceService.When(async (fake) => await fake.DeleteInstanceAsync("RunnableProject", "Instance"))
-                .Do(call => { throw new NonWipProjectException(); });
+                .Do(_ => throw new NonWipProjectException());
 
             // WHEN
-            var response = await client.DeleteAsync($"/instances/RunnableProject/Instance");
+            var response = await client.DeleteAsync("/instances/RunnableProject/Instance");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -244,7 +244,7 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedField);
 
             // WHEN
-            var response = await client.GetAsync($"/instances/Project1/Instance1/Field1/value");
+            var response = await client.GetAsync("/instances/Project1/Instance1/Field1/value");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
@@ -260,7 +260,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.GetAsync($"/instances/Project1/Instance1/UnknownField/value");
+            var response = await client.GetAsync("/instances/Project1/Instance1/UnknownField/value");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -275,7 +275,7 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedFieldValue);
 
             // WHEN
-            var response = await client.PutAsJsonAsync($"/instances/Project1/Instance1/Field1/value", expectedFieldValue);
+            var response = await client.PutAsJsonAsync("/instances/Project1/Instance1/Field1/value", expectedFieldValue);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
@@ -292,7 +292,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.PutAsJsonAsync($"/instances/Project1/Instance1/UnknownField/value", expectedFieldValue);
+            var response = await client.PutAsJsonAsync("/instances/Project1/Instance1/UnknownField/value", expectedFieldValue);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);

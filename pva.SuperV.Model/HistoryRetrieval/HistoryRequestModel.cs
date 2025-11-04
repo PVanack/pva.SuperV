@@ -11,7 +11,5 @@ namespace pva.SuperV.Model.HistoryRetrieval
     [property:Description("End time of request.")]
     DateTime EndTime,
     [property:Description("List of fields to be retrieved.")]
-    List<string> HistoryFields)
-    {
-    }
+    List<string> HistoryFields);
 }

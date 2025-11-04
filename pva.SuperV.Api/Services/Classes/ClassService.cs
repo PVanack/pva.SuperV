@@ -53,7 +53,7 @@ namespace pva.SuperV.Api.Services.Classes
         {
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
-                if (updateRequest.Name == null || updateRequest.Name.Equals(className))
+                if (updateRequest.Name?.Equals(className) != false)
                 {
                     return Task.FromResult(ClassMapper.ToDto(wipProject.UpdateClass(className, updateRequest!.BaseClassName)));
                 }

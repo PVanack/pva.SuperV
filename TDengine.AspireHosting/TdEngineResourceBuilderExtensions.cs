@@ -31,8 +31,8 @@ public static class TdEngineResourceBuilderExtensions
                       .WithImageRegistry(TdEngineContainerImageTags.Registry)
                       .WithImageTag(TdEngineContainerImageTags.Tag)
                       .WithEndpoint(
-                          targetPort: 6030,
                           port: tdEnginePort,
+                          targetPort: 6030,
                           name: TdEngineResource.TdEngineEndpointName);
     }
 }

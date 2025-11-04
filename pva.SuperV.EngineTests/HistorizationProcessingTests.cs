@@ -8,7 +8,7 @@ namespace pva.SuperV.EngineTests
 {
     public class HistorizationProcessingTests
     {
-        private const string ProcessingName = $"TestClass_HIstorization";
+        private const string ProcessingName = "TestClass_HIstorization";
         private const string ValueFieldName = "Value";
 
         private readonly WipProject project = Project.CreateProject("TestProject");

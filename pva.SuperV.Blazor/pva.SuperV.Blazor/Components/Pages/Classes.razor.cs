@@ -24,7 +24,7 @@ public partial class Classes
     private string itemNameSearchString = default!;
     private int selectedRowNumber;
 
-    private ClassModel? SelectedItem { get; set; } = default!;
+    private ClassModel? SelectedItem { get; set; }
 
     protected override void OnInitialized()
     {
@@ -32,7 +32,7 @@ public partial class Classes
         base.OnInitialized();
     }
 
-    private async Task<TableData<ClassModel>> ServerReload(TableState state, CancellationToken token)
+    private async Task<TableData<ClassModel>> ServerReload(TableState state, CancellationToken _)
     {
         ClassPagedSearchRequest request = new(state.Page + 1, state.PageSize, itemNameSearchString, null);
         PagedSearchResult<ClassModel> classes = await ClassService.SearchClassesAsync(ProjectId, request);
@@ -53,7 +53,7 @@ public partial class Classes
             SelectedItem = null;
             return string.Empty;
         }
-        else if (itemsTable.SelectedItem != null && itemsTable.SelectedItem.Equals(item))
+        else if (itemsTable.SelectedItem?.Equals(item) == true)
         {
             selectedRowNumber = rowNumber;
             SelectedItem = itemsTable.SelectedItem;
@@ -65,7 +65,7 @@ public partial class Classes
         }
     }
 
-    private async Task Search(string args)
+    private async Task Search(string _)
     {
         await ReloadTable();
     }
@@ -74,10 +74,10 @@ public partial class Classes
     {
         var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.EntityDescription, $"class {itemId}" } };
 
-        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>($"Delete class", parameters);
+        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>("Delete class", parameters);
         var result = await dialog.Result;
 
-        if (result is not null && !result.Canceled)
+        if (result?.Canceled == false)
         {
             await ClassService.DeleteClassAsync(ProjectId, itemId);
             await ReloadTable();

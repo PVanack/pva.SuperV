@@ -14,7 +14,5 @@ namespace pva.SuperV.Model.FieldProcessings
         string? TimestampFieldName,
         [property: Description("List of field whos value is to be historized.")]
         List<string> FieldsToHistorize)
-        : FieldValueProcessingModel(Name, TrigerringFieldName)
-    {
-    }
+        : FieldValueProcessingModel(Name, TrigerringFieldName);
 }

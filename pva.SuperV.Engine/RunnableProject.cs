@@ -168,8 +168,7 @@ namespace pva.SuperV.Engine
         /// Gets the constructor for targetType's <see cref="FieldDefinition{T}"/>.
         /// </summary>
         /// <param name="targetType">Type of the target.</param>
-        /// <param name="argumentType">Type of the argument.</param>
-        /// <returns></returns>
+        /// <returns>Constructor info of the type.</returns>
         /// <exception cref="InvalidOperationException">No constructor found for FieldDefinition{targetType.Name}.</exception>
         private static ConstructorInfo GetConstructor(Type targetType)
         {

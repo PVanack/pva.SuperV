@@ -134,7 +134,6 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Adds a field to a class.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="className">Name of the class.</param>
         /// <param name="field">The field.</param>
         /// <returns></returns>
@@ -147,7 +146,6 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Adds a field to a class with a specific field formatter.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="className">Name of the class.</param>
         /// <param name="field">The field.</param>
         /// <param name="formatterName">Name of the formatter.</param>
@@ -225,7 +223,7 @@ namespace pva.SuperV.Engine
             Classes.Values.ForEach(clazz =>
             {
                 List<String> fieldsUsingFormatter = [.. clazz.FieldDefinitions.Values
-                    .Where(field => field.Formatter is not null && field.Formatter.Name.Equals(fieldFormatterName))
+                    .Where(field => field.Formatter?.Name.Equals(fieldFormatterName) == true)
                     .Select(field => field.Name)];
                 if (fieldsUsingFormatter.Count > 0)
                 {

@@ -10,7 +10,5 @@ namespace pva.SuperV.Model.FieldFormatters
         string Name,
         [property: Description("String values associated with integers.")]
         Dictionary<int, string> Values)
-        : FieldFormatterModel(Name, typeof(EnumFormatter).ToString())
-    {
-    }
+        : FieldFormatterModel(Name, typeof(EnumFormatter).ToString());
 }

@@ -9,7 +9,5 @@ namespace pva.SuperV.Model.Instances
         [property:Description("Field name")]
         string Name, string Type,
         [property:Description("Field value")]
-        FieldValueModel FieldValue)
-    {
-    }
+        FieldValueModel FieldValue);
 }

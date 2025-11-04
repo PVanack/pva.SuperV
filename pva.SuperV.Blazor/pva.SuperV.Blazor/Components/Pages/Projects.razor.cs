@@ -27,7 +27,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         private string itemNameSearchString = default!;
         private int selectedRowNumber;
 
-        private ProjectModel? SelectedItem { get; set; } = default!;
+        private ProjectModel? SelectedItem { get; set; }
 
         protected override void OnInitialized()
         {
@@ -43,14 +43,14 @@ namespace pva.SuperV.Blazor.Components.Pages
             return itemsTableData;
         }
 
-        private void CreateItem(MouseEventArgs e)
+        private void CreateItem(MouseEventArgs _)
         {
             SelectedItem = null;
             State.CurrentProject = null;
             NavigationManager.NavigateTo("/project");
         }
 
-        private void EditItem(MouseEventArgs e)
+        private void EditItem(MouseEventArgs _)
         {
             if (SelectedItem != null)
             {
@@ -73,7 +73,7 @@ namespace pva.SuperV.Blazor.Components.Pages
                 SelectedItem = null;
                 return string.Empty;
             }
-            else if (itemsTable.SelectedItem != null && itemsTable.SelectedItem.Equals(project))
+            else if (itemsTable.SelectedItem?.Equals(project) == true)
             {
                 selectedRowNumber = rowNumber;
                 SelectedItem = itemsTable.SelectedItem;
@@ -85,7 +85,7 @@ namespace pva.SuperV.Blazor.Components.Pages
             }
         }
 
-        private async Task Search(string args)
+        private async Task Search(string _)
         {
             await ReloadTable();
         }
@@ -105,10 +105,10 @@ namespace pva.SuperV.Blazor.Components.Pages
         {
             var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.EntityDescription, $"project {projectId}" } };
 
-            var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>($"Delete project", parameters);
+            var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>("Delete project", parameters);
             var result = await dialog.Result;
 
-            if (result is not null && !result.Canceled)
+            if (result?.Canceled == false)
             {
                 await ProjectServiceClient.UnloadProjectAsync(projectId);
                 await ReloadTable();
@@ -141,20 +141,20 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private async Task LoadProjectFromDefinition(IBrowserFile file)
         {
-            using MemoryStream memoryStream = new();
+            await using MemoryStream memoryStream = new();
             await file.OpenReadStream().CopyToAsync(memoryStream);
             byte[] fileContent = memoryStream.ToArray();
-            using MemoryStream memoryStream2 = new(fileContent);
+            await using MemoryStream memoryStream2 = new(fileContent);
             _ = await ProjectServiceClient.CreateProjectFromJsonDefinitionAsync(new StreamReader(memoryStream2));
             await ReloadTable();
         }
 
         private async Task LoadProjectInstancesFromFile(IBrowserFile file, ProjectModel project)
         {
-            using MemoryStream memoryStream = new();
+            await using MemoryStream memoryStream = new();
             await file.OpenReadStream().CopyToAsync(memoryStream);
             byte[] fileContent = memoryStream.ToArray();
-            using MemoryStream memoryStream2 = new(fileContent);
+            await using MemoryStream memoryStream2 = new(fileContent);
             await ProjectServiceClient.LoadProjectInstancesAsync(project.Id, new StreamReader(memoryStream2));
         }
 

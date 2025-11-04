@@ -16,7 +16,7 @@ namespace pva.SuperV.Engine
             {
                 if (field.FieldDefinition?.Formatter is not null)
                 {
-                    field.FieldDefinition?.Formatter.ConvertFromString(field, value as string, timestamp, quality);
+                    field.FieldDefinition?.Formatter.ConvertFromString(field, stringValue, timestamp, quality);
                 }
                 else
                 {

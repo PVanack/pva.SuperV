@@ -16,7 +16,7 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
             };
 
         public async Task<List<FieldDefinitionModel>> GetFieldsAsync(string projectId, string className)
-            => await Task.FromResult(GetClassEntity(projectId, className).FieldDefinitions.Values.Select(field => FieldDefinitionMapper.ToDto(field!)).ToList());
+            => await Task.FromResult(GetClassEntity(projectId, className).FieldDefinitions.Values.Select(field => FieldDefinitionMapper.ToDto(field)).ToList());
 
         public async Task<FieldDefinitionModel> GetFieldAsync(string projectId, string className, string fieldName)
         {
@@ -70,10 +70,7 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
                     // If exception while creatig one of the fields, remove all the already created fields.
                     try
                     {
-                        createdFieldDefinitions.ForEach(fieldDefinition =>
-                        {
-                            clazz.RemoveField(fieldDefinition.Name);
-                        });
+                        createdFieldDefinitions.ForEach(fieldDefinition => clazz.RemoveField(fieldDefinition.Name));
                     }
                     catch (SuperVException)
                     {
@@ -90,7 +87,7 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 _ = GetClassEntity(wipProject, className);
-                if (updateRequest.Name == null || updateRequest.Name.Equals(fieldName))
+                if (updateRequest.Name?.Equals(fieldName) != false)
                 {
                     IFieldDefinition fieldDefinitionUpdate = FieldDefinitionMapper.FromDto(updateRequest);
                     return await Task.FromResult(FieldDefinitionMapper.ToDto(wipProject.UpdateField(className, fieldName, fieldDefinitionUpdate, updateRequest.ValueFormatter)));

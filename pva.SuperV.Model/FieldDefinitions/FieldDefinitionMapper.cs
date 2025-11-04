@@ -21,7 +21,7 @@ namespace pva.SuperV.Model.FieldDefinitions
                 UintFieldDefinitionModel derivedField => new FieldDefinition<uint>(field.Name, derivedField.DefaultValue),
                 UlongFieldDefinitionModel derivedField => new FieldDefinition<ulong>(field.Name, derivedField.DefaultValue),
                 UshortFieldDefinitionModel derivedField => new FieldDefinition<ushort>(field.Name, derivedField.DefaultValue),
-                _ => throw new UnhandledMappingException(nameof(FieldDefinitionMapper), field?.FieldType.ToString()),
+                _ => throw new UnhandledMappingException(nameof(FieldDefinitionMapper), field?.FieldType),
             };
         }
 

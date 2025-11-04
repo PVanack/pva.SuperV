@@ -9,7 +9,5 @@ namespace pva.SuperV.Model.HistoryRepositories
     public record HistoryRepositoryModel(
         [Description("Name of repository")]
         [Required(AllowEmptyStrings = false)]
-        string Name)
-    {
-    }
+        string Name);
 }

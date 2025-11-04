@@ -22,7 +22,7 @@ public partial class HistoryRepositories
     private MudTable<HistoryRepositoryModel> itemsTable = default!;
     private int selectedRowNumber;
 
-    private HistoryRepositoryModel? SelectedItem { get; set; } = default!;
+    private HistoryRepositoryModel? SelectedItem { get; set; }
 
     protected override void OnInitialized()
     {
@@ -30,7 +30,7 @@ public partial class HistoryRepositories
         base.OnInitialized();
     }
 
-    private async Task<TableData<HistoryRepositoryModel>> ServerReload(TableState state, CancellationToken token)
+    private async Task<TableData<HistoryRepositoryModel>> ServerReload(TableState _, CancellationToken __)
     {
         List<HistoryRepositoryModel> historyRepositories = await HistoryRepositoryService.GetHistoryRepositoriesAsync(ProjectId);
         TableData<HistoryRepositoryModel> itemsTableData = new() { TotalItems = historyRepositories.Count, Items = historyRepositories };
@@ -50,7 +50,7 @@ public partial class HistoryRepositories
             SelectedItem = null;
             return string.Empty;
         }
-        else if (itemsTable.SelectedItem != null && itemsTable.SelectedItem.Equals(item))
+        else if (itemsTable.SelectedItem?.Equals(item) == true)
         {
             selectedRowNumber = rowNumber;
             SelectedItem = itemsTable.SelectedItem;
@@ -66,10 +66,10 @@ public partial class HistoryRepositories
     {
         var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.EntityDescription, $"history repository {itemId}" } };
 
-        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>($"Delete history repository", parameters);
+        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>("Delete history repository", parameters);
         var result = await dialog.Result;
 
-        if (result is not null && !result.Canceled)
+        if (result?.Canceled == false)
         {
             await HistoryRepositoryService.DeleteHistoryRepositoryAsync(ProjectId, itemId);
             await ReloadTable();

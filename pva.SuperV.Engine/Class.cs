@@ -76,7 +76,6 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Adds a field definition to the class.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="field">The field.</param>
         /// <returns>The field once it has been added.</returns>
         public IFieldDefinition AddField(IFieldDefinition field)
@@ -87,7 +86,6 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Adds a field with a field formatter.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="field">The <see cref="FieldDefinition{T}"/> to be added.</param>
         /// <param name="formatter">The formatter to be used when using ToString()."/>.</param>
         /// <returns></returns>

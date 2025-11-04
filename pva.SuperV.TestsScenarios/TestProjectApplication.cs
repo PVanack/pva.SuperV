@@ -3,7 +3,5 @@ using pva.SuperV.Api;
 
 namespace pva.SuperV.TestsScenarios
 {
-    public class TestProjectApplication : WebApplicationFactory<WebApiProgram>
-    {
-    }
+    public class TestProjectApplication : WebApplicationFactory<WebApiProgram>;
 }

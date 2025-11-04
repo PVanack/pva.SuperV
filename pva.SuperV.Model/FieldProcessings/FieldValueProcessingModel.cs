@@ -15,7 +15,5 @@ namespace pva.SuperV.Model.FieldProcessings
         string Name,
         [property: Description("Name of field triggering the processing.")]
         [Required(AllowEmptyStrings = false)]
-        string TrigerringFieldName)
-    {
-    }
+        string TrigerringFieldName);
 }

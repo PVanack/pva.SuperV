@@ -107,7 +107,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.GetAsync($"/classes/Project1/UnknownClass");
+            var response = await client.GetAsync("/classes/Project1/UnknownClass");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -225,7 +225,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             ClassModel expectedClass = new("Class1", null);
             MockedClassService.When(async (fake) => await fake.DeleteClassAsync("UnknownProject", expectedClass.Name))
-                .Do(call => { throw new UnknownEntityException(); });
+                .Do(_ => throw new UnknownEntityException());
 
             // WHEN
             var response = await client.DeleteAsync($"/classes/UnknownProject/{expectedClass.Name}");
@@ -240,7 +240,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             ClassModel expectedClass = new("Class1", null);
             MockedClassService.When(async (fake) => await fake.DeleteClassAsync("RunnableProject", expectedClass.Name))
-                .Do(call => { throw new NonWipProjectException(); });
+                .Do(_ => throw new NonWipProjectException());
 
             // WHEN
             var response = await client.DeleteAsync($"/classes/RunnableProject/{expectedClass.Name}");

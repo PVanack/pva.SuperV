@@ -4,8 +4,8 @@ namespace pva.SuperV.Blazor.Services
 {
     public class ApiException : Exception
     {
-        private readonly string? message = default!;
-        private readonly string? status = default!;
+        private readonly string? message;
+        private readonly string? status;
 
         public ApiException(string message) : base(message)
         {

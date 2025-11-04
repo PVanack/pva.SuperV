@@ -56,7 +56,7 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             fieldFormattersApi.MapPost("/{wipProjectId}",
-                async (IFieldFormatterService fieldFormatterService, HttpContext context,
+                async (IFieldFormatterService fieldFormatterService, HttpContext _,
                 [Description("ID of WIP project")] string wipProjectId,
                 [Description("Field formatter creation request")][FromBody] CreateFieldFormatterRequest createRequest)
                     => await CreateFieldFormatter.Handle(fieldFormatterService, wipProjectId, createRequest))
@@ -69,7 +69,7 @@ namespace pva.SuperV.Api.Routes.FieldFormatters
                 .Produces<string>(StatusCodes.Status400BadRequest);
 
             fieldFormattersApi.MapPut("/{wipProjectId}/{fieldFormatterName}",
-                async (IFieldFormatterService fieldFormatterService, HttpContext context,
+                async (IFieldFormatterService fieldFormatterService, HttpContext _,
                 [Description("ID of WIP project")] string wipProjectId,
                 [Description("Field formatter name")] string fieldFormatterName,
                 [Description("Field formatter update model")][FromBody] FieldFormatterModel fieldFormatterModel)

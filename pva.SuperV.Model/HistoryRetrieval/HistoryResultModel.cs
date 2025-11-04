@@ -9,7 +9,5 @@ namespace pva.SuperV.Model.HistoryRetrieval
         [property:Description("Header containing fields information.")]
         List<HistoryFieldModel> Header,
         [property:Description("Rows of history values.")]
-        List<HistoryRowModel> Rows)
-    {
-    }
+        List<HistoryRowModel> Rows);
 }
