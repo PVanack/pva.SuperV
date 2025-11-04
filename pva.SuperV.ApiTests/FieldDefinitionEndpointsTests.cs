@@ -189,7 +189,7 @@ public class FieldDefinitionEndpointsTests
             .ThrowsAsync<UnknownEntityException>();
 
         // WHEN
-        var response = await client.GetAsync($"/fields/Project/Class/UnknownFieldDefinition");
+        var response = await client.GetAsync("/fields/Project/Class/UnknownFieldDefinition");
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -306,7 +306,7 @@ public class FieldDefinitionEndpointsTests
     {
         // GIVEN
         MockedFieldDefinitionService.When(async (fake) => await fake.DeleteFieldAsync("Project", "UnknownClass", "IntField"))
-            .Do(call => { throw new UnknownEntityException(); });
+            .Do(_ => throw new UnknownEntityException());
 
         // WHEN
         var response = await client.DeleteAsync("/fields/Project/UnknownClass/IntField");
@@ -320,7 +320,7 @@ public class FieldDefinitionEndpointsTests
     {
         // GIVEN
         MockedFieldDefinitionService.When(async (fake) => await fake.DeleteFieldAsync("RunnableProject", "Class", "IntField"))
-            .Do(call => { throw new NonWipProjectException(); });
+            .Do(_ => throw new NonWipProjectException());
 
         // WHEN
         var response = await client.DeleteAsync("/fields/RunnableProject/Class/IntField");

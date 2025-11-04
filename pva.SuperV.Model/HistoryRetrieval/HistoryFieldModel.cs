@@ -11,7 +11,5 @@ namespace pva.SuperV.Model.HistoryRetrieval
         [property:Description("Type of field")]
         string Type,
         [property:Description("Column index of field in rows")]
-        int ColumnIndex)
-    {
-    }
+        int ColumnIndex);
 }

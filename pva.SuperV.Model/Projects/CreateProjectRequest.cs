@@ -15,7 +15,5 @@ namespace pva.SuperV.Model.Projects
         [Required]
         string Description,
         [property: Description("Connection string to history storage")]
-        string? HistoryStorageConnectionString = null)
-    {
-    }
+        string? HistoryStorageConnectionString = null);
 }

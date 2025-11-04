@@ -124,7 +124,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.GetAsync($"/field-formatters/Project/UnknownFieldFormatter");
+            var response = await client.GetAsync("/field-formatters/Project/UnknownFieldFormatter");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -141,7 +141,7 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedFieldFormatter);
 
             // WHEN
-            var response = await client.PostAsJsonAsync($"/field-formatters/Project", createRequest);
+            var response = await client.PostAsJsonAsync("/field-formatters/Project", createRequest);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
@@ -160,7 +160,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.PostAsJsonAsync($"/field-formatters/UnknownProject", createRequest);
+            var response = await client.PostAsJsonAsync("/field-formatters/UnknownProject", createRequest);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -177,7 +177,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
-            var response = await client.PostAsJsonAsync($"/field-formatters/RunnableProject", createRequest);
+            var response = await client.PostAsJsonAsync("/field-formatters/RunnableProject", createRequest);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -239,7 +239,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
 
             // WHEN
-            var response = await client.DeleteAsync($"/field-formatters/Project/FieldFormatter");
+            var response = await client.DeleteAsync("/field-formatters/Project/FieldFormatter");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
@@ -250,10 +250,10 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             MockedFieldFormatterService.When(async (fake) => await fake.DeleteFieldFormatterAsync("Project", "UnknownFieldFormatter"))
-                .Do(call => { throw new UnknownEntityException(); });
+                .Do(_ => throw new UnknownEntityException());
 
             // WHEN
-            var response = await client.DeleteAsync($"/field-formatters/Project/UnknownFieldFormatter");
+            var response = await client.DeleteAsync("/field-formatters/Project/UnknownFieldFormatter");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -264,10 +264,10 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             MockedFieldFormatterService.When(async (fake) => await fake.DeleteFieldFormatterAsync("RunnableProject", "FieldFormatter"))
-                .Do(call => { throw new NonWipProjectException(); });
+                .Do(_ => throw new NonWipProjectException());
 
             // WHEN
-            var response = await client.DeleteAsync($"/field-formatters/RunnableProject/FieldFormatter");
+            var response = await client.DeleteAsync("/field-formatters/RunnableProject/FieldFormatter");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);

@@ -74,7 +74,7 @@ namespace pva.SuperV.Blazor.Components.Pages
             await base.OnInitializedAsync();
         }
 
-        private async Task OnValidSubmit(EditContext context)
+        private async Task OnValidSubmit(EditContext _)
         {
             success = true;
             FieldFormatterModel fieldFormatter = MapFieldFormatter(EditedFieldFormatter);

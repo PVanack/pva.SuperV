@@ -8,7 +8,5 @@ namespace pva.SuperV.Model.FieldFormatters
 
     public record CreateFieldFormatterRequest(
         [property:Description("Definition of field formatter")]
-        FieldFormatterModel FieldFormatter)
-    {
-    }
+        FieldFormatterModel FieldFormatter);
 }

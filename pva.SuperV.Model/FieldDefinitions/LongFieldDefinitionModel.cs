@@ -9,7 +9,5 @@ namespace pva.SuperV.Model.FieldDefinitions
             string Name,
             [property: Description("Default value")] long DefaultValue,
             string? ValueFormatter)
-            : FieldDefinitionModel(Name, typeof(long).ToString(), ValueFormatter)
-    {
-    }
+            : FieldDefinitionModel(Name, typeof(long).ToString(), ValueFormatter);
 }

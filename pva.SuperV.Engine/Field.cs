@@ -110,7 +110,7 @@ namespace pva.SuperV.Engine
         {
             T previousValue = _value;
             SetValueInternal(newValue, timestamp ?? DateTime.Now, quality ?? QualityLevel.Good);
-            bool valueChanged = (previousValue == null && (previousValue as object) != (newValue as object)) ||
+            bool valueChanged = (EqualityComparer<T?>.Default.Equals(previousValue, default) && (previousValue as object) != (newValue as object)) ||
                 !previousValue!.Equals(newValue);
             ProcessNewValue(valueChanged, newValue, previousValue!);
         }

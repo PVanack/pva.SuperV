@@ -28,7 +28,7 @@ public partial class FieldProcessings
     private string itemNameSearchString = default!;
     private int selectedRowNumber;
 
-    private FieldValueProcessingModel? SelectedItem { get; set; } = default!;
+    private FieldValueProcessingModel? SelectedItem { get; set; }
 
     protected override void OnInitialized()
     {
@@ -37,7 +37,7 @@ public partial class FieldProcessings
         base.OnInitialized();
     }
 
-    private async Task<TableData<FieldValueProcessingModel>> ServerReload(TableState state, CancellationToken token)
+    private async Task<TableData<FieldValueProcessingModel>> ServerReload(TableState _, CancellationToken __)
     {
         List<FieldValueProcessingModel> fieldProcessings = await FieldProcessingService.GetFieldProcessingsAsync(ProjectId, ClassName, FieldName);
         TableData<FieldValueProcessingModel> itemsTableData = new() { TotalItems = fieldProcessings.Count, Items = fieldProcessings };
@@ -57,7 +57,7 @@ public partial class FieldProcessings
             SelectedItem = null;
             return string.Empty;
         }
-        else if (itemsTable.SelectedItem != null && itemsTable.SelectedItem.Equals(item))
+        else if (itemsTable.SelectedItem?.Equals(item) == true)
         {
             selectedRowNumber = rowNumber;
             SelectedItem = itemsTable.SelectedItem;
@@ -69,7 +69,7 @@ public partial class FieldProcessings
         }
     }
 
-    private async Task Search(string args)
+    private async Task Search(string _)
     {
         await ReloadTable();
     }
@@ -78,10 +78,10 @@ public partial class FieldProcessings
     {
         var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.EntityDescription, $"field value processing {itemId}" } };
 
-        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>($"Delete field value processing", parameters);
+        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>("Delete field value processing", parameters);
         var result = await dialog.Result;
 
-        if (result is not null && !result.Canceled)
+        if (result?.Canceled == false)
         {
             await FieldProcessingService.DeleteFieldProcessingAsync(ProjectId, ClassName, FieldName, itemId);
             await ReloadTable();

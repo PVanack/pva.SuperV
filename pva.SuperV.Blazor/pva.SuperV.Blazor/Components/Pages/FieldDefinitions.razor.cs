@@ -29,7 +29,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         private string itemNameSearchString = default!;
         private int selectedRowNumber;
 
-        private FieldDefinitionModel? SelectedItem { get; set; } = default!;
+        private FieldDefinitionModel? SelectedItem { get; set; }
 
         protected override void OnInitialized()
         {
@@ -38,7 +38,7 @@ namespace pva.SuperV.Blazor.Components.Pages
             base.OnInitialized();
         }
 
-        private async Task<TableData<FieldDefinitionModel>> ServerReload(TableState state, CancellationToken token)
+        private async Task<TableData<FieldDefinitionModel>> ServerReload(TableState state, CancellationToken _)
         {
             FieldDefinitionPagedSearchRequest request = new(state.Page + 1, state.PageSize, itemNameSearchString, null);
             PagedSearchResult<FieldDefinitionModel> projects = await FieldDefinitionService.SearchFieldsAsync(ProjectId, ClassName, request);
@@ -46,7 +46,7 @@ namespace pva.SuperV.Blazor.Components.Pages
             return itemsTableData;
         }
 
-        private async Task CreateItem(MouseEventArgs e)
+        private async Task CreateItem(MouseEventArgs _)
         {
             SelectedItem = null;
             NavigationManager.NavigateTo($"/field-definition/{ProjectId}/{ClassName}");
@@ -66,7 +66,7 @@ namespace pva.SuperV.Blazor.Components.Pages
                 SelectedItem = null;
                 return string.Empty;
             }
-            else if (itemsTable.SelectedItem != null && itemsTable.SelectedItem.Equals(item))
+            else if (itemsTable.SelectedItem?.Equals(item) == true)
             {
                 selectedRowNumber = rowNumber;
                 SelectedItem = itemsTable.SelectedItem;
@@ -78,7 +78,7 @@ namespace pva.SuperV.Blazor.Components.Pages
             }
         }
 
-        private async Task Search(string args)
+        private async Task Search(string _)
         {
             await ReloadTable();
         }
@@ -87,10 +87,10 @@ namespace pva.SuperV.Blazor.Components.Pages
         {
             var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.EntityDescription, $"field definition {itemId}" } };
 
-            var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>($"Delete field definition", parameters);
+            var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>("Delete field definition", parameters);
             var result = await dialog.Result;
 
-            if (result is not null && !result.Canceled)
+            if (result?.Canceled == false)
             {
                 await FieldDefinitionService.DeleteFieldAsync(ProjectId, ClassName, itemId);
                 await ReloadTable();

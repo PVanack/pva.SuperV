@@ -25,7 +25,7 @@ public partial class FieldFormatters
     private string itemNameSearchString = default!;
     private int selectedRowNumber;
 
-    private FieldFormatterModel? SelectedItem { get; set; } = default!;
+    private FieldFormatterModel? SelectedItem { get; set; }
 
     protected override void OnInitialized()
     {
@@ -34,7 +34,7 @@ public partial class FieldFormatters
         base.OnInitialized();
     }
 
-    private async Task<TableData<FieldFormatterModel>> ServerReload(TableState state, CancellationToken token)
+    private async Task<TableData<FieldFormatterModel>> ServerReload(TableState state, CancellationToken _)
     {
         FieldFormatterPagedSearchRequest request = new(state.Page + 1, state.PageSize, itemNameSearchString, null);
         PagedSearchResult<FieldFormatterModel> projects = await FieldFormatterService.SearchFieldFormattersAsync(ProjectId, request);
@@ -55,7 +55,7 @@ public partial class FieldFormatters
             SelectedItem = null;
             return string.Empty;
         }
-        else if (itemsTable.SelectedItem != null && itemsTable.SelectedItem.Equals(item))
+        else if (itemsTable.SelectedItem?.Equals(item) == true)
         {
             selectedRowNumber = rowNumber;
             SelectedItem = itemsTable.SelectedItem;
@@ -67,7 +67,7 @@ public partial class FieldFormatters
         }
     }
 
-    private async Task Search(string args)
+    private async Task Search(string _)
     {
         await ReloadTable();
     }
@@ -76,10 +76,10 @@ public partial class FieldFormatters
     {
         var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.EntityDescription, $"field formatter {itemId}" } };
 
-        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>($"Delete field formatter", parameters);
+        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>("Delete field formatter", parameters);
         var result = await dialog.Result;
 
-        if (result is not null && !result.Canceled)
+        if (result?.Canceled == false)
         {
             await FieldFormatterService.DeleteFieldFormatterAsync(ProjectId, itemId);
             await ReloadTable();

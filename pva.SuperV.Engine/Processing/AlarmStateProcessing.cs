@@ -176,7 +176,7 @@ namespace pva.SuperV.Engine.Processing
 
         private static bool IsFieldUsed(IFieldDefinition? field, string fieldName)
         {
-            return (field is not null && field.Name.Equals(fieldName));
+            return field?.Name.Equals(fieldName) == true;
         }
 
         /// <summary>

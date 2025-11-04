@@ -8,7 +8,7 @@ namespace pva.SuperV.Blazor
     {
         public List<BreadcrumbItem> Breadcrumbs { get; set; } = default!;
         public MainLayout MainlLayout { get; set; } = default!;
-        public ProjectModel? CurrentProject { get; set; } = default!;
+        public ProjectModel? CurrentProject { get; set; }
 
         internal void SetHomeBreadCrumb(bool refreshBreadcrumbs = true)
         {

@@ -37,7 +37,7 @@ namespace pva.SuperV.Blazor.Components.Pages
             await base.OnParametersSetAsync();
         }
 
-        private async Task OnValidSubmit(EditContext context)
+        private async Task OnValidSubmit(EditContext _)
         {
             success = true;
             if (isModification)

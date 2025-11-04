@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 namespace pva.SuperV.Blazor.Client
 {
-    internal class Program
+    internal static class Program
     {
         static async Task Main(string[] args)
         {

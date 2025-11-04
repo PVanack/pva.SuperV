@@ -13,7 +13,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         [CascadingParameter(Name = "TriggeringFieldName")]
         private string TriggeringFieldName { get; set; } = default!;
 
-        private EditedAlarmStateProcessing? editedAlarmStateFieldProcessing = default!;
+        private EditedAlarmStateProcessing? editedAlarmStateFieldProcessing;
         FieldDefinitionModel triggeringField = default!;
 
         protected override Task OnParametersSetAsync()
@@ -27,8 +27,9 @@ namespace pva.SuperV.Blazor.Components.Pages
         {
             List<string> allFieldNames = [""];
             allFieldNames.AddRange([.. ClassAvailableFields
-                .Where(field => (fieldToBeSearched == null || field.GetType().Equals(fieldToBeSearched.GetType()) &&
-                        field.Name != TriggeringFieldName))
+                .Where(field => fieldToBeSearched == null ||
+                (field.GetType().Equals(fieldToBeSearched.GetType()) &&
+                  field.Name != TriggeringFieldName))
                 .Select(field => field.Name)]);
             return allFieldNames;
         }

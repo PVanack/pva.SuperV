@@ -12,7 +12,5 @@ namespace pva.SuperV.Model.HistoryRetrieval
         int ColumnIndex,
         [property:Description("Statistic function to be applied to field.")]
         HistoryStatFunction StatisticFunction)
-        : HistoryFieldModel(Name, Type, ColumnIndex)
-    {
-    }
+        : HistoryFieldModel(Name, Type, ColumnIndex);
 }

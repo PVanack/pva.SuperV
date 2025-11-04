@@ -41,12 +41,12 @@
         /// <summary>
         /// The elapsed function expresses the continuous duration within a statistical period, and when used with the twa function, it can calculate the area under
         /// the statistical curve. When specifying a window with the INTERVAL clause, it calculates the time range covered by data in each window within the given time range;
-        /// if there is no INTERVAL clause, it returns the time range covered by data for the entire given time range. Note that ELAPSED returns not the absolute value of the 
+        /// if there is no INTERVAL clause, it returns the time range covered by data for the entire given time range. Note that ELAPSED returns not the absolute value of the
         /// time range, but the number of units obtained by dividing the absolute value by time_unit.
         /// </summary>
         ELAPSED,
         /// <summary>
-        /// Calculates the fitted line equation for a column in the table. start_val is the initial value of the independent variable, and step_val is the step value of 
+        /// Calculates the fitted line equation for a column in the table. start_val is the initial value of the independent variable, and step_val is the step value of
         /// the independent variable.
         /// </summary>
         LEASTSQUARES,

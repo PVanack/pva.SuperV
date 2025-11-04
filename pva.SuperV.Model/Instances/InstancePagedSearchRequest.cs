@@ -8,7 +8,5 @@ namespace pva.SuperV.Model.Instances
     public record InstancePagedSearchRequest(int PageNumber, int PageSize, string? NameFilter, string? SortOption,
         [property: Description("Filter on class name.")]
         string? ClassName)
-        : PagedSearchRequest(PageNumber, PageSize, NameFilter, SortOption)
-    {
-    }
+        : PagedSearchRequest(PageNumber, PageSize, NameFilter, SortOption);
 }

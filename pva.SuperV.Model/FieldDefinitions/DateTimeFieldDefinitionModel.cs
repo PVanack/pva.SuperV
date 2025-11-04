@@ -9,7 +9,5 @@ namespace pva.SuperV.Model.FieldDefinitions
             string Name,
             [property: Description("Default value")] DateTime DefaultValue,
             string? ValueFormatter)
-            : FieldDefinitionModel(Name, typeof(DateTime).ToString(), ValueFormatter)
-    {
-    }
+            : FieldDefinitionModel(Name, typeof(DateTime).ToString(), ValueFormatter);
 }

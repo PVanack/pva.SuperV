@@ -95,7 +95,7 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedHistoryRepository);
 
             // WHEN
-            var result = await client.PostAsJsonAsync($"/history-repositories/Project", expectedHistoryRepository);
+            var result = await client.PostAsJsonAsync("/history-repositories/Project", expectedHistoryRepository);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
@@ -112,7 +112,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var result = await client.PostAsJsonAsync($"/history-repositories/UnknownProject", expectedHistoryRepository);
+            var result = await client.PostAsJsonAsync("/history-repositories/UnknownProject", expectedHistoryRepository);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -127,7 +127,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
-            var result = await client.PostAsJsonAsync($"/history-repositories/RunnableProject", expectedHistoryRepository);
+            var result = await client.PostAsJsonAsync("/history-repositories/RunnableProject", expectedHistoryRepository);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -198,7 +198,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             MockedHistoryRepositoryService.When(async (fake) => await fake.DeleteHistoryRepositoryAsync("Project", "UnknownRepository"))
-                .Do(call => { throw new UnknownEntityException(); });
+                .Do(_ => throw new UnknownEntityException());
 
             // WHEN
             var result = await client.DeleteAsync("/history-repositories/Project/UnknownRepository");
@@ -212,7 +212,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             MockedHistoryRepositoryService.When(async (fake) => await fake.DeleteHistoryRepositoryAsync("RunnableProject", "Repository"))
-                .Do(call => { throw new NonWipProjectException(); });
+                .Do(_ => throw new NonWipProjectException());
 
             // WHEN
             var result = await client.DeleteAsync("/history-repositories/RunnableProject/Repository");

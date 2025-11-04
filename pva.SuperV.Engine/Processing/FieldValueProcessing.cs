@@ -105,7 +105,6 @@
         /// </summary>
         /// <typeparam name="T1">The type of the field definition.</typeparam>
         /// <param name="fieldDefinition">The field definition to convert.</param>
-        /// <param name="fieldName">Name of the field.</param>
         /// <returns><see cref="FieldDefinition{T}"/></returns>
         protected static FieldDefinition<T1>? ConvertFieldDefinition<T1>(IFieldDefinition fieldDefinition)
         {

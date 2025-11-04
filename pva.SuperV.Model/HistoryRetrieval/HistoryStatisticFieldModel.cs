@@ -10,7 +10,5 @@ namespace pva.SuperV.Model.HistoryRetrieval
         [property:Description("Name of field.")]
         string Name,
         [property:Description("Statistic function to be applied to field.")]
-        HistoryStatFunction StatisticFunction)
-    {
-    }
+        HistoryStatFunction StatisticFunction);
 }

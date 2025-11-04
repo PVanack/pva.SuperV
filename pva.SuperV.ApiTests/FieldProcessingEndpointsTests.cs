@@ -110,7 +110,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.GetAsync($"/field-processings/Project1/Class1/TrigerringFieldName/UnknownFieldProcessing");
+            var response = await client.GetAsync("/field-processings/Project1/Class1/TrigerringFieldName/UnknownFieldProcessing");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -264,7 +264,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
 
             // WHEN
-            var response = await client.DeleteAsync($"/field-processings/Project1/Class1/TrigerringFieldName/FieldProcessingName");
+            var response = await client.DeleteAsync("/field-processings/Project1/Class1/TrigerringFieldName/FieldProcessingName");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
@@ -275,10 +275,10 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             MockedFieldProcessingService.When(async (fake) => await fake.DeleteFieldProcessingAsync("Project1", "Class1", "TrigerringFieldName", "UnknownFieldProcessingName"))
-                .Do(call => { throw new UnknownEntityException(); });
+                .Do(_ => throw new UnknownEntityException());
 
             // WHEN
-            var response = await client.DeleteAsync($"/field-processings/Project1/Class1/TrigerringFieldName/UnknownFieldProcessingName");
+            var response = await client.DeleteAsync("/field-processings/Project1/Class1/TrigerringFieldName/UnknownFieldProcessingName");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -289,10 +289,10 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             MockedFieldProcessingService.When(async (fake) => await fake.DeleteFieldProcessingAsync("RunnableProject", "Class1", "TrigerringFieldName", "FieldProcessingName"))
-                .Do(call => { throw new NonWipProjectException(); });
+                .Do(_ => throw new NonWipProjectException());
 
             // WHEN
-            var response = await client.DeleteAsync($"/field-processings/RunnableProject/Class1/TrigerringFieldName/FieldProcessingName");
+            var response = await client.DeleteAsync("/field-processings/RunnableProject/Class1/TrigerringFieldName/FieldProcessingName");
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);

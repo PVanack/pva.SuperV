@@ -16,23 +16,20 @@ namespace pva.SuperV.Blazor
             builder.Services
                 .AddRazorComponents(options
                     => options.DetailedErrors = builder.Environment.IsDevelopment())
-                .AddInteractiveServerComponents(options =>
-                {
-                    options.DetailedErrors = true;
-                })
+                .AddInteractiveServerComponents(options => options.DetailedErrors = true)
                 .AddInteractiveWebAssemblyComponents();
             builder.Services.AddMudServices();
 
             builder.Services
                 .AddScoped<State>()
-                .AddScoped<IClassService, ClassService>((service) => new(BuildHttpClient(builder)))
-                .AddScoped<IProjectService, ProjectService>((service) => new(BuildHttpClient(builder)))
-                .AddScoped<IFieldDefinitionService, FieldDefinitionService>((service) => new(BuildHttpClient(builder)))
-                .AddScoped<IFieldFormatterService, FieldFormatterService>((service) => new(BuildHttpClient(builder)))
-                .AddScoped<IInstanceService, InstanceService>((service) => new(BuildHttpClient(builder)))
-                .AddScoped<IFieldValueService, FieldValueService>((service) => new(BuildHttpClient(builder)))
-                .AddScoped<IFieldProcessingService, FieldProcessingService>((service) => new(BuildHttpClient(builder)))
-                .AddScoped<IHistoryRepositoryService, HistoryRepositoryService>((service) => new(BuildHttpClient(builder)));
+                .AddScoped<IClassService, ClassService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IProjectService, ProjectService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IFieldDefinitionService, FieldDefinitionService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IFieldFormatterService, FieldFormatterService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IInstanceService, InstanceService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IFieldValueService, FieldValueService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IFieldProcessingService, FieldProcessingService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IHistoryRepositoryService, HistoryRepositoryService>(_ => new(BuildHttpClient(builder)));
 
             var app = builder.Build();
 

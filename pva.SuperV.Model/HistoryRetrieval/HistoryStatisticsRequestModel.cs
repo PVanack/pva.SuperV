@@ -16,7 +16,5 @@ namespace pva.SuperV.Model.HistoryRetrieval
     [property:Description("Fill mode in case the interval misses values.")]
     FillMode? FillMode,
     [property:Description("List of fields to be retrieved.")]
-    List<HistoryStatisticFieldModel> HistoryFields)
-    {
-    }
+    List<HistoryStatisticFieldModel> HistoryFields);
 }

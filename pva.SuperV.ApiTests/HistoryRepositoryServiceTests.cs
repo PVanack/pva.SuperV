@@ -59,7 +59,7 @@ namespace pva.SuperV.ApiTests
         [Fact]
         public async Task DeleteHistoryRepository_ShouldDeleteHistoryRepository()
         {
-            HistoryRepositoryModel expectedHistoryRepository = new($"{HistoryRepositoryName}");
+            HistoryRepositoryModel expectedHistoryRepository = new(HistoryRepositoryName);
             IFieldDefinition valueField = wipProject.GetClass(ClassName).GetField(ValueFieldName);
             List<IHistorizationProcessing> historizationProcessings = [.. valueField.ValuePostChangeProcessings.OfType<IHistorizationProcessing>()];
             historizationProcessings.ForEach(historizationProcessing => valueField.ValuePostChangeProcessings.Remove(historizationProcessing));
@@ -77,7 +77,7 @@ namespace pva.SuperV.ApiTests
         [Fact]
         public async Task DeleteInUseHistoryRepository_ThrowsException()
         {
-            HistoryRepositoryModel expectedHistoryRepository = new($"{HistoryRepositoryName}");
+            HistoryRepositoryModel expectedHistoryRepository = new(HistoryRepositoryName);
 
             // Act
             await Assert.ThrowsAsync<EntityInUseException>(async () => await historyRepositoryService.DeleteHistoryRepositoryAsync(wipProject.GetId(), expectedHistoryRepository.Name));

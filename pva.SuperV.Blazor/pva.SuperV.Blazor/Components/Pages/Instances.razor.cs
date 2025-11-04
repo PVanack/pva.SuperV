@@ -25,7 +25,7 @@ public partial class Instances
     private string itemNameSearchString = default!;
     private int selectedRowNumber;
 
-    private InstanceModel? SelectedItem { get; set; } = default!;
+    private InstanceModel? SelectedItem { get; set; }
 
     protected override void OnInitialized()
     {
@@ -34,7 +34,7 @@ public partial class Instances
         base.OnInitialized();
     }
 
-    private async Task<TableData<InstanceModel>> ServerReload(TableState state, CancellationToken token)
+    private async Task<TableData<InstanceModel>> ServerReload(TableState state, CancellationToken _)
     {
         // TODO Add class name filtering
         InstancePagedSearchRequest request = new(state.Page + 1, state.PageSize, itemNameSearchString, null, null);
@@ -56,7 +56,7 @@ public partial class Instances
             SelectedItem = null;
             return string.Empty;
         }
-        else if (itemsTable.SelectedItem != null && itemsTable.SelectedItem.Equals(item))
+        else if (itemsTable.SelectedItem?.Equals(item) == true)
         {
             selectedRowNumber = rowNumber;
             SelectedItem = itemsTable.SelectedItem;
@@ -68,7 +68,7 @@ public partial class Instances
         }
     }
 
-    private async Task Search(string args)
+    private async Task Search(string _)
     {
         await ReloadTable();
     }
@@ -77,10 +77,10 @@ public partial class Instances
     {
         var parameters = new DialogParameters<DeleteConfirmationDialog> { { x => x.EntityDescription, $"instance {itemId}" } };
 
-        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>($"Delete instance", parameters);
+        var dialog = await DialogService.ShowAsync<DeleteConfirmationDialog>("Delete instance", parameters);
         var result = await dialog.Result;
 
-        if (result is not null && !result.Canceled)
+        if (result?.Canceled == false)
         {
             await InstanceService.DeleteInstanceAsync(ProjectId, itemId);
             await ReloadTable();

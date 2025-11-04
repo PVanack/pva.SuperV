@@ -95,7 +95,7 @@ namespace pva.SuperV.Blazor.Services
         {
             try
             {
-                var result = await httpClient.GetAsync($"{baseUri}")
+                var result = await httpClient.GetAsync(baseUri)
                     ?? throw new ApiException("No content available");
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {

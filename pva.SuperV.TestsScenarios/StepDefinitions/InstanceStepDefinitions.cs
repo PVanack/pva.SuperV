@@ -64,9 +64,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                     FieldValue = expectedField.FieldValue
                         with
                     {
-                        Timestamp = expectedField.FieldValue.Timestamp == null
-                            ? updatedField.FieldValue.Timestamp
-                            : expectedField.FieldValue.Timestamp
+                        Timestamp = expectedField.FieldValue.Timestamp ?? updatedField.FieldValue.Timestamp
                     }
                 };
                 updatedField.ShouldBeEquivalentTo(expectedField);

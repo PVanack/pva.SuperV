@@ -113,10 +113,10 @@ namespace pva.SuperV.Engine.Processing
         }
 
         public bool IsUsingRepository(string historyRepositoryName)
-            => HistoryRepository is not null && HistoryRepository.Name.Equals(historyRepositoryName);
+            => HistoryRepository?.Name.Equals(historyRepositoryName) == true;
 
         public override bool IsFieldUsed(string fieldName)
-            => (TimestampFieldDefinition is not null && TimestampFieldDefinition.Name.Equals(fieldName))
+            => (TimestampFieldDefinition?.Name.Equals(fieldName) == true)
                 || FieldsToHistorize.Any(field => field.Name.Equals(fieldName));
 
         /// <summary>

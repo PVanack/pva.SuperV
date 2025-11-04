@@ -14,7 +14,5 @@ namespace pva.SuperV.Model.Instances
         [property: Description("Class name of instance.")]
         string ClassName,
         [property: Description("Instance field values.")]
-        List<FieldModel> Fields)
-    {
-    }
+        List<FieldModel> Fields);
 }

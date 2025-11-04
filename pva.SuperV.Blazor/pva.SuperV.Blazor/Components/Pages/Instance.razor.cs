@@ -49,15 +49,12 @@ namespace pva.SuperV.Blazor.Components.Pages
             await base.OnInitializedAsync();
         }
 
-        private async Task OnValidSubmit(EditContext context)
+        private async Task OnValidSubmit(EditContext _)
         {
             success = true;
             List<FieldModel> fields = [];
             EditedInstance.Fields.ForEach(field
-                =>
-                {
-                    fields.Add(BuildFieldWithValue(field.FieldModel, FieldValues[field.Name].Value));
-                }
+                => fields.Add(BuildFieldWithValue(field.FieldModel, FieldValues[field.Name].Value))
             );
             InstanceModel instance = new(EditedInstance.Name, EditedInstance.ClassName, fields);
             if (isModification)

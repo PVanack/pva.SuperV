@@ -10,7 +10,7 @@ public partial class EnumFormatter
     [CascadingParameter(Name = "EditedFieldFormatter")]
     EditedFieldFormatter EditedFieldFormatter { get; set; } = default!;
 
-    private EditedEnumFieldFormatter? editedEnumFieldFormatter = default!;
+    private EditedEnumFieldFormatter? editedEnumFieldFormatter;
 
     protected override Task OnParametersSetAsync()
     {
@@ -25,16 +25,15 @@ public partial class EnumFormatter
             return 0;
         }
         return editedEnumFieldFormatter!.EnumValues
-            .Select(x => x.Value)
-            .Max() + 1;
+            .Max(x => x.Value) + 1;
     }
 
-    private static void StartedEditingItem(EnumValue item)
+    private static void StartedEditingItem(EnumValue _)
     {
         // Needs to be there to allow in line editing
     }
 
-    private static void CanceledEditingItem(EnumValue item)
+    private static void CanceledEditingItem(EnumValue _)
     {
         // Needs to be there to allow in line editing
     }

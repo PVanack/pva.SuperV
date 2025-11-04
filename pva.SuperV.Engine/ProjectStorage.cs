@@ -31,7 +31,7 @@ namespace pva.SuperV.Engine
         /// <param name="filename">The filename.</param>
         public static async ValueTask SaveProjectDefinitionAsync<T>(T project, string filename) where T : Project
         {
-            using StreamWriter outputFile = new(filename);
+            await using StreamWriter outputFile = new(filename);
             await StreamProjectDefinitionAsync(project, outputFile);
         }
 
@@ -40,7 +40,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="project">The project.</param>
-        /// <param name="filename">The filename.</param>
+        /// <param name="streamWriter">The stream writer where to stream the project definitions.</param>
         public static async Task<Stream?> StreamProjectDefinitionAsync<T>(T project, StreamWriter streamWriter) where T : Project
         {
             await streamWriter.WriteAsync(JsonSerializer.Serialize(project));
@@ -66,7 +66,7 @@ namespace pva.SuperV.Engine
         /// Loads a project definition from a file.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="filename">The filename.</param>
+        /// <param name="streamReader">The stream reader where to read project definitions from.</param>
         /// <returns></returns>
         public static T CreateProjectFromJsonDefinition<T>(StreamReader streamReader) where T : Project
         {
@@ -108,7 +108,7 @@ namespace pva.SuperV.Engine
         /// <param name="filename">The filename.</param>
         public static async ValueTask SaveProjectInstancesAsync(RunnableProject project, string filename)
         {
-            using StreamWriter outputFile = new(filename);
+            await using StreamWriter outputFile = new(filename);
             Dictionary<string, IInstance> instances = new(project.Instances.Count);
             project.Instances.ForEach((k, v) =>
             {
@@ -122,7 +122,7 @@ namespace pva.SuperV.Engine
         /// Saves a project instances into a file.
         /// </summary>
         /// <param name="project">The project.</param>
-        /// <param name="filename">The filename.</param>
+        /// <param name="streamWriter">The stream writer where to write the project instances.</param>
         public static async Task<Stream?> StreamProjectInstancesAsync(RunnableProject project, StreamWriter streamWriter)
         {
             Dictionary<string, IInstance> instances = new(project.Instances.Count);

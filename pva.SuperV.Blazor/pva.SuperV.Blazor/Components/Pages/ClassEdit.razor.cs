@@ -59,7 +59,7 @@ namespace pva.SuperV.Blazor.Components.Pages
             StateHasChanged();
         }
 
-        private async Task OnValidSubmit(EditContext context)
+        private async Task OnValidSubmit(EditContext _)
         {
             success = true;
             ClassModel clazz = new(EditedClass.Name, !String.IsNullOrWhiteSpace(EditedClass.BaseClassName) ? EditedClass.BaseClassName : null);

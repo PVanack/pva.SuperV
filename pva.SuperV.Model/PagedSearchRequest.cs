@@ -13,7 +13,5 @@ namespace pva.SuperV.Model
         [property: Description("Filter on name of entity.")]
         string? NameFilter,
         [property: Description("Sorting option")]
-        string? SortOption)
-    {
-    }
+        string? SortOption);
 }

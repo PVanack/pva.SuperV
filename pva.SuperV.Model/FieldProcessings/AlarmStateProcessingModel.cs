@@ -22,7 +22,5 @@ namespace pva.SuperV.Model.FieldProcessings
         string AlarmStateFieldName,
         [property: Description("Acknowledgement field name.")]
         string? AckStateFieldName)
-        : FieldValueProcessingModel(Name, TrigerringFieldName)
-    {
-    }
+        : FieldValueProcessingModel(Name, TrigerringFieldName);
 }

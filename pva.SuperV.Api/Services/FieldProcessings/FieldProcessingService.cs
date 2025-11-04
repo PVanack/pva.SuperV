@@ -12,7 +12,7 @@ namespace pva.SuperV.Api.Services.FieldProcessings
         public async Task<List<FieldValueProcessingModel>> GetFieldProcessingsAsync(string projectId, string className, string fieldName)
         {
             IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(GetProjectEntity(projectId), className, fieldName);
-            return await Task.FromResult(fieldDefinition.ValuePostChangeProcessings.Select(Field => FieldProcessingMapper.ToDto(Field)).ToList());
+            return await Task.FromResult(fieldDefinition.ValuePostChangeProcessings.ConvertAll(field => FieldProcessingMapper.ToDto(field)));
         }
 
         public async Task<FieldValueProcessingModel> GetFieldProcessingAsync(string projectId, string className, string fieldName, string processingName)

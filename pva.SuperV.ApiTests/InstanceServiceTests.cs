@@ -155,7 +155,7 @@ namespace pva.SuperV.ApiTests
             // Assert
             List<InstanceModel> expectedInstances = [.. runnableProject.Instances.Values
                 .Where(instance => instance.Class.Name.Equals(BaseClassName)
-                                    || (instance.Class.BaseClass != null && instance.Class.BaseClass.Name.Equals(BaseClassName)))
+                                    || instance.Class.BaseClass?.Name.Equals(BaseClassName) == true)
                 .Select(instance => InstanceMapper.ToDto(instance))];
 
             pagedResult.ShouldNotBeNull();

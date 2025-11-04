@@ -18,7 +18,5 @@ namespace pva.SuperV.Model.HistoryRetrieval
         [property: Description("Quality level of row.")]
         QualityLevel Quality,
         [property: Description("Retrieved values.")]
-        List<object> FieldValues)
-    {
-    }
+        List<object> FieldValues);
 }

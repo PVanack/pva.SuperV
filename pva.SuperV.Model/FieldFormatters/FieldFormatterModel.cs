@@ -13,7 +13,5 @@ namespace pva.SuperV.Model.FieldFormatters
         [Required(AllowEmptyStrings = false)]
         string Name,
         [property: Description("Type of the formatter.")]
-        string FormatterType)
-    {
-    }
+        string FormatterType);
 }

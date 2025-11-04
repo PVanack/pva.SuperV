@@ -14,7 +14,5 @@ namespace pva.SuperV.Model
         [property: Description("Total number of entities.")]
         int Count,
         [property: Description("List of entities.")]
-        List<T> Result)
-    {
-    }
+        List<T> Result);
 }
