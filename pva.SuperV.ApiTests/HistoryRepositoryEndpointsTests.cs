@@ -6,7 +6,6 @@ using pva.SuperV.Model.HistoryRepositories;
 using pva.SuperV.Model.Services;
 using Shouldly;
 using System.Net.Http.Json;
-using Xunit.Abstractions;
 
 namespace pva.SuperV.ApiTests
 {
@@ -14,7 +13,7 @@ namespace pva.SuperV.ApiTests
     {
         public class ConsoleWriter(ITestOutputHelper output) : StringWriter
         {
-            public override void WriteLine(string? value) => output.WriteLine(value);
+            public override void WriteLine(string? value) => output.WriteLine(value!);
         }
 
         private readonly TestProjectApplication application;
@@ -36,11 +35,11 @@ namespace pva.SuperV.ApiTests
             MockedHistoryRepositoryService.GetHistoryRepositoriesAsync("Project")
                 .Returns(expectedHistoryRepositories);
             // WHEN
-            var result = await client.GetAsync("/history-repositories/Project");
+            var result = await client.GetAsync("/history-repositories/Project", cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            HistoryRepositoryModel[]? historyRepositories = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel[]>();
+            HistoryRepositoryModel[]? historyRepositories = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel[]>(cancellationToken: TestContext.Current.CancellationToken);
             historyRepositories.ShouldBeEquivalentTo(expectedHistoryRepositories.ToArray());
         }
 
@@ -51,7 +50,7 @@ namespace pva.SuperV.ApiTests
             MockedHistoryRepositoryService.GetHistoryRepositoriesAsync("UnknownProject")
                 .ThrowsAsync<UnknownEntityException>();
             // WHEN
-            var result = await client.GetAsync("/history-repositories/UnknownProject");
+            var result = await client.GetAsync("/history-repositories/UnknownProject", cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -65,11 +64,11 @@ namespace pva.SuperV.ApiTests
             MockedHistoryRepositoryService.GetHistoryRepositoryAsync("Project", $"{expectedHistoryRepository.Name}")
                 .Returns(expectedHistoryRepository);
             // WHEN
-            var result = await client.GetAsync($"/history-repositories/Project/{expectedHistoryRepository.Name}");
+            var result = await client.GetAsync($"/history-repositories/Project/{expectedHistoryRepository.Name}", cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>();
+            HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>(cancellationToken: TestContext.Current.CancellationToken);
             historyRepository.ShouldBeEquivalentTo(expectedHistoryRepository);
         }
 
@@ -80,7 +79,7 @@ namespace pva.SuperV.ApiTests
             MockedHistoryRepositoryService.GetHistoryRepositoryAsync("Project", "UnknownRepository")
                 .ThrowsAsync<UnknownEntityException>();
             // WHEN
-            var result = await client.GetAsync("/history-repositories/Project/UnknownRepository");
+            var result = await client.GetAsync("/history-repositories/Project/UnknownRepository", cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -95,11 +94,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedHistoryRepository);
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history-repositories/Project", expectedHistoryRepository);
+            var result = await client.PostAsJsonAsync("/history-repositories/Project", expectedHistoryRepository, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
-            HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>();
+            HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>(cancellationToken: TestContext.Current.CancellationToken);
             historyRepository.ShouldBeEquivalentTo(expectedHistoryRepository);
         }
 
@@ -112,7 +111,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history-repositories/UnknownProject", expectedHistoryRepository);
+            var result = await client.PostAsJsonAsync("/history-repositories/UnknownProject", expectedHistoryRepository, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -127,7 +126,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history-repositories/RunnableProject", expectedHistoryRepository);
+            var result = await client.PostAsJsonAsync("/history-repositories/RunnableProject", expectedHistoryRepository, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -142,11 +141,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedHistoryRepository);
 
             // WHEN
-            var result = await client.PutAsJsonAsync($"/history-repositories/Project/{expectedHistoryRepository.Name}", expectedHistoryRepository);
+            var result = await client.PutAsJsonAsync($"/history-repositories/Project/{expectedHistoryRepository.Name}", expectedHistoryRepository, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>();
+            HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>(cancellationToken: TestContext.Current.CancellationToken);
             historyRepository.ShouldBeEquivalentTo(expectedHistoryRepository);
         }
 
@@ -159,7 +158,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var result = await client.PutAsJsonAsync($"/history-repositories/UnknownProject/{expectedHistoryRepository.Name}", expectedHistoryRepository);
+            var result = await client.PutAsJsonAsync($"/history-repositories/UnknownProject/{expectedHistoryRepository.Name}", expectedHistoryRepository, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -174,7 +173,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
-            var result = await client.PutAsJsonAsync($"/history-repositories/RunnableProject/{expectedHistoryRepository.Name}", expectedHistoryRepository);
+            var result = await client.PutAsJsonAsync($"/history-repositories/RunnableProject/{expectedHistoryRepository.Name}", expectedHistoryRepository, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -184,10 +183,10 @@ namespace pva.SuperV.ApiTests
         public async Task GivenProjectWithHistoryRepository_WhenDeletingHistoryRepository_ThenHistoryRepositoryIsDeleted()
         {
             // GIVEN
-            HistoryRepositoryModel expectedHistoryRepository = new("Repository1");
+            HistoryRepositoryModel _ = new("Repository1");
 
             // WHEN
-            var result = await client.DeleteAsync($"/history-repositories/Project/{expectedHistoryRepository.Name}");
+            var result = await client.DeleteAsync("/history-repositories/Project/{expectedHistoryRepository.Name}", cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
@@ -201,7 +200,7 @@ namespace pva.SuperV.ApiTests
                 .Do(_ => throw new UnknownEntityException());
 
             // WHEN
-            var result = await client.DeleteAsync("/history-repositories/Project/UnknownRepository");
+            var result = await client.DeleteAsync("/history-repositories/Project/UnknownRepository", cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -215,7 +214,7 @@ namespace pva.SuperV.ApiTests
                 .Do(_ => throw new NonWipProjectException());
 
             // WHEN
-            var result = await client.DeleteAsync("/history-repositories/RunnableProject/Repository");
+            var result = await client.DeleteAsync("/history-repositories/RunnableProject/Repository", cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);

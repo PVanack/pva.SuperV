@@ -3,7 +3,7 @@ using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.FieldFormatters;
 using Shouldly;
-using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace pva.SuperV.EngineTests
 {

@@ -7,7 +7,6 @@ using pva.SuperV.Model.FieldFormatters;
 using pva.SuperV.Model.Services;
 using Shouldly;
 using System.Net.Http.Json;
-using Xunit.Abstractions;
 
 namespace pva.SuperV.ApiTests
 {
@@ -15,7 +14,7 @@ namespace pva.SuperV.ApiTests
     {
         public class ConsoleWriter(ITestOutputHelper output) : StringWriter
         {
-            public override void WriteLine(string? value) => output.WriteLine(value);
+            public override void WriteLine(string? value) => output.WriteLine(value!);
         }
 
         private readonly TestProjectApplication application;
@@ -38,11 +37,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedFieldFormatterTypes);
 
             // WHEN
-            var response = await client.GetAsync("/field-formatters");
+            var response = await client.GetAsync("/field-formatters", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            List<string>? fieldFormatterTypes = await response.Content.ReadFromJsonAsync<List<string>>();
+            List<string>? fieldFormatterTypes = await response.Content.ReadFromJsonAsync<List<string>>(cancellationToken: TestContext.Current.CancellationToken);
             fieldFormatterTypes.ShouldBeEquivalentTo(expectedFieldFormatterTypes);
         }
 
@@ -55,11 +54,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedFieldFormatters);
 
             // WHEN
-            var response = await client.GetAsync("/field-formatters/Project");
+            var response = await client.GetAsync("/field-formatters/Project", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            FieldFormatterModel[]? fieldFormatters = await response.Content.ReadFromJsonAsync<FieldFormatterModel[]>();
+            FieldFormatterModel[]? fieldFormatters = await response.Content.ReadFromJsonAsync<FieldFormatterModel[]>(cancellationToken: TestContext.Current.CancellationToken);
             fieldFormatters.ShouldBeEquivalentTo(expectedFieldFormatters.ToArray());
         }
 
@@ -73,11 +72,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(new PagedSearchResult<FieldFormatterModel>(1, 5, expectedFieldFormatters.Count, expectedFieldFormatters));
 
             // WHEN
-            var response = await client.PostAsJsonAsync("/field-formatters/Project/search", search);
+            var response = await client.PostAsJsonAsync("/field-formatters/Project/search", search, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            PagedSearchResult<FieldFormatterModel>? result = await response.Content.ReadFromJsonAsync<PagedSearchResult<FieldFormatterModel>?>();
+            PagedSearchResult<FieldFormatterModel>? result = await response.Content.ReadFromJsonAsync<PagedSearchResult<FieldFormatterModel>?>(cancellationToken: TestContext.Current.CancellationToken);
             result.ShouldNotBeNull();
             result.PageNumber.ShouldBe(1);
             result.PageSize.ShouldBe(5);
@@ -93,7 +92,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.GetAsync("/field-formatters/UnknownProject");
+            var response = await client.GetAsync("/field-formatters/UnknownProject", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -108,11 +107,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedFieldFormatter);
 
             // WHEN
-            var response = await client.GetAsync($"/field-formatters/Project/{expectedFieldFormatter.Name}");
+            var response = await client.GetAsync($"/field-formatters/Project/{expectedFieldFormatter.Name}", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            FieldFormatterModel? fieldFormatter = await response.Content.ReadFromJsonAsync<FieldFormatterModel>();
+            FieldFormatterModel? fieldFormatter = await response.Content.ReadFromJsonAsync<FieldFormatterModel>(cancellationToken: TestContext.Current.CancellationToken);
             fieldFormatter.ShouldBeEquivalentTo(expectedFieldFormatter);
         }
 
@@ -124,7 +123,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.GetAsync("/field-formatters/Project/UnknownFieldFormatter");
+            var response = await client.GetAsync("/field-formatters/Project/UnknownFieldFormatter", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -141,11 +140,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedFieldFormatter);
 
             // WHEN
-            var response = await client.PostAsJsonAsync("/field-formatters/Project", createRequest);
+            var response = await client.PostAsJsonAsync("/field-formatters/Project", createRequest, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
-            FieldFormatterModel? fieldFormatter = await response.Content.ReadFromJsonAsync<FieldFormatterModel>();
+            FieldFormatterModel? fieldFormatter = await response.Content.ReadFromJsonAsync<FieldFormatterModel>(cancellationToken: TestContext.Current.CancellationToken);
             fieldFormatter.ShouldBeEquivalentTo(expectedFieldFormatter);
         }
 
@@ -160,7 +159,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.PostAsJsonAsync("/field-formatters/UnknownProject", createRequest);
+            var response = await client.PostAsJsonAsync("/field-formatters/UnknownProject", createRequest, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -177,7 +176,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
-            var response = await client.PostAsJsonAsync("/field-formatters/RunnableProject", createRequest);
+            var response = await client.PostAsJsonAsync("/field-formatters/RunnableProject", createRequest, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -193,11 +192,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedFieldFormatter);
 
             // WHEN
-            var response = await client.PutAsJsonAsync($"/field-formatters/Project/{expectedFieldFormatter.Name}", expectedFieldFormatter);
+            var response = await client.PutAsJsonAsync($"/field-formatters/Project/{expectedFieldFormatter.Name}", expectedFieldFormatter, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            FieldFormatterModel? fieldFormatter = await response.Content.ReadFromJsonAsync<FieldFormatterModel>();
+            FieldFormatterModel? fieldFormatter = await response.Content.ReadFromJsonAsync<FieldFormatterModel>(cancellationToken: TestContext.Current.CancellationToken);
             fieldFormatter.ShouldBeEquivalentTo(expectedFieldFormatter);
         }
 
@@ -211,7 +210,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.PutAsJsonAsync($"/field-formatters/UnknownProject/{expectedFieldFormatter.Name}", expectedFieldFormatter);
+            var response = await client.PutAsJsonAsync($"/field-formatters/UnknownProject/{expectedFieldFormatter.Name}", expectedFieldFormatter, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -227,7 +226,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
-            var response = await client.PutAsJsonAsync($"/field-formatters/RunnableProject/{expectedFieldFormatter.Name}", expectedFieldFormatter);
+            var response = await client.PutAsJsonAsync($"/field-formatters/RunnableProject/{expectedFieldFormatter.Name}", expectedFieldFormatter, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -239,7 +238,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
 
             // WHEN
-            var response = await client.DeleteAsync("/field-formatters/Project/FieldFormatter");
+            var response = await client.DeleteAsync("/field-formatters/Project/FieldFormatter", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
@@ -253,7 +252,7 @@ namespace pva.SuperV.ApiTests
                 .Do(_ => throw new UnknownEntityException());
 
             // WHEN
-            var response = await client.DeleteAsync("/field-formatters/Project/UnknownFieldFormatter");
+            var response = await client.DeleteAsync("/field-formatters/Project/UnknownFieldFormatter", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -267,7 +266,7 @@ namespace pva.SuperV.ApiTests
                 .Do(_ => throw new NonWipProjectException());
 
             // WHEN
-            var response = await client.DeleteAsync("/field-formatters/RunnableProject/FieldFormatter");
+            var response = await client.DeleteAsync("/field-formatters/RunnableProject/FieldFormatter", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);

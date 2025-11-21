@@ -1,11 +1,11 @@
-﻿using pva.SuperV.Engine;
-using pva.SuperV.EngineTests;
+﻿using pva.Helpers.Extensions;
+using pva.SuperV.Engine;
 using pva.SuperV.Model.Instances;
 using Reqnroll.Assist;
 
 namespace pva.SuperV.TestsScenarios.StepDefinitions
 {
-    public abstract class BaseStepDefinition : SuperVTestsBase
+    public abstract class BaseStepDefinition
     {
         protected ScenarioContext ScenarioContext { get; init; }
         protected HttpClient Client { get; init; }
@@ -28,7 +28,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                 "long" => new LongFieldValueModel(row.GetInt64(fieldCellName), formattedValue, qualityLevel, timestamp),
                 "short" => new ShortFieldValueModel(short.CreateChecked(row.GetInt32(fieldCellName)), formattedValue, qualityLevel, timestamp),
                 "string" => new StringFieldValueModel(row[fieldCellName], qualityLevel, timestamp),
-                "timespan" => new TimeSpanFieldValueModel(ParseTimeSpan(row[fieldCellName]), formattedValue, qualityLevel, timestamp),
+                "timespan" => new TimeSpanFieldValueModel(row[fieldCellName].ParseTimeSpanInvariant(), formattedValue, qualityLevel, timestamp),
                 "uint" => new UintFieldValueModel(uint.CreateChecked(row.GetInt32(fieldCellName)), formattedValue, qualityLevel, timestamp),
                 "ulong" => new UlongFieldValueModel(ulong.CreateChecked(row.GetInt64(fieldCellName)), formattedValue, qualityLevel, timestamp),
                 "ushort" => new UshortFieldValueModel(ushort.CreateChecked(row.GetInt32(fieldCellName)), formattedValue, qualityLevel, timestamp),

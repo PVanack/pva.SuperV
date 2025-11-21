@@ -23,7 +23,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Reqnroll.MsTest" Version="3.2.0" />
+    <PackageReference Include="Reqnroll.MsTest" Version="3.2.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="4.0.1" />
     <PackageReference Include="MSTest.TestFramework" Version="4.0.1" />
     <PackageReference Include="Shouldly" Version="4.3.0" />
@@ -35,8 +35,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\pva.SuperV.ApiTests\pva.SuperV.ApiTests.csproj" />
+    <ProjectReference Include="..\pva.SuperV.Api\pva.SuperV.Api.csproj" />
     <ProjectReference Include="..\pva.SuperV.Model\pva.SuperV.Model.csproj" />
+    <ProjectReference Include="..\pva.SuperV.TestContainers\pva.SuperV.TestContainers.csproj" />
   </ItemGroup>
 
 </Project>

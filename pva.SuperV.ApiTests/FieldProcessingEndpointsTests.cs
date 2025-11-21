@@ -6,7 +6,6 @@ using pva.SuperV.Model.FieldProcessings;
 using pva.SuperV.Model.Services;
 using Shouldly;
 using System.Net.Http.Json;
-using Xunit.Abstractions;
 
 namespace pva.SuperV.ApiTests
 {
@@ -15,7 +14,7 @@ namespace pva.SuperV.ApiTests
     {
         public class ConsoleWriter(ITestOutputHelper output) : StringWriter
         {
-            public override void WriteLine(string? value) => output.WriteLine(value);
+            public override void WriteLine(string? value) => output.WriteLine(value!);
         }
 
         private readonly TestProjectApplication application;
@@ -54,11 +53,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedFieldProcessings);
 
             // WHEN
-            var response = await client.GetAsync("/field-processings/Project1/Class1/TrigerringFieldName");
+            var response = await client.GetAsync("/field-processings/Project1/Class1/TrigerringFieldName", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            FieldValueProcessingModel[]? fieldProcessings = await response.Content.ReadFromJsonAsync<FieldValueProcessingModel[]>();
+            FieldValueProcessingModel[]? fieldProcessings = await response.Content.ReadFromJsonAsync<FieldValueProcessingModel[]>(cancellationToken: TestContext.Current.CancellationToken);
             fieldProcessings.ShouldBeEquivalentTo(expectedFieldProcessings.ToArray());
         }
 
@@ -70,7 +69,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.GetAsync("/field-processings/Project1/Class1/UnknownFieldName");
+            var response = await client.GetAsync("/field-processings/Project1/Class1/UnknownFieldName", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -94,11 +93,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedFieldProcessing);
 
             // WHEN
-            var response = await client.GetAsync($"/field-processings/Project1/Class1/TrigerringFieldName/{expectedFieldProcessing.Name}");
+            var response = await client.GetAsync($"/field-processings/Project1/Class1/TrigerringFieldName/{expectedFieldProcessing.Name}", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            FieldValueProcessingModel? retrievedFieldProcessing = await response.Content.ReadFromJsonAsync<FieldValueProcessingModel>();
+            FieldValueProcessingModel? retrievedFieldProcessing = await response.Content.ReadFromJsonAsync<FieldValueProcessingModel>(cancellationToken: TestContext.Current.CancellationToken);
             retrievedFieldProcessing.ShouldBeEquivalentTo(expectedFieldProcessing);
         }
 
@@ -110,7 +109,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.GetAsync("/field-processings/Project1/Class1/TrigerringFieldName/UnknownFieldProcessing");
+            var response = await client.GetAsync("/field-processings/Project1/Class1/TrigerringFieldName/UnknownFieldProcessing", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -133,11 +132,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedFieldProcessing);
 
             // WHEN
-            var response = await client.PostAsJsonAsync("/field-processings/Project1/Class1/TrigerringFieldName", expectedFieldProcessing);
+            var response = await client.PostAsJsonAsync("/field-processings/Project1/Class1/TrigerringFieldName", expectedFieldProcessing, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
-            FieldValueProcessingModel? createdFieldProcessing = await response.Content.ReadFromJsonAsync<FieldValueProcessingModel>();
+            FieldValueProcessingModel? createdFieldProcessing = await response.Content.ReadFromJsonAsync<FieldValueProcessingModel>(cancellationToken: TestContext.Current.CancellationToken);
             createdFieldProcessing.ShouldBeEquivalentTo(expectedFieldProcessing);
         }
 
@@ -158,7 +157,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.PostAsJsonAsync("/field-processings/Project1/Class1/UnknownFieldName", expectedFieldProcessing);
+            var response = await client.PostAsJsonAsync("/field-processings/Project1/Class1/UnknownFieldName", expectedFieldProcessing, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -181,7 +180,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
-            var response = await client.PostAsJsonAsync("/field-processings/RunnableProject/Class1/TrigerringFieldName", expectedFieldProcessing);
+            var response = await client.PostAsJsonAsync("/field-processings/RunnableProject/Class1/TrigerringFieldName", expectedFieldProcessing, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -204,11 +203,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedFieldProcessing);
 
             // WHEN
-            var response = await client.PutAsJsonAsync($"/field-processings/Project1/Class1/TrigerringFieldName/{expectedFieldProcessing.Name}", expectedFieldProcessing);
+            var response = await client.PutAsJsonAsync($"/field-processings/Project1/Class1/TrigerringFieldName/{expectedFieldProcessing.Name}", expectedFieldProcessing, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            FieldValueProcessingModel? createdFieldProcessing = await response.Content.ReadFromJsonAsync<FieldValueProcessingModel>();
+            FieldValueProcessingModel? createdFieldProcessing = await response.Content.ReadFromJsonAsync<FieldValueProcessingModel>(cancellationToken: TestContext.Current.CancellationToken);
             createdFieldProcessing.ShouldBeEquivalentTo(expectedFieldProcessing);
         }
 
@@ -229,7 +228,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.PutAsJsonAsync($"/field-processings/Project1/Class1/UnknownFieldName/{expectedFieldProcessing.Name}", expectedFieldProcessing);
+            var response = await client.PutAsJsonAsync($"/field-processings/Project1/Class1/UnknownFieldName/{expectedFieldProcessing.Name}", expectedFieldProcessing, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -252,7 +251,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
-            var response = await client.PutAsJsonAsync($"/field-processings/RunnableProject/Class1/TrigerringFieldName/{expectedFieldProcessing.Name}", expectedFieldProcessing);
+            var response = await client.PutAsJsonAsync($"/field-processings/RunnableProject/Class1/TrigerringFieldName/{expectedFieldProcessing.Name}", expectedFieldProcessing, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -264,7 +263,7 @@ namespace pva.SuperV.ApiTests
             // GIVEN
 
             // WHEN
-            var response = await client.DeleteAsync("/field-processings/Project1/Class1/TrigerringFieldName/FieldProcessingName");
+            var response = await client.DeleteAsync("/field-processings/Project1/Class1/TrigerringFieldName/FieldProcessingName", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
@@ -278,7 +277,7 @@ namespace pva.SuperV.ApiTests
                 .Do(_ => throw new UnknownEntityException());
 
             // WHEN
-            var response = await client.DeleteAsync("/field-processings/Project1/Class1/TrigerringFieldName/UnknownFieldProcessingName");
+            var response = await client.DeleteAsync("/field-processings/Project1/Class1/TrigerringFieldName/UnknownFieldProcessingName", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -292,7 +291,7 @@ namespace pva.SuperV.ApiTests
                 .Do(_ => throw new NonWipProjectException());
 
             // WHEN
-            var response = await client.DeleteAsync("/field-processings/RunnableProject/Class1/TrigerringFieldName/FieldProcessingName");
+            var response = await client.DeleteAsync("/field-processings/RunnableProject/Class1/TrigerringFieldName/FieldProcessingName", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);

@@ -1,22 +1,25 @@
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Model.Projects;
+using pva.SuperV.TestContainers;
 using Shouldly;
 using System.Net;
 using System.Net.Http.Json;
 
 namespace pva.SuperV.TestsScenarios.StepDefinitions
 {
+
     [Binding]
     public class ProjectStepDefinitions(ScenarioContext scenarioContext) : BaseStepDefinition(scenarioContext)
     {
+        private readonly TDengineContainer tdEngineContainer = new();
+
         [Given("An empty WIP project {string} is created  with {string} description and {string} as history storage")]
         public async ValueTask CreateProject(string projectName, string description, string? historyStorageType)
         {
             string historyStorageConnectionString = "";
             if (!String.IsNullOrEmpty(historyStorageType) && historyStorageType.Equals(TDengineHistoryStorage.Prefix))
             {
-                // TODO: Start TDengine container
-                string tdEngineConnectionString = await StartTDengineContainerAsync();
+                string tdEngineConnectionString = await tdEngineContainer.StartTDengineContainerAsync();
                 historyStorageConnectionString = $"{TDengineHistoryStorage.Prefix}:{tdEngineConnectionString}";
 
             }
@@ -42,7 +45,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
         [StepDefinition("TDengine is stopped if running")]
         public async ValueTask ThenTDengineIsStoppedIfRunning()
         {
-            _ = await StopTDengineContainerAsync().ConfigureAwait(false);
+            _ = await tdEngineContainer.StopTDengineContainerAsync().ConfigureAwait(false);
         }
 
     }

@@ -6,7 +6,6 @@ using pva.SuperV.EngineTests;
 using pva.SuperV.Model.HistoryRetrieval;
 using pva.SuperV.Model.Instances;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace pva.SuperV.ApiTests
 {

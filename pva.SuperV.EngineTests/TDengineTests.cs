@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Engine;
+﻿using pva.Helpers.Extensions;
+using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryRetrieval;
 using pva.SuperV.Engine.HistoryStorage;
@@ -115,10 +116,10 @@ namespace pva.SuperV.EngineTests
             runnableProject = await Project.BuildAsync(wipProject);
             dynamic? instance = runnableProject.CreateInstance(ClassName, InstanceName);
             // WHEN
-            DateTime ts1 = ParseDateTime("2025-03-01T00:00:00Z");
+            DateTime ts1 = "2025-03-01T00:00:00Z".ParseDateTimeInvariant();
             instance!.Value.SetValue(50, ts1, QualityLevel.Good);
             instance!.Value.SetValue(150, ts1.AddMinutes(15), QualityLevel.Good);
-            DateTime ts2 = ParseDateTime("2025-03-01T01:00:00Z");
+            DateTime ts2 = "2025-03-01T01:00:00Z".ParseDateTimeInvariant();
             instance!.Value.SetValue(100, ts2, QualityLevel.Good);
 
             // THEN

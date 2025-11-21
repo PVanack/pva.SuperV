@@ -53,6 +53,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleProject", "SampleProj
 		SampleProject\SampleProject.snp = SampleProject\SampleProject.snp
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pva.SuperV.TestContainers", "pva.SuperV.TestContainers\pva.SuperV.TestContainers.csproj", "{823D9BB9-9616-4508-94ED-436E904398B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -106,6 +108,10 @@ Global
 		{E3A69F5B-5AC9-4B3F-907F-08BAE65FA487}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3A69F5B-5AC9-4B3F-907F-08BAE65FA487}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3A69F5B-5AC9-4B3F-907F-08BAE65FA487}.Release|Any CPU.Build.0 = Release|Any CPU
+		{823D9BB9-9616-4508-94ED-436E904398B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{823D9BB9-9616-4508-94ED-436E904398B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{823D9BB9-9616-4508-94ED-436E904398B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{823D9BB9-9616-4508-94ED-436E904398B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
