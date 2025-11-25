@@ -7,13 +7,14 @@ namespace pva.SuperV.Blazor.Services
     public class FieldFormatterService(HttpClient httpClient) : IFieldFormatterService
     {
         private const string baseUri = "/field-formatters";
+        private const string NoContentAvailableMessage = "No content available";
 
         public async Task<FieldFormatterModel> CreateFieldFormatterAsync(string projectId, CreateFieldFormatterRequest createRequest)
         {
             try
             {
                 var result = await httpClient.PostAsJsonAsync($"{baseUri}/{projectId}", createRequest)
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     FieldFormatterModel? fieldFormatter = await result.Content.ReadFromJsonAsync<FieldFormatterModel>();
@@ -35,7 +36,7 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.DeleteAsync($"{baseUri}/{projectId}/{fieldFormatterName}")
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode != System.Net.HttpStatusCode.NoContent)
                 {
                     throw new ApiException(result.StatusCode, result.Content);
@@ -52,7 +53,7 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.GetAsync($"{baseUri}/{projectId}/{fieldFormatterName}")
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     FieldFormatterModel? fieldFormatter = await result.Content.ReadFromJsonAsync<FieldFormatterModel>();
@@ -74,7 +75,7 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.GetAsync($"{baseUri}/{projectId}")
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     List<FieldFormatterModel>? fieldFormatters = await result.Content.ReadFromJsonAsync<List<FieldFormatterModel>>();
@@ -96,7 +97,7 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.GetAsync(baseUri)
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     List<string>? fieldFormatterTypes = await result.Content.ReadFromJsonAsync<List<string>>();
@@ -118,7 +119,7 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.PostAsJsonAsync($"{baseUri}/{projectId}/search", search)
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     PagedSearchResult<FieldFormatterModel>? fieldFormattersPagedSearch = await result.Content.ReadFromJsonAsync<PagedSearchResult<FieldFormatterModel>>();
@@ -140,7 +141,7 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.PutAsJsonAsync($"{baseUri}/{projectId}/{fieldFormatterName}", fieldFormatterModel)
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     FieldFormatterModel? fieldFormatter = await result.Content.ReadFromJsonAsync<FieldFormatterModel>();

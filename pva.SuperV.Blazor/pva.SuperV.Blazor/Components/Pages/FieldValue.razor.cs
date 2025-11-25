@@ -26,7 +26,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         int? IntValue { get; set; } = default!;
         long? LongValue { get; set; } = default!;
         short? ShortValue { get; set; } = default!;
-        string? StringValue { get; set; } = default!;
+        string? StringValue { get; set; } = default;
         TimeSpan? TimeSpanValue { get; set; } = default!;
         uint? UintValue { get; set; } = default!;
         ulong? UlongValue { get; set; } = default!;
@@ -41,57 +41,48 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private void SetValue(object? value)
         {
-            bool valueChanged = value != null && !value.Equals(_value);
+            bool valueChanged = value?.Equals(_value) == false;
             _value = value;
             if (value != null)
             {
-                if (value is bool boolValue)
+                switch (value)
                 {
-                    BoolValue = boolValue;
-                }
-                else if (value is DateTime dateTimeValue)
-                {
-                    DateTimeValue = dateTimeValue;
-                }
-                else if (value is double doubleValue)
-                {
-                    DoubleValue = doubleValue;
-                }
-                else if (value is float floatValue)
-                {
-                    FloatValue = floatValue;
-                }
-                else if (value is int intValue)
-                {
-                    IntValue = intValue;
-                }
-                else if (value is long longValue)
-                {
-                    LongValue = longValue;
-                }
-                else if (value is short shortValue)
-                {
-                    ShortValue = shortValue;
-                }
-                else if (value is string stringValue)
-                {
-                    StringValue = stringValue;
-                }
-                else if (value is TimeSpan timespanValue)
-                {
-                    TimeSpanValue = timespanValue;
-                }
-                else if (value is uint uintValue)
-                {
-                    UintValue = uintValue;
-                }
-                else if (value is ulong ulongValue)
-                {
-                    UlongValue = ulongValue;
-                }
-                else if (value is ushort ushortValue)
-                {
-                    UshortValue = ushortValue;
+                    case bool boolValue:
+                        BoolValue = boolValue;
+                        break;
+                    case DateTime dateTimeValue:
+                        DateTimeValue = dateTimeValue;
+                        break;
+                    case double doubleValue:
+                        DoubleValue = doubleValue;
+                        break;
+                    case float floatValue:
+                        FloatValue = floatValue;
+                        break;
+                    case int intValue:
+                        IntValue = intValue;
+                        break;
+                    case long longValue:
+                        LongValue = longValue;
+                        break;
+                    case short shortValue:
+                        ShortValue = shortValue;
+                        break;
+                    case string stringValue:
+                        StringValue = stringValue;
+                        break;
+                    case TimeSpan timespanValue:
+                        TimeSpanValue = timespanValue;
+                        break;
+                    case uint uintValue:
+                        UintValue = uintValue;
+                        break;
+                    case ulong ulongValue:
+                        UlongValue = ulongValue;
+                        break;
+                    case ushort ushortValue:
+                        UshortValue = ushortValue;
+                        break;
                 }
             }
             if (initCalled && valueChanged)

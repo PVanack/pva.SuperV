@@ -193,7 +193,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                         long => jsonElement.Value.GetInt64(),
                         short => jsonElement.Value.GetInt16(),
                         string => jsonElement.Value.GetString(),
-                        TimeSpan => jsonElement.Value.GetString().ParseTimeSpanInvariant(),
+                        TimeSpan => jsonElement!.Value.GetString()?.ParseTimeSpanInvariant(),
                         uint => jsonElement.Value.GetUInt32(),
                         ulong => jsonElement.Value.GetUInt64(),
                         ushort => jsonElement.Value.GetUInt16(),

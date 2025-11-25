@@ -12,6 +12,8 @@ namespace pva.SuperV.Engine
     /// <seealso cref="pva.SuperV.Engine.Project" />
     public class WipProject : Project
     {
+        private const string ClassEntityType = "Class";
+
         /// <summary>
         /// To be loaded instances when the project is converted to a <see cref="RunnableProject"/> through <see cref="Project.BuildAsync(WipProject)"/>.
         /// </summary>
@@ -65,7 +67,7 @@ namespace pva.SuperV.Engine
         {
             if (Classes.ContainsKey(className))
             {
-                throw new EntityAlreadyExistException("Class", className);
+                throw new EntityAlreadyExistException(ClassEntityType, className);
             }
 
             Class clazz = new(className);
@@ -85,7 +87,7 @@ namespace pva.SuperV.Engine
             Class? baseClass = baseClassName is null ? null : GetClass(baseClassName);
             if (Classes.ContainsKey(className))
             {
-                throw new EntityAlreadyExistException("Class", className);
+                throw new EntityAlreadyExistException(ClassEntityType, className);
             }
 
             Class clazz = new(className, baseClass);
@@ -107,13 +109,13 @@ namespace pva.SuperV.Engine
                 Class? baseClass = null;
                 if (!String.IsNullOrEmpty(baseClassName) && !Classes.TryGetValue(className, out baseClass))
                 {
-                    throw new UnknownEntityException("Class", baseClassName);
+                    throw new UnknownEntityException(ClassEntityType, baseClassName);
                 }
                 clazz.BaseClassName = baseClassName;
                 clazz.BaseClass = baseClass;
                 return clazz;
             }
-            throw new UnknownEntityException("Class", className);
+            throw new UnknownEntityException(ClassEntityType, className);
         }
 
         /// <summary>

@@ -7,17 +7,19 @@ namespace pva.SuperV.Blazor.Services
     public class ProjectService(HttpClient httpClient) : IProjectService
     {
         private const string baseUri = "/projects";
+        private const string NoContentAvailableMessage = "No content available";
+        private const string NoProjectInResponseMessage = "No project in response";
 
         public async Task<ProjectModel> BuildProjectAsync(string projectId)
         {
             try
             {
                 var result = await httpClient.PostAsync($"{baseUri}/{projectId}/build", null)
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     ProjectModel? project = await result.Content.ReadFromJsonAsync<ProjectModel>();
-                    return project ?? throw new ApiException("No project in response");
+                    return project ?? throw new ApiException(NoProjectInResponseMessage);
                 }
                 else
                 {
@@ -35,11 +37,11 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.PostAsJsonAsync($"{baseUri}/create", createProjectRequest)
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     ProjectModel? project = Task.Run(async () => await result.Content.ReadFromJsonAsync<ProjectModel>()).Result;
-                    return project ?? throw new ApiException("No project in response");
+                    return project ?? throw new ApiException(NoProjectInResponseMessage);
                 }
                 else
                 {
@@ -59,11 +61,11 @@ namespace pva.SuperV.Blazor.Services
                 string json = await streamReader.ReadToEndAsync();
                 var jsonContent = JsonContent.Create(System.Text.Encoding.UTF8.GetBytes(json));
                 var result = await httpClient.PostAsync($"{baseUri}/load-from-definitions", jsonContent)
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     ProjectModel? project = await result.Content.ReadFromJsonAsync<ProjectModel>();
-                    return project ?? throw new ApiException("No project in response");
+                    return project ?? throw new ApiException(NoProjectInResponseMessage);
                 }
                 else
                 {
@@ -81,11 +83,11 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.PostAsync($"{baseUri}/create/{runnableProjectId}", null)
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     ProjectModel? project = await result.Content.ReadFromJsonAsync<ProjectModel>();
-                    return project ?? throw new ApiException("No project in response");
+                    return project ?? throw new ApiException(NoProjectInResponseMessage);
                 }
                 else
                 {
@@ -103,11 +105,11 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.GetAsync($"{baseUri}/{projectId}")
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     ProjectModel? project = await result.Content.ReadFromJsonAsync<ProjectModel>();
-                    return project ?? throw new ApiException("No project in response");
+                    return project ?? throw new ApiException(NoProjectInResponseMessage);
                 }
                 else
                 {
@@ -125,7 +127,7 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.GetAsync($"{baseUri}/{projectId}/definitions")
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     return await result.Content.ReadAsStreamAsync();
@@ -146,7 +148,7 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.GetAsync($"{baseUri}/{projectId}/instances")
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     return await result.Content.ReadAsStreamAsync();
@@ -167,11 +169,11 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.GetAsync(baseUri)
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     List<ProjectModel>? projects = await result.Content.ReadFromJsonAsync<List<ProjectModel>>();
-                    return projects ?? throw new ApiException("No project in response");
+                    return projects ?? throw new ApiException(NoProjectInResponseMessage);
                 }
                 else
                 {
@@ -191,7 +193,7 @@ namespace pva.SuperV.Blazor.Services
                 string json = await reader.ReadToEndAsync();
                 var jsonContent = JsonContent.Create(System.Text.Encoding.UTF8.GetBytes(json));
                 var result = await httpClient.PostAsync($"{baseUri}/{projectId}/instances", jsonContent)
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     return;
@@ -212,11 +214,11 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.PostAsJsonAsync($"{baseUri}/search", search)
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     PagedSearchResult<ProjectModel>? projectsPagedSearch = await result.Content.ReadFromJsonAsync<PagedSearchResult<ProjectModel>>();
-                    return projectsPagedSearch ?? throw new ApiException("No project in response");
+                    return projectsPagedSearch ?? throw new ApiException(NoProjectInResponseMessage);
                 }
                 else
                 {
@@ -234,7 +236,7 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.DeleteAsync($"{baseUri}/{projectId}")
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.NoContent)
                 {
                     return;
@@ -255,11 +257,11 @@ namespace pva.SuperV.Blazor.Services
             try
             {
                 var result = await httpClient.PutAsJsonAsync($"{baseUri}/{projectId}", updateProjectRequest)
-                    ?? throw new ApiException("No content available");
+                    ?? throw new ApiException(NoContentAvailableMessage);
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     ProjectModel? project = await result.Content.ReadFromJsonAsync<ProjectModel>();
-                    return project ?? throw new ApiException("No project in response");
+                    return project ?? throw new ApiException(NoProjectInResponseMessage);
                 }
                 else
                 {

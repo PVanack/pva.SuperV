@@ -10,6 +10,8 @@ namespace pva.SuperV.Engine
     /// <summary>Dynamic class of a <see cref="Project"/>. It contains dynamic fields on which processing can be defined.</summary>
     public class Class
     {
+        private const string FieldEntityType = "Field";
+
         /// <summary>
         /// Name of class. Access done through <see cref="Name"/>.
         /// </summary>
@@ -94,7 +96,7 @@ namespace pva.SuperV.Engine
         {
             if (FieldDefinitions.ContainsKey(field.Name))
             {
-                throw new EntityAlreadyExistException("Field", field.Name);
+                throw new EntityAlreadyExistException(FieldEntityType, field.Name);
             }
             field.Formatter = formatter;
             FieldDefinitions.Add(field.Name, field);
@@ -108,7 +110,7 @@ namespace pva.SuperV.Engine
                 fieldToUpdate.Update(fieldDefinition, fieldFormatter);
                 return fieldToUpdate;
             }
-            throw new UnknownEntityException("Field", fieldName);
+            throw new UnknownEntityException(FieldEntityType, fieldName);
         }
 
         /// <summary>
@@ -127,7 +129,7 @@ namespace pva.SuperV.Engine
             {
                 return BaseClass.GetField(fieldName);
             }
-            throw new UnknownEntityException("Field", fieldName);
+            throw new UnknownEntityException(FieldEntityType, fieldName);
         }
 
         /// <summary>
@@ -191,7 +193,7 @@ namespace pva.SuperV.Engine
                 }
                 throw new UnknownEntityException("Field processing", processingName);
             }
-            throw new UnknownEntityException("Field", fieldName);
+            throw new UnknownEntityException(FieldEntityType, fieldName);
         }
 
         private void VerifyFieldNotUsedInProcessings(string fieldName)
@@ -201,7 +203,7 @@ namespace pva.SuperV.Engine
                     .Select(field => field.Name)];
             if (fieldsUsedInProcessing.Count > 0)
             {
-                throw new EntityInUseException("Field", fieldName, Name, fieldsUsedInProcessing);
+                throw new EntityInUseException(FieldEntityType, fieldName, Name, fieldsUsedInProcessing);
             }
         }
 

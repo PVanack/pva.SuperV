@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 
 namespace pva.SuperV.Blazor.Services
 {
@@ -26,6 +27,17 @@ namespace pva.SuperV.Blazor.Services
                 _ => statusCode.ToString()
             };
         }
+
+        [ExcludeFromCodeCoverage]
+        public ApiException() : base()
+        {
+        }
+
+        [ExcludeFromCodeCoverage]
+        public ApiException(string? message, Exception? innerException) : base(message, innerException)
+        {
+        }
+
         public override string Message
             => status switch
             {

@@ -7,7 +7,7 @@ namespace pva.SuperV.Api.Exceptions
     public class EntityPropertyNotChangeableException : SuperVException
     {
         public EntityPropertyNotChangeableException(string entityType, string propertyName)
-            : base($"Property {propertyName} of {entityType} is not changeable")
+            : this($"Property {propertyName} of {entityType} is not changeable")
         {
         }
 
@@ -18,6 +18,10 @@ namespace pva.SuperV.Api.Exceptions
 
         [ExcludeFromCodeCoverage]
         public EntityPropertyNotChangeableException(string? message, Exception? innerException) : base(message, innerException)
+        {
+        }
+
+        public EntityPropertyNotChangeableException(string? message) : base(message)
         {
         }
     }
