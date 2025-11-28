@@ -9,8 +9,17 @@ namespace pva.SuperV.Api.Services.History
 {
     public class HistoryValuesService : BaseService, IHistoryValuesService
     {
+        private readonly ILogger logger;
+
+        public HistoryValuesService(ILoggerFactory loggerFactory)
+        {
+            this.logger = loggerFactory.CreateLogger(this.GetType());
+        }
+
         public async Task<HistoryRawResultModel> GetInstanceRawHistoryValuesAsync(string projectId, string instanceName, HistoryRequestModel request)
         {
+            logger.LogDebug("Getting raw history values for instance {InstanceName} of project {ProjectId}between {StartTime} and {EndTime} for fields {FieldNames}",
+                instanceName, projectId, request.StartTime, request.EndTime, String.Join(",", request.HistoryFields));
             Project project = GetProjectEntity(projectId);
             if (project is RunnableProject runnableProject)
             {
@@ -30,6 +39,8 @@ namespace pva.SuperV.Api.Services.History
 
         public async Task<HistoryResultModel> GetInstanceHistoryValuesAsync(string projectId, string instanceName, HistoryRequestModel request)
         {
+            logger.LogDebug("Getting history values for instance {InstanceName} of project {ProjectId}between {StartTime} and {EndTime} for fields {FieldNames}",
+                instanceName, projectId, request.StartTime, request.EndTime, String.Join(",", request.HistoryFields));
             Project project = GetProjectEntity(projectId);
             if (project is RunnableProject runnableProject)
             {
@@ -49,6 +60,8 @@ namespace pva.SuperV.Api.Services.History
 
         public async Task<HistoryStatisticsRawResultModel> GetInstanceRawHistoryStatisticsAsync(string projectId, string instanceName, HistoryStatisticsRequestModel request)
         {
+            logger.LogDebug("Getting raw history statistics for instance {InstanceName} of project {ProjectId} between {StartTime} and {EndTime} with an interpolation interval {InterpolationInterval} for fields {FieldNames}",
+                instanceName, projectId, request.StartTime, request.EndTime, request.InterpolationInterval, String.Join(",", request.HistoryFields));
             Project project = GetProjectEntity(projectId);
             if (project is RunnableProject runnableProject)
             {
@@ -74,6 +87,8 @@ namespace pva.SuperV.Api.Services.History
 
         public async Task<HistoryStatisticsResultModel> GetInstanceHistoryStatisticsAsync(string projectId, string instanceName, HistoryStatisticsRequestModel request)
         {
+            logger.LogDebug("Getting history statistics for instance {InstanceName} of project {ProjectId} between {StartTime} and {EndTime} with an interpolation interval {InterpolationInterval} for fields {FieldNames}",
+                instanceName, projectId, request.StartTime, request.EndTime, request.InterpolationInterval, String.Join(",", request.HistoryFields));
             Project project = GetProjectEntity(projectId);
             if (project is RunnableProject runnableProject)
             {

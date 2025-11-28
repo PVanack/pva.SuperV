@@ -19,8 +19,8 @@ namespace pva.SuperV.ApiTests
 
         public InstanceServiceTests()
         {
-            instanceService = new();
-            fieldValueService = new();
+            instanceService = new(LoggerFactory);
+            fieldValueService = new(LoggerFactory);
             runnableProject = CreateRunnableProject();
             Instance? instance = runnableProject.CreateInstance(AllFieldsClassName, InstanceName);
             expectedInstance = new(instance!.Name, instance!.Class.Name,

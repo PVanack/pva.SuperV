@@ -15,7 +15,7 @@ namespace pva.SuperV.ApiTests
 
         public FieldValueServiceTests()
         {
-            fieldValueService = new();
+            fieldValueService = new(LoggerFactory);
             runnableProject = CreateRunnableProject();
             _ = runnableProject.CreateInstance(AllFieldsClassName, AllFieldsInstanceName);
         }

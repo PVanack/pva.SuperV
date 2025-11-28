@@ -61,7 +61,7 @@ namespace pva.SuperV.ApiTests
 
         public ProjectServiceTests()
         {
-            projectService = new();
+            projectService = new(LoggerFactory);
             runnableProject = CreateRunnableProject();
             wipProject = CreateWipProject(null);
         }

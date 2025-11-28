@@ -35,7 +35,7 @@ namespace pva.SuperV.ApiTests
 
         public FieldDefinitionServiceTests()
         {
-            fieldDefinitionService = new();
+            fieldDefinitionService = new(LoggerFactory);
             runnableProject = CreateRunnableProject();
             wipProject = Project.CreateProject(runnableProject);
         }

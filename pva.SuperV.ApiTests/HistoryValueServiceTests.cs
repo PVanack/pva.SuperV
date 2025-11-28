@@ -24,7 +24,7 @@ namespace pva.SuperV.ApiTests
 
         public HistoryValueServiceTests(ITestOutputHelper output)
         {
-            historyValuesService = new();
+            historyValuesService = new(LoggerFactory);
             Console.SetOut(new ConsoleWriter(output));
         }
 

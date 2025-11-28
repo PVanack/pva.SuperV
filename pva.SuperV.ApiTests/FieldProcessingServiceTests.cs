@@ -15,7 +15,7 @@ namespace pva.SuperV.ApiTests
 
         public FieldProcessingServiceTests()
         {
-            fieldProcessingService = new();
+            fieldProcessingService = new(LoggerFactory);
             runnableProject = CreateRunnableProject();
             wipProject = Project.CreateProject(runnableProject);
         }

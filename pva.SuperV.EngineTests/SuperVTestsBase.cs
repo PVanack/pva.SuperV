@@ -1,4 +1,6 @@
 ﻿//#define DELETE_PROJECT_ASSEMBLY
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 using pva.Helpers.Extensions;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.FieldFormatters;
@@ -34,6 +36,7 @@ namespace pva.SuperV.EngineTests
             };
 
         private readonly TDengineContainer tdEngineContainer = new();
+        protected ILoggerFactory LoggerFactory { get; } = new NLogLoggerFactory();
 
         public void Dispose()
         {
