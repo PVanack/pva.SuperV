@@ -21,18 +21,18 @@ namespace pva.SuperV.Api.Services.FieldFormatters
             this.logger = loggerFactory.CreateLogger(this.GetType());
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
-            Justification = "<Pending>")]
         public async Task<List<string>> GetFieldFormatterTypesAsync()
         {
             logger.LogDebug("Getting field formatters types");
             Type fieldFormatterType = typeof(FieldFormatter);
+#pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
             return await Task.FromResult(AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(domainAssembly => domainAssembly.GetExportedTypes())
                 .Where(type => type.IsSubclassOf(fieldFormatterType) &&
                         type != fieldFormatterType && !type.IsAbstract)
                 .Select(type => type.ToString())
                 .ToList());
+#pragma warning restore IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
         }
 
         public async Task<List<FieldFormatterModel>> GetFieldFormattersAsync(string projectId)

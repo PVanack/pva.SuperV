@@ -40,10 +40,15 @@ namespace pva.SuperV.EngineTests
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
             Project.Projects.Values.ForEach(project
                 => project.Dispose());
             _ = Task.Run(async () => await tdEngineContainer.StopTDengineContainerAsync()).Result;
-            GC.SuppressFinalize(this);
         }
 
         protected RunnableProject CreateRunnableProject()

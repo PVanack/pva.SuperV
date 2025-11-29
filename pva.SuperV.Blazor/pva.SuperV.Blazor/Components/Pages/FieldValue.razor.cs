@@ -7,7 +7,9 @@ namespace pva.SuperV.Blazor.Components.Pages
     {
         [BindProperty]
         [Parameter]
+#pragma warning disable BL0007 // Component parameters should be auto properties
         public object? Value
+#pragma warning restore BL0007 // Component parameters should be auto properties
         {
             get => GetValue();
             set => SetValue(value);
