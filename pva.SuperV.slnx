@@ -1,0 +1,37 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".github/workflows/dotnet-ubuntu.yml" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.targets" />
+    <File Path="drawings/Structure.drawio" />
+    <File Path="drawings/Structure.drawio.png" />
+    <File Path="README.md" />
+    <File Path="TDengine/install-TDengine-client.sh" />
+  </Folder>
+  <Folder Name="/Solution Items/SampleProject/">
+    <File Path="SampleProject/SampleProject.prj" />
+    <File Path="SampleProject/SampleProject.snp" />
+  </Folder>
+  <Project Path="pva.Helpers/pva.Helpers.csproj" />
+  <Project Path="pva.SuperV.Api/pva.SuperV.Api.csproj" />
+  <Project Path="pva.SuperV.ApiTests/pva.SuperV.ApiTests.csproj">
+    <BuildDependency Project="pva.SuperV.Api/pva.SuperV.Api.csproj" />
+    <BuildDependency Project="pva.SuperV.Model/pva.SuperV.Model.csproj" />
+  </Project>
+  <Project Path="pva.SuperV.AspireAppHost/pva.SuperV.AspireAppHost.csproj">
+    <BuildDependency Project="pva.SuperV.Api/pva.SuperV.Api.csproj" />
+    <BuildDependency Project="pva.SuperV.Blazor/pva.SuperV.Blazor/pva.SuperV.Blazor.csproj" />
+    <BuildDependency Project="pva.SuperV.Engine/pva.SuperV.Engine.csproj" />
+  </Project>
+  <Project Path="pva.SuperV.Benchmarks/pva.SuperV.Benchmarks.csproj">
+    <Build Solution="Debug|*" Project="false" />
+  </Project>
+  <Project Path="pva.SuperV.Blazor/pva.SuperV.Blazor.Client/pva.SuperV.Blazor.Client.csproj" />
+  <Project Path="pva.SuperV.Blazor/pva.SuperV.Blazor/pva.SuperV.Blazor.csproj" />
+  <Project Path="pva.SuperV.Engine/pva.SuperV.Engine.csproj" />
+  <Project Path="pva.SuperV.EngineTests/pva.SuperV.EngineTests.csproj" />
+  <Project Path="pva.SuperV.Model/pva.SuperV.Model.csproj" />
+  <Project Path="pva.SuperV.TestContainers/pva.SuperV.TestContainers.csproj" />
+  <Project Path="pva.SuperV.TestsScenarios/pva.SuperV.TestsScenarios.csproj" />
+  <Project Path="TDengine.AspireHosting/TDengine.AspireHosting.csproj" />
+</Solution>
