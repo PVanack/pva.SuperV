@@ -13,15 +13,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="6.0.5" />
     <PackageReference Include="NSubstitute" Version="5.3.0" />
     <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.17">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Shouldly" Version="4.3.0" />
-    <PackageReference Include="Testcontainers" Version="4.8.1" />
-    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.v3" Version="3.1.0" />
+    <PackageReference Include="Xunit.Microsoft.DependencyInjection" Version="9.2.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -39,6 +41,7 @@
   <ItemGroup>
     <ProjectReference Include="..\pva.Helpers\pva.Helpers.csproj" />
     <ProjectReference Include="..\pva.SuperV.Engine\pva.SuperV.Engine.csproj" />
+    <ProjectReference Include="..\pva.SuperV.TestContainers\pva.SuperV.TestContainers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -61,7 +61,7 @@ namespace pva.SuperV.ApiTests
 
         public ProjectServiceTests()
         {
-            projectService = new();
+            projectService = new(LoggerFactory);
             runnableProject = CreateRunnableProject();
             wipProject = CreateWipProject(null);
         }
@@ -300,7 +300,7 @@ namespace pva.SuperV.ApiTests
             // Assert
             stream.ShouldNotBeNull();
             using StreamReader streamReader = new(stream);
-            string projectDefinitions = await streamReader.ReadToEndAsync();
+            string projectDefinitions = await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken);
             projectDefinitions.ShouldNotBeNullOrEmpty();
         }
 
@@ -328,7 +328,7 @@ namespace pva.SuperV.ApiTests
             // Assert
             stream.ShouldNotBeNull();
             using StreamReader streamReader = new(stream);
-            string projectInstances = await streamReader.ReadToEndAsync();
+            string projectInstances = await streamReader.ReadToEndAsync(TestContext.Current.CancellationToken);
             projectInstances.ShouldNotBeNullOrEmpty();
         }
 

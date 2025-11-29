@@ -18,7 +18,7 @@ namespace pva.SuperV.ApiTests
 
         public HistoryRepositoryServiceTests()
         {
-            historyRepositoryService = new();
+            historyRepositoryService = new(LoggerFactory);
             runnableProject = CreateRunnableProject();
             wipProject = CreateWipProject(NullHistoryStorageEngine.Prefix);
         }

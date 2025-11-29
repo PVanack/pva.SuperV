@@ -9,7 +9,6 @@ using pva.SuperV.Model.Services;
 using Shouldly;
 using System.Net.Http.Json;
 using System.Text.Json;
-using Xunit.Abstractions;
 
 namespace pva.SuperV.ApiTests
 {
@@ -17,7 +16,7 @@ namespace pva.SuperV.ApiTests
     {
         public class ConsoleWriter(ITestOutputHelper output) : StringWriter
         {
-            public override void WriteLine(string? value) => output.WriteLine(value);
+            public override void WriteLine(string? value) => output.WriteLine(value!);
         }
 
         private readonly TestProjectApplication application;
@@ -47,11 +46,11 @@ namespace pva.SuperV.ApiTests
                 });
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history/Project/Instance/values/raw", request);
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/values/raw", request, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            HistoryRawResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryRawResultModel>();
+            HistoryRawResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryRawResultModel>(cancellationToken: TestContext.Current.CancellationToken);
             CheckHistoryResult(expectedHistoryResult, historyResult);
         }
 
@@ -88,7 +87,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history/Project/UnknownInstance/values/raw", request);
+            var result = await client.PostAsJsonAsync("/history/Project/UnknownInstance/values/raw", request, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -104,7 +103,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<BadHistoryStartTimeException>();
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history/Project/Instance/values/raw", request);
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/values/raw", request, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -122,11 +121,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedHistoryResult);
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history/Project/Instance/values", request);
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/values", request, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            HistoryResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryResultModel>();
+            HistoryResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryResultModel>(cancellationToken: TestContext.Current.CancellationToken);
             historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
         }
 
@@ -139,7 +138,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history/Project/UnknownInstance/values", request);
+            var result = await client.PostAsJsonAsync("/history/Project/UnknownInstance/values", request, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -155,7 +154,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<BadHistoryStartTimeException>();
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history/Project/Instance/values", request);
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/values", request, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -178,11 +177,11 @@ namespace pva.SuperV.ApiTests
                 });
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics/raw", request);
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics/raw", request, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            HistoryStatisticsRawResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryStatisticsRawResultModel>();
+            HistoryStatisticsRawResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryStatisticsRawResultModel>(cancellationToken: TestContext.Current.CancellationToken);
             CheckHistoryStatisticsResult(expectedHistoryResult, historyResult);
         }
 
@@ -220,7 +219,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history/Project/UnknownInstance/statistics/raw", request);
+            var result = await client.PostAsJsonAsync("/history/Project/UnknownInstance/statistics/raw", request, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -237,7 +236,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<BadHistoryStartTimeException>();
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics/raw", request);
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics/raw", request, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -255,7 +254,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<BadHistoryIntervalException>();
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics/raw", request);
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics/raw", request, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -274,11 +273,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedHistoryResult);
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics", request);
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics", request, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            HistoryStatisticsResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryStatisticsResultModel>();
+            HistoryStatisticsResultModel? historyResult = await result.Content.ReadFromJsonAsync<HistoryStatisticsResultModel>(cancellationToken: TestContext.Current.CancellationToken);
             historyResult.ShouldBeEquivalentTo(expectedHistoryResult);
         }
 
@@ -292,7 +291,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history/Project/UnknownInstance/statistics", request);
+            var result = await client.PostAsJsonAsync("/history/Project/UnknownInstance/statistics", request, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -309,7 +308,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<BadHistoryStartTimeException>();
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics", request);
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics", request, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -327,7 +326,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<BadHistoryIntervalException>();
 
             // WHEN
-            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics", request);
+            var result = await client.PostAsJsonAsync("/history/Project/Instance/statistics", request, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             result.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);

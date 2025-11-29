@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Engine;
+﻿using pva.Helpers.Extensions;
+using pva.SuperV.Engine;
 using pva.SuperV.Model.Instances;
 using Shouldly;
 using System.Net.Http.Json;
@@ -87,7 +88,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                 ? Enum.Parse<QualityLevel>(qualityString)
                 : QualityLevel.Good;
             DateTime? timestamp = row.TryGetValue("Timestamp", out string timestampString) && !String.IsNullOrEmpty(timestampString)
-                ? ParseDateTime(timestampString)
+                ? timestampString.ParseDateTimeInvariant()
                 : null;
             return BuildFieldValueModel(row, "Value", fieldType, formattedValue, qualityLevel, timestamp);
         }

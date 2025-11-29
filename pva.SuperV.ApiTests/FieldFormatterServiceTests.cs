@@ -19,7 +19,7 @@ namespace pva.SuperV.ApiTests
 
         public FieldFormatterServiceTests()
         {
-            fieldFormatterService = new();
+            fieldFormatterService = new(LoggerFactory);
             runnableProject = CreateRunnableProject();
             wipProject = Project.CreateProject(runnableProject);
         }

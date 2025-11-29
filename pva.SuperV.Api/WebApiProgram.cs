@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.HttpLogging;
+using NLog;
+using NLog.Extensions.Logging;
+using NLog.Web;
 using pva.SuperV.Api.Routes.Classes;
 using pva.SuperV.Api.Routes.FieldDefinitions;
 using pva.SuperV.Api.Routes.FieldFormatters;
@@ -41,6 +44,15 @@ namespace pva.SuperV.Api
         private void Run(string[] args)
         {
             var builder = WebApplication.CreateSlimBuilder(args);
+            builder.Logging.ClearProviders();
+            builder.Host.UseNLog();
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables().Build();
+            Logger logger = LogManager.Setup()
+                                   .LoadConfigurationFromSection(config)
+                                   .GetCurrentClassLogger();
 
             builder.Services
                 .ConfigureHttpJsonOptions(options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default))
@@ -115,6 +127,8 @@ namespace pva.SuperV.Api
                .MapInstancesEndpoints()
                .MapHistoryValuesEndpoints();
             app.UseCors(MyAllowSpecificOrigins);
+
+            logger.Info("Starting SuperV web API");
             app.Run();
         }
     }

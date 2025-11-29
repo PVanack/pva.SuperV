@@ -6,7 +6,6 @@ using pva.SuperV.EngineTests;
 using pva.SuperV.Model.HistoryRetrieval;
 using pva.SuperV.Model.Instances;
 using Shouldly;
-using Xunit.Abstractions;
 
 namespace pva.SuperV.ApiTests
 {
@@ -15,7 +14,7 @@ namespace pva.SuperV.ApiTests
     {
         public class ConsoleWriter(ITestOutputHelper output) : StringWriter
         {
-            public override void WriteLine(string? value) => output.WriteLine(value);
+            public override void WriteLine(string? value) => output.WriteLine(value!);
         }
 
         private readonly HistoryValuesService historyValuesService;
@@ -25,7 +24,7 @@ namespace pva.SuperV.ApiTests
 
         public HistoryValueServiceTests(ITestOutputHelper output)
         {
-            historyValuesService = new();
+            historyValuesService = new(LoggerFactory);
             Console.SetOut(new ConsoleWriter(output));
         }
 

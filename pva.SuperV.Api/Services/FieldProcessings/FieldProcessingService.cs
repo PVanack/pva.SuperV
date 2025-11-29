@@ -9,14 +9,25 @@ namespace pva.SuperV.Api.Services.FieldProcessings
 {
     public class FieldProcessingService : BaseService, IFieldProcessingService
     {
+        private readonly ILogger logger;
+
+        public FieldProcessingService(ILoggerFactory loggerFactory)
+        {
+            this.logger = loggerFactory.CreateLogger(this.GetType());
+        }
+
         public async Task<List<FieldValueProcessingModel>> GetFieldProcessingsAsync(string projectId, string className, string fieldName)
         {
+            logger.LogDebug("Getting field processings on field {FieldName} for class {ClassName} of project {ProjectId}",
+                fieldName, className, projectId);
             IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(GetProjectEntity(projectId), className, fieldName);
             return await Task.FromResult(fieldDefinition.ValuePostChangeProcessings.ConvertAll(field => FieldProcessingMapper.ToDto(field)));
         }
 
         public async Task<FieldValueProcessingModel> GetFieldProcessingAsync(string projectId, string className, string fieldName, string processingName)
         {
+            logger.LogDebug("Getting field processing {ProcessingName} on field {FieldName} for class {ClassName} of project {ProjectId}",
+                processingName, fieldName, className, projectId);
             IFieldDefinition fieldDefinition = GetFieldDefinitionEntity(GetProjectEntity(projectId), className, fieldName);
             IFieldValueProcessing? processing = fieldDefinition.ValuePostChangeProcessings
                 .FirstOrDefault(field => field.Name.Equals(processingName));
@@ -27,6 +38,8 @@ namespace pva.SuperV.Api.Services.FieldProcessings
 
         public async Task<FieldValueProcessingModel> CreateFieldProcessingAsync(string projectId, string className, string fieldName, FieldValueProcessingModel createRequest)
         {
+            logger.LogDebug("Creating field processing {ProcessingName} on field {FieldName} for class {ClassName} of project {ProjectId}",
+                createRequest.Name, fieldName, className, projectId);
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 Class clazz = GetClassEntity(wipProject, className);
@@ -40,6 +53,8 @@ namespace pva.SuperV.Api.Services.FieldProcessings
 
         public async Task<FieldValueProcessingModel> UpdateFieldProcessingAsync(string projectId, string className, string fieldName, string processingName, FieldValueProcessingModel updateRequest)
         {
+            logger.LogDebug("Updating field processing {ProcessingName} on field {FieldName} for class {ClassName} of project {ProjectId}",
+                processingName, fieldName, className, projectId);
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 Class clazz = GetClassEntity(wipProject, className);
@@ -53,6 +68,8 @@ namespace pva.SuperV.Api.Services.FieldProcessings
 
         public async ValueTask DeleteFieldProcessingAsync(string projectId, string className, string fieldName, string processingName)
         {
+            logger.LogDebug("Deleting field processing {ProcessingName} on field {FieldName} for class {ClassName} of project {ProjectId}",
+                processingName, fieldName, className, projectId);
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 wipProject.RemoveFieldChangePostProcessing(className, fieldName, processingName);

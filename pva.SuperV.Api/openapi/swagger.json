@@ -3967,7 +3967,8 @@
             "description": "Field name"
           },
           "type": {
-            "type": "string"
+            "type": "string",
+            "description": "Field type"
           },
           "fieldValue": {
             "$ref": "#/components/schemas/FieldValueModel"

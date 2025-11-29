@@ -7,7 +7,9 @@ namespace pva.SuperV.Model.Instances
     [ExcludeFromCodeCoverage]
     public record FieldModel(
         [property:Description("Field name")]
-        string Name, string Type,
+        string Name,
+        [property:Description("Field type")]
+        string Type,
         [property:Description("Field value")]
         FieldValueModel FieldValue);
 }

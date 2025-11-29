@@ -10,16 +10,28 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
 {
     public class FieldDefinitionService : BaseService, IFieldDefinitionService
     {
+        private readonly ILogger logger;
         private readonly Dictionary<string, Comparison<FieldDefinitionModel>> sortOptions = new()
             {
                 { "name", new Comparison<FieldDefinitionModel>((a, b) => a.Name.CompareTo(b.Name)) }
             };
 
+        public FieldDefinitionService(ILoggerFactory loggerFactory)
+        {
+            this.logger = loggerFactory.CreateLogger(this.GetType());
+        }
+
         public async Task<List<FieldDefinitionModel>> GetFieldsAsync(string projectId, string className)
-            => await Task.FromResult(GetClassEntity(projectId, className).FieldDefinitions.Values.Select(field => FieldDefinitionMapper.ToDto(field)).ToList());
+        {
+            logger.LogDebug("Getting fields for {ClassName} for {ProjectId}",
+                className, projectId);
+            return await Task.FromResult(GetClassEntity(projectId, className).FieldDefinitions.Values.Select(field => FieldDefinitionMapper.ToDto(field)).ToList());
+        }
 
         public async Task<FieldDefinitionModel> GetFieldAsync(string projectId, string className, string fieldName)
         {
+            logger.LogDebug("Getting field {FieldName} for {ClassName} for {ProjectId}",
+                fieldName, className, projectId);
             if (GetClassEntity(projectId, className).FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
             {
                 return await Task.FromResult(FieldDefinitionMapper.ToDto(fieldDefinition));
@@ -29,25 +41,19 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
 
         public async Task<PagedSearchResult<FieldDefinitionModel>> SearchFieldsAsync(string projectId, string className, FieldDefinitionPagedSearchRequest search)
         {
+            logger.LogDebug("Searching for fields with filter {NameFilter} for {ClassName} for {ProjectId} page number {PageNumber} page size {PageSize}",
+                search.NameFilter, className, projectId, search.PageNumber, search.PageSize);
             List<FieldDefinitionModel> allFieldDefinitions = await GetFieldsAsync(projectId, className);
             List<FieldDefinitionModel> fieldDefinitions = FilterFieldDefinitions(allFieldDefinitions, search);
             fieldDefinitions = SortResult(fieldDefinitions, search.SortOption, sortOptions);
             return CreateResult(search, allFieldDefinitions, fieldDefinitions);
         }
 
-        private static List<FieldDefinitionModel> FilterFieldDefinitions(List<FieldDefinitionModel> allFieldDefinitions, FieldDefinitionPagedSearchRequest search)
-        {
-            List<FieldDefinitionModel> filteredClasses = allFieldDefinitions;
-            if (!String.IsNullOrEmpty(search.NameFilter))
-            {
-                filteredClasses = [.. filteredClasses.Where(fieldDefinition => fieldDefinition.Name.Contains(search.NameFilter))];
-            }
-            return filteredClasses;
-        }
-
 
         public async Task<List<FieldDefinitionModel>> CreateFieldsAsync(string projectId, string className, List<FieldDefinitionModel> createRequests)
         {
+            logger.LogDebug("Creating fields for {ClassName} for {ProjectId}",
+                className, projectId);
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 List<FieldDefinitionModel> createdFieldDefinitions = [];
@@ -56,6 +62,8 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
                 {
                     createRequests.ForEach(fieldDefinition =>
                     {
+                        logger.LogDebug("Creating field {FieldName} of type {FieldType} for {ClassName} for {ProjectId}",
+                            fieldDefinition.Name, fieldDefinition.FieldType, className, projectId);
                         FieldFormatter? fieldFormatter = null;
                         if (fieldDefinition.ValueFormatter is not null)
                         {
@@ -84,6 +92,8 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
 
         public async Task<FieldDefinitionModel> UpdateFieldAsync(string projectId, string className, string fieldName, FieldDefinitionModel updateRequest)
         {
+            logger.LogDebug("Updating field {FieldName} of type {FieldType} for {ClassName} for {ProjectId}",
+                updateRequest.Name, updateRequest.FieldType, className, projectId);
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 _ = GetClassEntity(wipProject, className);
@@ -99,6 +109,8 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
 
         public async ValueTask DeleteFieldAsync(string projectId, string className, string fieldName)
         {
+            logger.LogDebug("Deleting field {FieldName} for {ClassName} for {ProjectId}",
+                fieldName, className, projectId);
             if (GetProjectEntity(projectId) is WipProject wipProject)
             {
                 GetClassEntity(wipProject, className).RemoveField(fieldName);
@@ -107,5 +119,15 @@ namespace pva.SuperV.Api.Services.FieldDefinitions
             }
             await ValueTask.FromException(new NonWipProjectException(projectId));
         }
+        private static List<FieldDefinitionModel> FilterFieldDefinitions(List<FieldDefinitionModel> allFieldDefinitions, FieldDefinitionPagedSearchRequest search)
+        {
+            List<FieldDefinitionModel> filteredClasses = allFieldDefinitions;
+            if (!String.IsNullOrEmpty(search.NameFilter))
+            {
+                filteredClasses = [.. filteredClasses.Where(fieldDefinition => fieldDefinition.Name.Contains(search.NameFilter))];
+            }
+            return filteredClasses;
+        }
     }
 }
+

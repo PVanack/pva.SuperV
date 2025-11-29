@@ -7,7 +7,6 @@ using pva.SuperV.Model.Instances;
 using pva.SuperV.Model.Services;
 using Shouldly;
 using System.Net.Http.Json;
-using Xunit.Abstractions;
 
 namespace pva.SuperV.ApiTests
 {
@@ -15,7 +14,7 @@ namespace pva.SuperV.ApiTests
     {
         public class ConsoleWriter(ITestOutputHelper output) : StringWriter
         {
-            public override void WriteLine(string? value) => output.WriteLine(value);
+            public override void WriteLine(string? value) => output.WriteLine(value!);
         }
 
         private readonly TestProjectApplication application;
@@ -40,11 +39,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(new PagedSearchResult<InstanceModel>(1, 10, expectedInstances.Count, expectedInstances));
 
             // WHEN
-            var response = await client.PostAsJsonAsync("/instances/Project1/search", search);
+            var response = await client.PostAsJsonAsync("/instances/Project1/search", search, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            PagedSearchResult<InstanceModel>? projectInstances = await response.Content.ReadFromJsonAsync<PagedSearchResult<InstanceModel>>();
+            PagedSearchResult<InstanceModel>? projectInstances = await response.Content.ReadFromJsonAsync<PagedSearchResult<InstanceModel>>(cancellationToken: TestContext.Current.CancellationToken);
             projectInstances.ShouldNotBeNull();
             projectInstances.PageNumber.ShouldBe(1);
             projectInstances.PageSize.ShouldBe(10);
@@ -68,11 +67,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedInstances);
 
             // WHEN
-            var response = await client.GetAsync("/instances/Project1");
+            var response = await client.GetAsync("/instances/Project1", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            InstanceModel[]? projectInstances = await response.Content.ReadFromJsonAsync<InstanceModel[]>();
+            InstanceModel[]? projectInstances = await response.Content.ReadFromJsonAsync<InstanceModel[]>(cancellationToken: TestContext.Current.CancellationToken);
             projectInstances.ShouldBeEquivalentTo(expectedInstances.ToArray());
         }
 
@@ -84,7 +83,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.GetAsync("/instances/UnknownProject");
+            var response = await client.GetAsync("/instances/UnknownProject", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -104,11 +103,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedInstance);
 
             // WHEN
-            var response = await client.GetAsync($"/instances/Project1/{expectedInstance.Name}");
+            var response = await client.GetAsync($"/instances/Project1/{expectedInstance.Name}", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            InstanceModel? retrievedInstance = await response.Content.ReadFromJsonAsync<InstanceModel>();
+            InstanceModel? retrievedInstance = await response.Content.ReadFromJsonAsync<InstanceModel>(cancellationToken: TestContext.Current.CancellationToken);
             retrievedInstance.ShouldBeEquivalentTo(expectedInstance);
         }
 
@@ -120,7 +119,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.GetAsync("/instances/Project1/UnknownInstance");
+            var response = await client.GetAsync("/instances/Project1/UnknownInstance", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -140,11 +139,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedInstance);
 
             // WHEN
-            var response = await client.PostAsJsonAsync("/instances/Project1/", expectedInstance);
+            var response = await client.PostAsJsonAsync("/instances/Project1/", expectedInstance, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
-            InstanceModel? createdInstance = await response.Content.ReadFromJsonAsync<InstanceModel>();
+            InstanceModel? createdInstance = await response.Content.ReadFromJsonAsync<InstanceModel>(cancellationToken: TestContext.Current.CancellationToken);
             createdInstance.ShouldBeEquivalentTo(expectedInstance);
         }
 
@@ -162,7 +161,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.PostAsJsonAsync("/instances/UnknownProject/", expectedInstance);
+            var response = await client.PostAsJsonAsync("/instances/UnknownProject/", expectedInstance, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -182,7 +181,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<NonWipProjectException>();
 
             // WHEN
-            var response = await client.PostAsJsonAsync("/instances/RunnableProject/", expectedInstance);
+            var response = await client.PostAsJsonAsync("/instances/RunnableProject/", expectedInstance, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -200,7 +199,7 @@ namespace pva.SuperV.ApiTests
                     ]);
 
             // WHEN
-            var response = await client.DeleteAsync($"/instances/Project1/{expectedInstance.Name}");
+            var response = await client.DeleteAsync($"/instances/Project1/{expectedInstance.Name}", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
@@ -214,7 +213,7 @@ namespace pva.SuperV.ApiTests
                 .Do(_ => throw new UnknownEntityException());
 
             // WHEN
-            var response = await client.DeleteAsync("/instances/Project/UnknownInstance");
+            var response = await client.DeleteAsync("/instances/Project/UnknownInstance", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -228,7 +227,7 @@ namespace pva.SuperV.ApiTests
                 .Do(_ => throw new NonWipProjectException());
 
             // WHEN
-            var response = await client.DeleteAsync("/instances/RunnableProject/Instance");
+            var response = await client.DeleteAsync("/instances/RunnableProject/Instance", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -244,11 +243,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedField);
 
             // WHEN
-            var response = await client.GetAsync("/instances/Project1/Instance1/Field1/value");
+            var response = await client.GetAsync("/instances/Project1/Instance1/Field1/value", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            FieldModel? retrievedField = await response.Content.ReadFromJsonAsync<FieldModel>();
+            FieldModel? retrievedField = await response.Content.ReadFromJsonAsync<FieldModel>(cancellationToken: TestContext.Current.CancellationToken);
             retrievedField.ShouldBeEquivalentTo(expectedField);
         }
 
@@ -260,7 +259,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.GetAsync("/instances/Project1/Instance1/UnknownField/value");
+            var response = await client.GetAsync("/instances/Project1/Instance1/UnknownField/value", TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -275,11 +274,11 @@ namespace pva.SuperV.ApiTests
                 .Returns(expectedFieldValue);
 
             // WHEN
-            var response = await client.PutAsJsonAsync("/instances/Project1/Instance1/Field1/value", expectedFieldValue);
+            var response = await client.PutAsJsonAsync("/instances/Project1/Instance1/Field1/value", expectedFieldValue, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-            FieldValueModel? updatedValue = await response.Content.ReadFromJsonAsync<FieldValueModel>();
+            FieldValueModel? updatedValue = await response.Content.ReadFromJsonAsync<FieldValueModel>(cancellationToken: TestContext.Current.CancellationToken);
             updatedValue.ShouldBeEquivalentTo(expectedFieldValue);
         }
 
@@ -292,7 +291,7 @@ namespace pva.SuperV.ApiTests
                 .ThrowsAsync<UnknownEntityException>();
 
             // WHEN
-            var response = await client.PutAsJsonAsync("/instances/Project1/Instance1/UnknownField/value", expectedFieldValue);
+            var response = await client.PutAsJsonAsync("/instances/Project1/Instance1/UnknownField/value", expectedFieldValue, cancellationToken: TestContext.Current.CancellationToken);
 
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);

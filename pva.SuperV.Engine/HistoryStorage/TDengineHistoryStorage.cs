@@ -239,7 +239,7 @@ namespace pva.SuperV.Engine.HistoryStorage
                 string fieldNames = fields.Select(field => $"_{field.Name}")
                     .Aggregate((a, b) => $"{a},{b}");
                 string sqlQuery =
-                    $@"
+                    @$"
 SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
  WHERE TS between ""{FormatToSqlDate(timeRange.From)}"" and ""{FormatToSqlDate(timeRange.To)}"";
  ";
@@ -281,7 +281,7 @@ SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
                     fillClause = $"FILL({timeRange.FillMode})";
                 }
                 string sqlQuery =
-                    $@"
+                    @$"
 SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {instanceTableName}
  WHERE TS between ""{FormatToSqlDate(timeRange.From)}"" and ""{FormatToSqlDate(timeRange.To)}""
  INTERVAL({FormatInterval(timeRange.Interval)}) SLIDING({FormatInterval(timeRange.Interval)}) {fillClause};
@@ -315,8 +315,8 @@ SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {ins
             string intervalText = "";
             intervalText += GetIntervalPeriod(timespan.Days / 365, 'y');
             intervalText += GetIntervalPeriod((timespan.Days % 365) / 30, 'm');
-            intervalText += GetIntervalPeriod(((timespan.Days % 365) % 30) / 7, 'w');
-            intervalText += GetIntervalPeriod(((timespan.Days % 365) % 30) % 7, 'd');
+            intervalText += GetIntervalPeriod((timespan.Days % 365 % 30) / 7, 'w');
+            intervalText += GetIntervalPeriod(timespan.Days % 365 % 30 % 7, 'd');
             intervalText += GetIntervalPeriod(timespan.Hours, 'h');
             intervalText += GetIntervalPeriod(timespan.Minutes, 'm');
             intervalText += GetIntervalPeriod(timespan.Seconds, 's');
