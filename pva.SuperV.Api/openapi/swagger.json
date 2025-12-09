@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.1.1",
   "info": {
     "title": "SuperV API",
     "description": "API for accessing SuperV projects.",
@@ -2954,7 +2954,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/FieldValueModel2"
+                "$ref": "#/components/schemas/FieldValueModel"
               }
             }
           },
@@ -2966,7 +2966,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FieldValueModel2"
+                  "$ref": "#/components/schemas/FieldValueModel"
                 }
               }
             }
@@ -3301,11 +3301,14 @@
             "description": "Name of the class."
           },
           "baseClassName": {
-            "type": "string",
-            "description": "Base class (if any).",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Base class (if any)."
           }
-        }
+        },
+        "description": "Class"
       },
       "ClassPagedSearchRequest": {
         "required": [
@@ -3317,26 +3320,39 @@
         "type": "object",
         "properties": {
           "pageNumber": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page number. Must be greater than 0.",
             "format": "int32"
           },
           "pageSize": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page size. Must be greater than 0.",
             "format": "int32"
           },
           "nameFilter": {
-            "type": "string",
-            "description": "Filter on name of entity.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Filter on name of entity."
           },
           "sortOption": {
-            "type": "string",
-            "description": "Sorting option",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Sorting option"
           }
-        }
+        },
+        "description": "Classes paged search request."
       },
       "CreateFieldFormatterRequest": {
         "required": [
@@ -3345,9 +3361,11 @@
         "type": "object",
         "properties": {
           "fieldFormatter": {
-            "$ref": "#/components/schemas/FieldFormatterModel2"
+            "description": "Definition of field formatter",
+            "$ref": "#/components/schemas/FieldFormatterModel"
           }
-        }
+        },
+        "description": "Field formatter creation request"
       },
       "CreateProjectRequest": {
         "required": [
@@ -3365,12 +3383,14 @@
             "description": "Description of project"
           },
           "historyStorageConnectionString": {
-            "type": "string",
-            "description": "Connection string to history storage",
-            "default": null,
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Connection string to history storage"
           }
-        }
+        },
+        "description": "Project creation request."
       },
       "FieldDefinitionModel": {
         "required": [
@@ -3415,6 +3435,7 @@
             "$ref": "#/components/schemas/FieldDefinitionModelUshortFieldDefinitionModel"
           }
         ],
+        "description": "Field definition",
         "discriminator": {
           "propertyName": "$type",
           "mapping": {
@@ -3459,11 +3480,14 @@
             "description": "Type of field"
           },
           "valueFormatter": {
-            "type": "string",
-            "description": "Field value formatter",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field value formatter"
           }
-        }
+        },
+        "description": "Boolean field definition."
       },
       "FieldDefinitionModelDateTimeFieldDefinitionModel": {
         "required": [
@@ -3492,11 +3516,14 @@
             "description": "Type of field"
           },
           "valueFormatter": {
-            "type": "string",
-            "description": "Field value formatter",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field value formatter"
           }
-        }
+        },
+        "description": "Date and time field definition."
       },
       "FieldDefinitionModelDoubleFieldDefinitionModel": {
         "required": [
@@ -3512,7 +3539,11 @@
             "type": "string"
           },
           "defaultValue": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "description": "Default value",
             "format": "double"
           },
@@ -3525,11 +3556,14 @@
             "description": "Type of field"
           },
           "valueFormatter": {
-            "type": "string",
-            "description": "Field value formatter",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field value formatter"
           }
-        }
+        },
+        "description": "Double field definition."
       },
       "FieldDefinitionModelFloatFieldDefinitionModel": {
         "required": [
@@ -3545,7 +3579,11 @@
             "type": "string"
           },
           "defaultValue": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "description": "Default value",
             "format": "float"
           },
@@ -3558,11 +3596,14 @@
             "description": "Type of field"
           },
           "valueFormatter": {
-            "type": "string",
-            "description": "Field value formatter",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field value formatter"
           }
-        }
+        },
+        "description": "Float field definition."
       },
       "FieldDefinitionModelIntFieldDefinitionModel": {
         "required": [
@@ -3578,7 +3619,11 @@
             "type": "string"
           },
           "defaultValue": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Default value",
             "format": "int32"
           },
@@ -3591,11 +3636,14 @@
             "description": "Type of field"
           },
           "valueFormatter": {
-            "type": "string",
-            "description": "Field value formatter",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field value formatter"
           }
-        }
+        },
+        "description": "Boolen field definition."
       },
       "FieldDefinitionModelLongFieldDefinitionModel": {
         "required": [
@@ -3611,7 +3659,11 @@
             "type": "string"
           },
           "defaultValue": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Default value",
             "format": "int64"
           },
@@ -3624,11 +3676,14 @@
             "description": "Type of field"
           },
           "valueFormatter": {
-            "type": "string",
-            "description": "Field value formatter",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field value formatter"
           }
-        }
+        },
+        "description": "Long field definition."
       },
       "FieldDefinitionModelShortFieldDefinitionModel": {
         "required": [
@@ -3644,7 +3699,11 @@
             "type": "string"
           },
           "defaultValue": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Default value",
             "format": "int16"
           },
@@ -3657,11 +3716,14 @@
             "description": "Type of field"
           },
           "valueFormatter": {
-            "type": "string",
-            "description": "Field value formatter",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field value formatter"
           }
-        }
+        },
+        "description": "Short field definition."
       },
       "FieldDefinitionModelStringFieldDefinitionModel": {
         "required": [
@@ -3677,9 +3739,11 @@
             "type": "string"
           },
           "defaultValue": {
-            "type": "string",
-            "description": "Default value",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Default value"
           },
           "name": {
             "type": "string",
@@ -3690,11 +3754,14 @@
             "description": "Type of field"
           },
           "valueFormatter": {
-            "type": "string",
-            "description": "Field value formatter",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field value formatter"
           }
-        }
+        },
+        "description": "String field definition."
       },
       "FieldDefinitionModelTimeSpanFieldDefinitionModel": {
         "required": [
@@ -3723,11 +3790,14 @@
             "description": "Type of field"
           },
           "valueFormatter": {
-            "type": "string",
-            "description": "Field value formatter",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field value formatter"
           }
-        }
+        },
+        "description": "Time span field definition."
       },
       "FieldDefinitionModelUintFieldDefinitionModel": {
         "required": [
@@ -3743,7 +3813,11 @@
             "type": "string"
           },
           "defaultValue": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Default value",
             "format": "uint32"
           },
@@ -3756,11 +3830,14 @@
             "description": "Type of field"
           },
           "valueFormatter": {
-            "type": "string",
-            "description": "Field value formatter",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field value formatter"
           }
-        }
+        },
+        "description": "Unsigned int field definition."
       },
       "FieldDefinitionModelUlongFieldDefinitionModel": {
         "required": [
@@ -3776,7 +3853,11 @@
             "type": "string"
           },
           "defaultValue": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Default value",
             "format": "uint64"
           },
@@ -3789,11 +3870,14 @@
             "description": "Type of field"
           },
           "valueFormatter": {
-            "type": "string",
-            "description": "Field value formatter",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field value formatter"
           }
-        }
+        },
+        "description": "Unsigned long field definition."
       },
       "FieldDefinitionModelUshortFieldDefinitionModel": {
         "required": [
@@ -3809,7 +3893,11 @@
             "type": "string"
           },
           "defaultValue": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Default value",
             "format": "uint16"
           },
@@ -3822,11 +3910,14 @@
             "description": "Type of field"
           },
           "valueFormatter": {
-            "type": "string",
-            "description": "Field value formatter",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field value formatter"
           }
-        }
+        },
+        "description": "Unsigned short field definition."
       },
       "FieldDefinitionPagedSearchRequest": {
         "required": [
@@ -3838,26 +3929,39 @@
         "type": "object",
         "properties": {
           "pageNumber": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page number. Must be greater than 0.",
             "format": "int32"
           },
           "pageSize": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page size. Must be greater than 0.",
             "format": "int32"
           },
           "nameFilter": {
-            "type": "string",
-            "description": "Filter on name of entity.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Filter on name of entity."
           },
           "sortOption": {
-            "type": "string",
-            "description": "Sorting option",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Sorting option"
           }
-        }
+        },
+        "description": "Field definitions paged search request."
       },
       "FieldFormatterModel": {
         "required": [
@@ -3869,24 +3973,7 @@
             "$ref": "#/components/schemas/FieldFormatterModelEnumFormatterModel"
           }
         ],
-        "discriminator": {
-          "propertyName": "$type",
-          "mapping": {
-            "EnumFormatterModel": "#/components/schemas/FieldFormatterModelEnumFormatterModel"
-          }
-        }
-      },
-      "FieldFormatterModel2": {
-        "required": [
-          "$type"
-        ],
-        "type": "object",
-        "anyOf": [
-          {
-            "$ref": "#/components/schemas/FieldFormatterModelEnumFormatterModel"
-          }
-        ],
-        "description": "Definition of field formatter",
+        "description": "Field formatter",
         "discriminator": {
           "propertyName": "$type",
           "mapping": {
@@ -3921,7 +4008,8 @@
             "type": "string",
             "description": "Type of the formatter."
           }
-        }
+        },
+        "description": "Enum Field formatter"
       },
       "FieldFormatterPagedSearchRequest": {
         "required": [
@@ -3933,26 +4021,39 @@
         "type": "object",
         "properties": {
           "pageNumber": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page number. Must be greater than 0.",
             "format": "int32"
           },
           "pageSize": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page size. Must be greater than 0.",
             "format": "int32"
           },
           "nameFilter": {
-            "type": "string",
-            "description": "Filter on name of entity.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Filter on name of entity."
           },
           "sortOption": {
-            "type": "string",
-            "description": "Sorting option",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Sorting option"
           }
-        }
+        },
+        "description": "Field formatters paged search request."
       },
       "FieldModel": {
         "required": [
@@ -3971,73 +4072,13 @@
             "description": "Field type"
           },
           "fieldValue": {
+            "description": "Field value",
             "$ref": "#/components/schemas/FieldValueModel"
           }
-        }
+        },
+        "description": "Field of an instance."
       },
       "FieldValueModel": {
-        "required": [
-          "$type"
-        ],
-        "type": "object",
-        "anyOf": [
-          {
-            "$ref": "#/components/schemas/FieldValueModelBoolFieldValueModel"
-          },
-          {
-            "$ref": "#/components/schemas/FieldValueModelDateTimeFieldValueModel"
-          },
-          {
-            "$ref": "#/components/schemas/FieldValueModelDoubleFieldValueModel"
-          },
-          {
-            "$ref": "#/components/schemas/FieldValueModelFloatFieldValueModel"
-          },
-          {
-            "$ref": "#/components/schemas/FieldValueModelIntFieldValueModel"
-          },
-          {
-            "$ref": "#/components/schemas/FieldValueModelLongFieldValueModel"
-          },
-          {
-            "$ref": "#/components/schemas/FieldValueModelShortFieldValueModel"
-          },
-          {
-            "$ref": "#/components/schemas/FieldValueModelStringFieldValueModel"
-          },
-          {
-            "$ref": "#/components/schemas/FieldValueModelTimeSpanFieldValueModel"
-          },
-          {
-            "$ref": "#/components/schemas/FieldValueModelUintFieldValueModel"
-          },
-          {
-            "$ref": "#/components/schemas/FieldValueModelUlongFieldValueModel"
-          },
-          {
-            "$ref": "#/components/schemas/FieldValueModelUshortFieldValueModel"
-          }
-        ],
-        "description": "Field value",
-        "discriminator": {
-          "propertyName": "$type",
-          "mapping": {
-            "BoolFieldValueModel": "#/components/schemas/FieldValueModelBoolFieldValueModel",
-            "DateTimeFieldValueModel": "#/components/schemas/FieldValueModelDateTimeFieldValueModel",
-            "DoubleFieldValueModel": "#/components/schemas/FieldValueModelDoubleFieldValueModel",
-            "FloatFieldValueModel": "#/components/schemas/FieldValueModelFloatFieldValueModel",
-            "IntFieldValueModel": "#/components/schemas/FieldValueModelIntFieldValueModel",
-            "LongFieldValueModel": "#/components/schemas/FieldValueModelLongFieldValueModel",
-            "ShortFieldValueModel": "#/components/schemas/FieldValueModelShortFieldValueModel",
-            "StringFieldValueModel": "#/components/schemas/FieldValueModelStringFieldValueModel",
-            "TimeSpanFieldValueModel": "#/components/schemas/FieldValueModelTimeSpanFieldValueModel",
-            "UintFieldValueModel": "#/components/schemas/FieldValueModelUintFieldValueModel",
-            "UlongFieldValueModel": "#/components/schemas/FieldValueModelUlongFieldValueModel",
-            "UshortFieldValueModel": "#/components/schemas/FieldValueModelUshortFieldValueModel"
-          }
-        }
-      },
-      "FieldValueModel2": {
         "required": [
           "$type"
         ],
@@ -4117,22 +4158,33 @@
             "description": "Field value."
           },
           "formattedValue": {
-            "type": "string",
-            "description": "Field formated value if formatting is present on field.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field formated value if formatting is present on field."
           },
           "quality": {
-            "type": "integer",
-            "description": "Field value quality level.",
-            "nullable": true
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "Field value quality level.",
+                "$ref": "#/components/schemas/QualityLevel"
+              }
+            ]
           },
           "timestamp": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "Field value timestamp.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           }
-        }
+        },
+        "description": "Boolean field value"
       },
       "FieldValueModelDateTimeFieldValueModel": {
         "required": [
@@ -4154,22 +4206,33 @@
             "format": "date-time"
           },
           "formattedValue": {
-            "type": "string",
-            "description": "Field formated value if formatting is present on field.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field formated value if formatting is present on field."
           },
           "quality": {
-            "type": "integer",
-            "description": "Field value quality level.",
-            "nullable": true
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "Field value quality level.",
+                "$ref": "#/components/schemas/QualityLevel"
+              }
+            ]
           },
           "timestamp": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "Field value timestamp.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           }
-        }
+        },
+        "description": "Date and time field value"
       },
       "FieldValueModelDoubleFieldValueModel": {
         "required": [
@@ -4186,27 +4249,42 @@
             "type": "string"
           },
           "value": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "description": "Field value.",
             "format": "double"
           },
           "formattedValue": {
-            "type": "string",
-            "description": "Field formated value if formatting is present on field.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field formated value if formatting is present on field."
           },
           "quality": {
-            "type": "integer",
-            "description": "Field value quality level.",
-            "nullable": true
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "Field value quality level.",
+                "$ref": "#/components/schemas/QualityLevel"
+              }
+            ]
           },
           "timestamp": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "Field value timestamp.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           }
-        }
+        },
+        "description": "Double field value"
       },
       "FieldValueModelFloatFieldValueModel": {
         "required": [
@@ -4223,27 +4301,42 @@
             "type": "string"
           },
           "value": {
-            "type": "number",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
             "description": "Field value.",
             "format": "float"
           },
           "formattedValue": {
-            "type": "string",
-            "description": "Field formated value if formatting is present on field.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field formated value if formatting is present on field."
           },
           "quality": {
-            "type": "integer",
-            "description": "Field value quality level.",
-            "nullable": true
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "Field value quality level.",
+                "$ref": "#/components/schemas/QualityLevel"
+              }
+            ]
           },
           "timestamp": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "Field value timestamp.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           }
-        }
+        },
+        "description": "Float field value"
       },
       "FieldValueModelIntFieldValueModel": {
         "required": [
@@ -4260,27 +4353,42 @@
             "type": "string"
           },
           "value": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Field value.",
             "format": "int32"
           },
           "formattedValue": {
-            "type": "string",
-            "description": "Field formated value if formatting is present on field.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field formated value if formatting is present on field."
           },
           "quality": {
-            "type": "integer",
-            "description": "Field value quality level.",
-            "nullable": true
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "Field value quality level.",
+                "$ref": "#/components/schemas/QualityLevel"
+              }
+            ]
           },
           "timestamp": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "Field value timestamp.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           }
-        }
+        },
+        "description": "Int field value"
       },
       "FieldValueModelLongFieldValueModel": {
         "required": [
@@ -4297,27 +4405,42 @@
             "type": "string"
           },
           "value": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Field value.",
             "format": "int64"
           },
           "formattedValue": {
-            "type": "string",
-            "description": "Field formated value if formatting is present on field.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field formated value if formatting is present on field."
           },
           "quality": {
-            "type": "integer",
-            "description": "Field value quality level.",
-            "nullable": true
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "Field value quality level.",
+                "$ref": "#/components/schemas/QualityLevel"
+              }
+            ]
           },
           "timestamp": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "Field value timestamp.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           }
-        }
+        },
+        "description": "Long field value"
       },
       "FieldValueModelShortFieldValueModel": {
         "required": [
@@ -4334,27 +4457,42 @@
             "type": "string"
           },
           "value": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Field value.",
             "format": "int16"
           },
           "formattedValue": {
-            "type": "string",
-            "description": "Field formated value if formatting is present on field.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field formated value if formatting is present on field."
           },
           "quality": {
-            "type": "integer",
-            "description": "Field value quality level.",
-            "nullable": true
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "Field value quality level.",
+                "$ref": "#/components/schemas/QualityLevel"
+              }
+            ]
           },
           "timestamp": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "Field value timestamp.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           }
-        }
+        },
+        "description": "Short field value"
       },
       "FieldValueModelStringFieldValueModel": {
         "required": [
@@ -4370,27 +4508,40 @@
             "type": "string"
           },
           "value": {
-            "type": "string",
-            "description": "Field value.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field value."
           },
           "formattedValue": {
-            "type": "string",
-            "description": "Field formated value if formatting is present on field.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field formated value if formatting is present on field."
           },
           "quality": {
-            "type": "integer",
-            "description": "Field value quality level.",
-            "nullable": true
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "Field value quality level.",
+                "$ref": "#/components/schemas/QualityLevel"
+              }
+            ]
           },
           "timestamp": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "Field value timestamp.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           }
-        }
+        },
+        "description": "String field value"
       },
       "FieldValueModelTimeSpanFieldValueModel": {
         "required": [
@@ -4412,22 +4563,33 @@
             "description": "Field value."
           },
           "formattedValue": {
-            "type": "string",
-            "description": "Field formated value if formatting is present on field.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field formated value if formatting is present on field."
           },
           "quality": {
-            "type": "integer",
-            "description": "Field value quality level.",
-            "nullable": true
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "Field value quality level.",
+                "$ref": "#/components/schemas/QualityLevel"
+              }
+            ]
           },
           "timestamp": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "Field value timestamp.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           }
-        }
+        },
+        "description": "Time span field value"
       },
       "FieldValueModelUintFieldValueModel": {
         "required": [
@@ -4444,27 +4606,42 @@
             "type": "string"
           },
           "value": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Field value.",
             "format": "uint32"
           },
           "formattedValue": {
-            "type": "string",
-            "description": "Field formated value if formatting is present on field.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field formated value if formatting is present on field."
           },
           "quality": {
-            "type": "integer",
-            "description": "Field value quality level.",
-            "nullable": true
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "Field value quality level.",
+                "$ref": "#/components/schemas/QualityLevel"
+              }
+            ]
           },
           "timestamp": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "Field value timestamp.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           }
-        }
+        },
+        "description": "Unsigned int field value"
       },
       "FieldValueModelUlongFieldValueModel": {
         "required": [
@@ -4481,27 +4658,42 @@
             "type": "string"
           },
           "value": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Field value.",
             "format": "uint64"
           },
           "formattedValue": {
-            "type": "string",
-            "description": "Field formated value if formatting is present on field.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field formated value if formatting is present on field."
           },
           "quality": {
-            "type": "integer",
-            "description": "Field value quality level.",
-            "nullable": true
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "Field value quality level.",
+                "$ref": "#/components/schemas/QualityLevel"
+              }
+            ]
           },
           "timestamp": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "Field value timestamp.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           }
-        }
+        },
+        "description": "Unsigned long field value"
       },
       "FieldValueModelUshortFieldValueModel": {
         "required": [
@@ -4518,27 +4710,42 @@
             "type": "string"
           },
           "value": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Field value.",
             "format": "uint16"
           },
           "formattedValue": {
-            "type": "string",
-            "description": "Field formated value if formatting is present on field.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Field formated value if formatting is present on field."
           },
           "quality": {
-            "type": "integer",
-            "description": "Field value quality level.",
-            "nullable": true
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "Field value quality level.",
+                "$ref": "#/components/schemas/QualityLevel"
+              }
+            ]
           },
           "timestamp": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "Field value timestamp.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           }
-        }
+        },
+        "description": "Unsigned field value"
       },
       "FieldValueProcessingModel": {
         "required": [
@@ -4553,6 +4760,7 @@
             "$ref": "#/components/schemas/FieldValueProcessingModelHistorizationProcessingModel"
           }
         ],
+        "description": "Field value processing",
         "discriminator": {
           "propertyName": "$type",
           "mapping": {
@@ -4581,9 +4789,11 @@
             "type": "string"
           },
           "highHighLimitFieldName": {
-            "type": "string",
-            "description": "High high limit field name.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "High high limit field name."
           },
           "highLimitFieldName": {
             "type": "string",
@@ -4594,23 +4804,29 @@
             "description": "Low limit field name."
           },
           "lowLowLimitFieldName": {
-            "type": "string",
-            "description": "Low low limit field name.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Low low limit field name."
           },
           "deadbandFieldName": {
-            "type": "string",
-            "description": "Deadband field name.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Deadband field name."
           },
           "alarmStateFieldName": {
             "type": "string",
             "description": "Alarm state field name."
           },
           "ackStateFieldName": {
-            "type": "string",
-            "description": "Acknowledgement field name.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Acknowledgement field name."
           },
           "name": {
             "type": "string",
@@ -4620,7 +4836,8 @@
             "type": "string",
             "description": "Name of field triggering the processing."
           }
-        }
+        },
+        "description": "Alarm state processing."
       },
       "FieldValueProcessingModelHistorizationProcessingModel": {
         "required": [
@@ -4642,9 +4859,11 @@
             "description": "History repository name."
           },
           "timestampFieldName": {
-            "type": "string",
-            "description": "Timestamp field name.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Timestamp field name."
           },
           "fieldsToHistorize": {
             "type": "array",
@@ -4661,7 +4880,11 @@
             "type": "string",
             "description": "Name of field triggering the processing."
           }
-        }
+        },
+        "description": "Historization field processing"
+      },
+      "FillMode": {
+        "type": "integer"
       },
       "HistoryFieldModel": {
         "required": [
@@ -4680,11 +4903,16 @@
             "description": "Type of field"
           },
           "columnIndex": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Column index of field in rows",
             "format": "int32"
           }
-        }
+        },
+        "description": "History field model"
       },
       "HistoryRawResultModel": {
         "required": [
@@ -4707,7 +4935,8 @@
             },
             "description": "Rows of history values."
           }
-        }
+        },
+        "description": "History retrieval result."
       },
       "HistoryRawRowModel": {
         "required": [
@@ -4723,13 +4952,15 @@
             "format": "date-time"
           },
           "quality": {
+            "description": "Quality level of row.",
             "$ref": "#/components/schemas/QualityLevel"
           },
           "fieldValues": {
             "type": "array",
             "description": "Retrieved values."
           }
-        }
+        },
+        "description": "Row of field values from history"
       },
       "HistoryRepositoryModel": {
         "required": [
@@ -4740,7 +4971,8 @@
           "name": {
             "type": "string"
           }
-        }
+        },
+        "description": "History repository"
       },
       "HistoryRequestModel": {
         "required": [
@@ -4767,7 +4999,8 @@
             },
             "description": "List of fields to be retrieved."
           }
-        }
+        },
+        "description": "Request on fields' history"
       },
       "HistoryResultModel": {
         "required": [
@@ -4790,7 +5023,8 @@
             },
             "description": "Rows of history values."
           }
-        }
+        },
+        "description": "History retrieval result."
       },
       "HistoryRowModel": {
         "required": [
@@ -4806,20 +5040,21 @@
             "format": "date-time"
           },
           "quality": {
+            "description": "Quality level of row.",
             "$ref": "#/components/schemas/QualityLevel"
           },
           "fieldValues": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/FieldValueModel2"
+              "$ref": "#/components/schemas/FieldValueModel"
             },
             "description": "Retrieved values."
           }
-        }
+        },
+        "description": "Row of field values from history"
       },
       "HistoryStatFunction": {
-        "type": "integer",
-        "description": "Statistic function to be applied to field."
+        "type": "integer"
       },
       "HistoryStatisticFieldModel": {
         "required": [
@@ -4833,9 +5068,11 @@
             "description": "Name of field."
           },
           "statisticFunction": {
+            "description": "Statistic function to be applied to field.",
             "$ref": "#/components/schemas/HistoryStatFunction"
           }
-        }
+        },
+        "description": "History statistic field model"
       },
       "HistoryStatisticResultFieldModel": {
         "required": [
@@ -4847,6 +5084,7 @@
         "type": "object",
         "properties": {
           "statisticFunction": {
+            "description": "Statistic function to be applied to field.",
             "$ref": "#/components/schemas/HistoryStatFunction"
           },
           "name": {
@@ -4858,11 +5096,16 @@
             "description": "Type of field"
           },
           "columnIndex": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Column index of field in rows",
             "format": "int32"
           }
-        }
+        },
+        "description": "History statistic field model"
       },
       "HistoryStatisticsRawResultModel": {
         "required": [
@@ -4885,7 +5128,8 @@
             },
             "description": "Rows of history values."
           }
-        }
+        },
+        "description": "History statistics retrieval result."
       },
       "HistoryStatisticsRawRowModel": {
         "required": [
@@ -4904,31 +5148,39 @@
             "format": "date-time"
           },
           "startTime": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "Start timestamp of interval of row in case of interpolated values.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           },
           "endTime": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "End timestamp of interval of row in case of interpolated values.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           },
           "duration": {
             "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
-            "type": "string",
-            "description": "Duration of interval of row in case of interpolated values.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Duration of interval of row in case of interpolated values."
           },
           "quality": {
+            "description": "Quality level of row.",
             "$ref": "#/components/schemas/QualityLevel"
           },
           "fieldValues": {
             "type": "array",
             "description": "Retrieved values."
           }
-        }
+        },
+        "description": "Row of field values from history"
       },
       "HistoryStatisticsRequestModel": {
         "required": [
@@ -4956,7 +5208,15 @@
             "description": "Time span of interpolation. If null, indicates to use actual history values."
           },
           "fillMode": {
-            "$ref": "#/components/schemas/NullableOfFillMode"
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "Fill mode in case the interval misses values.",
+                "$ref": "#/components/schemas/FillMode"
+              }
+            ]
           },
           "historyFields": {
             "type": "array",
@@ -4965,7 +5225,8 @@
             },
             "description": "List of fields to be retrieved."
           }
-        }
+        },
+        "description": "Request on fields' history"
       },
       "HistoryStatisticsResultModel": {
         "required": [
@@ -4988,7 +5249,8 @@
             },
             "description": "Rows of history values."
           }
-        }
+        },
+        "description": "History retrieval result."
       },
       "HistoryStatisticsRowModel": {
         "required": [
@@ -5007,34 +5269,42 @@
             "format": "date-time"
           },
           "startTime": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "Start timestamp of interval of row in case of interpolated values.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           },
           "endTime": {
-            "type": "string",
+            "type": [
+              "null",
+              "string"
+            ],
             "description": "End timestamp of interval of row in case of interpolated values.",
-            "format": "date-time",
-            "nullable": true
+            "format": "date-time"
           },
           "duration": {
             "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
-            "type": "string",
-            "description": "Duration of interval of row in case of interpolated values.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Duration of interval of row in case of interpolated values."
           },
           "quality": {
+            "description": "Quality level of row.",
             "$ref": "#/components/schemas/QualityLevel"
           },
           "fieldValues": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/FieldValueModel2"
+              "$ref": "#/components/schemas/FieldValueModel"
             },
             "description": "Retrieved values."
           }
-        }
+        },
+        "description": "Row of field values from history"
       },
       "InstanceModel": {
         "required": [
@@ -5059,7 +5329,8 @@
             },
             "description": "Instance field values."
           }
-        }
+        },
+        "description": "Instance of a class"
       },
       "InstancePagedSearchRequest": {
         "required": [
@@ -5072,36 +5343,46 @@
         "type": "object",
         "properties": {
           "className": {
-            "type": "string",
-            "description": "Filter on class name.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Filter on class name."
           },
           "pageNumber": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page number. Must be greater than 0.",
             "format": "int32"
           },
           "pageSize": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page size. Must be greater than 0.",
             "format": "int32"
           },
           "nameFilter": {
-            "type": "string",
-            "description": "Filter on name of entity.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Filter on name of entity."
           },
           "sortOption": {
-            "type": "string",
-            "description": "Sorting option",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Sorting option"
           }
-        }
-      },
-      "NullableOfFillMode": {
-        "type": "integer",
-        "description": "Fill mode in case the interval misses values.",
-        "nullable": true
+        },
+        "description": "Instances paged search request."
       },
       "PagedSearchResultOfClassModel": {
         "required": [
@@ -5113,17 +5394,29 @@
         "type": "object",
         "properties": {
           "pageNumber": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page number.",
             "format": "int32"
           },
           "pageSize": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page size.",
             "format": "int32"
           },
           "count": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Total number of entities.",
             "format": "int32"
           },
@@ -5134,7 +5427,8 @@
             },
             "description": "List of entities."
           }
-        }
+        },
+        "description": "Entities paged search result."
       },
       "PagedSearchResultOfFieldDefinitionModel": {
         "required": [
@@ -5146,17 +5440,29 @@
         "type": "object",
         "properties": {
           "pageNumber": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page number.",
             "format": "int32"
           },
           "pageSize": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page size.",
             "format": "int32"
           },
           "count": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Total number of entities.",
             "format": "int32"
           },
@@ -5167,7 +5473,8 @@
             },
             "description": "List of entities."
           }
-        }
+        },
+        "description": "Entities paged search result."
       },
       "PagedSearchResultOfFieldFormatterModel": {
         "required": [
@@ -5179,17 +5486,29 @@
         "type": "object",
         "properties": {
           "pageNumber": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page number.",
             "format": "int32"
           },
           "pageSize": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page size.",
             "format": "int32"
           },
           "count": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Total number of entities.",
             "format": "int32"
           },
@@ -5200,7 +5519,8 @@
             },
             "description": "List of entities."
           }
-        }
+        },
+        "description": "Entities paged search result."
       },
       "PagedSearchResultOfProjectModel": {
         "required": [
@@ -5212,17 +5532,29 @@
         "type": "object",
         "properties": {
           "pageNumber": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page number.",
             "format": "int32"
           },
           "pageSize": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page size.",
             "format": "int32"
           },
           "count": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Total number of entities.",
             "format": "int32"
           },
@@ -5233,7 +5565,8 @@
             },
             "description": "List of entities."
           }
-        }
+        },
+        "description": "Entities paged search result."
       },
       "ProjectModel": {
         "required": [
@@ -5255,14 +5588,20 @@
             "description": "Name of the project."
           },
           "version": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Version of the project.",
             "format": "int32"
           },
           "description": {
-            "type": "string",
-            "description": "Description of the project.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Description of the project."
           },
           "runnable": {
             "type": "boolean",
@@ -5272,7 +5611,8 @@
             "type": "boolean",
             "description": "Indicates if the project has history enabled."
           }
-        }
+        },
+        "description": "SuperV project"
       },
       "ProjectPagedSearchRequest": {
         "required": [
@@ -5284,30 +5624,42 @@
         "type": "object",
         "properties": {
           "pageNumber": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page number. Must be greater than 0.",
             "format": "int32"
           },
           "pageSize": {
-            "type": "integer",
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
             "description": "Page size. Must be greater than 0.",
             "format": "int32"
           },
           "nameFilter": {
-            "type": "string",
-            "description": "Filter on name of entity.",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Filter on name of entity."
           },
           "sortOption": {
-            "type": "string",
-            "description": "Sorting option",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Sorting option"
           }
-        }
+        },
+        "description": "Projects paged search request."
       },
       "QualityLevel": {
-        "type": "integer",
-        "description": "Quality level of row."
+        "type": "integer"
       },
       "Stream": {
         "type": "string",
@@ -5324,12 +5676,14 @@
             "description": "Description of project"
           },
           "historyStorageConnectionString": {
-            "type": "string",
-            "description": "Connection string to history storage",
-            "default": null,
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Connection string to history storage"
           }
-        }
+        },
+        "description": "Project update request."
       }
     }
   },
