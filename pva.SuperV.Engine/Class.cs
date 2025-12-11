@@ -160,13 +160,13 @@ namespace pva.SuperV.Engine
             FieldDefinitions.Remove(fieldName);
         }
 
-        internal void AddFieldChangePostProcessing(string fieldName, IFieldValueProcessing fieldValueProcessing)
+        public void AddFieldChangePostProcessing(string fieldName, IFieldValueProcessing fieldValueProcessing)
         {
             IFieldDefinition? fieldDefinition = GetField(fieldName);
             fieldDefinition!.ValuePostChangeProcessings.Add(fieldValueProcessing!);
         }
 
-        internal void UpdateFieldChangePostProcessing(string fieldName, string processingName, IFieldValueProcessing fieldProcessing)
+        public void UpdateFieldChangePostProcessing(string fieldName, string processingName, IFieldValueProcessing fieldProcessing)
         {
             IFieldDefinition? fieldDefinition = GetField(fieldName);
             IFieldValueProcessing? fieldValueProcessingToUpdate = fieldDefinition?.ValuePostChangeProcessings
@@ -180,7 +180,7 @@ namespace pva.SuperV.Engine
             throw new UnknownEntityException("Field processing", processingName);
         }
 
-        internal void RemoveFieldChangePostProcessing(string fieldName, string processingName)
+        public void RemoveFieldChangePostProcessing(string fieldName, string processingName)
         {
             if (FieldDefinitions.TryGetValue(fieldName, out IFieldDefinition? fieldDefinition))
             {
