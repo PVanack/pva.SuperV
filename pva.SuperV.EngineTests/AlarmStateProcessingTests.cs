@@ -1,7 +1,9 @@
 ﻿using NSubstitute;
 using pva.SuperV.Engine;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.Processing;
 using Shouldly;
+using Xunit;
 
 namespace pva.SuperV.EngineTests
 {
@@ -20,6 +22,7 @@ namespace pva.SuperV.EngineTests
         private readonly Class clazz;
         private readonly FieldDefinition<int> alarmStateFieldDefinition = new(AlarmStateFieldName, 0);
         private readonly FieldDefinition<int> ackStateFieldDefinition = new(AckStateFieldName, 0);
+        private readonly AlarmStateProcessing<double> alarmStateProcessing;
 
         private readonly IInstance instance = Substitute.For<IInstance>();
 
@@ -34,6 +37,12 @@ namespace pva.SuperV.EngineTests
             clazz.FieldDefinitions.Add(DeadbandFieldName, new FieldDefinition<double>(DeadbandFieldName, 1));
             clazz.FieldDefinitions.Add(AlarmStateFieldName, alarmStateFieldDefinition);
             clazz.FieldDefinitions.Add(AckStateFieldName, ackStateFieldDefinition);
+            alarmStateProcessing = new(ProcessingName, clazz, ValueFieldName,
+                HighHighLimitFieldName, HighLimitFieldName, LowLimitFieldName, LowLowLimitFieldName,
+                DeadbandFieldName, AlarmStateFieldName, AckStateFieldName);
+            clazz.AddFieldChangePostProcessing(ValueFieldName, alarmStateProcessing);
+
+
             instance.GetField<double>(HighHighLimitFieldName).Returns(new Field<double>(100.0));
             instance.GetField<double>(HighLimitFieldName).Returns(new Field<double>(75.0));
             instance.GetField<double>(LowLimitFieldName).Returns(new Field<double>(25.0));
@@ -55,9 +64,6 @@ namespace pva.SuperV.EngineTests
             };
             instance.GetField<int>(AlarmStateFieldName).Returns(alarmStateField);
             instance.GetField<int>(AckStateFieldName).Returns(ackStateField);
-            AlarmStateProcessing<double> alarmStateProcessing = new(ProcessingName, clazz, ValueFieldName,
-                HighHighLimitFieldName, HighLimitFieldName, LowLimitFieldName, LowLowLimitFieldName,
-                DeadbandFieldName, AlarmStateFieldName, AckStateFieldName);
 
             // WHEN
             Field<double> valueField = new(110.0);
@@ -82,9 +88,6 @@ namespace pva.SuperV.EngineTests
             };
             instance.GetField<int>(AlarmStateFieldName).Returns(alarmStateField);
             instance.GetField<int>(AckStateFieldName).Returns(ackStateField);
-            AlarmStateProcessing<double> alarmStateProcessing = new(ProcessingName, clazz, ValueFieldName,
-                HighHighLimitFieldName, HighLimitFieldName, LowLimitFieldName, LowLowLimitFieldName,
-                DeadbandFieldName, AlarmStateFieldName, AckStateFieldName);
 
             // WHEN
             Field<double> valueField = new(80.0);
@@ -109,9 +112,6 @@ namespace pva.SuperV.EngineTests
             };
             instance.GetField<int>(AlarmStateFieldName).Returns(alarmStateField);
             instance.GetField<int>(AckStateFieldName).Returns(ackStateField);
-            AlarmStateProcessing<double> alarmStateProcessing = new(ProcessingName, clazz, ValueFieldName,
-                HighHighLimitFieldName, HighLimitFieldName, LowLimitFieldName, LowLowLimitFieldName,
-                DeadbandFieldName, AlarmStateFieldName, AckStateFieldName);
 
             // WHEN
             Field<double> valueField = new(20.0);
@@ -136,9 +136,6 @@ namespace pva.SuperV.EngineTests
             };
             instance.GetField<int>(AlarmStateFieldName).Returns(alarmStateField);
             instance.GetField<int>(AckStateFieldName).Returns(ackStateField);
-            AlarmStateProcessing<double> alarmStateProcessing = new(ProcessingName, clazz, ValueFieldName,
-                HighHighLimitFieldName, HighLimitFieldName, LowLimitFieldName, LowLowLimitFieldName,
-                DeadbandFieldName, AlarmStateFieldName, AckStateFieldName);
 
             // WHEN
             Field<double> valueField = new(-1.0);
@@ -163,9 +160,6 @@ namespace pva.SuperV.EngineTests
             };
             instance.GetField<int>(AlarmStateFieldName).Returns(alarmStateField);
             instance.GetField<int>(AckStateFieldName).Returns(ackStateField);
-            AlarmStateProcessing<double> alarmStateProcessing = new(ProcessingName, clazz, ValueFieldName,
-                HighHighLimitFieldName, HighLimitFieldName, LowLimitFieldName, LowLowLimitFieldName,
-                DeadbandFieldName, AlarmStateFieldName, AckStateFieldName);
 
             // WHEN
             Field<double> valueField = new(52);
@@ -175,5 +169,21 @@ namespace pva.SuperV.EngineTests
             alarmStateField.Value.ShouldBe(0);
             ackStateField.Value.ShouldBe(0);
         }
+
+        [Theory]
+        [InlineData(HighHighLimitFieldName)]
+        [InlineData(HighLimitFieldName)]
+        [InlineData(LowLimitFieldName)]
+        [InlineData(LowLowLimitFieldName)]
+        [InlineData(DeadbandFieldName)]
+        [InlineData(AlarmStateFieldName)]
+        [InlineData(AckStateFieldName)]
+        public void GivenClassWithAlarmState_WhenRemovingFieldUsedInProcessing_ThenEntityInUseExceptionIsThrown(string usedField)
+        {
+            // WHEN/THEN
+            Assert.Throws<EntityInUseException>(() => clazz.RemoveField(usedField));
+        }
+
+
     }
 }
