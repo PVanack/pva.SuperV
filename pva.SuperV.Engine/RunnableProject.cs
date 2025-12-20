@@ -285,7 +285,7 @@ namespace pva.SuperV.Engine
             IField field = instance.GetField(fieldName);
             if (field is not Field<T> typedField)
             {
-                throw new WrongFieldTypeException(fieldName);
+                throw new WrongFieldTypeException(fieldName, fieldValue!.GetType(), field.GetType());
             }
 
             typedField.SetValue(fieldValue, timestamp, qualityLevel);

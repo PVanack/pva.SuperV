@@ -16,9 +16,9 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <summary>
         /// Upsert a history repository in storage engine.
         /// </summary>
-        /// <param name="projectName">Project name to zhich the repository belongs.</param>
+        /// <param name="projectName">Project name to which the repository belongs.</param>
         /// <param name="repository">History repository</param>
-        /// <returns>ID of repository in storqge engine.</returns>
+        /// <returns>ID of repository in storage engine.</returns>
         public string UpsertRepository(string projectName, HistoryRepository repository)
         {
             return $"{projectName}_{repository.Name}";

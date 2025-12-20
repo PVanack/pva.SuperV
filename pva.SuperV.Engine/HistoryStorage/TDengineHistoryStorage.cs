@@ -84,9 +84,9 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <summary>
         /// Upsert a history repository in storage engine.
         /// </summary>
-        /// <param name="projectName">Project name to zhich the repository belongs.</param>
+        /// <param name="projectName">Project name to hwich the repository belongs.</param>
         /// <param name="repository">History repository</param>
-        /// <returns>ID of repository in storqge engine.</returns>
+        /// <returns>ID of repository in storage engine.</returns>
         public string UpsertRepository(string projectName, HistoryRepository repository)
         {
             string repositoryName = $"{projectName}{repository.Name}".ToLowerInvariant();
@@ -170,10 +170,10 @@ namespace pva.SuperV.Engine.HistoryStorage
             {
                 string fieldToHistorizeNames = fieldsToHistorize.Select(field => $"_{field.FieldDefinition!.Name}")
                     .Aggregate((a, b) => $"{a},{b}");
-                string fieldsPlaceholders = Enumerable.Repeat("?", fieldsToHistorize.Count + 2)
+                string fieldValuesPlaceholders = Enumerable.Repeat("?", fieldsToHistorize.Count + 2)
                     .Aggregate((a, b) => $"{a},{b}");
                 string sql = $@"INSERT INTO ? USING {classTimeSerieId} (instance) TAGS(?)
-   (TS, QUALITY, {fieldToHistorizeNames}) VALUES ({fieldsPlaceholders});
+   (TS, QUALITY, {fieldToHistorizeNames}) VALUES ({fieldValuesPlaceholders});
 ";
                 List<object> rowValues = new(fieldsToHistorize.Count + 2)
                 {
@@ -184,7 +184,7 @@ namespace pva.SuperV.Engine.HistoryStorage
                     rowValues.Add(ConvertFieldValueToDb(field)));
                 stmt.Prepare(sql);
                 // set table name
-                stmt.SetTableName($"{instanceTableName}");
+                stmt.SetTableName(instanceTableName);
                 // set tags
                 stmt.SetTags([instanceTableName]);
                 // bind row values
