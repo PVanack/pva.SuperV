@@ -74,8 +74,8 @@ namespace pva.SuperV.TestContainers
                 // Start the container.
                 try
                 {
-                    await tdEngineContainer.StartAsync()
-                      .ConfigureAwait(false);
+                    Task tdEngineStartAsync = tdEngineContainer.StartAsync();
+                    await tdEngineStartAsync.WaitAsync(TimeSpan.FromSeconds(30));
                     // Wait to make sure the processes in container are ready and running.
                     await WaitForTDengineToBeReady();
                 }
