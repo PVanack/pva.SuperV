@@ -32,7 +32,7 @@ namespace pva.SuperV.TestContainers
             {
                 WaitForPort(6030);
                 tdEngineContainer = new ContainerBuilder()
-                    .WithImage("tdengine/tdengine:3.3.6.0")
+                    .WithImage("tdengine/tsdb:3.3.8.8")
                     .WithPortBinding(6030)
                     .WithPortBinding(6031)
                     .WithPortBinding(6032)
@@ -116,7 +116,6 @@ namespace pva.SuperV.TestContainers
                 await tdEngineContainer.StopAsync()
                     .ConfigureAwait(false);
                 long exitCode = await tdEngineContainer.GetExitCodeAsync();
-                WaitForPort(6030);
                 tdEngineContainer = null;
                 return exitCode;
             }
