@@ -6,6 +6,6 @@
     <RootNamespace>Aspire.Hosting</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting" Version="13.0.1" />
+    <PackageReference Include="Aspire.Hosting" Version="13.1.0" />
   </ItemGroup>
 </Project>
