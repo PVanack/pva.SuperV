@@ -61,13 +61,15 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <summary>
         /// Historize instance values in storage engine
         /// </summary>
+        /// <param name="historizationProcessingName">The name of the historization processing.</param>
         /// <param name="classTimeSerieId">The time series ID.</param>
         /// <param name="instance">The instance.</param>
         /// <param name="timestamp">the timestamp of the values</param>
+        /// <param name="quality">The quality level of the values.</param>
         /// <param name="fieldsToHistorize">List of fields to be historized.</param>
-        public void HistorizeValues(string classTimeSerieId, IInstance instance, DateTime timestamp, QualityLevel? quality, List<IField> fieldsToHistorize)
+        public void HistorizeValues(string historizationProcessingName, string classTimeSerieId, IInstance instance, DateTime timestamp, QualityLevel? quality, List<IField> fieldsToHistorize)
         {
-            HistoryStorageEngine?.HistorizeValues(HistoryStorageId!, classTimeSerieId, instance.Name, timestamp, quality, fieldsToHistorize);
+            HistoryStorageEngine?.HistorizeValues(HistoryStorageId!, historizationProcessingName, classTimeSerieId, instance.Name, timestamp, quality, fieldsToHistorize);
         }
     }
 }

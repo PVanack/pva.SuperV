@@ -89,7 +89,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <returns>ID of repository in storage engine.</returns>
         public string UpsertRepository(string projectName, HistoryRepository repository)
         {
-            string repositoryName = $"{projectName}{repository.Name}".ToLowerInvariant();
+            string repositoryName = GetRepositoryName(projectName, repository.Name);
             try
             {
                 tdEngineClient?.Exec($"CREATE DATABASE IF NOT EXISTS {repositoryName} PRECISION 'ns' KEEP 3650 DURATION 10 BUFFER 16;");
@@ -108,7 +108,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <param name="repositoryName">History repository name.</param>
         public void DeleteRepository(string projectName, string repositoryName)
         {
-            string repositoryActualName = $"{projectName}{repositoryName}".ToLowerInvariant();
+            string repositoryActualName = GetRepositoryName(projectName, repositoryName);
             try
             {
                 tdEngineClient?.Exec($"DROP DATABASE {repositoryActualName};");
@@ -130,7 +130,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <returns>Time series ID in storage engine.</returns>
         public string UpsertClassTimeSerie<T>(string repositoryStorageId, string projectName, string className, HistorizationProcessing<T> historizationProcessing)
         {
-            string tableName = $"{projectName}{className}{historizationProcessing.Name}".ToLowerInvariant();
+            string classTimeSerieId = GetClassTimeSerieId(projectName, className, historizationProcessing);
             try
             {
                 tdEngineClient?.Exec($"USE {repositoryStorageId};");
@@ -139,7 +139,7 @@ namespace pva.SuperV.Engine.HistoryStorage
                     historizationProcessing.FieldsToHistorize
                         .Select(field => $"_{field.Name} {GetFieldDbType(field)}")
                         .Aggregate((a, b) => $"{a},{b}");
-                string command = $"CREATE STABLE IF NOT EXISTS {tableName} ({fieldNames}) TAGS (instance varchar(64));";
+                string command = $"CREATE STABLE IF NOT EXISTS {classTimeSerieId} ({fieldNames}) TAGS (instance varchar(64));";
                 tdEngineClient?.Exec(command);
             }
             catch (SuperVException)
@@ -148,22 +148,24 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
             catch (Exception e)
             {
-                throw new TdEngineException($"upsert class time series {tableName} on {connectionString}", e);
+                throw new TdEngineException($"upsert class time series {classTimeSerieId} on {connectionString}", e);
             }
-            return tableName;
+            return classTimeSerieId;
         }
 
         /// <summary>
         /// Historize instance values in storage engine
         /// </summary>
         /// <param name="repositoryStorageId">The history repository ID.</param>
+        /// <param name="historizationProcessingName">The historization processing name.</param>
         /// <param name="classTimeSerieId">The time series ID.</param>
         /// <param name="instanceName">The instance name.</param>
         /// <param name="timestamp">the timestamp of the values</param>
+        /// <param name="quality">The quality level of the values.</param>
         /// <param name="fieldsToHistorize">List of fields to be historized.</param>
-        public void HistorizeValues(string repositoryStorageId, string classTimeSerieId, string instanceName, DateTime timestamp, QualityLevel? quality, List<IField> fieldsToHistorize)
+        public void HistorizeValues(string repositoryStorageId, string historizationProcessingName, string classTimeSerieId, string instanceName, DateTime timestamp, QualityLevel? quality, List<IField> fieldsToHistorize)
         {
-            string instanceTableName = instanceName.ToLowerInvariant();
+            string instanceTableName = $"{instanceName}_{historizationProcessingName}".ToLowerInvariant();
             tdEngineClient!.Exec($"USE {repositoryStorageId};");
             using var stmt = tdEngineClient!.StmtInit();
             try
@@ -200,42 +202,21 @@ namespace pva.SuperV.Engine.HistoryStorage
             }
         }
 
-        private static object ConvertFieldValueToDb(IField field)
-        {
-            return field switch
-            {
-                Field<bool> typedField => typedField.Value,
-                Field<DateTime> typedField => typedField.Value.ToLocalTime(),
-                Field<double> typedField => typedField.Value,
-                Field<float> typedField => typedField.Value,
-                Field<int> typedField => typedField.Value,
-                Field<long> typedField => typedField.Value,
-                Field<short> typedField => typedField.Value,
-                Field<string> typedField => typedField.Value,
-                Field<TimeSpan> typedField => typedField.Value.Ticks,
-                Field<uint> typedField => typedField.Value,
-                Field<ulong> typedField => typedField.Value,
-                Field<ushort> typedField => typedField.Value,
-                _ => throw new UnhandledMappingException(nameof(TDengineHistoryStorage), field.Type.ToString())
-            };
-        }
-
         /// <summary>
         /// Gets instance values historized between 2 timestamps.
         /// </summary>
-        /// <param name="repositoryStorageId">The history repository ID.</param>
-        /// <param name="classTimeSerieId">The time series ID.</param>
         /// <param name="instanceName">The instance name.</param>
         /// <param name="timeRange">Time range for querying.</param>
+        /// <param name="instanceTimeSerieParameters">Parameters defining the time serie.</param>
         /// <param name="fields">List of fields to be retrieved. One of them should have the <see cref="HistorizationProcessing{T}"/></param>
         /// <returns>List of history rows.</returns>
-        public List<HistoryRow> GetHistoryValues(string repositoryStorageId, string classTimeSerieId, string instanceName, HistoryTimeRange timeRange, List<IFieldDefinition> fields)
+        public List<HistoryRow> GetHistoryValues(string instanceName, HistoryTimeRange timeRange, InstanceTimeSerieParameters instanceTimeSerieParameters, List<IFieldDefinition> fields)
         {
-            string instanceTableName = instanceName.ToLowerInvariant();
+            string instanceTableName = GetInstanceTableName(instanceName, instanceTimeSerieParameters);
             List<HistoryRow> rows = [];
             try
             {
-                tdEngineClient!.Exec($"USE {repositoryStorageId};");
+                tdEngineClient!.Exec($"USE {instanceTimeSerieParameters.HistorizationProcessing!.HistoryRepository!.HistoryStorageId};");
                 string fieldNames = fields.Select(field => $"_{field.Name}")
                     .Aggregate((a, b) => $"{a},{b}");
                 string sqlQuery =
@@ -259,20 +240,19 @@ SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
         /// <summary>
         /// Gets instance statistic values historized between 2 timestamps.
         /// </summary>
-        /// <param name="repositoryStorageId">The history repository ID.</param>
-        /// <param name="classTimeSerieId">The time series ID.</param>
         /// <param name="instanceName">The instance name.</param>
         /// <param name="timeRange">Query containing time range parameters.</param>
+        /// <param name="instanceTimeSerieParameters">Parameters defining the time serie.</param>
         /// <param name="fields">List of fields to be retrieved. One of them should have the <see cref="HistorizationProcessing{T}"/></param>
         /// <returns>List of history rows.</returns>
-        public List<HistoryStatisticRow> GetHistoryStatistics(string repositoryStorageId, string classTimeSerieId, string instanceName,
-            HistoryStatisticTimeRange timeRange, List<HistoryStatisticField> fields)
+        public List<HistoryStatisticRow> GetHistoryStatistics(string instanceName, HistoryStatisticTimeRange timeRange,
+            InstanceTimeSerieParameters instanceTimeSerieParameters, List<HistoryStatisticField> fields)
         {
-            string instanceTableName = instanceName.ToLowerInvariant();
+            string instanceTableName = GetInstanceTableName(instanceName, instanceTimeSerieParameters);
             List<HistoryStatisticRow> rows = [];
             try
             {
-                tdEngineClient!.Exec($"USE {repositoryStorageId};");
+                tdEngineClient!.Exec($"USE {instanceTimeSerieParameters.HistorizationProcessing!.HistoryRepository!.HistoryStorageId};");
                 string fieldNames = fields.Select(field => $"{field.StatisticFunction}(_{field.Field.Name})")
                     .Aggregate((a, b) => $"{a},{b}");
                 string fillClause = "";
@@ -297,43 +277,6 @@ SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {ins
                 throw new TdEngineException($"select from table {instanceTableName} on {connectionString}", e);
             }
             return rows;
-        }
-
-        /// <summary>
-        /// Formats a DateTime to SQL format used by TDengine.
-        /// </summary>
-        /// <param name="dateTime">The date time to be formatted.</param>
-        /// <returns>SQL string for date time.</returns>
-        private static string FormatToSqlDate(DateTime dateTime)
-        {
-            return $"{dateTime.ToUniversalTime():yyyy-MM-dd HH:mm:ss.fffK}";
-        }
-
-        private static string FormatInterval(TimeSpan interval)
-        {
-            TimeSpan timespan = interval;
-            string intervalText = "";
-            intervalText += GetIntervalPeriod(timespan.Days / 365, 'y');
-            intervalText += GetIntervalPeriod((timespan.Days % 365) / 30, 'm');
-            intervalText += GetIntervalPeriod((timespan.Days % 365 % 30) / 7, 'w');
-            intervalText += GetIntervalPeriod(timespan.Days % 365 % 30 % 7, 'd');
-            intervalText += GetIntervalPeriod(timespan.Hours, 'h');
-            intervalText += GetIntervalPeriod(timespan.Minutes, 'm');
-            intervalText += GetIntervalPeriod(timespan.Seconds, 's');
-            intervalText += GetIntervalPeriod(timespan.Milliseconds, 'a');
-            intervalText += GetIntervalPeriod(timespan.Nanoseconds, 'b');
-            // Remove last comma and space
-            return intervalText.TrimEnd()[..^1];
-        }
-
-        private static string GetIntervalPeriod(int value, char periodLetter)
-        {
-            if (value > 0)
-            {
-                return $"{value}{periodLetter}, ";
-            }
-
-            return "";
         }
 
         /// <summary>
@@ -368,5 +311,63 @@ SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {ins
             }
             throw new UnhandledHistoryFieldTypeException(field.Name, field.Type);
         }
+
+        private static string GetRepositoryName(string projectName, string repositoryName)
+            => $"{projectName}{repositoryName}".ToLowerInvariant();
+
+        private static string GetClassTimeSerieId<T>(string projectName, string className, HistorizationProcessing<T> historizationProcessing)
+            => $"{projectName}_{className}_{historizationProcessing.Name}".ToLowerInvariant();
+
+        private static string GetInstanceTableName(string instanceName, InstanceTimeSerieParameters instanceTimeSerieParameters)
+            => $"{instanceName}_{instanceTimeSerieParameters!.HistorizationProcessing!.Name}".ToLowerInvariant();
+
+        /// <summary>
+        /// Formats a DateTime to SQL format used by TDengine.
+        /// </summary>
+        /// <param name="dateTime">The date time to be formatted.</param>
+        /// <returns>SQL string for date time.</returns>
+        private static string FormatToSqlDate(DateTime dateTime)
+        {
+            return $"{dateTime.ToUniversalTime():yyyy-MM-dd HH:mm:ss.fffK}";
+        }
+
+        private static string FormatInterval(TimeSpan interval)
+        {
+            TimeSpan timespan = interval;
+            string intervalText = "";
+            intervalText += GetIntervalPeriod(timespan.Days / 365, 'y');
+            intervalText += GetIntervalPeriod((timespan.Days % 365) / 30, 'm');
+            intervalText += GetIntervalPeriod((timespan.Days % 365 % 30) / 7, 'w');
+            intervalText += GetIntervalPeriod(timespan.Days % 365 % 30 % 7, 'd');
+            intervalText += GetIntervalPeriod(timespan.Hours, 'h');
+            intervalText += GetIntervalPeriod(timespan.Minutes, 'm');
+            intervalText += GetIntervalPeriod(timespan.Seconds, 's');
+            intervalText += GetIntervalPeriod(timespan.Milliseconds, 'a');
+            intervalText += GetIntervalPeriod(timespan.Nanoseconds, 'b');
+            // Remove last comma and space
+            return intervalText.TrimEnd()[..^1];
+        }
+
+        private static string GetIntervalPeriod(int value, char periodLetter)
+            => value > 0 ? $"{value}{periodLetter}, " : "";
+
+        private static object ConvertFieldValueToDb(IField field)
+            => field switch
+            {
+                Field<bool> typedField => typedField.Value,
+                Field<DateTime> typedField => typedField.Value.ToLocalTime(),
+                Field<double> typedField => typedField.Value,
+                Field<float> typedField => typedField.Value,
+                Field<int> typedField => typedField.Value,
+                Field<long> typedField => typedField.Value,
+                Field<short> typedField => typedField.Value,
+                Field<string> typedField => typedField.Value,
+                Field<TimeSpan> typedField => typedField.Value.Ticks,
+                Field<uint> typedField => typedField.Value,
+                Field<ulong> typedField => typedField.Value,
+                Field<ushort> typedField => typedField.Value,
+                _ => throw new UnhandledMappingException(nameof(TDengineHistoryStorage), field.Type.ToString())
+            };
+
     }
 }

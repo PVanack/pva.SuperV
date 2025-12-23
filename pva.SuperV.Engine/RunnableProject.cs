@@ -294,35 +294,31 @@ namespace pva.SuperV.Engine
         public List<HistoryRow> GetHistoryValues(string instanceName, HistoryTimeRange query, List<string> fieldNames)
         {
             Instance instance = GetInstance(instanceName);
-            GetHistoryParametersForFields(instance, fieldNames,
-                out List<IFieldDefinition> fields, out HistoryRepository? historyRepository, out string? classTimeSerieId);
+            InstanceTimeSerieParameters instanceTimeSerieParameters = GetHistoryParametersForFields(instance, fieldNames);
 
-            return GetHistoryValues(instanceName, query, fields, historyRepository!, classTimeSerieId!);
+            return GetHistoryValues(instanceName, query, instanceTimeSerieParameters);
         }
 
-        public List<HistoryRow> GetHistoryValues(string instanceName, HistoryTimeRange query, List<IFieldDefinition> fields,
-            HistoryRepository historyRepository, string classTimeSerieId)
+        public List<HistoryRow> GetHistoryValues(string instanceName, HistoryTimeRange query, InstanceTimeSerieParameters instanceTimeSerieParameters)
         {
             ValidateTimeRange(query);
-            return HistoryStorageEngine!.GetHistoryValues(historyRepository!.HistoryStorageId!, classTimeSerieId!,
-                instanceName, query, fields);
+            return HistoryStorageEngine!.GetHistoryValues(instanceName, query, instanceTimeSerieParameters, instanceTimeSerieParameters.Fields);
         }
 
         public List<HistoryStatisticRow> GetHistoryStatistics(string instanceName, HistoryStatisticTimeRange query, List<HistoryStatisticFieldName> fieldNames)
         {
             Instance instance = GetInstance(instanceName);
-            GetHistoryParametersForFields(instance, [.. fieldNames.Select(field => field.Name)],
-                out List<IFieldDefinition> fields, out HistoryRepository? historyRepository, out string? classTimeSerieId);
+            InstanceTimeSerieParameters instanceTimeSerieParameters = GetHistoryParametersForFields(instance, [.. fieldNames.Select(field => field.Name)]);
             List<HistoryStatisticField> statFields = [];
             for (int index = 0; index < fieldNames.Count; index++)
             {
-                statFields.Add(new(fields[index], fieldNames[index].StatisticFunction));
+                statFields.Add(new(instanceTimeSerieParameters.Fields[index], fieldNames[index].StatisticFunction));
             }
-            return GetHistoryStatistics(instanceName, query, statFields, historyRepository!, classTimeSerieId!);
+            return GetHistoryStatistics(instanceName, query, statFields, instanceTimeSerieParameters);
         }
 
         public List<HistoryStatisticRow> GetHistoryStatistics(string instanceName, HistoryStatisticTimeRange query, List<HistoryStatisticField> fields,
-            HistoryRepository historyRepository, string classTimeSerieId)
+             InstanceTimeSerieParameters instanceTimeSerieParameters)
         {
             // if query range is a multiple of interval, remove 1 microsecond to end time (To) to avoid returning a new interval starting at To and ending at To + interval.
             if ((query.To - query.From).Ticks % query.Interval.Ticks == 0)
@@ -330,8 +326,7 @@ namespace pva.SuperV.Engine
                 query = query with { To = query.To.AddMicroseconds(-1) };
             }
             ValidateTimeRange(query);
-            return HistoryStorageEngine!.GetHistoryStatistics(historyRepository!.HistoryStorageId!, classTimeSerieId!,
-                instanceName, query, fields);
+            return HistoryStorageEngine!.GetHistoryStatistics(instanceName, query, instanceTimeSerieParameters, fields);
         }
 
         private static void ValidateTimeRange(HistoryTimeRange timeRange)
@@ -351,12 +346,10 @@ namespace pva.SuperV.Engine
             }
         }
 
-        public static void GetHistoryParametersForFields(Instance instance, List<string> fieldNames,
-            out List<IFieldDefinition> fields, out HistoryRepository? historyRepository, out string? classTimeSerieId)
+        public static InstanceTimeSerieParameters GetHistoryParametersForFields(Instance instance, List<string> fieldNames)
         {
-            fields = [];
-            historyRepository = null;
-            classTimeSerieId = null;
+            List<IFieldDefinition> fields = [];
+            IHistorizationProcessing? historizationProcessing = null;
             foreach (string fieldName in fieldNames)
             {
                 IFieldDefinition field = instance.Class.GetField(fieldName);
@@ -365,15 +358,15 @@ namespace pva.SuperV.Engine
                     .FirstOrDefault();
                 if (hp != null)
                 {
-                    historyRepository = hp.HistoryRepository;
-                    classTimeSerieId = hp.ClassTimeSerieId;
+                    historizationProcessing = hp;
                 }
                 fields.Add(field);
             }
-            if (historyRepository is null || classTimeSerieId is null)
+            if (historizationProcessing is null)
             {
                 throw new NoHistoryStorageEngineException();
             }
+            return new InstanceTimeSerieParameters(fields, historizationProcessing);
         }
     }
 }

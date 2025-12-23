@@ -38,7 +38,7 @@ namespace pva.SuperV.EngineTests
             DateTime valueTs = DateTime.Now;
             List<IField> actualHistorizedFields = [];
             historyStorageEngine
-                .HistorizeValues(Arg.Any<string>(), Arg.Any<string>(), "TestInstance", valueTs, QualityLevel.Good,
+                .HistorizeValues(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), "TestInstance", valueTs, QualityLevel.Good,
                 Arg.Do<List<IField>>(arg => actualHistorizedFields = arg));
 
             // WHEN

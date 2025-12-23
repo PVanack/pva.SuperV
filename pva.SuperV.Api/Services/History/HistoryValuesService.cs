@@ -18,23 +18,27 @@ namespace pva.SuperV.Api.Services.History
 
         public async Task<HistoryRawResultModel> GetInstanceRawHistoryValuesAsync(string projectId, string instanceName, HistoryRequestModel request)
         {
-            logger.LogDebug("Getting raw history values for instance {InstanceName} of project {ProjectId}between {StartTime} and {EndTime} for fields {FieldNames}",
-                instanceName, projectId, request.StartTime, request.EndTime, String.Join(",", request.HistoryFields));
             Project project = GetProjectEntity(projectId);
             if (project is RunnableProject runnableProject)
             {
                 Instance instance = runnableProject.GetInstance(instanceName);
-                RunnableProject.GetHistoryParametersForFields(instance, request.HistoryFields,
-                    out List<IFieldDefinition> fields, out HistoryRepository? historyRepository, out string? classTimeSerieId);
-                HistoryTimeRange query = new(request.StartTime, request.EndTime);
-                List<HistoryRow> rows = runnableProject.GetHistoryValues(instanceName, query, fields, historyRepository!, classTimeSerieId!);
-
-                int fieldIndex = 0;
-                List<HistoryFieldModel> header = [.. fields.Select(fieldDefinition => new HistoryFieldModel(fieldDefinition.Name, fieldDefinition.Type.ToString(), fieldIndex++))];
-                return await Task.FromResult(new HistoryRawResultModel(header, HistoryRowMapper.ToRawDto(rows)));
-
+                InstanceTimeSerieParameters instanceTimeSerieParameters = RunnableProject.GetHistoryParametersForFields(
+                    instance, request.HistoryFields);
+                return await GetInstanceRawHistoryValuesAsync(runnableProject, instanceName, request, instanceTimeSerieParameters);
             }
             return await Task.FromException<HistoryRawResultModel>(new NonRunnableProjectException(projectId));
+        }
+
+        private async Task<HistoryRawResultModel> GetInstanceRawHistoryValuesAsync(RunnableProject runnableProject, string instanceName, HistoryRequestModel request, InstanceTimeSerieParameters instanceTimeSerieParameters)
+        {
+            logger.LogDebug("Getting raw history values for instance {InstanceName} of project {ProjectId} between {StartTime} and {EndTime} for fields {FieldNames}",
+                instanceName, runnableProject.GetId(), request.StartTime, request.EndTime, String.Join(",", request.HistoryFields));
+            HistoryTimeRange query = new(request.StartTime, request.EndTime);
+            List<HistoryRow> rows = runnableProject.GetHistoryValues(instanceName, query, instanceTimeSerieParameters);
+
+            int fieldIndex = 0;
+            List<HistoryFieldModel> header = [.. instanceTimeSerieParameters.Fields.Select(fieldDefinition => new HistoryFieldModel(fieldDefinition.Name, fieldDefinition.Type.ToString(), fieldIndex++))];
+            return await Task.FromResult(new HistoryRawResultModel(header, HistoryRowMapper.ToRawDto(rows)));
         }
 
         public async Task<HistoryResultModel> GetInstanceHistoryValuesAsync(string projectId, string instanceName, HistoryRequestModel request)
@@ -45,15 +49,14 @@ namespace pva.SuperV.Api.Services.History
             if (project is RunnableProject runnableProject)
             {
                 Instance instance = runnableProject.GetInstance(instanceName);
-                RunnableProject.GetHistoryParametersForFields(instance, request.HistoryFields,
-                    out List<IFieldDefinition> fields, out HistoryRepository? historyRepository, out string? classTimeSerieId);
+                InstanceTimeSerieParameters instanceTimeSerieParameters = RunnableProject.GetHistoryParametersForFields(instance, request.HistoryFields);
 
                 HistoryTimeRange query = new(request.StartTime, request.EndTime);
-                List<HistoryRow> rows = runnableProject.GetHistoryValues(instanceName, query, fields, historyRepository!, classTimeSerieId!);
+                List<HistoryRow> rows = runnableProject.GetHistoryValues(instanceName, query, instanceTimeSerieParameters);
 
                 int fieldIndex = 0;
-                List<HistoryFieldModel> header = [.. fields.Select(fieldDefinition => new HistoryFieldModel(fieldDefinition.Name, fieldDefinition.Type.ToString(), fieldIndex++))];
-                return await Task.FromResult(new HistoryResultModel(header, HistoryRowMapper.ToDto(rows, fields)));
+                List<HistoryFieldModel> header = [.. instanceTimeSerieParameters.Fields.Select(fieldDefinition => new HistoryFieldModel(fieldDefinition.Name, fieldDefinition.Type.ToString(), fieldIndex++))];
+                return await Task.FromResult(new HistoryResultModel(header, HistoryRowMapper.ToDto(rows, instanceTimeSerieParameters.Fields)));
             }
             return await Task.FromException<HistoryResultModel>(new NonRunnableProjectException(projectId));
         }
@@ -66,20 +69,19 @@ namespace pva.SuperV.Api.Services.History
             if (project is RunnableProject runnableProject)
             {
                 Instance instance = runnableProject.GetInstance(instanceName);
-                RunnableProject.GetHistoryParametersForFields(instance, [.. request.HistoryFields.Select(field => field.Name)],
-                    out List<IFieldDefinition> fields, out HistoryRepository? historyRepository, out string? classTimeSerieId);
+                InstanceTimeSerieParameters instanceTimeSerieParameters = RunnableProject.GetHistoryParametersForFields(instance, [.. request.HistoryFields.Select(field => field.Name)]);
                 HistoryStatisticTimeRange query = new(request.StartTime, request.EndTime, request.InterpolationInterval, request.FillMode);
                 int fieldIndex = 0;
-                List<HistoryStatisticField> statisticFields = [.. fields.Select(fieldDefinition =>
+                List<HistoryStatisticField> statisticFields = [.. instanceTimeSerieParameters.Fields.Select(fieldDefinition =>
                 {
                     int savedFieldIndex = fieldIndex;
                     fieldIndex++;
                     return new HistoryStatisticField(fieldDefinition, request.HistoryFields[savedFieldIndex].StatisticFunction);
                 })];
 
-                List<HistoryStatisticRow> rows = runnableProject.GetHistoryStatistics(instanceName, query, statisticFields, historyRepository!, classTimeSerieId!);
+                List<HistoryStatisticRow> rows = runnableProject.GetHistoryStatistics(instanceName, query, statisticFields, instanceTimeSerieParameters);
 
-                return await Task.FromResult(new HistoryStatisticsRawResultModel(BuildStatisticsHeader(request, fields, rows), HistoryRowMapper.ToRawDto(rows)));
+                return await Task.FromResult(new HistoryStatisticsRawResultModel(BuildStatisticsHeader(request, instanceTimeSerieParameters.Fields, rows), HistoryRowMapper.ToRawDto(rows)));
 
             }
             return await Task.FromException<HistoryStatisticsRawResultModel>(new NonRunnableProjectException(projectId));
@@ -93,20 +95,20 @@ namespace pva.SuperV.Api.Services.History
             if (project is RunnableProject runnableProject)
             {
                 Instance instance = runnableProject.GetInstance(instanceName);
-                RunnableProject.GetHistoryParametersForFields(instance, [.. request.HistoryFields.Select(field => field.Name)],
-                    out List<IFieldDefinition> fields, out HistoryRepository? historyRepository, out string? classTimeSerieId);
+                InstanceTimeSerieParameters instanceTimeSerieParameters = RunnableProject.GetHistoryParametersForFields(instance, [.. request.HistoryFields.Select(field => field.Name)]);
                 HistoryStatisticTimeRange query = new(request.StartTime, request.EndTime, request.InterpolationInterval, request.FillMode);
                 int fieldIndex = 0;
-                List<HistoryStatisticField> statisticFields = [.. fields.Select(fieldDefinition =>
+                List<HistoryStatisticField> statisticFields = [.. instanceTimeSerieParameters.Fields.Select(fieldDefinition =>
                 {
                     int savedFieldIndex = fieldIndex;
                     fieldIndex++;
                     return new HistoryStatisticField(fieldDefinition, request.HistoryFields[savedFieldIndex].StatisticFunction);
                 })];
 
-                List<HistoryStatisticRow> rows = runnableProject.GetHistoryStatistics(instanceName, query, statisticFields, historyRepository!, classTimeSerieId!);
+                List<HistoryStatisticRow> rows = runnableProject.GetHistoryStatistics(instanceName, query, statisticFields, instanceTimeSerieParameters);
 
-                return await Task.FromResult(new HistoryStatisticsResultModel(BuildStatisticsHeader(request, fields, rows), HistoryRowMapper.ToDto(rows, fields)));
+                return await Task.FromResult(new HistoryStatisticsResultModel(BuildStatisticsHeader(request, instanceTimeSerieParameters.Fields, rows),
+                    HistoryRowMapper.ToDto(rows, instanceTimeSerieParameters.Fields)));
 
             }
             return await Task.FromException<HistoryStatisticsResultModel>(new NonRunnableProjectException(projectId));
@@ -128,5 +130,6 @@ namespace pva.SuperV.Api.Services.History
                     return historyStatisticResultFieldModel;
                 })];
         }
+
     }
 }
