@@ -9,17 +9,21 @@ namespace Aspire.Hosting;
 public class TdEngineResource(string name) : ContainerResource(name), IResourceWithConnectionString
 {
     public const string TdEngineEndpointName = "TdEngine";
-    // An EndpointReference is a core .NET Aspire type used for keeping
-    // track of endpoint details in expressions. Simple literal values cannot
-    // be used because endpoints are not known until containers are launched.
+    /// <summary>
+    /// An EndpointReference is a core .NET Aspire type used for keeping
+    /// track of endpoint details in expressions. Simple literal values cannot
+    /// be used because endpoints are not known until containers are launched.
+    /// </summary>
     private EndpointReference? _tdEngineReference;
 
     public EndpointReference TdEngineEndpoint
         => _tdEngineReference ??= new(this, TdEngineEndpointName);
 
-    // Required property on IResourceWithConnectionString. Represents a connection
-    // string that applications can use to access the tdEngine server. In this case
-    // the connection string is composed of the TdEngineEndpoint endpoint reference.
+    /// <summary>
+    /// Required property on IResourceWithConnectionString. Represents a connection
+    /// string that applications can use to access the tdEngine server. In this case
+    /// the connection string is composed of the TdEngineEndpoint endpoint reference.
+    /// </summary>
     public ReferenceExpression ConnectionStringExpression
         => ReferenceExpression.Create($"{TdEngineEndpoint.Property(EndpointProperty.HostAndPort)};username=root;password=taosdata");
 }

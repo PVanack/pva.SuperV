@@ -29,7 +29,7 @@ namespace pva.SuperV.Model.Instances
 
         public static string? FormatValue<T>(IFieldDefinition? fieldDefinition, T? value)
         {
-            return fieldDefinition?.Formatter?.ConvertToString(value) ?? null;
+            return fieldDefinition?.Formatter?.ConvertToString(value);
         }
 
         public static void SetFieldValue(IField field, FieldValueModel value)

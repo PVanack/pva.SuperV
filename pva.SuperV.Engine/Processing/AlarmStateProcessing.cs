@@ -6,7 +6,7 @@ namespace pva.SuperV.Engine.Processing
     /// Alarm state generation processing on a field.
     /// It sets the alarm state based on a 2 or 4 limits with optional deadband and optionally sets an acknowledgement.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">Type of field on which alarm state processing is applied.</typeparam>
     /// <seealso cref="FieldValueProcessing{T}" />
     public class AlarmStateProcessing<T> : FieldValueProcessing<T>, IAlarmStateProcessing where T : INumber<T>
     {

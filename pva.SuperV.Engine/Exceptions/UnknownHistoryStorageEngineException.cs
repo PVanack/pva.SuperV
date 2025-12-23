@@ -12,7 +12,7 @@ namespace pva.SuperV.Engine.Exceptions
         }
 
         [ExcludeFromCodeCoverage]
-        public UnknownHistoryStorageEngineException() : base()
+        public UnknownHistoryStorageEngineException()
         {
         }
 

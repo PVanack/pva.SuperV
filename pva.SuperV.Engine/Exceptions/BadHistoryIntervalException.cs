@@ -16,7 +16,7 @@ namespace pva.SuperV.Engine.Exceptions
         }
 
         [ExcludeFromCodeCoverage]
-        public BadHistoryIntervalException() : base()
+        public BadHistoryIntervalException()
         {
         }
 

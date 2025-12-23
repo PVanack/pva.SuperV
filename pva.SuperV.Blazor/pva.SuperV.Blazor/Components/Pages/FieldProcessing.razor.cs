@@ -204,13 +204,13 @@ namespace pva.SuperV.Blazor.Components.Pages
             AckStateFieldName = alarmStateProcessing.AckStateFieldName;
         }
 
-        public string? HighHighLimitFieldName { get; set; } = null;
+        public string? HighHighLimitFieldName { get; set; }
         public string HighLimitFieldName { get; set; } = string.Empty;
         public string LowLimitFieldName { get; set; } = string.Empty;
-        public string? LowLowLimitFieldName { get; set; } = null;
-        public string? DeadbandFieldName { get; set; } = null;
+        public string? LowLowLimitFieldName { get; set; }
+        public string? DeadbandFieldName { get; set; }
         public string AlarmStateFieldName { get; set; } = string.Empty;
-        public string? AckStateFieldName { get; set; } = null;
+        public string? AckStateFieldName { get; set; }
     }
 
     public class HistorizedField(string fieldName)
@@ -231,7 +231,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         }
 
         public string HistoryRepositoryName { get; set; } = "";
-        public string? TimestampFieldName { get; set; } = null;
+        public string? TimestampFieldName { get; set; }
         public List<HistorizedField> FieldsToHistorize { get; set; } = [];
     }
 }

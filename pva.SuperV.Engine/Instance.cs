@@ -53,7 +53,7 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Gets a field of the instance.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Type of field</typeparam>
         /// <param name="fieldName">Name of the field.</param>
         /// <returns>The field.</returns>
         /// <exception cref="pva.SuperV.Engine.Exceptions.WrongFieldTypeException"></exception>

@@ -18,10 +18,8 @@ namespace pva.SuperV.Blazor.Services
                     InstanceModel? instance = await result.Content.ReadFromJsonAsync<InstanceModel>();
                     return instance ?? throw new ApiException("No instance in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -57,10 +55,8 @@ namespace pva.SuperV.Blazor.Services
                     InstanceModel? instance = await result.Content.ReadFromJsonAsync<InstanceModel>();
                     return instance ?? throw new ApiException("No instance in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -79,10 +75,8 @@ namespace pva.SuperV.Blazor.Services
                     List<InstanceModel>? instances = await result.Content.ReadFromJsonAsync<List<InstanceModel>>();
                     return instances ?? throw new ApiException("No instances in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -101,10 +95,8 @@ namespace pva.SuperV.Blazor.Services
                     PagedSearchResult<InstanceModel>? instancesPagedSearch = await result.Content.ReadFromJsonAsync<PagedSearchResult<InstanceModel>>();
                     return instancesPagedSearch ?? throw new ApiException("No instances in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {

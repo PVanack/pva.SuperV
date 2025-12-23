@@ -20,10 +20,8 @@ namespace pva.SuperV.Blazor.Services
                     FieldFormatterModel? fieldFormatter = await result.Content.ReadFromJsonAsync<FieldFormatterModel>();
                     return fieldFormatter ?? throw new ApiException("No field formatter in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -59,10 +57,8 @@ namespace pva.SuperV.Blazor.Services
                     FieldFormatterModel? fieldFormatter = await result.Content.ReadFromJsonAsync<FieldFormatterModel>();
                     return fieldFormatter ?? throw new ApiException("No field formatter in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -81,10 +77,8 @@ namespace pva.SuperV.Blazor.Services
                     List<FieldFormatterModel>? fieldFormatters = await result.Content.ReadFromJsonAsync<List<FieldFormatterModel>>();
                     return fieldFormatters ?? throw new ApiException("No field formatters in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -103,10 +97,8 @@ namespace pva.SuperV.Blazor.Services
                     List<string>? fieldFormatterTypes = await result.Content.ReadFromJsonAsync<List<string>>();
                     return fieldFormatterTypes ?? throw new ApiException("No field formatter types in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -125,10 +117,8 @@ namespace pva.SuperV.Blazor.Services
                     PagedSearchResult<FieldFormatterModel>? fieldFormattersPagedSearch = await result.Content.ReadFromJsonAsync<PagedSearchResult<FieldFormatterModel>>();
                     return fieldFormattersPagedSearch ?? throw new ApiException("No field formatters in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -147,10 +137,8 @@ namespace pva.SuperV.Blazor.Services
                     FieldFormatterModel? fieldFormatter = await result.Content.ReadFromJsonAsync<FieldFormatterModel>();
                     return fieldFormatter ?? throw new ApiException("No field formatter in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {

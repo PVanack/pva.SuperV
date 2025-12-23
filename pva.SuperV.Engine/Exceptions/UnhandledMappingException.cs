@@ -10,7 +10,7 @@ namespace pva.SuperV.Engine.Exceptions
         }
 
         [ExcludeFromCodeCoverage]
-        public UnhandledMappingException() : base()
+        public UnhandledMappingException()
         {
         }
 

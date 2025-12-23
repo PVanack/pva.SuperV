@@ -74,8 +74,7 @@ namespace pva.SuperV.EngineTests
         public RunnableProject CreateRunnableProject(string? historyEngineType)
         {
             WipProject wipProject = CreateWipProject(historyEngineType);
-            RunnableProject project = Task.Run(async () => await Project.BuildAsync(wipProject)).Result;
-            return project;
+            return Task.Run(async () => await Project.BuildAsync(wipProject)).Result;
         }
 
         protected WipProject CreateWipProject(string? historyEngineType)
@@ -94,8 +93,7 @@ namespace pva.SuperV.EngineTests
             WipProject wipProject = Project.CreateProject(ProjectName, connectionString);
             if (String.IsNullOrEmpty(historyEngineType))
             {
-                IHistoryStorageEngine historyStorageEngine = new NullHistoryStorageEngine();
-                wipProject.HistoryStorageEngine = historyStorageEngine;
+                wipProject.HistoryStorageEngine = new NullHistoryStorageEngine();
             }
             HistoryRepository historyRepository = new(HistoryRepositoryName);
             wipProject.AddHistoryRepository(historyRepository);

@@ -18,10 +18,8 @@ namespace pva.SuperV.Blazor.Services
                     FieldValueProcessingModel? fieldProcessing = await result.Content.ReadFromJsonAsync<FieldValueProcessingModel>();
                     return fieldProcessing ?? throw new ApiException("No field processing in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -57,10 +55,8 @@ namespace pva.SuperV.Blazor.Services
                     FieldValueProcessingModel? fieldProcessing = await result.Content.ReadFromJsonAsync<FieldValueProcessingModel>();
                     return fieldProcessing ?? throw new ApiException("No field processing in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -79,10 +75,8 @@ namespace pva.SuperV.Blazor.Services
                     List<FieldValueProcessingModel>? fieldProcessings = await result.Content.ReadFromJsonAsync<List<FieldValueProcessingModel>>();
                     return fieldProcessings ?? throw new ApiException("No field processings in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -101,10 +95,8 @@ namespace pva.SuperV.Blazor.Services
                     FieldValueProcessingModel? fieldProcessing = await result.Content.ReadFromJsonAsync<FieldValueProcessingModel>();
                     return fieldProcessing ?? throw new ApiException("No field processing in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {

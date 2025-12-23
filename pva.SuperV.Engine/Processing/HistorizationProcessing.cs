@@ -6,7 +6,7 @@ namespace pva.SuperV.Engine.Processing
     /// <summary>
     /// Field value historization processing.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">Type of field on which historization processing is applied.</typeparam>
     public class HistorizationProcessing<T> : FieldValueProcessing<T>, IHistorizationProcessing
     {
         /// <summary>

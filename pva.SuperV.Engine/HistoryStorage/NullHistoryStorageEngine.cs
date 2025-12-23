@@ -36,13 +36,12 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <summary>
         /// Upsert a class time series in storage engine
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="repositoryStorageId">History respository in which the time series should be created.</param>
         /// <param name="projectName">Project name to zhich the time series belongs.</param>
         /// <param name="className">Class name</param>
         /// <param name="historizationProcessing">History processing for which the time series should be created.</param>
         /// <returns>Time series ID in storage engine.</returns>
-        public string UpsertClassTimeSerie<T>(string repositoryStorageId, string projectName, string className, HistorizationProcessing<T> historizationProcessing)
+        public string UpsertClassTimeSerie(string repositoryStorageId, string projectName, string className, IHistorizationProcessing historizationProcessing)
         {
             return $"{projectName}_{className}";
         }
@@ -99,7 +98,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <summary>
         /// Disposes the instance.
         /// </summary>
-        /// <param name="disposing"></param>
+        /// <param name="disposing">Indicates if called from Dispose()</param>
         protected virtual void Dispose(bool disposing)
         {
             // Do nothing

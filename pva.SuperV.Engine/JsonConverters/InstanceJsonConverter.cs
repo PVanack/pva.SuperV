@@ -88,8 +88,7 @@ namespace pva.SuperV.Engine.JsonConverters
                     string? valueQualityStr = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Quality");
                     _ = Enum.TryParse(valueQualityStr, out QualityLevel valueQuality);
 
-                    IField? field = (instance as Instance)?.GetField(fieldName!);
-                    dynamic? dynamicField = field;
+                    dynamic? dynamicField = (instance as Instance)?.GetField(fieldName!);
                     dynamicField!.SetValueInternal(fieldValue, valueTimestamp, valueQuality);
 
                     reader.Read();

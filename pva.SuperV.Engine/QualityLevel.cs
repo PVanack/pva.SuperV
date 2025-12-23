@@ -8,14 +8,14 @@
         /// <summary>
         /// Value quality is good and can be used without any doubts.
         /// </summary>
-        Good,
+        Good = 0,
         /// <summary>
         /// Value quality is bad and should NOT be used in computations.
         /// </summary>
-        Bad,
+        Bad = 1,
         /// <summary>
         /// Value quality is uncertain which means it's not reliable.
         /// </summary>
-        Uncertain
+        Uncertain = 2
     }
 }

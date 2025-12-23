@@ -22,8 +22,8 @@ namespace pva.SuperV.EngineTests
         public record ValueToTest<T> : IXunitSerializable
         {
             public string StringValue { get; set; } = String.Empty;
-            public T? ExpectedValue { get; set; } = default;
-            public T? InitialValue { get; set; } = default;
+            public T? ExpectedValue { get; set; }
+            public T? InitialValue { get; set; }
             public ValueToTest()
             {
             }

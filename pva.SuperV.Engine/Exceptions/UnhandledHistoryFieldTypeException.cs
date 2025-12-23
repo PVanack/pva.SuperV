@@ -16,7 +16,7 @@ namespace pva.SuperV.Engine.Exceptions
         }
 
         [ExcludeFromCodeCoverage]
-        public UnhandledHistoryFieldTypeException() : base()
+        public UnhandledHistoryFieldTypeException()
         {
         }
 

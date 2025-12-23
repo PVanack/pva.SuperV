@@ -38,8 +38,7 @@ public partial class FieldFormatters
     {
         FieldFormatterPagedSearchRequest request = new(state.Page + 1, state.PageSize, itemNameSearchString, null);
         PagedSearchResult<FieldFormatterModel> projects = await FieldFormatterService.SearchFieldFormattersAsync(ProjectId, request);
-        TableData<FieldFormatterModel> itemsTableData = new() { TotalItems = projects.Count, Items = projects.Result };
-        return itemsTableData;
+        return new() { TotalItems = projects.Count, Items = projects.Result };
     }
 
     private void RowClickedEvent(TableRowClickEventArgs<FieldFormatterModel> _)

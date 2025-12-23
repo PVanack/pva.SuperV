@@ -190,7 +190,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="instanceName">Name of the instance.</param>
         /// <returns>The <see cref="Instance"/></returns>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownInstanceException"></exception>
+        /// <exception cref="UnknownEntityException">Indicates that entity wasn't found.</exception>
         public Instance GetInstance(string instanceName)
         {
             if (Instances.TryGetValue(instanceName, out var instance))
@@ -248,15 +248,16 @@ namespace pva.SuperV.Engine
         public string GetCode()
         {
             StringBuilder codeBuilder = new();
-            codeBuilder.AppendLine($"using {GetType().Namespace};");
-            codeBuilder.AppendLine("using System.Collections.Generic;");
-            codeBuilder.AppendLine("using System.Reflection;");
-            codeBuilder.AppendLine($"[assembly: AssemblyProduct(\"{Name}\")]");
-            codeBuilder.AppendLine($"[assembly: AssemblyTitle(\"{Description}\")]");
-            codeBuilder.AppendLine($"[assembly: AssemblyVersion(\"{Version}\")]");
-            codeBuilder.AppendLine($"[assembly: AssemblyFileVersion(\"{Version}\")]");
-            codeBuilder.AppendLine($"[assembly: AssemblyInformationalVersion(\"{Version}\")]");
-            codeBuilder.AppendLine($"namespace {Name}.V{Version} {{");
+            codeBuilder = codeBuilder
+                .AppendLine($"using {GetType().Namespace};")
+                .AppendLine("using System.Collections.Generic;")
+                .AppendLine("using System.Reflection;")
+                .AppendLine($"[assembly: AssemblyProduct(\"{Name}\")]")
+                .AppendLine($"[assembly: AssemblyTitle(\"{Description}\")]")
+                .AppendLine($"[assembly: AssemblyVersion(\"{Version}\")]")
+                .AppendLine($"[assembly: AssemblyFileVersion(\"{Version}\")]")
+                .AppendLine($"[assembly: AssemblyInformationalVersion(\"{Version}\")]")
+                .AppendLine($"namespace {Name}.V{Version} {{");
             Classes
                 .ForEach((_, v) => codeBuilder.AppendLine(v.GetCode()));
             codeBuilder.AppendLine("}");

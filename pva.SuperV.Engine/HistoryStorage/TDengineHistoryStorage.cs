@@ -87,6 +87,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <param name="projectName">Project name to hwich the repository belongs.</param>
         /// <param name="repository">History repository</param>
         /// <returns>ID of repository in storage engine.</returns>
+        /// <exception cref="TdEngineException">TDengine error</exception>
         public string UpsertRepository(string projectName, HistoryRepository repository)
         {
             string repositoryName = GetRepositoryName(projectName, repository.Name);
@@ -106,6 +107,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// </summary>
         /// <param name="projectName">Project name to zhich the repository belongs.</param>
         /// <param name="repositoryName">History repository name.</param>
+        /// <exception cref="TdEngineException">TDengine error</exception>
         public void DeleteRepository(string projectName, string repositoryName)
         {
             string repositoryActualName = GetRepositoryName(projectName, repositoryName);
@@ -122,13 +124,13 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <summary>
         /// Upsert a class time series in storage engine
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="repositoryStorageId">History repository in which the time series should be created.</param>
         /// <param name="projectName">Project name to zhich the time series belongs.</param>
         /// <param name="className">Class name</param>
         /// <param name="historizationProcessing">History processing for which the time series should be created.</param>
         /// <returns>Time series ID in storage engine.</returns>
-        public string UpsertClassTimeSerie<T>(string repositoryStorageId, string projectName, string className, HistorizationProcessing<T> historizationProcessing)
+        /// <exception cref="TdEngineException">TDengine error</exception>
+        public string UpsertClassTimeSerie(string repositoryStorageId, string projectName, string className, IHistorizationProcessing historizationProcessing)
         {
             string classTimeSerieId = GetClassTimeSerieId(projectName, className, historizationProcessing);
             try
@@ -163,6 +165,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <param name="timestamp">the timestamp of the values</param>
         /// <param name="quality">The quality level of the values.</param>
         /// <param name="fieldsToHistorize">List of fields to be historized.</param>
+        /// <exception cref="TdEngineException">TDengine error</exception>
         public void HistorizeValues(string repositoryStorageId, string historizationProcessingName, string classTimeSerieId, string instanceName, DateTime timestamp, QualityLevel? quality, List<IField> fieldsToHistorize)
         {
             string instanceTableName = $"{instanceName}_{historizationProcessingName}".ToLowerInvariant();
@@ -210,6 +213,7 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <param name="instanceTimeSerieParameters">Parameters defining the time serie.</param>
         /// <param name="fields">List of fields to be retrieved. One of them should have the <see cref="HistorizationProcessing{T}"/></param>
         /// <returns>List of history rows.</returns>
+        /// <exception cref="TdEngineException">TDengine error</exception>
         public List<HistoryRow> GetHistoryValues(string instanceName, HistoryTimeRange timeRange, InstanceTimeSerieParameters instanceTimeSerieParameters, List<IFieldDefinition> fields)
         {
             string instanceTableName = GetInstanceTableName(instanceName, instanceTimeSerieParameters);
@@ -220,10 +224,11 @@ namespace pva.SuperV.Engine.HistoryStorage
                 string fieldNames = fields.Select(field => $"_{field.Name}")
                     .Aggregate((a, b) => $"{a},{b}");
                 string sqlQuery =
-                    @$"
+                    $"""
 SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
- WHERE TS between ""{FormatToSqlDate(timeRange.From)}"" and ""{FormatToSqlDate(timeRange.To)}"";
- ";
+ WHERE TS between "{FormatToSqlDate(timeRange.From)}" and "{FormatToSqlDate(timeRange.To)}";
+ 
+""";
                 using IRows row = tdEngineClient!.Query(sqlQuery);
                 while (row.Read())
                 {
@@ -245,6 +250,7 @@ SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
         /// <param name="instanceTimeSerieParameters">Parameters defining the time serie.</param>
         /// <param name="fields">List of fields to be retrieved. One of them should have the <see cref="HistorizationProcessing{T}"/></param>
         /// <returns>List of history rows.</returns>
+        /// <exception cref="TdEngineException">TDengine error</exception>
         public List<HistoryStatisticRow> GetHistoryStatistics(string instanceName, HistoryStatisticTimeRange timeRange,
             InstanceTimeSerieParameters instanceTimeSerieParameters, List<HistoryStatisticField> fields)
         {
@@ -261,11 +267,11 @@ SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
                     fillClause = $"FILL({timeRange.FillMode})";
                 }
                 string sqlQuery =
-                    @$"
+                    $"""
 SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {instanceTableName}
- WHERE TS between ""{FormatToSqlDate(timeRange.From)}"" and ""{FormatToSqlDate(timeRange.To)}""
+ WHERE TS between "{FormatToSqlDate(timeRange.From)}" and "{FormatToSqlDate(timeRange.To)}"
  INTERVAL({FormatInterval(timeRange.Interval)}) SLIDING({FormatInterval(timeRange.Interval)}) {fillClause};
- ";
+""";
                 using IRows row = tdEngineClient!.Query(sqlQuery);
                 while (row.Read())
                 {
@@ -291,7 +297,7 @@ SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {ins
         /// <summary>
         /// Disposes the instance. Dispose the TDengine connection.
         /// </summary>
-        /// <param name="disposing"></param>
+        /// <param name="disposing">Indicates if called from Dispose()</param>
         protected virtual void Dispose(bool disposing)
         {
             tdEngineClient?.Dispose();
@@ -313,9 +319,9 @@ SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {ins
         }
 
         private static string GetRepositoryName(string projectName, string repositoryName)
-            => $"{projectName}{repositoryName}".ToLowerInvariant();
+            => $"{projectName}_{repositoryName}".ToLowerInvariant();
 
-        private static string GetClassTimeSerieId<T>(string projectName, string className, HistorizationProcessing<T> historizationProcessing)
+        private static string GetClassTimeSerieId(string projectName, string className, IHistorizationProcessing historizationProcessing)
             => $"{projectName}_{className}_{historizationProcessing.Name}".ToLowerInvariant();
 
         private static string GetInstanceTableName(string instanceName, InstanceTimeSerieParameters instanceTimeSerieParameters)

@@ -15,7 +15,7 @@ namespace pva.SuperV.Engine.Exceptions
         {
         }
 
-        public ProjectBuildException() : base()
+        public ProjectBuildException()
         {
         }
 

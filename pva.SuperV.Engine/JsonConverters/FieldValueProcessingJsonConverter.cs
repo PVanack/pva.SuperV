@@ -76,14 +76,14 @@ namespace pva.SuperV.Engine.JsonConverters
         /// Writes the specified writer.
         /// </summary>
         /// <param name="writer">The writer.</param>
-        /// <param name="fieldValueProcessing">The field processing.</param>
+        /// <param name="value">The field processing.</param>
         /// <param name="options">The options.</param>
-        public override void Write(Utf8JsonWriter writer, IFieldValueProcessing fieldValueProcessing, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, IFieldValueProcessing value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
-            writer.WriteString("Type", fieldValueProcessing.GetType().ToString());
-            writer.WriteString("Name", fieldValueProcessing.Name);
-            WriteCtorParameters(writer, fieldValueProcessing, options);
+            writer.WriteString("Type", value.GetType().ToString());
+            writer.WriteString("Name", value.Name);
+            WriteCtorParameters(writer, value, options);
             writer.WriteEndObject();
         }
 

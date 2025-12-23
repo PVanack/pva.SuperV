@@ -11,7 +11,7 @@ namespace pva.SuperV.Engine.Exceptions
         {
         }
 
-        public InstanceCreationException() : base()
+        public InstanceCreationException()
         {
         }
 

@@ -39,8 +39,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         {
             ProjectPagedSearchRequest request = new(state.Page + 1, state.PageSize, itemNameSearchString, null);
             PagedSearchResult<ProjectModel> projects = await ProjectServiceClient.SearchProjectsAsync(request);
-            TableData<ProjectModel> itemsTableData = new() { TotalItems = projects.Count, Items = projects.Result };
-            return itemsTableData;
+            return new() { TotalItems = projects.Count, Items = projects.Result };
         }
 
         private void CreateItem(MouseEventArgs _)

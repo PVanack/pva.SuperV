@@ -2,7 +2,5 @@
 
 namespace pva.SuperV.Engine.HistoryStorage
 {
-    public record InstanceTimeSerieParameters(List<IFieldDefinition> Fields, IHistorizationProcessing? HistorizationProcessing)
-    {
-    }
+    public record InstanceTimeSerieParameters(List<IFieldDefinition> Fields, IHistorizationProcessing? HistorizationProcessing);
 }

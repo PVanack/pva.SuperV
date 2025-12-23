@@ -66,15 +66,15 @@ namespace pva.SuperV.Engine.JsonConverters
         /// Writes the specified writer.
         /// </summary>
         /// <param name="writer">The writer.</param>
-        /// <param name="fieldDefinition">The field definition.</param>
+        /// <param name="value">The field definition.</param>
         /// <param name="options">The options.</param>
-        public override void Write(Utf8JsonWriter writer, IFieldDefinition fieldDefinition, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, IFieldDefinition value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
 
-            writer.WriteString("Type", fieldDefinition.Type.ToString());
-            writer.WriteString("Name", fieldDefinition.Name);
-            dynamic actualFieldDefinition = fieldDefinition;
+            writer.WriteString("Type", value.Type.ToString());
+            writer.WriteString("Name", value.Name);
+            dynamic actualFieldDefinition = value;
             Type fieldType = actualFieldDefinition.Type;
             if (!FieldConvertersCache.TryGetValue(fieldType, out dynamic? fieldConverter))
             {
@@ -85,12 +85,12 @@ namespace pva.SuperV.Engine.JsonConverters
             fieldConverter.Write(writer, actualFieldDefinition.DefaultValue, options);
 
             writer.WritePropertyName("ValuePostChangeProcessings");
-            JsonSerializer.Serialize(writer, fieldDefinition.ValuePostChangeProcessings, options);
+            JsonSerializer.Serialize(writer, value.ValuePostChangeProcessings, options);
 
-            if (fieldDefinition!.Formatter is not null)
+            if (value!.Formatter is not null)
             {
                 writer.WritePropertyName("Formatter");
-                JsonSerializer.Serialize(writer, fieldDefinition.Formatter, options);
+                JsonSerializer.Serialize(writer, value.Formatter, options);
             }
             writer.WriteEndObject();
         }

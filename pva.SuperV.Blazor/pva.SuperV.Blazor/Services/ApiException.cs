@@ -29,7 +29,7 @@ namespace pva.SuperV.Blazor.Services
         }
 
         [ExcludeFromCodeCoverage]
-        public ApiException() : base()
+        public ApiException()
         {
         }
 

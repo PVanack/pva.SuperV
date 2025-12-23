@@ -63,10 +63,8 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                     ? throw new InvalidDataException(columnName)
                     : (null);
             }
-            else
-            {
-                return (string?)fieldValue;
-            }
+
+            return (string?)fieldValue;
         }
     }
 }

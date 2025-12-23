@@ -25,7 +25,7 @@ namespace pva.SuperV.Model.HistoryRetrieval
         {
             return [.. rows.Select(row
                 => new HistoryRawRowModel(row.Ts.ToUniversalTime(), row.Quality,
-                       [.. row.Values.Select(value => value)]
+                       [.. row.Values.Select(value => value!)]
                     ))];
         }
 
@@ -33,7 +33,7 @@ namespace pva.SuperV.Model.HistoryRetrieval
         {
             return [.. rows.Select(row
                 => new HistoryStatisticsRawRowModel(row.Ts.ToUniversalTime(), row.StartTime, row.EndTime, row.Duration, row.Quality,
-                       [.. row.Values.Select(value => value)]
+                       [.. row.Values.Select(value => value!)]
                     ))];
         }
 

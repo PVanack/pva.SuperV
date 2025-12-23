@@ -397,13 +397,7 @@ namespace pva.SuperV.ApiTests
         }
 
         private static JsonContent BuildJsonStreamContent(string json)
-        {
-            JsonContent jsonContent = JsonContent.Create(Encoding.UTF8.GetBytes(json));
-            return jsonContent;
-            //StreamContent content = new(new MemoryStream(Encoding.UTF8.GetBytes(json)));
-            //content.Headers.ContentType = new MediaTypeHeaderValue("application/json", "charset=UTF-8");
-            //return content;
-        }
+            => JsonContent.Create(Encoding.UTF8.GetBytes(json));
 
         [Fact]
         public async Task GivenProject_WhenUnloadingProject_ThenProjectIsUnloaded()

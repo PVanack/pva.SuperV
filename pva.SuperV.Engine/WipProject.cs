@@ -138,7 +138,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="className">Name of the class.</param>
         /// <param name="field">The field.</param>
-        /// <returns></returns>
+        /// <returns>Added field</returns>
         public IFieldDefinition AddField(string className, IFieldDefinition field)
         {
             Class clazz = GetClass(className);
@@ -151,7 +151,7 @@ namespace pva.SuperV.Engine
         /// <param name="className">Name of the class.</param>
         /// <param name="field">The field.</param>
         /// <param name="formatterName">Name of the formatter.</param>
-        /// <returns></returns>
+        /// <returns>Added field</returns>
         public IFieldDefinition AddField(string className, IFieldDefinition field, string? formatterName)
         {
             Class clazz = GetClass(className);

@@ -26,13 +26,12 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <summary>
         /// Upsert a class time series in storage engine
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="repositoryStorageId">History repository in which the time series should be created.</param>
         /// <param name="projectName">Project name to zhich the time series belongs.</param>
         /// <param name="className">Class name</param>
         /// <param name="historizationProcessing">History processing for which the time series should be created.</param>
         /// <returns>Time series ID in storage engine.</returns>
-        string UpsertClassTimeSerie<T>(string repositoryStorageId, string projectName, string className, HistorizationProcessing<T> historizationProcessing);
+        string UpsertClassTimeSerie(string repositoryStorageId, string projectName, string className, IHistorizationProcessing historizationProcessing);
 
         /// <summary>
         /// Historize instance values in storage engine

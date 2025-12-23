@@ -7,6 +7,7 @@ namespace pva.SuperV.Engine.HistoryStorage
     /// <summary>
     /// History repository to store history of instance values.
     /// </summary>
+    /// <param name="name">Name of the history repository.</param>
     public class HistoryRepository(string name)
     {
         /// <summary>
@@ -43,13 +44,12 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <summary>
         /// Upserts a time series in storage engine.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="projectName">Name of project.</param>
         /// <param name="className">Name of class.</param>
         /// <param name="historizationProcessing">History processing for which the time series is to be created.</param>
-        /// <returns></returns>
+        /// <returns>Class time serie ID in repository</returns>
         /// <exception cref="NoHistoryStorageEngineException"></exception>
-        internal string UpsertClassTimeSerie<T>(string projectName, string className, HistorizationProcessing<T> historizationProcessing)
+        internal string UpsertClassTimeSerie(string projectName, string className, IHistorizationProcessing historizationProcessing)
         {
             if (HistoryStorageEngine is null)
             {

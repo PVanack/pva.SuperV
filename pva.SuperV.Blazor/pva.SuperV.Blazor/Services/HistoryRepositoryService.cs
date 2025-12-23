@@ -18,10 +18,8 @@ namespace pva.SuperV.Blazor.Services
                     HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>();
                     return historyRepository ?? throw new ApiException("No history repository in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -40,10 +38,8 @@ namespace pva.SuperV.Blazor.Services
                     await ValueTask.CompletedTask;
                     return;
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -62,10 +58,8 @@ namespace pva.SuperV.Blazor.Services
                     List<HistoryRepositoryModel>? historyRepositories = await result.Content.ReadFromJsonAsync<List<HistoryRepositoryModel>>();
                     return historyRepositories ?? throw new ApiException("No history repository in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -84,10 +78,8 @@ namespace pva.SuperV.Blazor.Services
                     HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>();
                     return historyRepository ?? throw new ApiException("No history repository in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -106,10 +98,8 @@ namespace pva.SuperV.Blazor.Services
                     HistoryRepositoryModel? historyRepository = await result.Content.ReadFromJsonAsync<HistoryRepositoryModel>();
                     return historyRepository ?? throw new ApiException("No history repositories in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {

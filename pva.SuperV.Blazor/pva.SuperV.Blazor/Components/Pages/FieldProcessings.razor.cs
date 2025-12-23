@@ -40,8 +40,7 @@ public partial class FieldProcessings
     private async Task<TableData<FieldValueProcessingModel>> ServerReload(TableState _, CancellationToken __)
     {
         List<FieldValueProcessingModel> fieldProcessings = await FieldProcessingService.GetFieldProcessingsAsync(ProjectId, ClassName, FieldName);
-        TableData<FieldValueProcessingModel> itemsTableData = new() { TotalItems = fieldProcessings.Count, Items = fieldProcessings };
-        return itemsTableData;
+        return new() { TotalItems = fieldProcessings.Count, Items = fieldProcessings };
     }
 
     private void RowClickedEvent(TableRowClickEventArgs<FieldValueProcessingModel> _)
