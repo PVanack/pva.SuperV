@@ -351,6 +351,7 @@ namespace pva.SuperV.Engine
         {
             List<IFieldDefinition> fields = [];
             IHistorizationProcessing? historizationProcessing = null;
+            List<IHistorizationProcessing>? historizationProcessings = null;
             foreach (string fieldName in fieldNames)
             {
                 IFieldDefinition field = instance.Class.GetField(fieldName);
@@ -360,6 +361,22 @@ namespace pva.SuperV.Engine
                 if (hp != null)
                 {
                     historizationProcessing = hp;
+                }
+                else
+                {
+                    if (historizationProcessing == null)
+                    {
+                        historizationProcessings = [];
+                        instance.Class.FieldDefinitions.Values.ForEach(f =>
+                            historizationProcessings.AddRange([.. f.ValuePostChangeProcessings.OfType<IHistorizationProcessing>()])
+                        );
+                    }
+                    hp = historizationProcessings!.FirstOrDefault(op => op.FieldsToHistorize.Contains(field));
+                    if (hp != null && historizationProcessing != null && hp.Name != historizationProcessing.Name)
+                    {
+                        throw new MixedHistoryProcessingException(field.Name);
+                    }
+
                 }
                 fields.Add(field);
             }

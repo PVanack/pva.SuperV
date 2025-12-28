@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Engine.Exceptions;
+﻿using pva.Helpers.Extensions;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
 
 namespace pva.SuperV.Engine.Processing
@@ -83,8 +84,18 @@ namespace pva.SuperV.Engine.Processing
             {
                 throw new UnknownEntityException("History repository", historyRepositoryName);
             }
+            List<IHistorizationProcessing> otherHistorizationProcessings = [];
+            clazz.FieldDefinitions.Values.ForEach(f =>
+                otherHistorizationProcessings.AddRange(
+                    [.. f.ValuePostChangeProcessings.OfType<IHistorizationProcessing>().Where(p => p.Name != this.Name)]
+                    )
+                );
             fieldsToHistorize.ForEach(fieldToHistorize =>
             {
+                if (otherHistorizationProcessings.Any(p => p.FieldsToHistorize.Any(f => f.Name.Equals(fieldToHistorize))))
+                {
+                    throw new SuperVException($"Field '{fieldToHistorize}' of class '{clazz.Name}' is already used in another historization processing.");
+                }
                 IFieldDefinition? fieldDefinition = GetFieldDefinition(clazz, fieldToHistorize);
                 if (fieldDefinition is not null)
                 {
