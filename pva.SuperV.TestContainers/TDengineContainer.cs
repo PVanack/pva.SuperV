@@ -137,7 +137,7 @@ namespace pva.SuperV.TestContainers
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Task.Run(async () => await Dispose(disposing: true));
+            Task.Run(async () => await Dispose(disposing: true)).Wait();
             GC.SuppressFinalize(this);
         }
     }
