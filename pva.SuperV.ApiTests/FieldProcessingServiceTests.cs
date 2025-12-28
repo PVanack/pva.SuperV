@@ -97,14 +97,14 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
-                    ValueFieldName,
+                    HighHighLimitFieldName,
                     HistoryRepositoryName,
                     null,
                     [
-                        ValueFieldName,
+                        HighHighLimitFieldName,
                     ]);
             // WHEN
-            FieldValueProcessingModel createdFieldProcessing = await fieldProcessingService.CreateFieldProcessingAsync(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
+            FieldValueProcessingModel createdFieldProcessing = await fieldProcessingService.CreateFieldProcessingAsync(wipProject.GetId(), ClassName, HighHighLimitFieldName, expectedFieldProcessing);
 
             // THEN
             createdFieldProcessing
@@ -117,25 +117,25 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
-                    ValueFieldName,
+                    HighHighLimitFieldName,
                     HistoryRepositoryName,
                     null,
                     [
-                        ValueFieldName,
+                        HighHighLimitFieldName,
                     ]);
-            _ = await fieldProcessingService.CreateFieldProcessingAsync(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
+            _ = await fieldProcessingService.CreateFieldProcessingAsync(wipProject.GetId(), ClassName, HighHighLimitFieldName, expectedFieldProcessing);
 
             // WHEN
             expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
-                    ValueFieldName,
+                    HighHighLimitFieldName,
                     HistoryRepositoryName,
                     null,
                     [
-                        ValueFieldName,
+                        HighHighLimitFieldName,
                         AlarmStateFieldName
                     ]);
 
-            FieldValueProcessingModel updatedFieldProcessing = await fieldProcessingService.UpdateFieldProcessingAsync(wipProject.GetId(), ClassName, ValueFieldName,
+            FieldValueProcessingModel updatedFieldProcessing = await fieldProcessingService.UpdateFieldProcessingAsync(wipProject.GetId(), ClassName, HighHighLimitFieldName,
                 expectedFieldProcessing.Name, expectedFieldProcessing);
 
             // THEN
