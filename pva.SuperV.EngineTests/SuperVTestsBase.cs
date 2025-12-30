@@ -120,41 +120,29 @@ namespace pva.SuperV.EngineTests
             wipProject.AddFieldChangePostProcessing(ClassName, ValueFieldName, historizationProcessing);
 
             Class allFieldsClass = wipProject.AddClass(AllFieldsClassName);
-            wipProject.AddField(AllFieldsClassName, new FieldDefinition<bool>(BoolFieldName, default));
-            wipProject.AddField(AllFieldsClassName, new FieldDefinition<DateTime>(DateTimeFieldName, default));
-            wipProject.AddField(AllFieldsClassName, new FieldDefinition<double>(DoubleFieldName, default));
-            wipProject.AddField(AllFieldsClassName, new FieldDefinition<float>(FloatFieldName, default));
-            wipProject.AddField(AllFieldsClassName, new FieldDefinition<int>(IntFieldName, default));
-            wipProject.AddField(AllFieldsClassName, new FieldDefinition<long>(LongFieldName, default));
-            wipProject.AddField(AllFieldsClassName, new FieldDefinition<short>(ShortFieldName, default));
-            wipProject.AddField(AllFieldsClassName, new FieldDefinition<string>(StringFieldName, "default"));
-            wipProject.AddField(AllFieldsClassName, new FieldDefinition<TimeSpan>(TimeSpanFieldName, TimeSpan.FromDays(0)));
-            wipProject.AddField(AllFieldsClassName, new FieldDefinition<uint>(UintFieldName, default));
-            wipProject.AddField(AllFieldsClassName, new FieldDefinition<ulong>(UlongFieldName, default));
-            wipProject.AddField(AllFieldsClassName, new FieldDefinition<ushort>(UshortFieldName, default));
-            wipProject.AddField(AllFieldsClassName, new FieldDefinition<int>(IntFieldWithFormatName, default), AlarmStatesFormatterName);
+            AddFieldHistorization<bool>(wipProject, historyRepository, allFieldsClass, BoolFieldName);
+            AddFieldHistorization<DateTime>(wipProject, historyRepository, allFieldsClass, DateTimeFieldName);
+            AddFieldHistorization<double>(wipProject, historyRepository, allFieldsClass, DoubleFieldName);
+            AddFieldHistorization<float>(wipProject, historyRepository, allFieldsClass, FloatFieldName);
+            AddFieldHistorization<int>(wipProject, historyRepository, allFieldsClass, IntFieldName);
+            AddFieldHistorization<long>(wipProject, historyRepository, allFieldsClass, LongFieldName);
+            AddFieldHistorization<short>(wipProject, historyRepository, allFieldsClass, ShortFieldName);
+            AddFieldHistorization<string>(wipProject, historyRepository, allFieldsClass, StringFieldName);
+            AddFieldHistorization<TimeSpan>(wipProject, historyRepository, allFieldsClass, TimeSpanFieldName);
+            AddFieldHistorization<uint>(wipProject, historyRepository, allFieldsClass, UintFieldName);
+            AddFieldHistorization<ulong>(wipProject, historyRepository, allFieldsClass, UlongFieldName);
+            AddFieldHistorization<ushort>(wipProject, historyRepository, allFieldsClass, UshortFieldName);
+            AddFieldHistorization<int>(wipProject, historyRepository, allFieldsClass, IntFieldWithFormatName, AlarmStatesFormatterName);
 
-            AddFieldHistorization<int>(wipProject, historyRepository, allFieldsClass, IntFieldWithFormatName);
             return wipProject;
         }
 
-        private static void AddFieldHistorization<T>(WipProject wipProject, HistoryRepository historyRepository, Class allFieldsClass, string fieldName)
+        private static void AddFieldHistorization<T>(WipProject wipProject, HistoryRepository historyRepository, Class allFieldsClass, string fieldName, string? fieldFormatName = null)
         {
+            wipProject.AddField(AllFieldsClassName, new FieldDefinition<T>(fieldName, default), fieldFormatName);
             var historyProcessing = new HistorizationProcessing<T>($"H{fieldName}", wipProject, allFieldsClass, fieldName, historyRepository.Name, null,
                     [
-                        BoolFieldName,
-                        //DateTimeFieldName,
-                        DoubleFieldName,
-                        FloatFieldName,
-                        IntFieldName,
-                        LongFieldName,
-                        ShortFieldName,
-                        StringFieldName,
-                        TimeSpanFieldName,
-                        UintFieldName,
-                        UlongFieldName,
-                        UshortFieldName,
-                        IntFieldWithFormatName
+                        fieldName,
                     ]
                 );
             wipProject.AddFieldChangePostProcessing(AllFieldsClassName, fieldName,

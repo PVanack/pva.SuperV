@@ -14,7 +14,7 @@ namespace pva.SuperV.Model.Instances
             Field<int> derivedField => new IntFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
             Field<long> derivedField => new LongFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
             Field<short> derivedField => new ShortFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
-            Field<string> derivedField => new StringFieldValueModel(derivedField.Value, derivedField.Quality, derivedField.Timestamp),
+            Field<string> derivedField => new StringFieldValueModel(derivedField.Value, null, derivedField.Quality, derivedField.Timestamp),
             Field<TimeSpan> derivedField => new TimeSpanFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
             Field<uint> derivedField => new UintFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),
             Field<ulong> derivedField => new UlongFieldValueModel(derivedField.Value, FormatValue(derivedField), derivedField.Quality, derivedField.Timestamp),

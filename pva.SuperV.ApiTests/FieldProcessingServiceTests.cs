@@ -1,5 +1,6 @@
 ﻿using pva.SuperV.Api.Services.FieldProcessings;
 using pva.SuperV.Engine;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.EngineTests;
 using pva.SuperV.Model.FieldProcessings;
 using Shouldly;
@@ -110,6 +111,22 @@ namespace pva.SuperV.ApiTests
             createdFieldProcessing
                 .ShouldNotBeNull()
                 .ShouldBeEquivalentTo(expectedFieldProcessing);
+        }
+
+        [Fact]
+        public async Task GivenFieldInHistorizationProcessing_WhenAddingItToAnotherOne_ThenExceptionIsThrown()
+        {
+            // GIVEN
+            FieldValueProcessingModel expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
+                    ValueFieldName,
+                    HistoryRepositoryName,
+                    null,
+                    [
+                        ValueFieldName,
+                    ]);
+            // WHEN
+            await Assert.ThrowsAsync<FieldUsedInOtherProcessingException>(async ()
+                => await fieldProcessingService.CreateFieldProcessingAsync(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing));
         }
 
         [Fact]

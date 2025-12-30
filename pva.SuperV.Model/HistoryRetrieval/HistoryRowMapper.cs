@@ -17,7 +17,7 @@ namespace pva.SuperV.Model.HistoryRetrieval
         public static List<HistoryStatisticsRowModel> ToDto(List<HistoryStatisticRow> rows, List<IFieldDefinition> fields)
         {
             return [.. rows.Select(row
-                => new HistoryStatisticsRowModel(row.Ts.ToUniversalTime(), row.StartTime, row.EndTime, row.Duration, row.Quality, BuildRowValues(row, fields, true)
+                => new HistoryStatisticsRowModel(row.Ts.ToUniversalTime(), row.StartTime, row.EndTime, row.Duration, row.Quality, BuildRowValues(row, fields, false)
                     ))];
         }
 
@@ -56,7 +56,7 @@ namespace pva.SuperV.Model.HistoryRetrieval
                             int typedRowValue => new IntFieldValueModel(typedRowValue, FieldValueMapper.FormatValue(field, typedRowValue), row.Quality, row.Ts),
                             long typedRowValue => new LongFieldValueModel(typedRowValue, FieldValueMapper.FormatValue(field, typedRowValue), row.Quality, row.Ts),
                             short typedRowValue => new ShortFieldValueModel(typedRowValue, FieldValueMapper.FormatValue(field, typedRowValue), row.Quality, row.Ts),
-                            string typedRowValue => new StringFieldValueModel(typedRowValue, row.Quality, row.Ts),
+                            string typedRowValue => new StringFieldValueModel(typedRowValue, null, row.Quality, row.Ts),
                             TimeSpan typedRowValue => new TimeSpanFieldValueModel(typedRowValue, FieldValueMapper.FormatValue(field, typedRowValue), row.Quality, row.Ts),
                             uint typedRowValue => new UintFieldValueModel(typedRowValue, FieldValueMapper.FormatValue(field, typedRowValue), row.Quality, row.Ts),
                             ulong typedRowValue => new UlongFieldValueModel(typedRowValue, FieldValueMapper.FormatValue(field, typedRowValue), row.Quality, row.Ts),
@@ -77,7 +77,7 @@ namespace pva.SuperV.Model.HistoryRetrieval
                             FieldDefinition<int> derivedField => new IntFieldValueModel((int)rowValue, FieldValueMapper.FormatValue(derivedField, (int)rowValue), row.Quality, row.Ts),
                             FieldDefinition<long> derivedField => new LongFieldValueModel((long)rowValue, FieldValueMapper.FormatValue(derivedField, (long)rowValue), row.Quality, row.Ts),
                             FieldDefinition<short> derivedField => new ShortFieldValueModel((short)rowValue, FieldValueMapper.FormatValue(derivedField, (short)rowValue), row.Quality, row.Ts),
-                            FieldDefinition<string> => new StringFieldValueModel((string?)rowValue, row.Quality, row.Ts),
+                            FieldDefinition<string> => new StringFieldValueModel((string?)rowValue, null, row.Quality, row.Ts),
                             FieldDefinition<TimeSpan> derivedField => new TimeSpanFieldValueModel((TimeSpan)rowValue, FieldValueMapper.FormatValue(derivedField, (TimeSpan)rowValue), row.Quality, row.Ts),
                             FieldDefinition<uint> derivedField => new UintFieldValueModel((uint)rowValue, FieldValueMapper.FormatValue(derivedField, (uint)rowValue), row.Quality, row.Ts),
                             FieldDefinition<ulong> derivedField => new UlongFieldValueModel((ulong)rowValue, FieldValueMapper.FormatValue(derivedField, (ulong)rowValue), row.Quality, row.Ts),

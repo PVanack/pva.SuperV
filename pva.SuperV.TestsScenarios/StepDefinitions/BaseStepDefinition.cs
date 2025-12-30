@@ -27,7 +27,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
                 "int" => new IntFieldValueModel(row.GetInt32(fieldCellName), formattedValue, qualityLevel, timestamp),
                 "long" => new LongFieldValueModel(row.GetInt64(fieldCellName), formattedValue, qualityLevel, timestamp),
                 "short" => new ShortFieldValueModel(short.CreateChecked(row.GetInt32(fieldCellName)), formattedValue, qualityLevel, timestamp),
-                "string" => new StringFieldValueModel(row[fieldCellName], qualityLevel, timestamp),
+                "string" => new StringFieldValueModel(row[fieldCellName], null, qualityLevel, timestamp),
                 "timespan" => new TimeSpanFieldValueModel(row[fieldCellName].ParseTimeSpanInvariant(), formattedValue, qualityLevel, timestamp),
                 "uint" => new UintFieldValueModel(uint.CreateChecked(row.GetInt32(fieldCellName)), formattedValue, qualityLevel, timestamp),
                 "ulong" => new UlongFieldValueModel(ulong.CreateChecked(row.GetInt64(fieldCellName)), formattedValue, qualityLevel, timestamp),

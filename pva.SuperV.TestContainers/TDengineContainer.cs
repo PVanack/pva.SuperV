@@ -30,6 +30,7 @@ namespace pva.SuperV.TestContainers
         {
             if (tdEngineContainer is null)
             {
+                Console.WriteLine($"Starting TD engine container");
                 WaitForPort(6030);
                 tdEngineContainer = new ContainerBuilder()
                     .WithImage("tdengine/tsdb:3.3.8.8")
@@ -78,6 +79,7 @@ namespace pva.SuperV.TestContainers
                     await tdEngineStartAsync.WaitAsync(TimeSpan.FromSeconds(30));
                     // Wait to make sure the processes in container are ready and running.
                     await WaitForTDengineToBeReady();
+                    Console.WriteLine($"TD engine container started");
                 }
                 catch (Exception)
                 {
@@ -113,9 +115,10 @@ namespace pva.SuperV.TestContainers
         {
             if (tdEngineContainer is not null)
             {
-                await tdEngineContainer.StopAsync()
-                    .ConfigureAwait(false);
+                await tdEngineContainer.StopAsync();
+                Console.WriteLine($"TD engine container {tdEngineContainer.Id} stopped");
                 long exitCode = await tdEngineContainer.GetExitCodeAsync();
+                Console.WriteLine($"TD engine container {tdEngineContainer.Id} exit code {exitCode}");
                 tdEngineContainer = null;
                 return exitCode;
             }

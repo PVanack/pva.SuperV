@@ -259,7 +259,8 @@ SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
             try
             {
                 tdEngineClient!.Exec($"USE {instanceTimeSerieParameters.HistorizationProcessing!.HistoryRepository!.HistoryStorageId};");
-                string fieldNames = fields.Select(field => $"{field.StatisticFunction}(_{field.Field.Name})")
+                string fieldNames = fields.Select(field => field.StatisticFunction == HistoryStatFunction.NONE ?
+                $"_{field.Field.Name}" : $"{field.StatisticFunction}(_{field.Field.Name})")
                     .Aggregate((a, b) => $"{a},{b}");
                 string fillClause = "";
                 if (timeRange.FillMode is not null)
@@ -271,11 +272,12 @@ SELECT {fieldNames}, TS, QUALITY  FROM {instanceTableName}
 SELECT {fieldNames}, _WSTART, _WEND, _WDURATION, _WSTART, MAX(QUALITY) FROM {instanceTableName}
  WHERE TS between "{FormatToSqlDate(timeRange.From)}" and "{FormatToSqlDate(timeRange.To)}"
  INTERVAL({FormatInterval(timeRange.Interval)}) SLIDING({FormatInterval(timeRange.Interval)}) {fillClause};
+
 """;
                 using IRows row = tdEngineClient!.Query(sqlQuery);
                 while (row.Read())
                 {
-                    rows.Add(new HistoryStatisticRow(row, fields));
+                    rows.Add(new HistoryStatisticRow(row, fields, false));
                 }
             }
             catch (Exception e)

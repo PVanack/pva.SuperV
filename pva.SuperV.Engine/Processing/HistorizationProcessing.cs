@@ -94,7 +94,7 @@ namespace pva.SuperV.Engine.Processing
             {
                 if (otherHistorizationProcessings.Any(p => p.FieldsToHistorize.Any(f => f.Name.Equals(fieldToHistorize))))
                 {
-                    throw new SuperVException($"Field '{fieldToHistorize}' of class '{clazz.Name}' is already used in another historization processing.");
+                    throw new FieldUsedInOtherProcessingException(fieldToHistorize, "historization");
                 }
                 IFieldDefinition? fieldDefinition = GetFieldDefinition(clazz, fieldToHistorize);
                 if (fieldDefinition is not null)

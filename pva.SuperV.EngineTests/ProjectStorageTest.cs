@@ -94,7 +94,7 @@ namespace pva.SuperV.EngineTests
                 loadedFieldDefinition.ShouldNotBeNull();
                 loadedFieldDefinition!.Name.ShouldBe(savedFieldDefinition.Name);
                 loadedFieldDefinition!.Type.ShouldBe(savedFieldDefinition.Type);
-                Assert.Equal(((dynamic)loadedFieldDefinition)!.DefaultValue, ((dynamic)savedFieldDefinition)!.DefaultValue);
+                DynamicShould.Equals(((dynamic)loadedFieldDefinition)!.DefaultValue, ((dynamic)savedFieldDefinition)!.DefaultValue);
                 FieldFormatter? loadedFieldFormatter = loadedFieldDefinition!.Formatter;
                 FieldFormatter? savedFieldFormatter = savedFieldDefinition!.Formatter;
                 loadedFieldFormatter?.ShouldBeEquivalentTo(savedFieldFormatter);

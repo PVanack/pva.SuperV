@@ -3,6 +3,10 @@
     public enum HistoryStatFunction
     {
         /// <summary>
+        /// No statistical function.
+        /// </summary>
+        NONE = -1,
+        /// <summary>
         /// Calculates the approximate percentile of a specified column in a table/supertable, similar to the PERCENTILE function, but returns an approximate result.
         /// </summary>
         APERCENTILE = 0,
