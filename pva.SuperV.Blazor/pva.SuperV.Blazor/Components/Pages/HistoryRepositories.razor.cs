@@ -33,8 +33,7 @@ public partial class HistoryRepositories
     private async Task<TableData<HistoryRepositoryModel>> ServerReload(TableState _, CancellationToken __)
     {
         List<HistoryRepositoryModel> historyRepositories = await HistoryRepositoryService.GetHistoryRepositoriesAsync(ProjectId);
-        TableData<HistoryRepositoryModel> itemsTableData = new() { TotalItems = historyRepositories.Count, Items = historyRepositories };
-        return itemsTableData;
+        return new() { TotalItems = historyRepositories.Count, Items = historyRepositories };
     }
 
     private void RowClickedEvent(TableRowClickEventArgs<HistoryRepositoryModel> _)

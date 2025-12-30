@@ -80,7 +80,7 @@ namespace pva.SuperV.Blazor.Components.Pages
                 IntFieldValueModel typedActual => new IntFieldValueModel((int)fieldValue!, typedActual.FormattedValue, typedActual.Quality, typedActual.Timestamp),
                 LongFieldValueModel typedActual => new LongFieldValueModel((long)fieldValue!, typedActual.FormattedValue, typedActual.Quality, typedActual.Timestamp),
                 ShortFieldValueModel typedActual => new ShortFieldValueModel((short)fieldValue!, typedActual.FormattedValue, typedActual.Quality, typedActual.Timestamp),
-                StringFieldValueModel typedActual => new StringFieldValueModel((string)fieldValue!, typedActual.Quality, typedActual.Timestamp),
+                StringFieldValueModel typedActual => new StringFieldValueModel((string)fieldValue!, null, typedActual.Quality, typedActual.Timestamp),
                 TimeSpanFieldValueModel typedActual => new TimeSpanFieldValueModel((TimeSpan)fieldValue!, typedActual.FormattedValue, typedActual.Quality, typedActual.Timestamp),
                 UintFieldValueModel typedActual => new UintFieldValueModel((uint)fieldValue!, typedActual.FormattedValue, typedActual.Quality, typedActual.Timestamp),
                 UlongFieldValueModel typedActual => new UlongFieldValueModel((ulong)fieldValue!, typedActual.FormattedValue, typedActual.Quality, typedActual.Timestamp),

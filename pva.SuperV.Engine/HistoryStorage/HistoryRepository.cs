@@ -7,6 +7,7 @@ namespace pva.SuperV.Engine.HistoryStorage
     /// <summary>
     /// History repository to store history of instance values.
     /// </summary>
+    /// <param name="name">Name of the history repository.</param>
     public class HistoryRepository(string name)
     {
         /// <summary>
@@ -43,13 +44,12 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <summary>
         /// Upserts a time series in storage engine.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="projectName">Name of project.</param>
         /// <param name="className">Name of class.</param>
         /// <param name="historizationProcessing">History processing for which the time series is to be created.</param>
-        /// <returns></returns>
+        /// <returns>Class time serie ID in repository</returns>
         /// <exception cref="NoHistoryStorageEngineException"></exception>
-        internal string UpsertClassTimeSerie<T>(string projectName, string className, HistorizationProcessing<T> historizationProcessing)
+        internal string UpsertClassTimeSerie(string projectName, string className, IHistorizationProcessing historizationProcessing)
         {
             if (HistoryStorageEngine is null)
             {
@@ -61,13 +61,15 @@ namespace pva.SuperV.Engine.HistoryStorage
         /// <summary>
         /// Historize instance values in storage engine
         /// </summary>
+        /// <param name="historizationProcessingName">The name of the historization processing.</param>
         /// <param name="classTimeSerieId">The time series ID.</param>
         /// <param name="instance">The instance.</param>
         /// <param name="timestamp">the timestamp of the values</param>
+        /// <param name="quality">The quality level of the values.</param>
         /// <param name="fieldsToHistorize">List of fields to be historized.</param>
-        public void HistorizeValues(string classTimeSerieId, IInstance instance, DateTime timestamp, QualityLevel? quality, List<IField> fieldsToHistorize)
+        public void HistorizeValues(string historizationProcessingName, string classTimeSerieId, IInstance instance, DateTime timestamp, QualityLevel? quality, List<IField> fieldsToHistorize)
         {
-            HistoryStorageEngine?.HistorizeValues(HistoryStorageId!, classTimeSerieId, instance.Name, timestamp, quality, fieldsToHistorize);
+            HistoryStorageEngine?.HistorizeValues(HistoryStorageId!, historizationProcessingName, classTimeSerieId, instance.Name, timestamp, quality, fieldsToHistorize);
         }
     }
 }

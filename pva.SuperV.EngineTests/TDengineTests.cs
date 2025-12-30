@@ -29,9 +29,7 @@ namespace pva.SuperV.EngineTests
             // WHEN
             instance!.Value.SetValue(50);
             DateTime ts1 = instance!.Value.Timestamp;
-#pragma warning disable S2925 // "Thread.Sleep" should not be used in tests
-            Thread.Sleep(50);
-#pragma warning restore S2925 // "Thread.Sleep" should not be used in tests
+            await Task.Delay(50, TestContext.Current.CancellationToken);
             instance!.Value.SetValue(110);
             DateTime ts2 = instance!.Value.Timestamp;
 
@@ -106,7 +104,6 @@ namespace pva.SuperV.EngineTests
             await Assert.ThrowsAsync<BadHistoryStartTimeException>(async ()
                 => _ = await runnableProject?.GetHistoryValues(instance!.Name, query, new List<string>([ValueFieldName])));
             instance?.Dispose();
-
         }
 
         [Fact]

@@ -11,7 +11,7 @@ namespace pva.SuperV.Engine.Exceptions
         }
 
         [ExcludeFromCodeCoverage]
-        public EntityInUseException() : base()
+        public EntityInUseException()
         {
         }
 

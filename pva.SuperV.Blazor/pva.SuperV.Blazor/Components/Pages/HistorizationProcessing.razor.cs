@@ -20,7 +20,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         [CascadingParameter(Name = "TriggeringFieldName")]
         private string TriggeringFieldName { get; set; } = default!;
 
-        private EditedHistorizationProcessing? editedHistorizationFieldProcessing = default!;
+        private EditedHistorizationProcessing? editedHistorizationFieldProcessing;
         private List<string> HistoryRepositoryNames { get; set; } = [];
         private Dictionary<int, MudSelect<string>?> FieldsToHistorizeSelects { get; set; } = [];
 
@@ -59,17 +59,17 @@ namespace pva.SuperV.Blazor.Components.Pages
             return [.. repositories.Select(historyRepository => historyRepository.Name)];
         }
 
-        private static void StartedEditingItem(HistorizedField item)
+        private static void StartedEditingItem(HistorizedField _)
         {
             // Needs to be there to allow in line editing
         }
 
-        private static void CanceledEditingItem(HistorizedField item)
+        private static void CanceledEditingItem(HistorizedField _)
         {
             // Needs to be there to allow in line editing
         }
 
-        private static void CommittedItemChanges(HistorizedField field)
+        private static void CommittedItemChanges(HistorizedField _)
         {
             // Needs to be there to allow in line editing
         }

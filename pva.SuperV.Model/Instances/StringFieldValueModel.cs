@@ -9,7 +9,8 @@ namespace pva.SuperV.Model.Instances
     public record StringFieldValueModel(
         [property: Description("Field value.")]
         string? Value,
+        string? FormattedValue,
         QualityLevel? Quality,
         DateTime? Timestamp)
-        : FieldValueModel(null, Quality, Timestamp);
+        : FieldValueModel(FormattedValue, Quality, Timestamp);
 }

@@ -9,8 +9,10 @@ namespace pva.SuperV.Engine.HistoryRetrieval
     /// Builds a row from a TDengine row.
     /// </remarks>
     /// <param name="row">TDengine row</param>
-    public class HistoryStatisticRow(IRows row, List<HistoryStatisticField> fields)
-        : HistoryRow(row, [.. fields.Select(field => field.Field)], false)
+    /// <param name="fields">List of statistic fields.</param>
+    /// /// <param name="keepFieldType">Whether to convert values to field type or keep as is.</param>
+    public class HistoryStatisticRow(IRows row, List<HistoryStatisticField> fields, bool keepFieldType)
+        : HistoryRow(row, [.. fields.Select(field => field.Field)], keepFieldType)
     {
         /// <summary>
         /// Start time of interval if an interval was specified.

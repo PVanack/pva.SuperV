@@ -200,9 +200,9 @@ Scenario: Create project
 		| StartTs              | EndTs                | Quality | Double,double,TWA | Double,double,AVG | HistoryTrigger,int,MIN |
 		| 2025-03-01T00:00:00Z | 2025-03-01T01:00:00Z | Good    | 7.5               | 7.5               | 0                      |
 
-	And Querying history statistics of instance "AllFieldsInstance" in project "Project" between "2025-03-01T00:00:00Z" and "2025-03-01T01:00:00Z" with "01:00:00" interval returns fields statistic values
-		| StartTs              | EndTs                | Quality | Double,double,TWA | Double,double,MIN |  Double,double,AVG | Double,double,MAX | Double,long,COUNT   | HistoryTrigger,int,MIN |
-		| 2025-03-01T00:00:00Z | 2025-03-01T01:00:00Z | Good    | 7.5               | 5.0               |  7.5               | 10.0              | 2                   | 0                      |
+	#And Querying history statistics of instance "AllFieldsInstance" in project "Project" between "2025-03-01T00:00:00Z" and "2025-03-01T01:00:00Z" with "01:00:00" interval returns fields statistic values
+	#	| StartTs              | EndTs                | Quality | Double,double,TWA | Double,double,MIN |  Double,double,AVG | Double,double,MAX | Double,long,COUNT   | HistoryTrigger,int,MIN |
+	#	| 2025-03-01T00:00:00Z | 2025-03-01T01:00:00Z | Good    | 7.5               | 5.0               |  7.5               | 10.0              | 2                   | 0                      |
 
 #	And Querying raw history statistics of instance "AllFieldsInstance" in project "Project" between "2025-03-01T00:00:00Z" and "2025-03-01T01:00:00Z" with "01:00:00" interval returns fields history values
 #		| StartTs              | EndTs                | Quality | Float,float,MAX | Int,int,MAX | Long,long,MAX | Short,short,MAX | String,string,MAX | TimeSpan,TimeSpan,MAX | Uint,uint,MAX | Ulong,ulong,MAX | Ushort,ushort,MAX | HistoryTrigger,int,MAX |

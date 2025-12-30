@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Engine.Exceptions;
+﻿using pva.Helpers.Extensions;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
 
 namespace pva.SuperV.Engine.Processing
@@ -6,7 +7,7 @@ namespace pva.SuperV.Engine.Processing
     /// <summary>
     /// Field value historization processing.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">Type of field on which historization processing is applied.</typeparam>
     public class HistorizationProcessing<T> : FieldValueProcessing<T>, IHistorizationProcessing
     {
         /// <summary>
@@ -83,8 +84,18 @@ namespace pva.SuperV.Engine.Processing
             {
                 throw new UnknownEntityException("History repository", historyRepositoryName);
             }
+            List<IHistorizationProcessing> otherHistorizationProcessings = [];
+            clazz.FieldDefinitions.Values.ForEach(f =>
+                otherHistorizationProcessings.AddRange(
+                    [.. f.ValuePostChangeProcessings.OfType<IHistorizationProcessing>().Where(p => p.Name != this.Name)]
+                    )
+                );
             fieldsToHistorize.ForEach(fieldToHistorize =>
             {
+                if (otherHistorizationProcessings.Any(p => p.FieldsToHistorize.Any(f => f.Name.Equals(fieldToHistorize))))
+                {
+                    throw new FieldUsedInOtherProcessingException(fieldToHistorize, "historization");
+                }
                 IFieldDefinition? fieldDefinition = GetFieldDefinition(clazz, fieldToHistorize);
                 if (fieldDefinition is not null)
                 {
@@ -159,7 +170,7 @@ namespace pva.SuperV.Engine.Processing
                     fieldsToHistorize.Add(field);
                 }
             });
-            HistoryRepository?.HistorizeValues(ClassTimeSerieId!, instance, historyTs ?? DateTime.Now, changedField.Quality, fieldsToHistorize);
+            HistoryRepository?.HistorizeValues(this.Name, ClassTimeSerieId!, instance, historyTs ?? DateTime.Now, changedField.Quality, fieldsToHistorize);
         }
     }
 }

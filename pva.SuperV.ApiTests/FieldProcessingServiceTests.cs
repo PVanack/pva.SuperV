@@ -1,5 +1,6 @@
 ﻿using pva.SuperV.Api.Services.FieldProcessings;
 using pva.SuperV.Engine;
+using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.EngineTests;
 using pva.SuperV.Model.FieldProcessings;
 using Shouldly;
@@ -97,14 +98,14 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
-                    ValueFieldName,
+                    HighHighLimitFieldName,
                     HistoryRepositoryName,
                     null,
                     [
-                        ValueFieldName,
+                        HighHighLimitFieldName,
                     ]);
             // WHEN
-            FieldValueProcessingModel createdFieldProcessing = await fieldProcessingService.CreateFieldProcessingAsync(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
+            FieldValueProcessingModel createdFieldProcessing = await fieldProcessingService.CreateFieldProcessingAsync(wipProject.GetId(), ClassName, HighHighLimitFieldName, expectedFieldProcessing);
 
             // THEN
             createdFieldProcessing
@@ -113,7 +114,7 @@ namespace pva.SuperV.ApiTests
         }
 
         [Fact]
-        public async Task UpdateHistorizationFieldProcessing_ShouldUpdateHistorizationFieldProcessing()
+        public async Task GivenFieldInHistorizationProcessing_WhenAddingItToAnotherOne_ThenExceptionIsThrown()
         {
             // GIVEN
             FieldValueProcessingModel expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
@@ -123,19 +124,35 @@ namespace pva.SuperV.ApiTests
                     [
                         ValueFieldName,
                     ]);
-            _ = await fieldProcessingService.CreateFieldProcessingAsync(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing);
-
             // WHEN
-            expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
-                    ValueFieldName,
+            await Assert.ThrowsAsync<FieldUsedInOtherProcessingException>(async ()
+                => await fieldProcessingService.CreateFieldProcessingAsync(wipProject.GetId(), ClassName, ValueFieldName, expectedFieldProcessing));
+        }
+
+        [Fact]
+        public async Task UpdateHistorizationFieldProcessing_ShouldUpdateHistorizationFieldProcessing()
+        {
+            // GIVEN
+            FieldValueProcessingModel expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
+                    HighHighLimitFieldName,
                     HistoryRepositoryName,
                     null,
                     [
-                        ValueFieldName,
+                        HighHighLimitFieldName,
+                    ]);
+            _ = await fieldProcessingService.CreateFieldProcessingAsync(wipProject.GetId(), ClassName, HighHighLimitFieldName, expectedFieldProcessing);
+
+            // WHEN
+            expectedFieldProcessing = new HistorizationProcessingModel("HistorizationAdded",
+                    HighHighLimitFieldName,
+                    HistoryRepositoryName,
+                    null,
+                    [
+                        HighHighLimitFieldName,
                         AlarmStateFieldName
                     ]);
 
-            FieldValueProcessingModel updatedFieldProcessing = await fieldProcessingService.UpdateFieldProcessingAsync(wipProject.GetId(), ClassName, ValueFieldName,
+            FieldValueProcessingModel updatedFieldProcessing = await fieldProcessingService.UpdateFieldProcessingAsync(wipProject.GetId(), ClassName, HighHighLimitFieldName,
                 expectedFieldProcessing.Name, expectedFieldProcessing);
 
             // THEN

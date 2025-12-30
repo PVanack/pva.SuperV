@@ -27,6 +27,8 @@ namespace pva.SuperV.Engine.HistoryRetrieval
         /// Builds a row from a TDengine row.
         /// </summary>
         /// <param name="row">TDengine row</param>
+        /// <param name="fields">List of field definitions.</param>
+        /// <param name="keepFieldType">Whether to convert values to field type or keep as is.</param>
         public HistoryRow(IRows row, List<IFieldDefinition> fields, bool keepFieldType)
         {
             Ts = ((DateTime)row.GetValue(row.FieldCount - 2)).ToUniversalTime();
@@ -168,6 +170,8 @@ namespace pva.SuperV.Engine.HistoryRetrieval
                 {
                     float directValue => directValue,
                     double doubleValue => (float)doubleValue,
+                    long directValue => (float)directValue,
+                    int directValue => (float)directValue,
                     _ => throw new UnhandledFieldTypeException(fieldName, fieldValue.GetType())
                 };
         }
@@ -179,6 +183,8 @@ namespace pva.SuperV.Engine.HistoryRetrieval
                 : fieldValue switch
                 {
                     double directValue => directValue,
+                    int directValue => (double)directValue,
+                    long directValue => (double)directValue,
                     _ => throw new UnhandledFieldTypeException(fieldName, fieldValue.GetType())
                 };
         }

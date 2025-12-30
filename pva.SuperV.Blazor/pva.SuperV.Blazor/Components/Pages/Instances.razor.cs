@@ -39,8 +39,7 @@ public partial class Instances
         // TODO Add class name filtering
         InstancePagedSearchRequest request = new(state.Page + 1, state.PageSize, itemNameSearchString, null, null);
         PagedSearchResult<InstanceModel> projects = await InstanceService.SearchInstancesAsync(ProjectId, request);
-        TableData<InstanceModel> itemsTableData = new() { TotalItems = projects.Count, Items = projects.Result };
-        return itemsTableData;
+        return new() { TotalItems = projects.Count, Items = projects.Result };
     }
 
     private void RowClickedEvent(TableRowClickEventArgs<InstanceModel> _)

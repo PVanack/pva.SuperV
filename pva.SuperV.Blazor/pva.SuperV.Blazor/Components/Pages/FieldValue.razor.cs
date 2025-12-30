@@ -19,7 +19,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         [Parameter]
         public string ValueLabel { get; set; } = default!;
 
-        private bool initCalled = false;
+        private bool initCalled;
         object? _value;
         bool? BoolValue { get; set; } = default!;
         DateTime? DateTimeValue { get; set; } = default!;
@@ -28,7 +28,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         int? IntValue { get; set; } = default!;
         long? LongValue { get; set; } = default!;
         short? ShortValue { get; set; } = default!;
-        string? StringValue { get; set; } = default;
+        string? StringValue { get; set; }
         TimeSpan? TimeSpanValue { get; set; } = default!;
         uint? UintValue { get; set; } = default!;
         ulong? UlongValue { get; set; } = default!;

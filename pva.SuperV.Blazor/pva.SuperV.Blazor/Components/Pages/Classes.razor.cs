@@ -36,8 +36,7 @@ public partial class Classes
     {
         ClassPagedSearchRequest request = new(state.Page + 1, state.PageSize, itemNameSearchString, null);
         PagedSearchResult<ClassModel> classes = await ClassService.SearchClassesAsync(ProjectId, request);
-        TableData<ClassModel> itemsTableData = new() { TotalItems = classes.Count, Items = classes.Result };
-        return itemsTableData;
+        return new() { TotalItems = classes.Count, Items = classes.Result };
     }
 
     private void RowClickedEvent(TableRowClickEventArgs<ClassModel> _)

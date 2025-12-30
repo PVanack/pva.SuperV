@@ -19,10 +19,8 @@ namespace pva.SuperV.Blazor.Services
                     ClassModel? clazz = await result.Content.ReadFromJsonAsync<ClassModel>();
                     return clazz ?? throw new ApiException("No class in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -58,10 +56,8 @@ namespace pva.SuperV.Blazor.Services
                     ClassModel? clazz = await result.Content.ReadFromJsonAsync<ClassModel>();
                     return clazz ?? throw new ApiException("No class in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -80,10 +76,8 @@ namespace pva.SuperV.Blazor.Services
                     List<ClassModel>? classes = await result.Content.ReadFromJsonAsync<List<ClassModel>>();
                     return classes ?? throw new ApiException("No classes in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -102,10 +96,8 @@ namespace pva.SuperV.Blazor.Services
                     PagedSearchResult<ClassModel>? classesPagedSearch = await result.Content.ReadFromJsonAsync<PagedSearchResult<ClassModel>>();
                     return classesPagedSearch ?? throw new ApiException("No classes in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -124,10 +116,8 @@ namespace pva.SuperV.Blazor.Services
                     ClassModel? clazz = await result.Content.ReadFromJsonAsync<ClassModel>();
                     return clazz ?? throw new ApiException("No field formatter in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {

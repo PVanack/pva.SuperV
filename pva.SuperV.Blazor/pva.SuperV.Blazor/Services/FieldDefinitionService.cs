@@ -18,10 +18,8 @@ namespace pva.SuperV.Blazor.Services
                     List<FieldDefinitionModel>? fields = await result.Content.ReadFromJsonAsync<List<FieldDefinitionModel>>();
                     return fields ?? throw new ApiException("No field definition in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -57,10 +55,8 @@ namespace pva.SuperV.Blazor.Services
                     FieldDefinitionModel? field = await result.Content.ReadFromJsonAsync<FieldDefinitionModel>();
                     return field ?? throw new ApiException("No field definition in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -79,10 +75,8 @@ namespace pva.SuperV.Blazor.Services
                     List<FieldDefinitionModel>? fields = await result.Content.ReadFromJsonAsync<List<FieldDefinitionModel>>();
                     return fields ?? throw new ApiException("No field definitions in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -101,10 +95,8 @@ namespace pva.SuperV.Blazor.Services
                     PagedSearchResult<FieldDefinitionModel>? fieldsPagedSearch = await result.Content.ReadFromJsonAsync<PagedSearchResult<FieldDefinitionModel>>();
                     return fieldsPagedSearch ?? throw new ApiException("No field definitions in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -123,10 +115,8 @@ namespace pva.SuperV.Blazor.Services
                     FieldDefinitionModel? field = await result.Content.ReadFromJsonAsync<FieldDefinitionModel>();
                     return field ?? throw new ApiException("No field formatter in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {

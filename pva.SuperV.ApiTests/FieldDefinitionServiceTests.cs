@@ -25,7 +25,7 @@ namespace pva.SuperV.ApiTests
                 new IntFieldDefinitionModel("IntField", default, null),
                 new LongFieldDefinitionModel("LongField", default, null),
                 new ShortFieldDefinitionModel("ShortField", default, null),
-                new StringFieldDefinitionModel("StringField", "", null),
+                new StringFieldDefinitionModel("StringField", default, null),
                 new TimeSpanFieldDefinitionModel("TimeSpanField", TimeSpan.FromDays(0), null),
                 new UintFieldDefinitionModel("UintField", default, null),
                 new UlongFieldDefinitionModel("UlongField", default, null),

@@ -30,9 +30,10 @@ namespace pva.SuperV.TestContainers
         {
             if (tdEngineContainer is null)
             {
+                Console.WriteLine($"Starting TD engine container");
                 WaitForPort(6030);
                 tdEngineContainer = new ContainerBuilder()
-                    .WithImage("tdengine/tdengine:3.3.6.0")
+                    .WithImage("tdengine/tsdb:3.3.8.8")
                     .WithPortBinding(6030)
                     .WithPortBinding(6031)
                     .WithPortBinding(6032)
@@ -74,10 +75,11 @@ namespace pva.SuperV.TestContainers
                 // Start the container.
                 try
                 {
-                    await tdEngineContainer.StartAsync()
-                      .ConfigureAwait(false);
+                    Task tdEngineStartAsync = tdEngineContainer.StartAsync();
+                    await tdEngineStartAsync.WaitAsync(TimeSpan.FromSeconds(30));
                     // Wait to make sure the processes in container are ready and running.
                     await WaitForTDengineToBeReady();
+                    Console.WriteLine($"TD engine container started");
                 }
                 catch (Exception)
                 {
@@ -113,10 +115,10 @@ namespace pva.SuperV.TestContainers
         {
             if (tdEngineContainer is not null)
             {
-                await tdEngineContainer.StopAsync()
-                    .ConfigureAwait(false);
+                await tdEngineContainer.StopAsync();
+                Console.WriteLine($"TD engine container {tdEngineContainer.Id} stopped");
                 long exitCode = await tdEngineContainer.GetExitCodeAsync();
-                WaitForPort(6030);
+                Console.WriteLine($"TD engine container {tdEngineContainer.Id} exit code {exitCode}");
                 tdEngineContainer = null;
                 return exitCode;
             }
@@ -138,7 +140,7 @@ namespace pva.SuperV.TestContainers
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Task.Run(async () => await Dispose(disposing: true));
+            Task.Run(async () => await Dispose(disposing: true)).Wait();
             GC.SuppressFinalize(this);
         }
     }

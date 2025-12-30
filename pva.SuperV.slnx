@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
     <File Path=".github/workflows/dotnet-ubuntu.yml" />
     <File Path=".gitignore" />
     <File Path="Directory.Build.targets" />
@@ -11,6 +12,13 @@
   <Folder Name="/Solution Items/SampleProject/">
     <File Path="SampleProject/SampleProject.prj" />
     <File Path="SampleProject/SampleProject.snp" />
+  </Folder>
+  <Folder Name="/Solution Items/TDengine/">
+    <File Path="TDengine/install-TDengine-client.sh" />
+    <File Path="TDengine/TDengine-client-3.3.6.0-Linux-x64-Lite.tar.gz" />
+    <File Path="TDengine/TDengine-client-3.3.6.0-Windows-x64.exe" />
+    <File Path="TDengine/tdengine-tsdb-oss-client-3.3.8.8-linux-x64.tar.gz" />
+    <File Path="TDengine/tdengine-tsdb-oss-client-3.3.8.8-windows-x64.exe" />
   </Folder>
   <Project Path="pva.Helpers/pva.Helpers.csproj" />
   <Project Path="pva.SuperV.Api/pva.SuperV.Api.csproj" />

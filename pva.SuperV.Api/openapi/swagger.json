@@ -4497,6 +4497,7 @@
       "FieldValueModelStringFieldValueModel": {
         "required": [
           "value",
+          "formattedValue",
           "quality",
           "timestamp"
         ],

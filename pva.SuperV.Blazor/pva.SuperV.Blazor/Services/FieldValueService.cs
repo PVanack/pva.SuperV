@@ -17,10 +17,8 @@ namespace pva.SuperV.Blazor.Services
                     FieldModel? field = await result.Content.ReadFromJsonAsync<FieldModel>();
                     return field ?? throw new ApiException("No field in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -39,10 +37,8 @@ namespace pva.SuperV.Blazor.Services
                     FieldValueModel? field = await result.Content.ReadFromJsonAsync<FieldValueModel>();
                     return field ?? throw new ApiException("No field value in response");
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {

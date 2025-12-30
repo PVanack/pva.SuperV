@@ -38,13 +38,15 @@ public static class TdEngineResourceBuilderExtensions
 }
 
 
-// This class just contains constant strings that can be updated periodically
-// when new versions of the underlying container are released.
+/// <summary>
+/// This class just contains constant strings that can be updated periodically
+/// when new versions of the underlying container are released.
+/// </summary>
 internal static class TdEngineContainerImageTags
 {
     internal const string Registry = "docker.io";
 
-    internal const string Image = "tdengine/tdengine";
+    internal const string Image = "tdengine/tsdb";
 
-    internal const string Tag = "3.3.6.0";
+    internal const string Tag = "3.3.8.8";
 }

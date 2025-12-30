@@ -6,6 +6,10 @@
     <RootNamespace>Aspire.Hosting</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting" Version="13.0.1" />
+    <PackageReference Include="Aspire.Hosting" Version="13.1.0" />
+    <PackageReference Include="Roslynator.Analyzers" Version="4.15.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>

@@ -21,10 +21,8 @@ namespace pva.SuperV.Blazor.Services
                     ProjectModel? project = await result.Content.ReadFromJsonAsync<ProjectModel>();
                     return project ?? throw new ApiException(NoProjectInResponseMessage);
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -43,10 +41,8 @@ namespace pva.SuperV.Blazor.Services
                     ProjectModel? project = Task.Run(async () => await result.Content.ReadFromJsonAsync<ProjectModel>()).Result;
                     return project ?? throw new ApiException(NoProjectInResponseMessage);
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -67,10 +63,8 @@ namespace pva.SuperV.Blazor.Services
                     ProjectModel? project = await result.Content.ReadFromJsonAsync<ProjectModel>();
                     return project ?? throw new ApiException(NoProjectInResponseMessage);
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -89,10 +83,8 @@ namespace pva.SuperV.Blazor.Services
                     ProjectModel? project = await result.Content.ReadFromJsonAsync<ProjectModel>();
                     return project ?? throw new ApiException(NoProjectInResponseMessage);
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -111,10 +103,8 @@ namespace pva.SuperV.Blazor.Services
                     ProjectModel? project = await result.Content.ReadFromJsonAsync<ProjectModel>();
                     return project ?? throw new ApiException(NoProjectInResponseMessage);
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -132,10 +122,8 @@ namespace pva.SuperV.Blazor.Services
                 {
                     return await result.Content.ReadAsStreamAsync();
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -153,10 +141,8 @@ namespace pva.SuperV.Blazor.Services
                 {
                     return await result.Content.ReadAsStreamAsync();
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -175,10 +161,8 @@ namespace pva.SuperV.Blazor.Services
                     List<ProjectModel>? projects = await result.Content.ReadFromJsonAsync<List<ProjectModel>>();
                     return projects ?? throw new ApiException(NoProjectInResponseMessage);
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -198,10 +182,8 @@ namespace pva.SuperV.Blazor.Services
                 {
                     return;
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -220,10 +202,8 @@ namespace pva.SuperV.Blazor.Services
                     PagedSearchResult<ProjectModel>? projectsPagedSearch = await result.Content.ReadFromJsonAsync<PagedSearchResult<ProjectModel>>();
                     return projectsPagedSearch ?? throw new ApiException(NoProjectInResponseMessage);
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -241,10 +221,8 @@ namespace pva.SuperV.Blazor.Services
                 {
                     return;
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {
@@ -263,10 +241,8 @@ namespace pva.SuperV.Blazor.Services
                     ProjectModel? project = await result.Content.ReadFromJsonAsync<ProjectModel>();
                     return project ?? throw new ApiException(NoProjectInResponseMessage);
                 }
-                else
-                {
-                    throw new ApiException(result.StatusCode, result.Content);
-                }
+
+                throw new ApiException(result.StatusCode, result.Content);
             }
             catch (Exception e)
             {

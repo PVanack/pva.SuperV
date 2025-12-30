@@ -10,7 +10,7 @@ namespace pva.SuperV.Engine.Exceptions
         }
 
         [ExcludeFromCodeCoverage]
-        public SuperVException() : base()
+        public SuperVException()
         {
         }
 

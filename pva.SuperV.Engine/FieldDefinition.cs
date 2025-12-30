@@ -9,7 +9,7 @@ namespace pva.SuperV.Engine
     /// <summary>
     /// Definition of a field used in a <see cref="Class"/>.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">Type of field</typeparam>
     /// <seealso cref="pva.SuperV.Engine.IFieldDefinition" />
     public class FieldDefinition<T> : IFieldDefinition
     {
@@ -106,34 +106,28 @@ namespace pva.SuperV.Engine
             {
                 return $"\"{defaultValue}\"";
             }
-            else
-            {
 
-                return defaultValue switch
-                {
-                    bool boolValue => boolValue ? "true" : "false",
-                    DateTime dateTimeValue => $"new {typeof(T)}({dateTimeValue.Ticks.ToString(CultureInfo.InvariantCulture)}L)",
-                    TimeSpan timespanValue => $"new {typeof(T)}({timespanValue.Ticks.ToString(CultureInfo.InvariantCulture)}L)",
-                    float floatValue => $"{floatValue.ToString(CultureInfo.InvariantCulture)}F",
-                    double doubleValue => $"{doubleValue.ToString(CultureInfo.InvariantCulture)}",
-                    _ => defaultValue!.ToString(),
-                };
-            }
+            return defaultValue switch
+            {
+                bool boolValue => boolValue ? "true" : "false",
+                DateTime dateTimeValue => $"new {typeof(T)}({dateTimeValue.Ticks.ToString(CultureInfo.InvariantCulture)}L)",
+                TimeSpan timespanValue => $"new {typeof(T)}({timespanValue.Ticks.ToString(CultureInfo.InvariantCulture)}L)",
+                float floatValue => $"{floatValue.ToString(CultureInfo.InvariantCulture)}F",
+                double doubleValue => $"{doubleValue.ToString(CultureInfo.InvariantCulture)}",
+                _ => defaultValue!.ToString(),
+            };
         }
 
         /// <summary>
         /// Clones this instance.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Cloned field definition</returns>
         IFieldDefinition IFieldDefinition.Clone()
-        {
-            FieldDefinition<T> fieldDefinition = new(Name, DefaultValue)
+            => (FieldDefinition<T>)new(Name, DefaultValue)
             {
                 Formatter = Formatter,
                 ValuePostChangeProcessings = [.. ValuePostChangeProcessings]
             };
-            return fieldDefinition;
-        }
 
         /// <summary>
         /// Update field from another field.

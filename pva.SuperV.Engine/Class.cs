@@ -90,7 +90,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="field">The <see cref="FieldDefinition{T}"/> to be added.</param>
         /// <param name="formatter">The formatter to be used when using ToString()."/>.</param>
-        /// <returns></returns>
+        /// <returns>Changed field definition</returns>
         /// <exception cref="pva.SuperV.Engine.Exceptions.EntityAlreadyExistException"></exception>
         public IFieldDefinition AddField(IFieldDefinition field, FieldFormatter? formatter)
         {
@@ -135,7 +135,7 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Gets a field of a specific type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Field type</typeparam>
         /// <param name="fieldName">Name of the field to be retrieved.</param>
         /// <returns>The field</returns>
         /// <exception cref="pva.SuperV.Engine.Exceptions.WrongFieldTypeException"></exception>
@@ -224,9 +224,10 @@ namespace pva.SuperV.Engine
                     ctorBuilder.AppendFormat("Fields.Add(\"{0}\", {0});{0}.Instance = this;", k).AppendLine();
                 });
             ctorBuilder.AppendLine("}");
-            codeBuilder.AppendLine(ctorBuilder.ToString());
-            codeBuilder.AppendLine("}");
-            return codeBuilder.ToString();
+            return codeBuilder
+                .AppendLine(ctorBuilder.ToString())
+                .AppendLine("}")
+                .ToString();
         }
 
         /// <summary>

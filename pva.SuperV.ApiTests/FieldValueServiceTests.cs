@@ -31,7 +31,7 @@ namespace pva.SuperV.ApiTests
             await UpdateFieldValueAndCheckResult("IntField", new IntFieldValueModel(123456, null, QualityLevel.Good, timestamp));
             await UpdateFieldValueAndCheckResult("LongField", new LongFieldValueModel(654321, null, QualityLevel.Good, timestamp));
             await UpdateFieldValueAndCheckResult("ShortField", new ShortFieldValueModel(1234, null, QualityLevel.Good, timestamp));
-            await UpdateFieldValueAndCheckResult("StringField", new StringFieldValueModel("Hi from pva.SuperV!", QualityLevel.Good, timestamp));
+            await UpdateFieldValueAndCheckResult("StringField", new StringFieldValueModel("Hi from pva.SuperV!", null, QualityLevel.Good, timestamp));
             await UpdateFieldValueAndCheckResult("TimeSpanField", new TimeSpanFieldValueModel(TimeSpan.FromDays(1), null, QualityLevel.Good, timestamp));
             await UpdateFieldValueAndCheckResult("UintField", new UintFieldValueModel(123, null, QualityLevel.Good, timestamp));
             await UpdateFieldValueAndCheckResult("UlongField", new UlongFieldValueModel(321456, null, QualityLevel.Good, timestamp));
@@ -69,7 +69,7 @@ namespace pva.SuperV.ApiTests
 
         private async ValueTask UpdateFieldValueAsStringAndCheckResult<TModel>(string fieldName, string fieldValue, TModel expectedValueModel) where TModel : FieldValueModel
         {
-            StringFieldValueModel valueAsStringModel = new(fieldValue, QualityLevel.Good, expectedValueModel.Timestamp);
+            StringFieldValueModel valueAsStringModel = new(fieldValue, fieldValue, QualityLevel.Good, expectedValueModel.Timestamp);
             await fieldValueService.UpdateFieldValueAsync(runnableProject.GetId(), AllFieldsInstanceName, fieldName, valueAsStringModel);
             FieldModel field = await fieldValueService.GetFieldAsync(runnableProject.GetId(), AllFieldsInstanceName, fieldName);
             field.FieldValue.ShouldBeEquivalentTo(expectedValueModel);

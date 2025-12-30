@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Api.Services.HistoryRepositories;
+﻿using pva.Helpers.Extensions;
+using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryStorage;
@@ -63,9 +64,11 @@ namespace pva.SuperV.ApiTests
             IFieldDefinition valueField = wipProject.GetClass(ClassName).GetField(ValueFieldName);
             List<IHistorizationProcessing> historizationProcessings = [.. valueField.ValuePostChangeProcessings.OfType<IHistorizationProcessing>()];
             historizationProcessings.ForEach(historizationProcessing => valueField.ValuePostChangeProcessings.Remove(historizationProcessing));
-            IFieldDefinition intFieldWithFormatField = wipProject.GetClass(AllFieldsClassName).GetField("IntFieldWithFormat");
-            historizationProcessings = [.. intFieldWithFormatField.ValuePostChangeProcessings.OfType<IHistorizationProcessing>()];
-            historizationProcessings.ForEach(historizationProcessing => intFieldWithFormatField.ValuePostChangeProcessings.Remove(historizationProcessing));
+            wipProject.GetClass(AllFieldsClassName).FieldDefinitions.Values.ForEach(field =>
+            {
+                historizationProcessings = [.. field.ValuePostChangeProcessings.OfType<IHistorizationProcessing>()];
+                historizationProcessings.ForEach(historizationProcessing => field.ValuePostChangeProcessings.Remove(historizationProcessing));
+            });
 
             // Act
             await historyRepositoryService.DeleteHistoryRepositoryAsync(wipProject.GetId(), expectedHistoryRepository.Name);

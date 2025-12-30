@@ -42,8 +42,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         {
             FieldDefinitionPagedSearchRequest request = new(state.Page + 1, state.PageSize, itemNameSearchString, null);
             PagedSearchResult<FieldDefinitionModel> projects = await FieldDefinitionService.SearchFieldsAsync(ProjectId, ClassName, request);
-            TableData<FieldDefinitionModel> itemsTableData = new() { TotalItems = projects.Count, Items = projects.Result };
-            return itemsTableData;
+            return new() { TotalItems = projects.Count, Items = projects.Result };
         }
 
         private async Task CreateItem(MouseEventArgs _)
