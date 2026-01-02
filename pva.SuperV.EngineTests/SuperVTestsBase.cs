@@ -7,11 +7,10 @@ using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
 using pva.SuperV.TestContainers;
-using System.Reflection.Metadata;
 
 namespace pva.SuperV.EngineTests
 {
-    public class SuperVTestsBase : IDisposable
+    public class SuperVTestsBase : IAsyncDisposable
     {
         protected const string ProjectName = "TestProject";
         protected const string ClassName = "TestClass";
@@ -53,17 +52,17 @@ namespace pva.SuperV.EngineTests
         private readonly TDengineContainer tdEngineContainer = new();
         protected ILoggerFactory LoggerFactory { get; } = new NLogLoggerFactory();
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            Dispose(true);
+            await DisposeAsync(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected virtual async ValueTask DisposeAsync(bool disposing)
         {
             Project.Projects.Values.ForEach(project
                 => project.Dispose());
-            _ = Task.Run(async () => await tdEngineContainer.StopTDengineContainerAsync()).Result;
+            await tdEngineContainer.StopTDengineContainerAsync();
         }
 
         protected RunnableProject CreateRunnableProject()
