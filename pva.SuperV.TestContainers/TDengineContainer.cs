@@ -5,7 +5,7 @@ using System.Net.NetworkInformation;
 
 namespace pva.SuperV.TestContainers
 {
-    public class TDengineContainer : IDisposable
+    public class TDengineContainer : IAsyncDisposable
     {
         private IContainer? tdEngineContainer;
         private bool disposedValue;
@@ -30,7 +30,7 @@ namespace pva.SuperV.TestContainers
         {
             if (tdEngineContainer is null)
             {
-                Console.WriteLine($"Starting TD engine container");
+                Console.WriteLine("Starting TD engine container");
                 WaitForPort(6030);
                 tdEngineContainer = new ContainerBuilder()
                     .WithImage("tdengine/tsdb:3.3.8.8")
@@ -79,7 +79,7 @@ namespace pva.SuperV.TestContainers
                     await tdEngineStartAsync.WaitAsync(TimeSpan.FromSeconds(30));
                     // Wait to make sure the processes in container are ready and running.
                     await WaitForTDengineToBeReady();
-                    Console.WriteLine($"TD engine container started");
+                    Console.WriteLine("TD engine container started");
                 }
                 catch (Exception)
                 {
@@ -125,22 +125,19 @@ namespace pva.SuperV.TestContainers
             return 0;
         }
 
-        protected virtual async Task Dispose(bool disposing)
+        protected virtual async ValueTask DisposeAsync(bool disposing)
         {
             if (!disposedValue)
             {
-                if (disposing)
-                {
-                    await StopTDengineContainerAsync();
-                }
+                await StopTDengineContainerAsync();
                 disposedValue = true;
             }
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Task.Run(async () => await Dispose(disposing: true)).Wait();
+            await DisposeAsync(disposing: true);
             GC.SuppressFinalize(this);
         }
     }
