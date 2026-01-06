@@ -17,7 +17,7 @@ namespace pva.SuperV.Model.HistoryRetrieval
         public static List<HistoryStatisticsRowModel> ToDto(List<HistoryStatisticRow> rows, List<IFieldDefinition> fields)
         {
             return [.. rows.Select(row
-                => new HistoryStatisticsRowModel(row.Ts.ToUniversalTime(), row.StartTime, row.EndTime, row.Duration, row.Quality, BuildRowValues(row, fields, false)
+                => new HistoryStatisticsRowModel(row.Ts.ToUniversalTime(), row.StartTime, row.EndTime, row.Duration, row.Quality, BuildRowValues(row, fields, true)
                     ))];
         }
 
