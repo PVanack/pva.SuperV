@@ -1,9 +1,11 @@
 ﻿using pva.Helpers.Extensions;
+using pva.SuperV.Model;
 using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.FieldDefinitions;
 using Reqnroll.Assist;
 using Shouldly;
 using System.Net.Http.Json;
+using TDengine.Driver.Client.Websocket;
 
 namespace pva.SuperV.TestsScenarios.StepDefinitions
 {
@@ -27,6 +29,34 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             createdClass.ShouldBeEquivalentTo(expectedClass);
 
             await Createfields(projectId, className, fields);
+        }
+
+        [Then("Getting fields of class {string} of project {string} returns the following fields")]
+        public async ValueTask GettingFieldsOfClasstReturnsTheFolowingFields(string className, string projectId, DataTable fields)
+        {
+            List<FieldDefinitionModel> expectedFieldDefinitions =
+                [.. fields.Rows.Select(row => BuildFieldDefinitionModel(row))];
+            var response = await Client.GetAsync($"/fields/{projectId}/{className}");
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            FieldDefinitionModel[]? fieldDefinitions = await response.Content.ReadFromJsonAsync<FieldDefinitionModel[]>();
+            fieldDefinitions.ShouldBeEquivalentTo(expectedFieldDefinitions.ToArray());
+        }
+
+        [Then("Searching {string} fields of class {string} of project {string} returns the following fields")]
+        public async ValueTask SearchingFieldsOfClasstReturnsTheFolowingFields(string searchedFields, string className, string projectId, DataTable fields)
+        {
+            List<FieldDefinitionModel> expectedFieldDefinitions =
+                [.. fields.Rows.Select(row => BuildFieldDefinitionModel(row))];
+            FieldDefinitionPagedSearchRequest search = new(1, 100, searchedFields, null);
+
+            var response = await Client.PostAsJsonAsync($"/fields/{projectId}/{className}/search", search);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            var fieldDefinitions = await response.Content.ReadFromJsonAsync<PagedSearchResult<FieldDefinitionModel>>();
+            fieldDefinitions!.Result.ShouldBeEquivalentTo(expectedFieldDefinitions);
         }
 
         private async Task Createfields(string projectId, string className, DataTable fields)

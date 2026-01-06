@@ -1,9 +1,14 @@
+using pva.Helpers.Extensions;
+using pva.SuperV.Engine;
 using pva.SuperV.Engine.HistoryStorage;
+using pva.SuperV.Model;
+using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.Projects;
 using pva.SuperV.TestContainers;
 using Shouldly;
 using System.Net;
 using System.Net.Http.Json;
+using TDengine.Driver.Client.Websocket;
 
 namespace pva.SuperV.TestsScenarios.StepDefinitions
 {
@@ -48,5 +53,42 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             _ = await tdEngineContainer.StopTDengineContainerAsync().ConfigureAwait(false);
         }
 
+        [Then("Getting classes of project {string} returns the following classes")]
+        public async ValueTask GettingClassesOfProjectReturnsTheFolowingClasses(string projectId, DataTable expectedClasses)
+        {
+            var response = await Client.GetAsync($"/classes/{projectId}");
+
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            var classes = await response.Content.ReadFromJsonAsync<List<ClassModel>>();
+
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            classes.ShouldNotBeNull();
+            classes.Count.ShouldBe(expectedClasses.RowCount);
+            expectedClasses.Rows.ForEach(row =>
+            {
+                ClassModel clazz = classes.FirstOrDefault(clazz => clazz.Name!.Equals(row["Name"]!));
+                clazz.ShouldNotBeNull();
+                string? baseClassName = row["Base class"].IsWhiteSpace() ? null : row["Base class"];
+                clazz.BaseClassName.ShouldBe(baseClassName);
+            });
+        }
+        [Then("Searching {string} classes of project {string} returns the following classes")]
+        public async ValueTask SearchingClassesOfProjectReturnsTheFolowingClasses(string searchedClasses, string projectId, DataTable expectedClasses)
+        {
+            ClassPagedSearchRequest search = new(1, 100, searchedClasses, null);
+            var response = await Client.PostAsJsonAsync($"/classes/{projectId}/search", search);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            PagedSearchResult<ClassModel>? classes = await response.Content.ReadFromJsonAsync<PagedSearchResult<ClassModel>>();
+            classes.ShouldNotBeNull();
+            classes.Result.Count.ShouldBe(expectedClasses.RowCount);
+            expectedClasses.Rows.ForEach(row =>
+            {
+                ClassModel clazz = classes.Result.FirstOrDefault(clazz => clazz.Name!.Equals(row["Name"]!));
+                clazz.ShouldNotBeNull();
+                string? baseClassName = row["Base class"].IsWhiteSpace() ? null : row["Base class"];
+                clazz.BaseClassName.ShouldBe(baseClassName);
+            });
+        }
     }
 }
