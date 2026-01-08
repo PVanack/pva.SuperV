@@ -183,8 +183,8 @@ Scenario: Create project
 		| TheClass       | BaseClass  |
 		| AllFieldsClass |            |
 	And Searching "Base" classes of project "Project" returns the following classes
-		| Name           | Base class |
-		| BaseClass      |            |
+		| Name      | Base class |
+		| BaseClass |            |
 	And Getting fields of class "TheClass" of project "Project" returns the following fields
 		| Name                | Type   | Default value | Format      |
 		| DoubleValue         | double |            50 |             |
@@ -255,11 +255,13 @@ Scenario: Create project
 
 	Given Instance "AnInstance" is created with class "TheClass" in project "Project"
 		| Name        | Type   | Value |
-		| DoubleValue | double |    50 |
-	And Instance "AnInstance" fields values are updated in project "Project"
+		| DoubleValue | double |    25 |
+	When Instance "AnInstance" fields values are updated in project "Project"
 		| Name                | Type   | Value | Quality | Timestamp |
 		| DoubleValue         | double |    50 |         |           |
 		| DoubleHighHighLimit | double |    99 |         |           |
+		| DoubleHighLimit     | double |    75 |         |           |
+		| DoubleLowLimit      | double |    15 |         |           |
 		| DoubleLowLowLimit   | double |     1 |         |           |
 		| DoubleAckState      | string | Unack |         |           |
 
@@ -268,12 +270,53 @@ Scenario: Create project
 		| DoubleValue         | double |    50 |         |           |                 |
 		| DoubleHighHighLimit | double |    99 |         |           |                 |
 		| DoubleLowLowLimit   | double |     1 |         |           |                 |
+		| DoubleAlarmState    | int    |     0 |         |           | OK              |
 		| DoubleAckState      | int    |     1 |         |           | Unack           |
+
+	When Instance "AnInstance" fields values are updated in project "Project"
+		| Name           | Type   | Value | Quality | Timestamp |
+		| DoubleAckState | string | Ack   |         |           |
+		| DoubleValue    | double |    79 |         |           |
+	Then Instance "AnInstance" fields have expected values in project "Project"
+		| Name             | Type   | Value | Quality | Timestamp | Formatted value |
+		| DoubleValue      | double |    79 |         |           |                 |
+		| DoubleAlarmState | int    |     1 |         |           | High            |
+		| DoubleAckState   | int    |     1 |         |           | Unack           |
+
+	When Instance "AnInstance" fields values are updated in project "Project"
+		| Name           | Type   | Value | Quality | Timestamp |
+		| DoubleAckState | string | Ack   |         |           |
+		| DoubleValue    | double |   110 |         |           |
+	Then Instance "AnInstance" fields have expected values in project "Project"
+		| Name             | Type   | Value | Quality | Timestamp | Formatted value |
+		| DoubleValue      | double |   110 |         |           |                 |
+		| DoubleAlarmState | int    |     2 |         |           | High high       |
+		| DoubleAckState   | int    |     1 |         |           | Unack           |
+
+	When Instance "AnInstance" fields values are updated in project "Project"
+		| Name           | Type   | Value | Quality | Timestamp |
+		| DoubleAckState | string | Ack   |         |           |
+		| DoubleValue    | double |    10 |         |           |
+	Then Instance "AnInstance" fields have expected values in project "Project"
+		| Name             | Type   | Value | Quality | Timestamp | Formatted value |
+		| DoubleValue      | double |    10 |         |           |                 |
+		| DoubleAlarmState | int    |    -1 |         |           | Low             |
+		| DoubleAckState   | int    |     1 |         |           | Unack           |
+
+	When Instance "AnInstance" fields values are updated in project "Project"
+		| Name           | Type   | Value | Quality | Timestamp |
+		| DoubleAckState | string | Ack   |         |           |
+		| DoubleValue    | double |     0 |         |           |
+	Then Instance "AnInstance" fields have expected values in project "Project"
+		| Name             | Type   | Value | Quality | Timestamp | Formatted value |
+		| DoubleValue      | double |     0 |         |           |                 |
+		| DoubleAlarmState | int    |    -2 |         |           | Low low         |
+		| DoubleAckState   | int    |     1 |         |           | Unack           |
 
 	Given Instance "AllFieldsInstance" is created with class "AllFieldsClass" in project "Project"
 		| Name | Type | Value |
 
-	And Instance "AllFieldsInstance" fields values are updated in project "Project"
+	When Instance "AllFieldsInstance" fields values are updated in project "Project"
 		| Name     | Type     | Value                |
 		| Bool     | bool     | true                 |
 		| DateTime | DateTime | 2025-03-01T00:00:00Z |
@@ -303,7 +346,7 @@ Scenario: Create project
 		| Ulong    | ulong    |             98123456 |
 		| Ushort   | ushort   |                32767 |
 
-	Given Instance "AllFieldsInstance" fields values are updated in project "Project"
+	When Instance "AllFieldsInstance" fields values are updated in project "Project"
 		| Name           | Type     | Value                | Quality | Timestamp            |
 		| Bool           | bool     | true                 | Good    | 2025-03-01T00:00:00Z |
 		| DateTime       | DateTime | 2025-03-01T00:00:00Z | Good    | 2025-03-01T00:00:00Z |
@@ -345,7 +388,7 @@ Scenario: Create project
 		| 2025-03-01T00:00:00Z | Good    | true      |          12.3 |        3.21 |  134567 |   9876543 |       32767 | Hi from SuperV!  | 01:02:59          |    123456 |    98123456 |         32767 |                  0 |
 		| 2025-03-01T00:59:59Z | Good    | false     |          3.12 |        21.3 | 5654321 |   3456789 |      -32767 | Bye from SuperV! | 02:03:01          |    654321 |      654789 |         12768 |                  1 |
 
-	Given Instance "AllFieldsInstance" fields values are updated in project "Project"
+	When Instance "AllFieldsInstance" fields values are updated in project "Project"
 		| Name           | Type     | Value                | Quality | Timestamp            |
 		| Bool           | bool     | true                 | Good    | 2025-03-01T00:00:00Z |
 		| DateTime       | DateTime | 2025-03-01T00:00:00Z | Good    | 2025-03-01T00:00:00Z |

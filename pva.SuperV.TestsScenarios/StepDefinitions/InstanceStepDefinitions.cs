@@ -19,7 +19,7 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
         }
 
-        [Given("Instance {string} fields values are updated in project {string}")]
+        [When("Instance {string} fields values are updated in project {string}")]
         public async ValueTask InstanceValuesAreUpdated(string instanceName, string projectId, DataTable fieldValues)
         {
             foreach (var row in fieldValues.Rows)
