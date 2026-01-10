@@ -103,7 +103,7 @@ namespace pva.SuperV.EngineTests
             EnumFormatter formatter = new(AlarmStatesFormatterName, AlarmStatesFormatterValues);
             wipProject.AddFieldFormatter(formatter);
             Class clazz = wipProject.AddClass(ClassName, BaseClassName);
-            wipProject.AddField(ClassName, new FieldDefinition<int>(ValueFieldName, 10));
+            wipProject.AddField(ClassName, new FieldDefinition<int>(ValueFieldName, 10, "TopicName"));
             wipProject.AddField(ClassName, new FieldDefinition<int>(HighHighLimitFieldName, 100));
             wipProject.AddField(ClassName, new FieldDefinition<int>(HighLimitFieldName, 90));
             wipProject.AddField(ClassName, new FieldDefinition<int>(LowLimitFieldName, 10));

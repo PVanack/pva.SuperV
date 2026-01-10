@@ -19,65 +19,65 @@ Scenario: Create project
 		|     0 | Ack    |
 		|     1 | Unack  |
 	And Class "BaseClass" is created in project "Project-WIP" with the following fields
-		| Name | Type | Default value | Format |
+		| Name | Type | Default value | Format | Topic |
 	And Class "TheClass" with base class "BaseClass" is created in project "Project-WIP" with the following fields
-		| Name                | Type   | Default value | Format      |
-		| DoubleValue         | double |            50 |             |
-		| DoubleHighHighLimit | double |           100 |             |
-		| DoubleHighLimit     | double |            75 |             |
-		| DoubleLowLimit      | double |            25 |             |
-		| DoubleLowLowLimit   | double |             0 |             |
-		| DoubleAlarmState    | int    |             0 | AlarmStates |
-		| DoubleAckState      | int    |             0 | AckStates   |
-		| FloatValue          | float  |            50 |             |
-		| FloatHighHighLimit  | float  |           100 |             |
-		| FloatHighLimit      | float  |            75 |             |
-		| FloatLowLimit       | float  |            25 |             |
-		| FloatLowLowLimit    | float  |             0 |             |
-		| FloatAlarmState     | int    |             0 | AlarmStates |
-		| FloatAckState       | int    |             0 | AckStates   |
-		| IntValue            | int    |            50 |             |
-		| IntHighHighLimit    | int    |           100 |             |
-		| IntHighLimit        | int    |            75 |             |
-		| IntLowLimit         | int    |            25 |             |
-		| IntLowLowLimit      | int    |             0 |             |
-		| IntAlarmState       | int    |             0 | AlarmStates |
-		| IntAckState         | int    |             0 | AckStates   |
-		| LongValue           | long   |            50 |             |
-		| LongHighHighLimit   | long   |           100 |             |
-		| LongHighLimit       | long   |            75 |             |
-		| LongLowLimit        | long   |            25 |             |
-		| LongLowLowLimit     | long   |             0 |             |
-		| LongAlarmState      | int    |             0 | AlarmStates |
-		| LongAckState        | int    |             0 | AckStates   |
-		| ShortValue          | short  |            50 |             |
-		| ShortHighHighLimit  | short  |           100 |             |
-		| ShortHighLimit      | short  |            75 |             |
-		| ShortLowLimit       | short  |            25 |             |
-		| ShortLowLowLimit    | short  |             0 |             |
-		| ShortAlarmState     | int    |             0 | AlarmStates |
-		| ShortAckState       | int    |             0 | AckStates   |
-		| UIntValue           | uint   |            50 |             |
-		| UIntHighHighLimit   | uint   |           100 |             |
-		| UIntHighLimit       | uint   |            75 |             |
-		| UIntLowLimit        | uint   |            25 |             |
-		| UIntLowLowLimit     | uint   |             0 |             |
-		| UIntAlarmState      | int    |             0 | AlarmStates |
-		| UIntAckState        | int    |             0 | AckStates   |
-		| ULongValue          | ulong  |            50 |             |
-		| ULongHighHighLimit  | ulong  |           100 |             |
-		| ULongHighLimit      | ulong  |            75 |             |
-		| ULongLowLimit       | ulong  |            25 |             |
-		| ULongLowLowLimit    | ulong  |             0 |             |
-		| ULongAlarmState     | int    |             0 | AlarmStates |
-		| ULongAckState       | int    |             0 | AckStates   |
-		| UShortValue         | ushort |            50 |             |
-		| UShortHighHighLimit | ushort |           100 |             |
-		| UShortHighLimit     | ushort |            75 |             |
-		| UShortLowLimit      | ushort |            25 |             |
-		| UShortLowLowLimit   | ushort |             0 |             |
-		| UShortAlarmState    | int    |             0 | AlarmStates |
-		| UShortAckState      | int    |             0 | AckStates   |
+		| Name                | Type   | Default value | Format      | Topic |
+		| DoubleValue         | double |            50 |             |       |
+		| DoubleHighHighLimit | double |           100 |             |       |
+		| DoubleHighLimit     | double |            75 |             |       |
+		| DoubleLowLimit      | double |            25 |             |       |
+		| DoubleLowLowLimit   | double |             0 |             |       |
+		| DoubleAlarmState    | int    |             0 | AlarmStates |       |
+		| DoubleAckState      | int    |             0 | AckStates   |       |
+		| FloatValue          | float  |            50 |             |       |
+		| FloatHighHighLimit  | float  |           100 |             |       |
+		| FloatHighLimit      | float  |            75 |             |       |
+		| FloatLowLimit       | float  |            25 |             |       |
+		| FloatLowLowLimit    | float  |             0 |             |       |
+		| FloatAlarmState     | int    |             0 | AlarmStates |       |
+		| FloatAckState       | int    |             0 | AckStates   |       |
+		| IntValue            | int    |            50 |             |       |
+		| IntHighHighLimit    | int    |           100 |             |       |
+		| IntHighLimit        | int    |            75 |             |       |
+		| IntLowLimit         | int    |            25 |             |       |
+		| IntLowLowLimit      | int    |             0 |             |       |
+		| IntAlarmState       | int    |             0 | AlarmStates |       |
+		| IntAckState         | int    |             0 | AckStates   |       |
+		| LongValue           | long   |            50 |             |       |
+		| LongHighHighLimit   | long   |           100 |             |       |
+		| LongHighLimit       | long   |            75 |             |       |
+		| LongLowLimit        | long   |            25 |             |       |
+		| LongLowLowLimit     | long   |             0 |             |       |
+		| LongAlarmState      | int    |             0 | AlarmStates |       |
+		| LongAckState        | int    |             0 | AckStates   |       |
+		| ShortValue          | short  |            50 |             |       |
+		| ShortHighHighLimit  | short  |           100 |             |       |
+		| ShortHighLimit      | short  |            75 |             |       |
+		| ShortLowLimit       | short  |            25 |             |       |
+		| ShortLowLowLimit    | short  |             0 |             |       |
+		| ShortAlarmState     | int    |             0 | AlarmStates |       |
+		| ShortAckState       | int    |             0 | AckStates   |       |
+		| UIntValue           | uint   |            50 |             |       |
+		| UIntHighHighLimit   | uint   |           100 |             |       |
+		| UIntHighLimit       | uint   |            75 |             |       |
+		| UIntLowLimit        | uint   |            25 |             |       |
+		| UIntLowLowLimit     | uint   |             0 |             |       |
+		| UIntAlarmState      | int    |             0 | AlarmStates |       |
+		| UIntAckState        | int    |             0 | AckStates   |       |
+		| ULongValue          | ulong  |            50 |             |       |
+		| ULongHighHighLimit  | ulong  |           100 |             |       |
+		| ULongHighLimit      | ulong  |            75 |             |       |
+		| ULongLowLimit       | ulong  |            25 |             |       |
+		| ULongLowLowLimit    | ulong  |             0 |             |       |
+		| ULongAlarmState     | int    |             0 | AlarmStates |       |
+		| ULongAckState       | int    |             0 | AckStates   |       |
+		| UShortValue         | ushort |            50 |             |       |
+		| UShortHighHighLimit | ushort |           100 |             |       |
+		| UShortHighLimit     | ushort |            75 |             |       |
+		| UShortLowLimit      | ushort |            25 |             |       |
+		| UShortLowLowLimit   | ushort |             0 |             |       |
+		| UShortAlarmState    | int    |             0 | AlarmStates |       |
+		| UShortAckState      | int    |             0 | AckStates   |       |
 	And Alarm state processing "DoubleAlarmState" is created on field "DoubleValue" of class "TheClass" of project "Project-WIP"
 		| HighHigh limit field | High limit field | Low limit field | LowLow limit field | Deadband field | AlarmState field | AckState field |
 		| DoubleHighHighLimit  | DoubleHighLimit  | DoubleLowLimit  | DoubleLowLowLimit  |                | DoubleAlarmState | DoubleAckState |
@@ -139,20 +139,20 @@ Scenario: Create project
 		|                    |                 | UShortValue        |
 
 	And Class "AllFieldsClass" is created in project "Project-WIP" with the following fields
-		| Name           | Type     | Default value        | Format |
-		| Bool           | bool     | true                 |        |
-		| DateTime       | DateTime | 2025-03-01T00:00:00Z |        |
-		| Double         | double   |                 12.3 |        |
-		| Float          | float    |                 3.21 |        |
-		| Int            | int      |               134567 |        |
-		| Long           | long     |              9876543 |        |
-		| Short          | short    |                32767 |        |
-		| String         | string   | Hi from SuperV!      |        |
-		| TimeSpan       | TimeSpan | 01:02:59             |        |
-		| Uint           | uint     |               123456 |        |
-		| Ulong          | ulong    |             98123456 |        |
-		| Ushort         | ushort   |                32767 |        |
-		| HistoryTrigger | int      |                    0 |        |
+		| Name           | Type     | Default value        | Format | Topic |
+		| Bool           | bool     | true                 |        |       |
+		| DateTime       | DateTime | 2025-03-01T00:00:00Z |        |       |
+		| Double         | double   |                 12.3 |        |       |
+		| Float          | float    |                 3.21 |        |       |
+		| Int            | int      |               134567 |        |       |
+		| Long           | long     |              9876543 |        |       |
+		| Short          | short    |                32767 |        |       |
+		| String         | string   | Hi from SuperV!      |        |       |
+		| TimeSpan       | TimeSpan | 01:02:59             |        |       |
+		| Uint           | uint     |               123456 |        |       |
+		| Ulong          | ulong    |             98123456 |        |       |
+		| Ushort         | ushort   |                32767 |        |       |
+		| HistoryTrigger | int      |                    0 |        |       |
 	And Historization processing "ValueHistorization" is created on field "HistoryTrigger" of class "AllFieldsClass" of project "Project-WIP"
 		| History repository | Timestamp field | Field to historize |
 		| HistoryRepository  |                 |                    |
@@ -186,72 +186,72 @@ Scenario: Create project
 		| Name      | Base class |
 		| BaseClass |            |
 	And Getting fields of class "TheClass" of project "Project" returns the following fields
-		| Name                | Type   | Default value | Format      |
-		| DoubleValue         | double |            50 |             |
-		| DoubleHighHighLimit | double |           100 |             |
-		| DoubleHighLimit     | double |            75 |             |
-		| DoubleLowLimit      | double |            25 |             |
-		| DoubleLowLowLimit   | double |             0 |             |
-		| DoubleAlarmState    | int    |             0 | AlarmStates |
-		| DoubleAckState      | int    |             0 | AckStates   |
-		| FloatValue          | float  |            50 |             |
-		| FloatHighHighLimit  | float  |           100 |             |
-		| FloatHighLimit      | float  |            75 |             |
-		| FloatLowLimit       | float  |            25 |             |
-		| FloatLowLowLimit    | float  |             0 |             |
-		| FloatAlarmState     | int    |             0 | AlarmStates |
-		| FloatAckState       | int    |             0 | AckStates   |
-		| IntValue            | int    |            50 |             |
-		| IntHighHighLimit    | int    |           100 |             |
-		| IntHighLimit        | int    |            75 |             |
-		| IntLowLimit         | int    |            25 |             |
-		| IntLowLowLimit      | int    |             0 |             |
-		| IntAlarmState       | int    |             0 | AlarmStates |
-		| IntAckState         | int    |             0 | AckStates   |
-		| LongValue           | long   |            50 |             |
-		| LongHighHighLimit   | long   |           100 |             |
-		| LongHighLimit       | long   |            75 |             |
-		| LongLowLimit        | long   |            25 |             |
-		| LongLowLowLimit     | long   |             0 |             |
-		| LongAlarmState      | int    |             0 | AlarmStates |
-		| LongAckState        | int    |             0 | AckStates   |
-		| ShortValue          | short  |            50 |             |
-		| ShortHighHighLimit  | short  |           100 |             |
-		| ShortHighLimit      | short  |            75 |             |
-		| ShortLowLimit       | short  |            25 |             |
-		| ShortLowLowLimit    | short  |             0 |             |
-		| ShortAlarmState     | int    |             0 | AlarmStates |
-		| ShortAckState       | int    |             0 | AckStates   |
-		| UIntValue           | uint   |            50 |             |
-		| UIntHighHighLimit   | uint   |           100 |             |
-		| UIntHighLimit       | uint   |            75 |             |
-		| UIntLowLimit        | uint   |            25 |             |
-		| UIntLowLowLimit     | uint   |             0 |             |
-		| UIntAlarmState      | int    |             0 | AlarmStates |
-		| UIntAckState        | int    |             0 | AckStates   |
-		| ULongValue          | ulong  |            50 |             |
-		| ULongHighHighLimit  | ulong  |           100 |             |
-		| ULongHighLimit      | ulong  |            75 |             |
-		| ULongLowLimit       | ulong  |            25 |             |
-		| ULongLowLowLimit    | ulong  |             0 |             |
-		| ULongAlarmState     | int    |             0 | AlarmStates |
-		| ULongAckState       | int    |             0 | AckStates   |
-		| UShortValue         | ushort |            50 |             |
-		| UShortHighHighLimit | ushort |           100 |             |
-		| UShortHighLimit     | ushort |            75 |             |
-		| UShortLowLimit      | ushort |            25 |             |
-		| UShortLowLowLimit   | ushort |             0 |             |
-		| UShortAlarmState    | int    |             0 | AlarmStates |
-		| UShortAckState      | int    |             0 | AckStates   |
+		| Name                | Type   | Default value | Format      | Topic |
+		| DoubleValue         | double |            50 |             |       |
+		| DoubleHighHighLimit | double |           100 |             |       |
+		| DoubleHighLimit     | double |            75 |             |       |
+		| DoubleLowLimit      | double |            25 |             |       |
+		| DoubleLowLowLimit   | double |             0 |             |       |
+		| DoubleAlarmState    | int    |             0 | AlarmStates |       |
+		| DoubleAckState      | int    |             0 | AckStates   |       |
+		| FloatValue          | float  |            50 |             |       |
+		| FloatHighHighLimit  | float  |           100 |             |       |
+		| FloatHighLimit      | float  |            75 |             |       |
+		| FloatLowLimit       | float  |            25 |             |       |
+		| FloatLowLowLimit    | float  |             0 |             |       |
+		| FloatAlarmState     | int    |             0 | AlarmStates |       |
+		| FloatAckState       | int    |             0 | AckStates   |       |
+		| IntValue            | int    |            50 |             |       |
+		| IntHighHighLimit    | int    |           100 |             |       |
+		| IntHighLimit        | int    |            75 |             |       |
+		| IntLowLimit         | int    |            25 |             |       |
+		| IntLowLowLimit      | int    |             0 |             |       |
+		| IntAlarmState       | int    |             0 | AlarmStates |       |
+		| IntAckState         | int    |             0 | AckStates   |       |
+		| LongValue           | long   |            50 |             |       |
+		| LongHighHighLimit   | long   |           100 |             |       |
+		| LongHighLimit       | long   |            75 |             |       |
+		| LongLowLimit        | long   |            25 |             |       |
+		| LongLowLowLimit     | long   |             0 |             |       |
+		| LongAlarmState      | int    |             0 | AlarmStates |       |
+		| LongAckState        | int    |             0 | AckStates   |       |
+		| ShortValue          | short  |            50 |             |       |
+		| ShortHighHighLimit  | short  |           100 |             |       |
+		| ShortHighLimit      | short  |            75 |             |       |
+		| ShortLowLimit       | short  |            25 |             |       |
+		| ShortLowLowLimit    | short  |             0 |             |       |
+		| ShortAlarmState     | int    |             0 | AlarmStates |       |
+		| ShortAckState       | int    |             0 | AckStates   |       |
+		| UIntValue           | uint   |            50 |             |       |
+		| UIntHighHighLimit   | uint   |           100 |             |       |
+		| UIntHighLimit       | uint   |            75 |             |       |
+		| UIntLowLimit        | uint   |            25 |             |       |
+		| UIntLowLowLimit     | uint   |             0 |             |       |
+		| UIntAlarmState      | int    |             0 | AlarmStates |       |
+		| UIntAckState        | int    |             0 | AckStates   |       |
+		| ULongValue          | ulong  |            50 |             |       |
+		| ULongHighHighLimit  | ulong  |           100 |             |       |
+		| ULongHighLimit      | ulong  |            75 |             |       |
+		| ULongLowLimit       | ulong  |            25 |             |       |
+		| ULongLowLowLimit    | ulong  |             0 |             |       |
+		| ULongAlarmState     | int    |             0 | AlarmStates |       |
+		| ULongAckState       | int    |             0 | AckStates   |       |
+		| UShortValue         | ushort |            50 |             |       |
+		| UShortHighHighLimit | ushort |           100 |             |       |
+		| UShortHighLimit     | ushort |            75 |             |       |
+		| UShortLowLimit      | ushort |            25 |             |       |
+		| UShortLowLowLimit   | ushort |             0 |             |       |
+		| UShortAlarmState    | int    |             0 | AlarmStates |       |
+		| UShortAckState      | int    |             0 | AckStates   |       |
 	And Searching "Double" fields of class "TheClass" of project "Project" returns the following fields
-		| Name                | Type   | Default value | Format      |
-		| DoubleValue         | double |            50 |             |
-		| DoubleHighHighLimit | double |           100 |             |
-		| DoubleHighLimit     | double |            75 |             |
-		| DoubleLowLimit      | double |            25 |             |
-		| DoubleLowLowLimit   | double |             0 |             |
-		| DoubleAlarmState    | int    |             0 | AlarmStates |
-		| DoubleAckState      | int    |             0 | AckStates   |
+		| Name                | Type   | Default value | Format      | Topic |
+		| DoubleValue         | double |            50 |             |       |
+		| DoubleHighHighLimit | double |           100 |             |       |
+		| DoubleHighLimit     | double |            75 |             |       |
+		| DoubleLowLimit      | double |            25 |             |       |
+		| DoubleLowLowLimit   | double |             0 |             |       |
+		| DoubleAlarmState    | int    |             0 | AlarmStates |       |
+		| DoubleAckState      | int    |             0 | AckStates   |       |
 
 	Given Instance "AnInstance" is created with class "TheClass" in project "Project"
 		| Name        | Type   | Value |

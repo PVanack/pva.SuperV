@@ -31,13 +31,15 @@ namespace pva.SuperV.Engine.JsonConverters
         {
             JsonHelpers.ReadTokenType(ref reader, JsonTokenType.StartObject, false);
             string? fieldTypeString = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Type");
+            Type? fieldType = Type.GetType(fieldTypeString!);
             string? fieldName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "Name");
 
             JsonHelpers.ReadTokenType(ref reader, JsonTokenType.PropertyName);
             JsonHelpers.ReadPropertyName(ref reader, "DefaultValue");
-
-            Type? fieldType = Type.GetType(fieldTypeString!);
             dynamic? defaultValue = JsonSerializer.Deserialize(ref reader, fieldType!, options);
+
+            string? topicName= JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "TopicName");
+
             JsonHelpers.ReadTokenType(ref reader, JsonTokenType.PropertyName);
             JsonHelpers.ReadPropertyName(ref reader, "ValuePostChangeProcessings");
             List<IFieldValueProcessing>? fieldValueProcessings = JsonSerializer.Deserialize<List<IFieldValueProcessing>>(ref reader, options);
@@ -56,7 +58,7 @@ namespace pva.SuperV.Engine.JsonConverters
 
             JsonHelpers.ReadTokenType(ref reader, JsonTokenType.EndObject, false);
 
-            IFieldDefinition fieldDefinition = CreateInstance(fieldType!, fieldName, defaultValue);
+            IFieldDefinition fieldDefinition = CreateInstance(fieldType!, fieldName, defaultValue, topicName);
             fieldDefinition.ValuePostChangeProcessings = fieldValueProcessings!;
             fieldDefinition.Formatter = fieldFormatter;
             return fieldDefinition;
@@ -84,6 +86,8 @@ namespace pva.SuperV.Engine.JsonConverters
             writer.WritePropertyName("DefaultValue");
             fieldConverter.Write(writer, actualFieldDefinition.DefaultValue, options);
 
+            writer.WriteString("TopicName", value.TopicName);
+
             writer.WritePropertyName("ValuePostChangeProcessings");
             JsonSerializer.Serialize(writer, value.ValuePostChangeProcessings, options);
 
@@ -101,11 +105,12 @@ namespace pva.SuperV.Engine.JsonConverters
         /// <param name="targetType">Type of the target.</param>
         /// <param name="fieldName">Name of the field.</param>
         /// <param name="value">The value.</param>
+        /// <param name="topicName">Name of the topic.</param>
         /// <returns><see cref="IFieldDefinition"/> created instance.</returns>
-        private static IFieldDefinition CreateInstance(Type targetType, string fieldName, object value)
+        private static IFieldDefinition CreateInstance(Type targetType, string fieldName, object value, string? topicName)
         {
             var ctor = GetConstructor(targetType, targetType);
-            return (IFieldDefinition)ctor.Invoke([fieldName, value]);
+            return (IFieldDefinition)ctor.Invoke([fieldName, value, topicName]);
         }
 
         /// <summary>
@@ -113,13 +118,13 @@ namespace pva.SuperV.Engine.JsonConverters
         /// </summary>
         /// <param name="targetType">Type of the target.</param>
         /// <param name="argumentType">Type of the argument.</param>
-        /// <returns></returns>
+        /// <returns>Constructor info</returns>
         /// <exception cref="InvalidOperationException">No constructor found for FieldDefinition{targetType.Name}.</exception>
         private static ConstructorInfo GetConstructor(Type targetType, Type argumentType)
         {
             return typeof(FieldDefinition<>)
                 .MakeGenericType(targetType)
-                .GetConstructor([typeof(string), argumentType])
+                .GetConstructor([typeof(string), argumentType, typeof(string)])
                 ?? throw new InvalidOperationException($"No constructor found for FieldDefinition<{targetType.Name}>.");
         }
     }

@@ -139,6 +139,28 @@ namespace pva.SuperV.EngineTests
         }
 
         [Fact]
+        public async Task GivenWipProject_WhenBuildingRunnableProject_ThenFieldDefinitionsWithTopicHaveNotificationChannelCreated()
+        {
+            // GIVEN
+            RunnableProject runnableProject = CreateRunnableProject();
+            Instance? instance = runnableProject.CreateInstance(ClassName, InstanceName);
+            Field<int>? intField = instance?.GetField<int>(ValueFieldName);
+            intField!.SetValue(1234);
+            WipProject wipProject = Project.CreateProject(runnableProject);
+
+            // WHEN
+            runnableProject = await Project.BuildAsync(wipProject);
+
+            // THEN
+            IFieldDefinition fieldWithTopic = runnableProject.GetClass(ClassName).GetField(ValueFieldName);
+            fieldWithTopic.TopicName.ShouldBe("TopicName");
+            fieldWithTopic.FieldValueChangedEventChannel.ShouldNotBeNull();
+
+            instance?.Dispose();
+            DeleteProject(runnableProject);
+        }
+
+        [Fact]
         public void GivenProjectWithClassInstance_WhenGettingField_ThenFieldIsReturned()
         {
             // GIVEN

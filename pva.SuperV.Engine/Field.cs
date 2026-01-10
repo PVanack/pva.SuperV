@@ -124,12 +124,26 @@ namespace pva.SuperV.Engine
 
         private void ProcessNewValue(bool hasValueChanged, T newValue, T previousValue)
         {
-            FieldDefinition?.ValuePostChangeProcessings.ForEach(
-                processing =>
+            if (FieldDefinition is null)
+            {
+                return;
+            }
+                FieldDefinition.ValuePostChangeProcessings.ForEach(
+                    processing =>
+                    {
+                        FieldValueProcessing<T>? fieldValueProcessing = processing as FieldValueProcessing<T>;
+                        fieldValueProcessing!.ProcessValue(Instance!, this, hasValueChanged, previousValue, newValue);
+                    });
+                if (FieldDefinition.FieldValueChangedEventChannel is not null)
                 {
-                    FieldValueProcessing<T>? fieldValueProcessing = processing as FieldValueProcessing<T>;
-                    fieldValueProcessing!.ProcessValue(Instance!, this, hasValueChanged, previousValue, newValue);
-                });
+                    Task.Run(async () =>
+                    {
+                        FieldValueChangedEvent fieldValueChangedEvent = new(FieldDefinition.TopicName!, this, previousValue!, newValue!);
+                        await FieldDefinition!.FieldValueChangedEventChannel.Writer
+                                            .WriteAsync(fieldValueChangedEvent).AsTask();
+                    })
+                    .Wait();
+                }
         }
 
         /// <summary>

@@ -13,7 +13,7 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Saves a project definition.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Type of <see cref="Project"/></typeparam>
         /// <param name="project">The project for which definitions should be saved.</param>
         /// <returns>Name of saved file.</returns>
         public static string SaveProjectDefinition<T>(T project) where T : Project
@@ -26,7 +26,7 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Saves a project definition.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Type of <see cref="Project"/></typeparam>
         /// <param name="project">The project.</param>
         /// <param name="filename">The filename.</param>
         public static async ValueTask SaveProjectDefinitionAsync<T>(T project, string filename) where T : Project
@@ -38,7 +38,7 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Saves a project definition.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Type of <see cref="Project"/></typeparam>
         /// <param name="project">The project.</param>
         /// <param name="streamWriter">The stream writer where to stream the project definitions.</param>
         public static async Task<Stream?> StreamProjectDefinitionAsync<T>(T project, StreamWriter streamWriter) where T : Project
@@ -53,9 +53,9 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Loads a project definition from a file.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Type of <see cref="Project"/></typeparam>
         /// <param name="filename">The filename.</param>
-        /// <returns></returns>
+        /// <returns>The loaded project.</returns>
         public static T LoadProjectDefinition<T>(string filename) where T : Project
         {
             using StreamReader fileReader = new(filename);
@@ -65,9 +65,9 @@ namespace pva.SuperV.Engine
         /// <summary>
         /// Loads a project definition from a file.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Type of <see cref="Project"/></typeparam>
         /// <param name="streamReader">The stream reader where to read project definitions from.</param>
-        /// <returns></returns>
+        /// <returns>The created project.</returns>
         public static T CreateProjectFromJsonDefinition<T>(StreamReader streamReader) where T : Project
         {
             string json = streamReader.ReadToEnd();
@@ -81,6 +81,7 @@ namespace pva.SuperV.Engine
                 }
                 clazz.FieldDefinitions.Values.ForEach(field =>
                 {
+                    projectInstance.SetFieldValueChangeChannel(field);
                     field.ValuePostChangeProcessings.ForEach(postProcessing =>
                         postProcessing.BuildAfterDeserialization(projectInstance, clazz));
                 });

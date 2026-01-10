@@ -59,6 +59,7 @@ namespace pva.SuperV.Engine
             HistoryStorageEngineConnectionString = wipProject.HistoryStorageEngineConnectionString;
             HistoryStorageEngine = wipProject.HistoryStorageEngine;
             HistoryRepositories = new(wipProject.HistoryRepositories);
+            TopicsChannels = new(wipProject.TopicsChannels);
             CreateHistoryRepositories(HistoryStorageEngine);
             CreateHistoryClassTimeSeries();
             SetupProjectAssemblyLoader();

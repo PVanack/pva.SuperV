@@ -3,6 +3,8 @@ using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
+using System.Reflection.Metadata;
+using System.Threading.Channels;
 
 namespace pva.SuperV.Engine
 {
@@ -54,7 +56,25 @@ namespace pva.SuperV.Engine
             HistoryRepositories = new(runnableProject.HistoryRepositories);
             HistoryRepositories.Values.ForEach(repository
                 => repository.HistoryStorageEngine = HistoryStorageEngine);
+            TopicsChannels = new(runnableProject.TopicsChannels);
             ToLoadInstances = new(runnableProject.Instances, StringComparer.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Clones as <see cref="RunnableProject"/>.
+        /// </summary>
+        /// <returns><see cref="RunnableProject"/></returns>
+        public RunnableProject CloneAsRunnable()
+            => new(this);
+
+        /// <summary>
+        /// Unloads the project.
+        /// </summary>
+        public override void Unload()
+        {
+            ToLoadInstances.Values.ForEach(instance => instance.Dispose());
+            ToLoadInstances.Clear();
+            base.Unload();
         }
 
         /// <summary>
@@ -142,9 +162,10 @@ namespace pva.SuperV.Engine
         public IFieldDefinition AddField(string className, IFieldDefinition field)
         {
             Class clazz = GetClass(className);
-            return clazz.AddField(field);
+            IFieldDefinition fieldDefinition = clazz.AddField(field);
+            SetFieldValueChangeChannel(fieldDefinition);
+            return fieldDefinition;
         }
-
         /// <summary>
         /// Adds a field to a class with a specific field formatter.
         /// </summary>
@@ -157,7 +178,9 @@ namespace pva.SuperV.Engine
             Class clazz = GetClass(className);
             FieldFormatter? formatter = GetFormatter(formatterName);
             formatter?.ValidateAllowedType(field.Type);
-            return clazz.AddField(field, formatter);
+            IFieldDefinition fieldDefinition = clazz.AddField(field, formatter);
+            SetFieldValueChangeChannel(fieldDefinition);
+            return fieldDefinition;
         }
 
         public IFieldDefinition UpdateField(string className, string fieldName, IFieldDefinition field, string? formatterName)
@@ -165,7 +188,9 @@ namespace pva.SuperV.Engine
             Class clazz = GetClass(className);
             FieldFormatter? formatter = GetFormatter(formatterName);
             formatter?.ValidateAllowedType(field.Type);
-            return clazz.UpdateField(fieldName, field, formatter);
+            IFieldDefinition fieldDefinition = clazz.UpdateField(fieldName, field, formatter);
+            SetFieldValueChangeChannel(fieldDefinition);
+            return fieldDefinition;
         }
 
         /// <summary>
@@ -313,24 +338,6 @@ namespace pva.SuperV.Engine
                     throw new EntityInUseException("History Repository", historyRepositoryName, clazz.Name, fieldsUsingHistoryRepository);
                 }
             });
-        }
-
-
-        /// <summary>
-        /// Clones as <see cref="RunnableProject"/>.
-        /// </summary>
-        /// <returns><see cref="RunnableProject"/></returns>
-        public RunnableProject CloneAsRunnable()
-            => new(this);
-
-        /// <summary>
-        /// Unloads the project.
-        /// </summary>
-        public override void Unload()
-        {
-            ToLoadInstances.Values.ForEach(instance => instance.Dispose());
-            ToLoadInstances.Clear();
-            base.Unload();
         }
     }
 }

@@ -74,24 +74,25 @@ namespace pva.SuperV.TestsScenarios.StepDefinitions
         {
             string fieldName = row["Name"];
             string? format = row["Format"];
+            string? topicName = row["Topic"];
             if (String.IsNullOrEmpty(format))
             {
                 format = null;
             }
             return row["Type"].ToLower() switch
             {
-                "bool" => new BoolFieldDefinitionModel(fieldName, row.GetBoolean("Default value"), format),
-                "datetime" => new DateTimeFieldDefinitionModel(fieldName, row.GetDateTime("Default value"), format),
-                "double" => new DoubleFieldDefinitionModel(fieldName, row.GetDouble("Default value"), format),
-                "float" => new FloatFieldDefinitionModel(fieldName, row.GetSingle("Default value"), format),
-                "int" => new IntFieldDefinitionModel(fieldName, row.GetInt32("Default value"), format),
-                "long" => new LongFieldDefinitionModel(fieldName, row.GetInt64("Default value"), format),
-                "short" => new ShortFieldDefinitionModel(fieldName, short.CreateChecked(row.GetInt32("Default value")), format),
-                "string" => new StringFieldDefinitionModel(fieldName, row["Default value"], format),
-                "timespan" => new TimeSpanFieldDefinitionModel(fieldName, row["Default value"].ParseTimeSpanInvariant(), format),
-                "uint" => new UintFieldDefinitionModel(fieldName, uint.CreateChecked(row.GetInt32("Default value")), format),
-                "ulong" => new UlongFieldDefinitionModel(fieldName, ulong.CreateChecked(row.GetInt64("Default value")), format),
-                "ushort" => new UshortFieldDefinitionModel(fieldName, ushort.CreateChecked(row.GetInt32("Default value")), format),
+                "bool" => new BoolFieldDefinitionModel(fieldName, row.GetBoolean("Default value"), format, topicName),
+                "datetime" => new DateTimeFieldDefinitionModel(fieldName, row.GetDateTime("Default value"), format, topicName),
+                "double" => new DoubleFieldDefinitionModel(fieldName, row.GetDouble("Default value"), format, topicName),
+                "float" => new FloatFieldDefinitionModel(fieldName, row.GetSingle("Default value"), format, topicName),
+                "int" => new IntFieldDefinitionModel(fieldName, row.GetInt32("Default value"), format, topicName),
+                "long" => new LongFieldDefinitionModel(fieldName, row.GetInt64("Default value"), format, topicName),
+                "short" => new ShortFieldDefinitionModel(fieldName, short.CreateChecked(row.GetInt32("Default value")), format, topicName),
+                "string" => new StringFieldDefinitionModel(fieldName, row["Default value"], format, topicName),
+                "timespan" => new TimeSpanFieldDefinitionModel(fieldName, row["Default value"].ParseTimeSpanInvariant(), format, topicName),
+                "uint" => new UintFieldDefinitionModel(fieldName, uint.CreateChecked(row.GetInt32("Default value")), format, topicName),
+                "ulong" => new UlongFieldDefinitionModel(fieldName, ulong.CreateChecked(row.GetInt64("Default value")), format, topicName),
+                "ushort" => new UshortFieldDefinitionModel(fieldName, ushort.CreateChecked(row.GetInt32("Default value")), format, topicName),
                 _ => throw new NotImplementedException(),
             };
         }
