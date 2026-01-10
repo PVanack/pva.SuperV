@@ -49,10 +49,12 @@
 	<HeaderContent>
 		<MudTh Style="text-align:center">Name</MudTh>
 		<MudTh Style="text-align:center">Type</MudTh>
+		<MudTh Style="text-align:center">Topic name</MudTh>
 	</HeaderContent>
 	<RowTemplate>
 		<MudTd DataLabel="Name">@context.Name</MudTd>
 		<MudTd DataLabel="Type">@GetFieldType(context)</MudTd>
+		<MudTd DataLabel="Topic name">@context.TopicName</MudTd>
 	</RowTemplate>
 	<NoRecordsContent>
 		<MudText>No matching records found</MudText>

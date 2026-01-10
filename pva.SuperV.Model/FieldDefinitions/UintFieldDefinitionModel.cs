@@ -8,6 +8,7 @@ namespace pva.SuperV.Model.FieldDefinitions
     public record UintFieldDefinitionModel(
             string Name,
             [property: Description("Default value")] uint DefaultValue,
-            string? ValueFormatter)
-            : FieldDefinitionModel(Name, typeof(uint).ToString(), ValueFormatter);
+            string? ValueFormatter,
+            string? TopicName = "")
+            : FieldDefinitionModel(Name, typeof(uint).ToString(), ValueFormatter, TopicName);
 }

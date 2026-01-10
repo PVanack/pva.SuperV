@@ -8,6 +8,7 @@ namespace pva.SuperV.Model.FieldDefinitions
     public record UlongFieldDefinitionModel(
             string Name,
             [property: Description("Default value")] ulong DefaultValue,
-            string? ValueFormatter)
-            : FieldDefinitionModel(Name, typeof(ulong).ToString(), ValueFormatter);
+            string? ValueFormatter,
+            string? TopicName = "")
+            : FieldDefinitionModel(Name, typeof(ulong).ToString(), ValueFormatter, TopicName);
 }

@@ -6,6 +6,7 @@ using pva.SuperV.Model;
 using pva.SuperV.Model.Projects;
 using pva.SuperV.Model.Services;
 using Shouldly;
+using System.IO;
 using System.Net.Http.Json;
 using System.Text;
 
@@ -32,6 +33,7 @@ namespace pva.SuperV.ApiTests
                                     "Type": "System.DateTime",
                                     "Name": "Value",
                                     "DefaultValue": "0001-01-01T00:00:00",
+                                    "TopicName": ""
                                     "ValuePostChangeProcessings": []
                                 }
                             }
@@ -396,9 +398,6 @@ namespace pva.SuperV.ApiTests
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
         }
 
-        private static JsonContent BuildJsonStreamContent(string json)
-            => JsonContent.Create(Encoding.UTF8.GetBytes(json));
-
         [Fact]
         public async Task GivenProject_WhenUnloadingProject_ThenProjectIsUnloaded()
         {
@@ -412,6 +411,27 @@ namespace pva.SuperV.ApiTests
             // THEN
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
         }
+
+        [Fact]
+        public async Task GivenProject_WhenGettingTopicNames_ThenTopicNamesAreReturned()
+        {
+            // GIVEN
+            HashSet<string> expectedTopicNames = new HashSet<string>();
+            expectedTopicNames.Add("Topic1");
+            MockedProjectService.GetProjectTopicNames("Project")
+                .Returns(Task.FromResult<HashSet<string>>(expectedTopicNames));
+
+            // WHEN
+            var response = await client.GetAsync("/projects/Project/topics", TestContext.Current.CancellationToken);
+
+            // THEN
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            var topicNames = await response.Content.ReadFromJsonAsync<HashSet<string>>(cancellationToken: TestContext.Current.CancellationToken);
+            topicNames.ShouldBeEquivalentTo(expectedTopicNames);
+        }
+
+        private static JsonContent BuildJsonStreamContent(string json)
+            => JsonContent.Create(Encoding.UTF8.GetBytes(json));
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using pva.SuperV.Engine;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Projects;
 using pva.SuperV.Model.Services;
@@ -142,6 +143,16 @@ namespace pva.SuperV.Api.Routes.Projects
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces<string>(StatusCodes.Status404NotFound)
                 .Produces<string>(StatusCodes.Status400BadRequest);
+
+            projectsApi.MapGet("/{projectId}/topics",
+                async (IProjectService projectService,
+                [Description("ID of project")] string projectId)
+                    => await GetTopicNames.Handle(projectService, projectId))
+                .WithName("GetProjectTopicNames")
+                .WithDisplayName("GetProjectTopicNames")
+                .WithSummary("Gets the list of available notification topic names of a project")
+                .WithDescription("Gets the list of available notification topic names of a project")
+                .Produces<HashSet<string>>(StatusCodes.Status200OK);
 
             return app;
         }

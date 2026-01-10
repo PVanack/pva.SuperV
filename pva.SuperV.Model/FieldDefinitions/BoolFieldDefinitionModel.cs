@@ -8,6 +8,7 @@ namespace pva.SuperV.Model.FieldDefinitions
     public record BoolFieldDefinitionModel(
         string Name,
         [property: Description("Default value")] bool DefaultValue,
-        string? ValueFormatter)
-        : FieldDefinitionModel(Name, typeof(bool).ToString(), ValueFormatter);
+        string? ValueFormatter,
+        string? TopicName = "")
+        : FieldDefinitionModel(Name, typeof(bool).ToString(), ValueFormatter, TopicName);
 }

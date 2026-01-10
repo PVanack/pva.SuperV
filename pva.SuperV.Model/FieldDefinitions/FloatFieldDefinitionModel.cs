@@ -8,6 +8,7 @@ namespace pva.SuperV.Model.FieldDefinitions
     public record FloatFieldDefinitionModel(
             string Name,
             [property: Description("Default value")] float DefaultValue,
-            string? ValueFormatter)
-            : FieldDefinitionModel(Name, typeof(float).ToString(), ValueFormatter);
+            string? ValueFormatter,
+            string? TopicName = "")
+            : FieldDefinitionModel(Name, typeof(float).ToString(), ValueFormatter, TopicName);
 }

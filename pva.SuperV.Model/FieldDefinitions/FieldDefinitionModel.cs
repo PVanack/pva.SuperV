@@ -27,5 +27,7 @@ namespace pva.SuperV.Model.FieldDefinitions
         [property: Description("Type of field")]
         string FieldType,
         [property: Description("Field value formatter")]
-        string? ValueFormatter);
+        string? ValueFormatter,
+        [property: Description("Topic name to notify value change")]
+        string? TopicName);
 }

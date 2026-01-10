@@ -137,6 +137,18 @@ namespace pva.SuperV.Api.Services.Projects
             await ValueTask.CompletedTask;
         }
 
+        public async Task<HashSet<string>> GetProjectTopicNames(string projectId)
+        {
+            logger.LogDebug("Getting project {ProjectId} topic names",
+                projectId);
+            Project? project = GetProjectEntity(projectId);
+            if (project is not null)
+            {
+                return await Task.FromResult(project.GetTopicNames());
+            }
+            return await Task.FromException<HashSet<string>>(new UnknownEntityException("Project", projectId));
+
+        }
         private static List<ProjectModel> FilterProjects(List<ProjectModel> allProjects, ProjectPagedSearchRequest search)
         {
             List<ProjectModel> filteredProjects = allProjects;

@@ -29,6 +29,8 @@
 								<MudSelectItem Value="formatterName">@formatterName</MudSelectItem>
 							}
 						</MudSelect>
+						<MudTextField @bind-Value="EditedFieldDefinition.TopicName"
+									  Label="Topic name for value change notification" For="@(() => EditedFieldDefinition.TopicName)" Variant="Variant.Outlined" />
 					</MudFocusTrap>
 				</MudCardContent>
 				<MudCardActions>
