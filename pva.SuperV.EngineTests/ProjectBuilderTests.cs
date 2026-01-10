@@ -56,7 +56,7 @@ namespace pva.SuperV.EngineTests
             var instance = project.CreateInstance(ClassName, InstanceName);
 
             // WHEN/THEN
-            Assert.Throws<UnknownEntityException>(() => project.GetInstance("WrongInstance"));
+            Should.Throw<UnknownEntityException>(() => project.GetInstance("WrongInstance"));
 
             instance?.Dispose();
             DeleteProject(project);
@@ -70,7 +70,7 @@ namespace pva.SuperV.EngineTests
             var instance = project.CreateInstance(ClassName, InstanceName);
 
             // WHEN/THEN
-            Assert.Throws<EntityAlreadyExistException>(() => project.CreateInstance(ClassName, InstanceName));
+            Should.Throw<EntityAlreadyExistException>(() => project.CreateInstance(ClassName, InstanceName));
 
             instance?.Dispose();
             DeleteProject(project);
@@ -185,7 +185,7 @@ namespace pva.SuperV.EngineTests
             Instance? instance = runnableProject.CreateInstance(ClassName, InstanceName);
 
             // WHEN/THEN
-            Assert.Throws<UnknownEntityException>(() => instance!.GetField<int>("UnknownField"));
+            Should.Throw<UnknownEntityException>(() => instance!.GetField<int>("UnknownField"));
 
             instance?.Dispose();
             DeleteProject(runnableProject);
@@ -199,7 +199,7 @@ namespace pva.SuperV.EngineTests
             Instance? instance = runnableProject.CreateInstance(ClassName, InstanceName);
 
             // WHEN/THEN
-            Assert.Throws<WrongFieldTypeException>(() => instance!.GetField<double>(ValueFieldName));
+            Should.Throw<WrongFieldTypeException>(() => instance!.GetField<double>(ValueFieldName));
 
             instance?.Dispose();
             DeleteProject(runnableProject);

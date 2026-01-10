@@ -16,7 +16,7 @@ namespace pva.SuperV.EngineTests
             {
                 FieldDefinition = new FieldDefinition<List<int>>("Field")
             };
-            Assert.Throws<UnhandledFieldTypeException>(()
+            Should.Throw<UnhandledFieldTypeException>(()
                 => FieldValueSetter.SetValue(field, "", DateTime.Now, QualityLevel.Good));
         }
         public record ValueToTest<T> : IXunitSerializable
@@ -72,7 +72,7 @@ namespace pva.SuperV.EngineTests
         private static void WhenStringValueCannotBeConvertedToType_ThenExceptionIsThrown<T>(string invalidStringValue, FieldFormatter? fieldFormatter = null)
         {
             Field<T> field = CreateField<T>(default!, fieldFormatter);
-            Assert.Throws<StringConversionException>(()
+            Should.Throw<StringConversionException>(()
                 => FieldValueSetter.SetValue(field, invalidStringValue, DateTime.Now, QualityLevel.Good));
         }
 

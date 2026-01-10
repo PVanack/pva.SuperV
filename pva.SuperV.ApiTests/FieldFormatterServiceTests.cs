@@ -226,7 +226,7 @@ namespace pva.SuperV.ApiTests
             await fieldFormatterService.DeleteFieldFormatterAsync(wipProject.GetId(), expectedFieldFormatter.Name);
 
             // THEN
-            Assert.Throws<UnknownEntityException>(() => wipProject.GetFormatter(expectedFieldFormatter.Name));
+            Should.Throw<UnknownEntityException>(() => wipProject.GetFormatter(expectedFieldFormatter.Name));
         }
 
         [Fact]

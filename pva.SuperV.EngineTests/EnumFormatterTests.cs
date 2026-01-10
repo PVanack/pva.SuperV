@@ -44,7 +44,7 @@ namespace pva.SuperV.EngineTests
         public void WhenCreatingEnumFormatterWithInvalidName_ThenExceptionIsThrown(string invalidName)
         {
             // WHEN
-            Assert.Throws<InvalidIdentifierNameException>(() => new EnumFormatter(invalidName, new Dictionary<int, string>() { { 23, "Closed" }, { 32, "Opened" } }));
+            Should.Throw<InvalidIdentifierNameException>(() => new EnumFormatter(invalidName, new Dictionary<int, string>() { { 23, "Closed" }, { 32, "Opened" } }));
         }
 
         [Fact]

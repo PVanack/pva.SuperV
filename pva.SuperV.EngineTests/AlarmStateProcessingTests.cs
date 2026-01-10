@@ -181,7 +181,7 @@ namespace pva.SuperV.EngineTests
         public void GivenClassWithAlarmState_WhenRemovingFieldUsedInProcessing_ThenEntityInUseExceptionIsThrown(string usedField)
         {
             // WHEN/THEN
-            Assert.Throws<EntityInUseException>(() => clazz.RemoveField(usedField));
+            Should.Throw<EntityInUseException>(() => clazz.RemoveField(usedField));
         }
 
 

@@ -227,7 +227,7 @@ namespace pva.SuperV.EngineTests
             List<string> lines = ["{{Field1"];
 
             // WHEN/THEN
-            ScriptSyntaxErrorException exception = Assert.Throws<ScriptSyntaxErrorException>(() => ScriptParser.ParseFieldReferences(lines));
+            ScriptSyntaxErrorException exception = Should.Throw<ScriptSyntaxErrorException>(() => ScriptParser.ParseFieldReferences(lines));
             exception.Message.ShouldContain("Missing }}");
         }
 
@@ -238,7 +238,7 @@ namespace pva.SuperV.EngineTests
             List<string> lines = ["{{}}"];
 
             // WHEN/THEN
-            ScriptSyntaxErrorException exception = Assert.Throws<ScriptSyntaxErrorException>(() => ScriptParser.ParseFieldReferences(lines));
+            ScriptSyntaxErrorException exception = Should.Throw<ScriptSyntaxErrorException>(() => ScriptParser.ParseFieldReferences(lines));
             exception.Message.ShouldContain("Empty field reference");
         }
 
@@ -249,7 +249,7 @@ namespace pva.SuperV.EngineTests
             List<string> lines = ["{{0InvalidField}}"];
 
             // WHEN/THEN
-            Assert.Throws<InvalidIdentifierNameException>(() => ScriptParser.ParseFieldReferences(lines));
+            Should.Throw<InvalidIdentifierNameException>(() => ScriptParser.ParseFieldReferences(lines));
         }
 
         [Fact]
@@ -259,7 +259,7 @@ namespace pva.SuperV.EngineTests
             List<string> lines = ["{{0InvalidInstance.Field1}}"];
 
             // WHEN/THEN
-            Assert.Throws<InvalidIdentifierNameException>(() => ScriptParser.ParseFieldReferences(lines));
+            Should.Throw<InvalidIdentifierNameException>(() => ScriptParser.ParseFieldReferences(lines));
         }
 
         [Fact]
@@ -269,7 +269,7 @@ namespace pva.SuperV.EngineTests
             List<string> lines = ["{{Instance1.0InvalidField}}"];
 
             // WHEN/THEN
-            Assert.Throws<InvalidIdentifierNameException>(() => ScriptParser.ParseFieldReferences(lines));
+            Should.Throw<InvalidIdentifierNameException>(() => ScriptParser.ParseFieldReferences(lines));
         }
 
         [Fact]
@@ -295,7 +295,7 @@ namespace pva.SuperV.EngineTests
             List<string> lines = ["Prefix {{Field1 {{Nested}} }} Suffix"];
 
             // WHEN/THEN
-            Assert.Throws<InvalidIdentifierNameException>(() => ScriptParser.ParseFieldReferences(lines));
+            Should.Throw<InvalidIdentifierNameException>(() => ScriptParser.ParseFieldReferences(lines));
 
             // THEN
         }

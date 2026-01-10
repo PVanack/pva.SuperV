@@ -18,7 +18,7 @@ namespace pva.SuperV.EngineTests
         public void GivenInvalidClassName_WhenCreatingClass_ThenInvalidClassNameExceptionIsThrown(string invalidClassName)
         {
             // WHEN/THEN
-            Assert.Throws<InvalidIdentifierNameException>(() => new Class(invalidClassName));
+            Should.Throw<InvalidIdentifierNameException>(() => new Class(invalidClassName));
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace pva.SuperV.EngineTests
             project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10));
 
             // WHEN/THEN
-            Assert.Throws<EntityAlreadyExistException>(() => project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10)));
+            Should.Throw<EntityAlreadyExistException>(() => project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10)));
         }
 
         [Fact]
@@ -96,7 +96,7 @@ namespace pva.SuperV.EngineTests
             project.AddField(ClassName, new FieldDefinition<int>(FieldName, 10));
 
             // WHEN/THEN
-            Assert.Throws<WrongFieldTypeException>(() => project.UpdateField(ClassName, FieldName, new FieldDefinition<float>(FieldName, 10), null));
+            Should.Throw<WrongFieldTypeException>(() => project.UpdateField(ClassName, FieldName, new FieldDefinition<float>(FieldName, 10), null));
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace pva.SuperV.EngineTests
 
             // THEN
             clazz.FieldDefinitions.ShouldBeEmpty();
-            Assert.Throws<UnknownEntityException>(() => clazz.GetField<int>(FieldName));
+            Should.Throw<UnknownEntityException>(() => clazz.GetField<int>(FieldName));
         }
 
         [Fact]
@@ -128,7 +128,7 @@ namespace pva.SuperV.EngineTests
                 null, ["ValueField", FieldName]));
 
             // WHEN/THEN
-            Assert.Throws<EntityInUseException>(() => project.RemoveField(ClassName, FieldName));
+            Should.Throw<EntityInUseException>(() => project.RemoveField(ClassName, FieldName));
         }
     }
 }

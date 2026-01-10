@@ -19,7 +19,7 @@ namespace pva.SuperV.EngineTests
         public void GivenInvalidProjectName_WhenCreatingProject_ThenInvalidProjectNameExceptionIsThrown(string invalidProjectName)
         {
             // WHEN/THEN
-            Assert.Throws<InvalidIdentifierNameException>(() => Project.CreateProject(invalidProjectName));
+            Should.Throw<InvalidIdentifierNameException>(() => Project.CreateProject(invalidProjectName));
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace pva.SuperV.EngineTests
             project.AddClass(ClassName);
             project.Classes.ShouldContainKey(ClassName);
             project.Classes[ClassName].ShouldNotBeNull();
-            Assert.Throws<EntityAlreadyExistException>(() => project.AddClass(ClassName));
+            Should.Throw<EntityAlreadyExistException>(() => project.AddClass(ClassName));
         }
 
         [Fact]
@@ -109,7 +109,7 @@ namespace pva.SuperV.EngineTests
             WipProject project = Project.CreateProject(ProjectName);
 
             // WHEN
-            Assert.Throws<UnknownEntityException>(() => project.GetClass(ClassName));
+            Should.Throw<UnknownEntityException>(() => project.GetClass(ClassName));
         }
 
         [Fact]
@@ -151,7 +151,7 @@ namespace pva.SuperV.EngineTests
             project.AddFieldFormatter(formatter);
 
             // WHEN
-            Assert.Throws<UnknownEntityException>(() => project.GetFormatter("UnknownFormatter"));
+            Should.Throw<UnknownEntityException>(() => project.GetFormatter("UnknownFormatter"));
         }
 
         [Fact]
@@ -211,7 +211,7 @@ namespace pva.SuperV.EngineTests
             _ = project.AddClass(ClassName);
 
             // WHEN/THEN
-            Assert.Throws<InvalidTypeForFormatterException>(() => project.AddField(ClassName, new FieldDefinition<double>("DoubleField", 10.0), AlarmStatesFormatterName));
+            Should.Throw<InvalidTypeForFormatterException>(() => project.AddField(ClassName, new FieldDefinition<double>("DoubleField", 10.0), AlarmStatesFormatterName));
         }
 
         [Fact]
@@ -224,7 +224,7 @@ namespace pva.SuperV.EngineTests
             _ = project.AddClass(ClassName);
 
             // WHEN/THEN
-            Assert.Throws<UnknownEntityException>(() => project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), "UnknownFormetter"));
+            Should.Throw<UnknownEntityException>(() => project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), "UnknownFormetter"));
         }
 
         [Fact]
@@ -236,7 +236,7 @@ namespace pva.SuperV.EngineTests
             project.AddFieldFormatter(formatter);
 
             // WHEN/THEN
-            Assert.Throws<EntityAlreadyExistException>(() => project.AddFieldFormatter(formatter));
+            Should.Throw<EntityAlreadyExistException>(() => project.AddFieldFormatter(formatter));
         }
 
         [Fact]
@@ -267,7 +267,7 @@ namespace pva.SuperV.EngineTests
             project.RemoveFieldFormatter(AlarmStatesFormatterName);
 
             // THEN
-            Assert.Throws<UnknownEntityException>(() => _ = project.GetFormatter(AlarmStatesFormatterName));
+            Should.Throw<UnknownEntityException>(() => _ = project.GetFormatter(AlarmStatesFormatterName));
         }
 
         [Fact]
@@ -281,7 +281,7 @@ namespace pva.SuperV.EngineTests
             _ = project.AddField(ClassName, new FieldDefinition<int>("IntField", 10), AlarmStatesFormatterName);
 
             // WHEN/THEN
-            Assert.Throws<EntityInUseException>(() => project.RemoveFieldFormatter(AlarmStatesFormatterName));
+            Should.Throw<EntityInUseException>(() => project.RemoveFieldFormatter(AlarmStatesFormatterName));
         }
 
     }
