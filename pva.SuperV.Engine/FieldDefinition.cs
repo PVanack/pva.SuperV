@@ -31,8 +31,7 @@ namespace pva.SuperV.Engine
             get => _name;
             set
             {
-                _name = value;
-                IdentifierValidation.ValidateIdentifier("field", value);
+                _name = IdentifierValidation.ValidateIdentifier("field", value);
             }
         }
 

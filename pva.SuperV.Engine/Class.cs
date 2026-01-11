@@ -23,8 +23,7 @@ namespace pva.SuperV.Engine
             get { return _name; }
             set
             {
-                IdentifierValidation.ValidateIdentifier("class", value);
-                _name = value;
+                _name = IdentifierValidation.ValidateIdentifier("class", value);
             }
         }
 
