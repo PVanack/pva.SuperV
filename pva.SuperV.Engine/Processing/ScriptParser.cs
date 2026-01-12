@@ -3,8 +3,16 @@ using pva.SuperV.Engine.Exceptions;
 
 namespace pva.SuperV.Engine.Processing
 {
+    /// <summary>
+    /// Parser of script lines to identify field references.
+    /// </summary>
     public static class ScriptParser
     {
+        /// <summary>
+        /// Parses the line, generating an array of lines and removing the blank lines.
+        /// </summary>
+        /// <param name="script">The script.</param>
+        /// <returns>List of lines.</returns>
         public static List<string> ParseLine(string script)
         {
             var lines = new List<string>();
@@ -26,6 +34,11 @@ namespace pva.SuperV.Engine.Processing
             return lines;
         }
 
+        /// <summary>
+        /// Parses the field references from the lines. a field reference is delimited with {{ and }}
+        /// </summary>
+        /// <param name="lines">The lines.</param>
+        /// <returns>List of references.</returns>
         public static List<FieldReference> ParseFieldReferences(List<string> lines)
         {
             List<FieldReference> fieldReferences = [];
@@ -49,15 +62,15 @@ namespace pva.SuperV.Engine.Processing
                     {
                         throw new ScriptSyntaxErrorException("Empty field reference", line, startReferenceIndex);
                     }
-                    parts.ForEach(p => _ = IdentifierValidation.ValidateIdentifier("Field reference", p));
+                    parts.ForEach(p => _ = IdentifierValidation.ValidateIdentifier("Field reference", p.Trim()));
                     FieldReference fieldReference;
                     if (parts.Length == 1)
                     {
-                        fieldReference = new(null, parts[0]);
+                        fieldReference = new(null, parts[0].Trim());
                     }
                     else
                     {
-                        fieldReference = new(parts[0], parts[1]);
+                        fieldReference = new(parts[0].Trim(), parts[1].Trim());
                     }
                     fieldReferences.Add(fieldReference);
                 }
@@ -66,6 +79,13 @@ namespace pva.SuperV.Engine.Processing
             return fieldReferences;
         }
 
+        /// <summary>
+        /// Replaces the field references with actual variable names.
+        /// </summary>
+        /// <param name="ownInstance">The own instance for when the references don't have an instance.</param>
+        /// <param name="lines">The lines.</param>
+        /// <param name="fieldReferences">The field references.</param>
+        /// <returns>The lines of code with the references replaced with the variables></returns>
         public static List<string> ReplaceFieldReferences(string ownInstance, List<string> lines, List<FieldReference> fieldReferences)
         {
             List<string> processedLines = [];
@@ -82,5 +102,5 @@ namespace pva.SuperV.Engine.Processing
             });
             return processedLines;
         }
-        }
     }
+}

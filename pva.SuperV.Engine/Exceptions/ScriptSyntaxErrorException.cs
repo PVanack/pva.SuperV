@@ -2,7 +2,7 @@
 
 namespace pva.SuperV.Engine.Exceptions
 {
-    public class ScriptSyntaxErrorException :  SuperVException
+    public class ScriptSyntaxErrorException : SuperVException
     {
         public ScriptSyntaxErrorException(string message, string line, int errorPosition)
             : base($"Syntax error ({message}) at position {errorPosition} in {line}.")

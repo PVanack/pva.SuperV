@@ -38,7 +38,7 @@ namespace pva.SuperV.Engine.JsonConverters
             JsonHelpers.ReadPropertyName(ref reader, "DefaultValue");
             dynamic? defaultValue = JsonSerializer.Deserialize(ref reader, fieldType!, options);
 
-            string? topicName= JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "TopicName");
+            string? topicName = JsonHelpers.GetStringPropertyFromUtfReader(ref reader, "TopicName");
 
             JsonHelpers.ReadTokenType(ref reader, JsonTokenType.PropertyName);
             JsonHelpers.ReadPropertyName(ref reader, "ValuePostChangeProcessings");

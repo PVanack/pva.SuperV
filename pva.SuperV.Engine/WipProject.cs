@@ -3,8 +3,6 @@ using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
-using System.Reflection.Metadata;
-using System.Threading.Channels;
 
 namespace pva.SuperV.Engine
 {
@@ -338,6 +336,47 @@ namespace pva.SuperV.Engine
                     throw new EntityInUseException("History Repository", historyRepositoryName, clazz.Name, fieldsUsingHistoryRepository);
                 }
             });
+        }
+
+        /// <summary>
+        /// Adds a script definition.
+        /// </summary>
+        /// <param name="script">The script.</param>
+        /// <exception cref="EntityAlreadyExistException">Script</exception>
+        public void AddScript(ScriptDefinition script)
+        {
+            if (ScriptDefinitions.ContainsKey(script.Name))
+            {
+                throw new EntityAlreadyExistException("Script", script.Name);
+            }
+            ScriptDefinitions.Add(script.Name, script);
+        }
+
+        /// <summary>
+        /// Updates a script definition.
+        /// </summary>
+        /// <param name="script">The script.</param>
+        /// <exception cref="UnknownEntityException">Script</exception>
+        public void Updatecript(ScriptDefinition script)
+        {
+            if (!ScriptDefinitions.ContainsKey(script.Name))
+            {
+                throw new UnknownEntityException("Script", script.Name);
+            }
+            ScriptDefinitions[script.Name] = script;
+        }
+        /// <summary>
+        /// Removes a script definition.
+        /// </summary>
+        /// <param name="scriptName">The script name.</param>
+        /// <exception cref="UnknownEntityException">Script</exception>
+        public void RemoveScript(string scriptName)
+        {
+            if (!ScriptDefinitions.ContainsKey(scriptName))
+            {
+                throw new UnknownEntityException("Script", scriptName);
+            }
+            ScriptDefinitions.Remove(scriptName);
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace pva.SuperV.Engine
+﻿namespace pva.SuperV.Engine
 {
     public record FieldValueChangedEvent(
         string TopicName,

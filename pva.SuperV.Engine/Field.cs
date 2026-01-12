@@ -1,5 +1,6 @@
 ﻿using pva.SuperV.Engine.Processing;
 using System.Text.Json.Serialization;
+using System.Threading.Channels;
 
 namespace pva.SuperV.Engine
 {
@@ -84,6 +85,10 @@ namespace pva.SuperV.Engine
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Field{T}"/> class.
+        /// </summary>
+        /// <param name="value">The initial value of field.</param>
         public Field(T value)
         {
             _value = value;
@@ -115,6 +120,12 @@ namespace pva.SuperV.Engine
             ProcessNewValue(valueChanged, newValue, previousValue!);
         }
 
+        /// <summary>
+        /// Sets the value internally without triggering the processings.
+        /// </summary>
+        /// <param name="newValue">The new value.</param>
+        /// <param name="timestamp">The timestamp.</param>
+        /// <param name="quality">The quality.</param>
         public void SetValueInternal(T newValue, DateTime? timestamp, QualityLevel? quality)
         {
             _timestamp = timestamp;
@@ -122,28 +133,41 @@ namespace pva.SuperV.Engine
             _value = newValue;
         }
 
+        /// <summary>
+        /// Processes the new value. Triggers the post change processings and value changed event scripts.
+        /// </summary>
+        /// <param name="hasValueChanged">if set to <c>true</c> [has value changed].</param>
+        /// <param name="newValue">The new value.</param>
+        /// <param name="previousValue">The previous value.</param>
         private void ProcessNewValue(bool hasValueChanged, T newValue, T previousValue)
         {
             if (FieldDefinition is null)
             {
                 return;
             }
-                FieldDefinition.ValuePostChangeProcessings.ForEach(
-                    processing =>
-                    {
-                        FieldValueProcessing<T>? fieldValueProcessing = processing as FieldValueProcessing<T>;
-                        fieldValueProcessing!.ProcessValue(Instance!, this, hasValueChanged, previousValue, newValue);
-                    });
-                if (FieldDefinition.FieldValueChangedEventChannel is not null)
+            FieldDefinition.ValuePostChangeProcessings.ForEach(
+                processing =>
                 {
-                    Task.Run(async () =>
+                    FieldValueProcessing<T>? fieldValueProcessing = processing as FieldValueProcessing<T>;
+                    fieldValueProcessing!.ProcessValue(Instance!, this, hasValueChanged, previousValue, newValue);
+                });
+            if (FieldDefinition.FieldValueChangedEventChannel is not null)
+            {
+                Task.Run(async () =>
+                {
+                    try
                     {
                         FieldValueChangedEvent fieldValueChangedEvent = new(FieldDefinition.TopicName!, this, previousValue!, newValue!);
                         await FieldDefinition!.FieldValueChangedEventChannel.Writer
                                             .WriteAsync(fieldValueChangedEvent).AsTask();
-                    })
-                    .Wait();
-                }
+                    }
+                    catch (ChannelClosedException)
+                    {
+                        // Channel is closed, ignore
+                    }
+                })
+                .Wait();
+            }
         }
 
         /// <summary>

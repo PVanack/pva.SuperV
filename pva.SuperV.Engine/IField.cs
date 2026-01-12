@@ -14,6 +14,14 @@
         Type Type { get; }
 
         /// <summary>
+        /// Gets or sets the instance to which the field belongs.
+        /// </summary>
+        /// <value>
+        /// The instance.
+        /// </value>
+        Instance? Instance { get; set; }
+
+        /// <summary>
         /// Gets or sets the field definition associated with field.
         /// </summary>
         /// <value>

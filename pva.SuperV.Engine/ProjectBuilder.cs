@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using pva.Helpers.Extensions;
 using pva.SuperV.Engine.Exceptions;
+using System.Dynamic;
 using System.Text;
 
 namespace pva.SuperV.Engine
@@ -63,7 +64,7 @@ namespace pva.SuperV.Engine
         /// <returns>A <see cref="CSharpCompilation"/></returns>
         private static CSharpCompilation CreateCompilation(SyntaxTree tree, string name)
         {
-            var assemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
+            var systemAssembliesPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
             List<MetadataReference> refs =
             [
                 /*
@@ -71,11 +72,14 @@ namespace pva.SuperV.Engine
                 * These assemblies couldn't be loaded correctly via the same construction as above,
                 * in specific the System.Runtime.
                 */
-                MetadataReference.CreateFromFile(Path.Combine(assemblyPath!, "mscorlib.dll")),
-                MetadataReference.CreateFromFile(Path.Combine(assemblyPath!, "System.dll")),
-                MetadataReference.CreateFromFile(Path.Combine(assemblyPath!, "System.Core.dll")),
-                MetadataReference.CreateFromFile(Path.Combine(assemblyPath!, "System.Runtime.dll")),
-                MetadataReference.CreateFromFile(Path.Combine(assemblyPath!, "System.Collections.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(systemAssembliesPath!, "mscorlib.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(systemAssembliesPath!, "System.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(systemAssembliesPath!, "System.Core.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(systemAssembliesPath!, "System.Runtime.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(systemAssembliesPath!, "System.Collections.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(systemAssembliesPath!, "System.Dynamic.Runtime.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(systemAssembliesPath!, "Microsoft.CSharp.dll")),
+                MetadataReference.CreateFromFile(typeof(ExpandoObject).Assembly.Location),
                 // Basic types assembly
                 MetadataReference.CreateFromFile(typeof(string).Assembly.Location),
                 // SuperV Project assembly

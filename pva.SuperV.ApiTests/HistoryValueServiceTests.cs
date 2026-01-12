@@ -1,5 +1,4 @@
-﻿using NLog.Time;
-using pva.SuperV.Api.Services.History;
+﻿using pva.SuperV.Api.Services.History;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.HistoryRetrieval;
 using pva.SuperV.Engine.HistoryStorage;

@@ -332,7 +332,7 @@ namespace pva.SuperV.EngineTests
             // THEN
             result.ShouldNotBeNull();
             result.Count.ShouldBe(1);
-            result[0].ShouldBe("Value is CurrentInstance.Field1");
+            result[0].ShouldBe("Value is CurrentInstance.Field1.Value");
         }
 
         [Fact]
@@ -349,7 +349,7 @@ namespace pva.SuperV.EngineTests
             // THEN
             result.ShouldNotBeNull();
             result.Count.ShouldBe(1);
-            result[0].ShouldBe("Value is OtherInstance.Field1");
+            result[0].ShouldBe("Value is OtherInstance.Field1.Value");
         }
 
         [Fact]
@@ -366,7 +366,7 @@ namespace pva.SuperV.EngineTests
             // THEN
             result.ShouldNotBeNull();
             result.Count.ShouldBe(1);
-            result[0].ShouldBe("CurrentInstance.Field1 and CurrentInstance.Field2");
+            result[0].ShouldBe("CurrentInstance.Field1.Value and CurrentInstance.Field2.Value");
         }
 
         [Fact]
@@ -383,9 +383,9 @@ namespace pva.SuperV.EngineTests
             // THEN
             result.ShouldNotBeNull();
             result.Count.ShouldBe(3);
-            result[0].ShouldBe("CurrentInstance.Field1");
-            result[1].ShouldBe("CurrentInstance.Field2");
-            result[2].ShouldBe("CurrentInstance.Field3");
+            result[0].ShouldBe("CurrentInstance.Field1.Value");
+            result[1].ShouldBe("CurrentInstance.Field2.Value");
+            result[2].ShouldBe("CurrentInstance.Field3.Value");
         }
 
         [Fact]
@@ -452,7 +452,7 @@ namespace pva.SuperV.EngineTests
             // THEN
             result.ShouldNotBeNull();
             result.Count.ShouldBe(1);
-            result[0].ShouldBe("CurrentInstance.Field1 equals CurrentInstance.Field1");
+            result[0].ShouldBe("CurrentInstance.Field1.Value equals CurrentInstance.Field1.Value");
         }
 
         [Fact]
@@ -469,7 +469,7 @@ namespace pva.SuperV.EngineTests
             // THEN
             result.ShouldNotBeNull();
             result.Count.ShouldBe(1);
-            result[0].ShouldBe("if (CurrentInstance.Threshold < CurrentInstance.Value && OtherInstance.Status == OK)");
+            result[0].ShouldBe("if (CurrentInstance.Threshold.Value < CurrentInstance.Value.Value && OtherInstance.Status.Value == OK)");
         }
 
         #endregion
@@ -491,8 +491,8 @@ namespace pva.SuperV.EngineTests
             // THEN
             result.ShouldNotBeNull();
             result.Count.ShouldBe(2);
-            result[0].ShouldBe("if Sensor.Value > Sensor.Threshold");
-            result[1].ShouldBe("then set Sensor.Status to HIGH");
+            result[0].ShouldBe("if Sensor.Value.Value > Sensor.Threshold.Value");
+            result[1].ShouldBe("then set Sensor.Status.Value to HIGH");
             fieldReferences.Count.ShouldBe(3);
         }
 

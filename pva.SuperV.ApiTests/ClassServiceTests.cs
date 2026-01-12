@@ -152,10 +152,11 @@ namespace pva.SuperV.ApiTests
             var result = await classService.GetClassesAsync(runnableProject.GetId());
 
             // Assert
-            result.Count.ShouldBe(3);
+            result.Count.ShouldBe(4);
             result.ShouldContain(c => c.Name == ClassName);
             result.ShouldContain(c => c.Name == BaseClassName);
             result.ShouldContain(c => c.Name == AllFieldsClassName);
+            result.ShouldContain(c => c.Name == ClassWithTopicName);
         }
 
         [Fact]

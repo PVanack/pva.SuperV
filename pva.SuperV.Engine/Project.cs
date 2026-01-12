@@ -2,6 +2,7 @@
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Engine.HistoryStorage;
+using pva.SuperV.Engine.Processing;
 using System.Collections.Concurrent;
 using System.Text.Json.Serialization;
 using System.Threading.Channels;
@@ -122,6 +123,14 @@ namespace pva.SuperV.Engine
         /// </value>
         [JsonIgnore]
         public Dictionary<string, Channel<FieldValueChangedEvent>> TopicsChannels { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Gets the script definitions.
+        /// </summary>
+        /// <value>
+        /// The script definitions.
+        /// </value>
+        public Dictionary<string, ScriptDefinition> ScriptDefinitions { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// List of projects in use.
@@ -385,6 +394,10 @@ namespace pva.SuperV.Engine
             }
         }
 
+        /// <summary>
+        /// Gets the topic names.
+        /// </summary>
+        /// <returns>List of topic names.</returns>
         public HashSet<string> GetTopicNames() =>
             TopicsChannels.Keys.ToHashSet();
     }
