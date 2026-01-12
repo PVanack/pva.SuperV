@@ -6,6 +6,7 @@ using pva.SuperV.Model.FieldFormatters;
 using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Blazor.Components.Pages;
+
 public partial class FieldFormatters
 {
     [Inject]

@@ -3,7 +3,6 @@ using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.Processing;
 using Shouldly;
-using Xunit;
 
 namespace pva.SuperV.EngineTests
 {

@@ -5,6 +5,7 @@ using pva.SuperV.Model.HistoryRepositories;
 using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Blazor.Components.Pages;
+
 public partial class HistoryRepositories
 {
     [Inject]

@@ -6,6 +6,7 @@ using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.Services;
 
 namespace pva.SuperV.Blazor.Components.Pages;
+
 public partial class Classes
 {
     [Inject]

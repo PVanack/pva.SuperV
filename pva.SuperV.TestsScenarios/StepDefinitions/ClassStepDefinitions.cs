@@ -5,7 +5,6 @@ using pva.SuperV.Model.FieldDefinitions;
 using Reqnroll.Assist;
 using Shouldly;
 using System.Net.Http.Json;
-using TDengine.Driver.Client.Websocket;
 
 namespace pva.SuperV.TestsScenarios.StepDefinitions
 {
