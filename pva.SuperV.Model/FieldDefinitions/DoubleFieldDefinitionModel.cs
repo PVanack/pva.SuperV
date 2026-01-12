@@ -8,6 +8,7 @@ namespace pva.SuperV.Model.FieldDefinitions
     public record DoubleFieldDefinitionModel(
             string Name,
             [property: Description("Default value")] double DefaultValue,
-            string? ValueFormatter)
-            : FieldDefinitionModel(Name, typeof(double).ToString(), ValueFormatter);
+            string? ValueFormatter,
+            string? TopicName = "")
+            : FieldDefinitionModel(Name, typeof(double).ToString(), ValueFormatter, TopicName);
 }

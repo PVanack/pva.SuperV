@@ -622,6 +622,72 @@
         }
       }
     },
+    "/projects/{projectId}/topics": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets the list of available notification topic names of a project",
+        "description": "Gets the list of available notification topic names of a project",
+        "operationId": "GetProjectTopicNames",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/classes/{projectId}": {
       "get": {
         "tags": [
@@ -3485,6 +3551,14 @@
               "string"
             ],
             "description": "Field value formatter"
+          },
+          "topicName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Topic name to notify value change",
+            "default": ""
           }
         },
         "description": "Boolean field definition."
@@ -3521,6 +3595,14 @@
               "string"
             ],
             "description": "Field value formatter"
+          },
+          "topicName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Topic name to notify value change",
+            "default": ""
           }
         },
         "description": "Date and time field definition."
@@ -3561,6 +3643,14 @@
               "string"
             ],
             "description": "Field value formatter"
+          },
+          "topicName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Topic name to notify value change",
+            "default": ""
           }
         },
         "description": "Double field definition."
@@ -3601,6 +3691,14 @@
               "string"
             ],
             "description": "Field value formatter"
+          },
+          "topicName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Topic name to notify value change",
+            "default": ""
           }
         },
         "description": "Float field definition."
@@ -3641,6 +3739,14 @@
               "string"
             ],
             "description": "Field value formatter"
+          },
+          "topicName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Topic name to notify value change",
+            "default": ""
           }
         },
         "description": "Boolen field definition."
@@ -3681,6 +3787,14 @@
               "string"
             ],
             "description": "Field value formatter"
+          },
+          "topicName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Topic name to notify value change",
+            "default": ""
           }
         },
         "description": "Long field definition."
@@ -3721,6 +3835,14 @@
               "string"
             ],
             "description": "Field value formatter"
+          },
+          "topicName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Topic name to notify value change",
+            "default": ""
           }
         },
         "description": "Short field definition."
@@ -3759,6 +3881,14 @@
               "string"
             ],
             "description": "Field value formatter"
+          },
+          "topicName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Topic name to notify value change",
+            "default": ""
           }
         },
         "description": "String field definition."
@@ -3795,6 +3925,14 @@
               "string"
             ],
             "description": "Field value formatter"
+          },
+          "topicName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Topic name to notify value change",
+            "default": ""
           }
         },
         "description": "Time span field definition."
@@ -3835,6 +3973,14 @@
               "string"
             ],
             "description": "Field value formatter"
+          },
+          "topicName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Topic name to notify value change",
+            "default": ""
           }
         },
         "description": "Unsigned int field definition."
@@ -3875,6 +4021,14 @@
               "string"
             ],
             "description": "Field value formatter"
+          },
+          "topicName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Topic name to notify value change",
+            "default": ""
           }
         },
         "description": "Unsigned long field definition."
@@ -3915,6 +4069,14 @@
               "string"
             ],
             "description": "Field value formatter"
+          },
+          "topicName": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Topic name to notify value change",
+            "default": ""
           }
         },
         "description": "Unsigned short field definition."

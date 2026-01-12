@@ -2,6 +2,7 @@
 using pva.SuperV.Engine.JsonConverters;
 using pva.SuperV.Engine.Processing;
 using System.Text.Json.Serialization;
+using System.Threading.Channels;
 
 namespace pva.SuperV.Engine
 {
@@ -44,19 +45,35 @@ namespace pva.SuperV.Engine
         List<IFieldValueProcessing> ValuePostChangeProcessings { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the topic to trigger script(s) when the value changes.
+        /// </summary>
+        /// <value>
+        /// The name of the topic.
+        /// </value>
+        string? TopicName { get; init; }
+
+        /// <summary>
+        /// Gets or sets the field value changed event.
+        /// </summary>
+        /// <value>
+        /// The field value changed event.
+        /// </value>
+        Channel<FieldValueChangedEvent>? FieldValueChangedEventChannel { get; set; }
+
+        /// <summary>
         /// Gets the C# code representation of the field in class.
         /// </summary>
         /// <returns>C# code</returns>
-        String GetCode();
+        string GetCode();
 
         /// <summary>
         /// Clones this instance.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The cloned field definition.</returns>
         IFieldDefinition Clone();
 
-        /// <summary>        /// <summary>
-        /// Update field from another field.
+        /// <summary>
+        /// Update field definition from another field definition.
         /// </summary>
         /// <param name="fieldDefinitionUpdate">Field from which to update. Only default value and formatter are copied.</param>
         /// <param name="fieldFormatter">Formatter</param>

@@ -40,46 +40,46 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private static readonly Dictionary<string, Func<EditedFieldDefinition, EditedFieldDefinition>> fieldTypeToSubtype = new()
         {
-            { BooleanType, (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, BooleanType, editedFieldDefinition.ValueFormatter, default(bool)) },
-            { DateTimeType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, DateTimeType, editedFieldDefinition.ValueFormatter, default(DateTime)) },
-            { DoubleType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, DoubleType, editedFieldDefinition.ValueFormatter, default(double)) },
-            { FloatType, (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, FloatType, editedFieldDefinition.ValueFormatter, default(float)) },
-            { IntType, (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, IntType, editedFieldDefinition.ValueFormatter, default(int)) },
-            { LongType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, LongType, editedFieldDefinition.ValueFormatter, default(long)) },
-            { ShortType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, ShortType, editedFieldDefinition.ValueFormatter, default(short)) },
-            { StringType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, StringType, editedFieldDefinition.ValueFormatter, String.Empty) },
-            { TimeSpanType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, TimeSpanType, editedFieldDefinition.ValueFormatter, default(TimeSpan)) },
-            { UintType, (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, UintType, editedFieldDefinition.ValueFormatter, default(uint)) },
-            { UlongType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, UlongType, editedFieldDefinition.ValueFormatter, default(ulong)) },
-            { UshortType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, UshortType, editedFieldDefinition.ValueFormatter, default(ushort)) }
+            { BooleanType, (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, BooleanType, editedFieldDefinition.ValueFormatter, default(bool), editedFieldDefinition.TopicName) },
+            { DateTimeType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, DateTimeType, editedFieldDefinition.ValueFormatter, default(DateTime), editedFieldDefinition.TopicName) },
+            { DoubleType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, DoubleType, editedFieldDefinition.ValueFormatter, default(double), editedFieldDefinition.TopicName) },
+            { FloatType, (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, FloatType, editedFieldDefinition.ValueFormatter, default(float), editedFieldDefinition.TopicName) },
+            { IntType, (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, IntType, editedFieldDefinition.ValueFormatter, default(int), editedFieldDefinition.TopicName) },
+            { LongType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, LongType, editedFieldDefinition.ValueFormatter, default(long), editedFieldDefinition.TopicName) },
+            { ShortType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, ShortType, editedFieldDefinition.ValueFormatter, default(short), editedFieldDefinition.TopicName) },
+            { StringType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, StringType, editedFieldDefinition.ValueFormatter, String.Empty, editedFieldDefinition.TopicName) },
+            { TimeSpanType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, TimeSpanType, editedFieldDefinition.ValueFormatter, default(TimeSpan), editedFieldDefinition.TopicName) },
+            { UintType, (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, UintType, editedFieldDefinition.ValueFormatter, default(uint), editedFieldDefinition.TopicName) },
+            { UlongType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, UlongType, editedFieldDefinition.ValueFormatter, default(ulong), editedFieldDefinition.TopicName) },
+            { UshortType , (editedFieldDefinition) => new EditedFieldDefinition(editedFieldDefinition.Name, UshortType, editedFieldDefinition.ValueFormatter, default(ushort), editedFieldDefinition.TopicName) }
         };
 
         private static readonly Dictionary<string, Func<EditedFieldDefinition, FieldDefinitionModel>> fieldDefinitionToModel = new()
         {
             {BooleanType, (editedFieldDefinition)
-                => new BoolFieldDefinitionModel(editedFieldDefinition!.Name, (bool)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter)},
+                => new BoolFieldDefinitionModel(editedFieldDefinition!.Name, (bool)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter, editedFieldDefinition.TopicName)},
             {DateTimeType, (editedFieldDefinition)
-                => new DateTimeFieldDefinitionModel(editedFieldDefinition!.Name, (DateTime)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter)},
+                => new DateTimeFieldDefinitionModel(editedFieldDefinition!.Name, (DateTime)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter, editedFieldDefinition.TopicName)},
             {DoubleType, (editedFieldDefinition)
-                => new DoubleFieldDefinitionModel(editedFieldDefinition!.Name, (double)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter)},
+                => new DoubleFieldDefinitionModel(editedFieldDefinition!.Name, (double)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter, editedFieldDefinition.TopicName)},
             {FloatType, (editedFieldDefinition)
-                => new FloatFieldDefinitionModel(editedFieldDefinition!.Name, (float)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter)},
+                => new FloatFieldDefinitionModel(editedFieldDefinition!.Name, (float)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter, editedFieldDefinition.TopicName)},
             {IntType, (editedFieldDefinition)
-                => new IntFieldDefinitionModel(editedFieldDefinition!.Name, (int)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter)},
+                => new IntFieldDefinitionModel(editedFieldDefinition!.Name, (int)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter, editedFieldDefinition.TopicName)},
             {LongType, (editedFieldDefinition)
-                => new LongFieldDefinitionModel(editedFieldDefinition!.Name, (long)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter)},
+                => new LongFieldDefinitionModel(editedFieldDefinition!.Name, (long)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter, editedFieldDefinition.TopicName)},
             {ShortType, (editedFieldDefinition)
-                => new ShortFieldDefinitionModel(editedFieldDefinition!.Name, (short)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter)},
+                => new ShortFieldDefinitionModel(editedFieldDefinition!.Name, (short)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter, editedFieldDefinition.TopicName)},
             {StringType, (editedFieldDefinition)
-                => new StringFieldDefinitionModel(editedFieldDefinition!.Name, (string)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter)},
+                => new StringFieldDefinitionModel(editedFieldDefinition!.Name, (string)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter, editedFieldDefinition.TopicName)},
             {TimeSpanType, (editedFieldDefinition)
-                => new TimeSpanFieldDefinitionModel(editedFieldDefinition!.Name, (TimeSpan)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter)},
+                => new TimeSpanFieldDefinitionModel(editedFieldDefinition!.Name, (TimeSpan)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter, editedFieldDefinition.TopicName)},
             {UintType, (editedFieldDefinition)
-                => new UintFieldDefinitionModel(editedFieldDefinition!.Name, (uint)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter)},
+                => new UintFieldDefinitionModel(editedFieldDefinition!.Name, (uint)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter, editedFieldDefinition.TopicName)},
             {UlongType, (editedFieldDefinition)
-                => new UlongFieldDefinitionModel(editedFieldDefinition!.Name, (ulong)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter)},
+                => new UlongFieldDefinitionModel(editedFieldDefinition!.Name, (ulong)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter, editedFieldDefinition.TopicName)},
             {UshortType , (editedFieldDefinition)
-                => new UshortFieldDefinitionModel(editedFieldDefinition!.Name, (ushort)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter)}
+                => new UshortFieldDefinitionModel(editedFieldDefinition!.Name, (ushort)editedFieldDefinition!.DefaultValue!, editedFieldDefinition!.ValueFormatter, editedFieldDefinition.TopicName)}
         };
 
         private static readonly Dictionary<Type, Func<FieldDefinitionModel, EditedFieldDefinition>> fieldFormatterFromModel = new()
@@ -104,6 +104,7 @@ namespace pva.SuperV.Blazor.Components.Pages
 
         private EditedFieldDefinition EditedFieldDefinition { get; set; } = default!;
         private FieldValue DefaultValue { get; set; } = default!;
+        private string? TopicName { get; set; } = "";
 
         protected override async Task OnInitializedAsync()
         {
@@ -183,27 +184,28 @@ namespace pva.SuperV.Blazor.Components.Pages
         }
     }
 
-    public class EditedFieldDefinition(string name, string fieldType, string? valueFormatter, object? defaultValue)
+    public class EditedFieldDefinition(string name, string fieldType, string? valueFormatter, object? defaultValue, string? topicName)
     {
-        public EditedFieldDefinition() : this("", "", null, null) { }
+        public EditedFieldDefinition() : this("", "", null, null, "") { }
 
-        public EditedFieldDefinition(BoolFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.BooleanType, field!.ValueFormatter, field!.DefaultValue) { }
-        public EditedFieldDefinition(DateTimeFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.DateTimeType, field!.ValueFormatter, field!.DefaultValue) { }
-        public EditedFieldDefinition(DoubleFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.DoubleType, field!.ValueFormatter, field!.DefaultValue) { }
-        public EditedFieldDefinition(FloatFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.FloatType, field!.ValueFormatter, field!.DefaultValue) { }
-        public EditedFieldDefinition(IntFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.IntType, field!.ValueFormatter, field!.DefaultValue) { }
-        public EditedFieldDefinition(LongFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.LongType, field!.ValueFormatter, field!.DefaultValue) { }
-        public EditedFieldDefinition(ShortFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.ShortType, field!.ValueFormatter, field!.DefaultValue) { }
-        public EditedFieldDefinition(StringFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.StringType, field!.ValueFormatter, field!.DefaultValue) { }
-        public EditedFieldDefinition(TimeSpanFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.TimeSpanType, field!.ValueFormatter, field!.DefaultValue) { }
-        public EditedFieldDefinition(UintFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.UintType, field!.ValueFormatter, field!.DefaultValue) { }
-        public EditedFieldDefinition(UlongFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.UlongType, field!.ValueFormatter, field!.DefaultValue) { }
-        public EditedFieldDefinition(UshortFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.UshortType, field!.ValueFormatter, field!.DefaultValue) { }
+        public EditedFieldDefinition(BoolFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.BooleanType, field!.ValueFormatter, field!.DefaultValue, field.TopicName) { }
+        public EditedFieldDefinition(DateTimeFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.DateTimeType, field!.ValueFormatter, field!.DefaultValue, field.TopicName) { }
+        public EditedFieldDefinition(DoubleFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.DoubleType, field!.ValueFormatter, field!.DefaultValue, field.TopicName) { }
+        public EditedFieldDefinition(FloatFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.FloatType, field!.ValueFormatter, field!.DefaultValue, field.TopicName) { }
+        public EditedFieldDefinition(IntFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.IntType, field!.ValueFormatter, field!.DefaultValue, field.TopicName) { }
+        public EditedFieldDefinition(LongFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.LongType, field!.ValueFormatter, field!.DefaultValue, field.TopicName) { }
+        public EditedFieldDefinition(ShortFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.ShortType, field!.ValueFormatter, field!.DefaultValue, field.TopicName) { }
+        public EditedFieldDefinition(StringFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.StringType, field!.ValueFormatter, field!.DefaultValue, field.TopicName) { }
+        public EditedFieldDefinition(TimeSpanFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.TimeSpanType, field!.ValueFormatter, field!.DefaultValue, field.TopicName) { }
+        public EditedFieldDefinition(UintFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.UintType, field!.ValueFormatter, field!.DefaultValue, field.TopicName) { }
+        public EditedFieldDefinition(UlongFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.UlongType, field!.ValueFormatter, field!.DefaultValue, field.TopicName) { }
+        public EditedFieldDefinition(UshortFieldDefinitionModel? field) : this(field!.Name, FieldDefinition.UshortType, field!.ValueFormatter, field!.DefaultValue, field.TopicName) { }
 
         [Required(AllowEmptyStrings = false)]
         public string Name { get; set; } = name;
         public string FieldType { get; set; } = fieldType;
         public string? ValueFormatter { get; set; } = valueFormatter ?? "";
         public object? DefaultValue { get; set; } = defaultValue;
+        public string? TopicName { get; set; } = topicName ?? "";
     }
 }

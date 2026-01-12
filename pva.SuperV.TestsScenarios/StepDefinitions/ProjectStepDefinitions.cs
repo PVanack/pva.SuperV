@@ -1,5 +1,4 @@
 using pva.Helpers.Extensions;
-using pva.SuperV.Engine;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Classes;
@@ -8,7 +7,6 @@ using pva.SuperV.TestContainers;
 using Shouldly;
 using System.Net;
 using System.Net.Http.Json;
-using TDengine.Driver.Client.Websocket;
 
 namespace pva.SuperV.TestsScenarios.StepDefinitions
 {

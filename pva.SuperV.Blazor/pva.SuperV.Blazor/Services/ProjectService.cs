@@ -170,6 +170,26 @@ namespace pva.SuperV.Blazor.Services
             }
         }
 
+        public async Task<HashSet<string>> GetProjectTopicNames(string projectId)
+        {
+            try
+            {
+                var result = await httpClient.GetAsync($"{baseUri}/{projectId}/topics")
+                    ?? throw new ApiException(NoContentAvailableMessage);
+                if (result.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    HashSet<string>? topicNames = await result.Content.ReadFromJsonAsync<HashSet<string>>();
+                    return topicNames ?? throw new ApiException(NoProjectInResponseMessage);
+                }
+
+                throw new ApiException(result.StatusCode, result.Content);
+            }
+            catch (Exception e)
+            {
+                throw new ApiException(e);
+            }
+        }
+
         public async ValueTask LoadProjectInstancesAsync(string projectId, StreamReader reader)
         {
             try

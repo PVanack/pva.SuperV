@@ -38,11 +38,11 @@ public class FieldDefinitionEndpointsTests
             .Returns(new Model.PagedSearchResult<FieldDefinitionModel>(1, 10, expectedFieldDefinitions.Count, expectedFieldDefinitions));
 
         // WHEN
-        var response = await client.PostAsJsonAsync("/fields/Project/Class/search", search, cancellationToken: TestContext.Current.CancellationToken);
+        var response = await client.PostAsJsonAsync("/fields/Project/Class/search", search, TestContext.Current.CancellationToken);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-        PagedSearchResult<FieldDefinitionModel>? result = await response.Content.ReadFromJsonAsync<PagedSearchResult<FieldDefinitionModel>>(cancellationToken: TestContext.Current.CancellationToken);
+        PagedSearchResult<FieldDefinitionModel>? result = await response.Content.ReadFromJsonAsync<PagedSearchResult<FieldDefinitionModel>>(TestContext.Current.CancellationToken);
         result.ShouldNotBeNull();
         result.PageNumber.ShouldBe(1);
         result.PageSize.ShouldBe(10);
@@ -59,11 +59,11 @@ public class FieldDefinitionEndpointsTests
             .Returns(expectedFieldDefinitions);
 
         // WHEN
-        var response = await client.GetAsync("/fields/Project/Class", cancellationToken: TestContext.Current.CancellationToken);
+        var response = await client.GetAsync("/fields/Project/Class", TestContext.Current.CancellationToken);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-        FieldDefinitionModel[]? fieldDefinitions = await response.Content.ReadFromJsonAsync<FieldDefinitionModel[]>(cancellationToken: TestContext.Current.CancellationToken);
+        FieldDefinitionModel[]? fieldDefinitions = await response.Content.ReadFromJsonAsync<FieldDefinitionModel[]>(TestContext.Current.CancellationToken);
         fieldDefinitions.ShouldBeEquivalentTo(expectedFieldDefinitions.ToArray());
     }
 
@@ -75,7 +75,7 @@ public class FieldDefinitionEndpointsTests
             .ThrowsAsync<UnknownEntityException>();
 
         // WHEN
-        var response = await client.GetAsync("/fields/Project/UnknownClass", cancellationToken: TestContext.Current.CancellationToken);
+        var response = await client.GetAsync("/fields/Project/UnknownClass", TestContext.Current.CancellationToken);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -172,11 +172,11 @@ public class FieldDefinitionEndpointsTests
             .Returns(expectedFieldDefinition);
 
         // WHEN
-        var response = await client.GetAsync($"/fields/Project/Class/{expectedFieldDefinition.Name}", cancellationToken: TestContext.Current.CancellationToken);
+        var response = await client.GetAsync($"/fields/Project/Class/{expectedFieldDefinition.Name}", TestContext.Current.CancellationToken);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-        T? fieldDefinition = await response.Content.ReadFromJsonAsync<T>(cancellationToken: TestContext.Current.CancellationToken);
+        T? fieldDefinition = await response.Content.ReadFromJsonAsync<T>(TestContext.Current.CancellationToken);
         fieldDefinition.ShouldBeEquivalentTo(expectedFieldDefinition);
     }
 
@@ -188,7 +188,7 @@ public class FieldDefinitionEndpointsTests
             .ThrowsAsync<UnknownEntityException>();
 
         // WHEN
-        var response = await client.GetAsync("/fields/Project/Class/UnknownFieldDefinition", cancellationToken: TestContext.Current.CancellationToken);
+        var response = await client.GetAsync("/fields/Project/Class/UnknownFieldDefinition", TestContext.Current.CancellationToken);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -203,11 +203,11 @@ public class FieldDefinitionEndpointsTests
             .Returns(expectedFieldDefinitions);
 
         // WHEN
-        var response = await client.PostAsJsonAsync("/fields/Project/Class", expectedFieldDefinitions, cancellationToken: TestContext.Current.CancellationToken);
+        var response = await client.PostAsJsonAsync("/fields/Project/Class", expectedFieldDefinitions, TestContext.Current.CancellationToken);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.Created);
-        FieldDefinitionModel[]? createdFieldDefinitions = await response.Content.ReadFromJsonAsync<FieldDefinitionModel[]>(cancellationToken: TestContext.Current.CancellationToken);
+        FieldDefinitionModel[]? createdFieldDefinitions = await response.Content.ReadFromJsonAsync<FieldDefinitionModel[]>(TestContext.Current.CancellationToken);
         createdFieldDefinitions.ShouldBeEquivalentTo(expectedFieldDefinitions.ToArray());
     }
 
@@ -220,7 +220,7 @@ public class FieldDefinitionEndpointsTests
             .ThrowsAsync<UnknownEntityException>();
 
         // WHEN
-        var response = await client.PostAsJsonAsync("/fields/Project/Class", expectedFieldDefinitions, cancellationToken: TestContext.Current.CancellationToken);
+        var response = await client.PostAsJsonAsync("/fields/Project/Class", expectedFieldDefinitions, TestContext.Current.CancellationToken);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -235,7 +235,7 @@ public class FieldDefinitionEndpointsTests
             .ThrowsAsync<NonWipProjectException>();
 
         // WHEN
-        var response = await client.PostAsJsonAsync("/fields/RunnableProject/Class", expectedFieldDefinitions, cancellationToken: TestContext.Current.CancellationToken);
+        var response = await client.PostAsJsonAsync("/fields/RunnableProject/Class", expectedFieldDefinitions, TestContext.Current.CancellationToken);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -250,11 +250,11 @@ public class FieldDefinitionEndpointsTests
             .Returns(expectedFieldDefinition);
 
         // WHEN
-        var response = await client.PutAsJsonAsync($"/fields/Project/Class/{expectedFieldDefinition.Name}", expectedFieldDefinition, cancellationToken: TestContext.Current.CancellationToken);
+        var response = await client.PutAsJsonAsync($"/fields/Project/Class/{expectedFieldDefinition.Name}", expectedFieldDefinition, TestContext.Current.CancellationToken);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
-        FieldDefinitionModel? updatedFieldDefinition = await response.Content.ReadFromJsonAsync<FieldDefinitionModel>(cancellationToken: TestContext.Current.CancellationToken);
+        FieldDefinitionModel? updatedFieldDefinition = await response.Content.ReadFromJsonAsync<FieldDefinitionModel>(TestContext.Current.CancellationToken);
         updatedFieldDefinition.ShouldBeEquivalentTo(expectedFieldDefinition);
     }
 
@@ -267,7 +267,7 @@ public class FieldDefinitionEndpointsTests
             .ThrowsAsync<UnknownEntityException>();
 
         // WHEN
-        var response = await client.PutAsJsonAsync($"/fields/Project/Class/{expectedFieldDefinition.Name}", expectedFieldDefinition, cancellationToken: TestContext.Current.CancellationToken);
+        var response = await client.PutAsJsonAsync($"/fields/Project/Class/{expectedFieldDefinition.Name}", expectedFieldDefinition, TestContext.Current.CancellationToken);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -282,7 +282,7 @@ public class FieldDefinitionEndpointsTests
             .ThrowsAsync<NonWipProjectException>();
 
         // WHEN
-        var response = await client.PutAsJsonAsync($"/fields/RunnableProject/Class/{expectedFieldDefinition.Name}", expectedFieldDefinition, cancellationToken: TestContext.Current.CancellationToken);
+        var response = await client.PutAsJsonAsync($"/fields/RunnableProject/Class/{expectedFieldDefinition.Name}", expectedFieldDefinition, TestContext.Current.CancellationToken);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);
@@ -294,7 +294,7 @@ public class FieldDefinitionEndpointsTests
         // GIVEN
 
         // WHEN
-        var response = await client.DeleteAsync("/fields/Project/Class/IntField", cancellationToken: TestContext.Current.CancellationToken);
+        var response = await client.DeleteAsync("/fields/Project/Class/IntField", TestContext.Current.CancellationToken);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NoContent);
@@ -308,7 +308,7 @@ public class FieldDefinitionEndpointsTests
             .Do(_ => throw new UnknownEntityException());
 
         // WHEN
-        var response = await client.DeleteAsync("/fields/Project/UnknownClass/IntField", cancellationToken: TestContext.Current.CancellationToken);
+        var response = await client.DeleteAsync("/fields/Project/UnknownClass/IntField", TestContext.Current.CancellationToken);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotFound);
@@ -322,7 +322,7 @@ public class FieldDefinitionEndpointsTests
             .Do(_ => throw new NonWipProjectException());
 
         // WHEN
-        var response = await client.DeleteAsync("/fields/RunnableProject/Class/IntField", cancellationToken: TestContext.Current.CancellationToken);
+        var response = await client.DeleteAsync("/fields/RunnableProject/Class/IntField", TestContext.Current.CancellationToken);
 
         // THEN
         response.StatusCode.ShouldBe(System.Net.HttpStatusCode.BadRequest);

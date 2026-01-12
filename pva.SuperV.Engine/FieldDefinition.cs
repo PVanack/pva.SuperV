@@ -3,6 +3,8 @@ using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Engine.Processing;
 using System.Globalization;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.Channels;
 
 namespace pva.SuperV.Engine
 {
@@ -29,8 +31,7 @@ namespace pva.SuperV.Engine
             get => _name;
             set
             {
-                _name = value;
-                IdentifierValidation.ValidateIdentifier("field", value);
+                _name = IdentifierValidation.ValidateIdentifier("field", value);
             }
         }
 
@@ -59,6 +60,23 @@ namespace pva.SuperV.Engine
         public T? DefaultValue { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the topic to trigger script(s) when the value changes.
+        /// </summary>
+        /// <value>
+        /// The name of the topic.
+        /// </value>
+        public string? TopicName { get; init; }
+
+        /// <summary>
+        /// Gets or sets the field value changed event channel.
+        /// </summary>
+        /// <value>
+        /// The field value changed event.
+        /// </value>
+        [JsonIgnore]
+        public Channel<FieldValueChangedEvent>? FieldValueChangedEventChannel { get; set; }
+
+        /// <summary>
         /// Gets or sets the value post change processings.
         /// </summary>
         /// <value>
@@ -67,10 +85,10 @@ namespace pva.SuperV.Engine
         public List<IFieldValueProcessing> ValuePostChangeProcessings { get; set; } = [];
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FieldDefinition{T}"/> class.
+        /// Initializes a new instance of the <see cref="FieldDefinition{T}"/> class with the initial field value set to the default of <typeparamref name="T"/>.
         /// </summary>
         /// <param name="name">The name of the field.</param>
-        public FieldDefinition(string name) : this(name, default)
+        public FieldDefinition(string name) : this(name, default, "")
         {
         }
 
@@ -78,18 +96,20 @@ namespace pva.SuperV.Engine
         /// Initializes a new instance of the <see cref="FieldDefinition{T}"/> class.
         /// </summary>
         /// <param name="name">The name of the field.</param>
-        /// <param name="defaultValue">The default value for fields.</param>
+        /// <param name="defaultValue">The default initial value for instances field.</param>
+        /// <param name="topicName">Name of topic to publish to when field value changes.Can be null if no publishing is required.</param>
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-        public FieldDefinition(string name, T? defaultValue)
+        public FieldDefinition(string name, T? defaultValue, string? topicName = "")
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         {
             Name = name;
             DefaultValue = defaultValue ?? default;
+            TopicName = topicName?.Trim();
             Type = typeof(T);
         }
 
         /// <summary>
-        /// Gets the C# code to create field of an <see cref="Class"/>.
+        /// Gets the C# code to create field for an <see cref="Instance"/> of a <see cref="Class"/>.
         /// </summary>
         /// <returns>C# code for field.</returns>
         public string GetCode()
@@ -126,6 +146,8 @@ namespace pva.SuperV.Engine
             => (FieldDefinition<T>)new(Name, DefaultValue)
             {
                 Formatter = Formatter,
+                TopicName = TopicName,
+                FieldValueChangedEventChannel = FieldValueChangedEventChannel,
                 ValuePostChangeProcessings = [.. ValuePostChangeProcessings]
             };
 

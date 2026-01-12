@@ -14,7 +14,7 @@ namespace pva.SuperV.EngineTests
         public void GivenInvalidFieldName_WhenCreatingField_ThenInvalidFieldNameExceptionIsThrown(string invalidFieldName)
         {
             // WHEN/THEN
-            Assert.Throws<InvalidIdentifierNameException>(() => new FieldDefinition<int>(invalidFieldName, 10));
+            Should.Throw<InvalidIdentifierNameException>(() => new FieldDefinition<int>(invalidFieldName, 10));
         }
 
         [Fact]

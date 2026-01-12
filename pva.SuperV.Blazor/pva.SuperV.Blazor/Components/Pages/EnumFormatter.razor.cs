@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace pva.SuperV.Blazor.Components.Pages;
+
 public partial class EnumFormatter
 {
     [Inject]

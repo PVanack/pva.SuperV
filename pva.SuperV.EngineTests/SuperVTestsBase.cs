@@ -40,6 +40,11 @@ namespace pva.SuperV.EngineTests
         protected const string UlongFieldName = "UlongField";
         protected const string UshortFieldName = "UshortField";
         protected const string IntFieldWithFormatName = "IntFieldWithFormat";
+        protected const string TopicName = "TestTopic";
+        protected const string ClassWithTopicName = "ClassWithTopic";
+        protected const string FieldWithTopicName = "IntFieldWithTopic";
+        protected const string InstanceWithTopicName = "InstanceWithTopic";
+        protected const string ScriptName = "Script";
 
         protected static Dictionary<int, string> AlarmStatesFormatterValues { get; } = new() {
                 { -2, "LowLow" },
@@ -103,7 +108,7 @@ namespace pva.SuperV.EngineTests
             EnumFormatter formatter = new(AlarmStatesFormatterName, AlarmStatesFormatterValues);
             wipProject.AddFieldFormatter(formatter);
             Class clazz = wipProject.AddClass(ClassName, BaseClassName);
-            wipProject.AddField(ClassName, new FieldDefinition<int>(ValueFieldName, 10));
+            wipProject.AddField(ClassName, new FieldDefinition<int>(ValueFieldName, 10, "TopicName"));
             wipProject.AddField(ClassName, new FieldDefinition<int>(HighHighLimitFieldName, 100));
             wipProject.AddField(ClassName, new FieldDefinition<int>(HighLimitFieldName, 90));
             wipProject.AddField(ClassName, new FieldDefinition<int>(LowLimitFieldName, 10));
@@ -133,6 +138,14 @@ namespace pva.SuperV.EngineTests
             AddFieldHistorization<ushort>(wipProject, historyRepository, allFieldsClass, UshortFieldName);
             AddFieldHistorization<int>(wipProject, historyRepository, allFieldsClass, IntFieldWithFormatName, AlarmStatesFormatterName);
 
+            _ = wipProject.AddClass(ClassWithTopicName);
+            wipProject.AddField(ClassWithTopicName, new FieldDefinition<int>(FieldWithTopicName, 10, TopicName));
+            wipProject.AddField(ClassWithTopicName, new FieldDefinition<int>(ValueFieldName, 10));
+            const string scriptSource = @"
+                {{Value}} = {{IntFieldWithTopic}};
+";
+            ScriptDefinition script = new(ScriptName, TopicName, scriptSource);
+            wipProject.AddScript(script);
             return wipProject;
         }
 

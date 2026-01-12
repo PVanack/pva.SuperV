@@ -8,6 +8,7 @@ namespace pva.SuperV.Model.FieldDefinitions
     public record ShortFieldDefinitionModel(
             string Name,
             [property: Description("Default value")] short DefaultValue,
-            string? ValueFormatter)
-            : FieldDefinitionModel(Name, typeof(short).ToString(), ValueFormatter);
+            string? ValueFormatter,
+            string? TopicName = "")
+            : FieldDefinitionModel(Name, typeof(short).ToString(), ValueFormatter, TopicName);
 }

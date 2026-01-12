@@ -8,6 +8,7 @@ namespace pva.SuperV.Model.FieldDefinitions
     public record DateTimeFieldDefinitionModel(
             string Name,
             [property: Description("Default value")] DateTime DefaultValue,
-            string? ValueFormatter)
-            : FieldDefinitionModel(Name, typeof(DateTime).ToString(), ValueFormatter);
+            string? ValueFormatter,
+            string? TopicName = "")
+            : FieldDefinitionModel(Name, typeof(DateTime).ToString(), ValueFormatter, TopicName);
 }

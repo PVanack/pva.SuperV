@@ -4,6 +4,7 @@ using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Engine.HistoryStorage;
 using pva.SuperV.Engine.Processing;
 using Shouldly;
+using System.Threading.Channels;
 
 namespace pva.SuperV.EngineTests
 {
@@ -103,7 +104,8 @@ namespace pva.SuperV.EngineTests
                 {
                     IFieldValueProcessing savedProcessing = savedFieldDefinition.ValuePostChangeProcessings[index];
                     IFieldValueProcessing loadedProcesing = loadedFieldDefinition!.ValuePostChangeProcessings[index];
-                    loadedProcesing?.ShouldBeEquivalentTo(savedProcessing);
+                    loadedProcesing?.ShouldBeEquivalentTo(savedProcessing,
+                        options => options.ExcludeType(typeof(Channel<FieldValueChangedEvent>)));
                 }
             });
         }

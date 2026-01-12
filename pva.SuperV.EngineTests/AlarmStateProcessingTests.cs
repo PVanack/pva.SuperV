@@ -3,7 +3,6 @@ using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.Processing;
 using Shouldly;
-using Xunit;
 
 namespace pva.SuperV.EngineTests
 {
@@ -181,7 +180,7 @@ namespace pva.SuperV.EngineTests
         public void GivenClassWithAlarmState_WhenRemovingFieldUsedInProcessing_ThenEntityInUseExceptionIsThrown(string usedField)
         {
             // WHEN/THEN
-            Assert.Throws<EntityInUseException>(() => clazz.RemoveField(usedField));
+            Should.Throw<EntityInUseException>(() => clazz.RemoveField(usedField));
         }
 
 

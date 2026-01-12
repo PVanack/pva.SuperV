@@ -54,7 +54,25 @@ namespace pva.SuperV.Engine
             HistoryRepositories = new(runnableProject.HistoryRepositories);
             HistoryRepositories.Values.ForEach(repository
                 => repository.HistoryStorageEngine = HistoryStorageEngine);
+            TopicsChannels = new(runnableProject.TopicsChannels);
             ToLoadInstances = new(runnableProject.Instances, StringComparer.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Clones as <see cref="RunnableProject"/>.
+        /// </summary>
+        /// <returns><see cref="RunnableProject"/></returns>
+        public RunnableProject CloneAsRunnable()
+            => new(this);
+
+        /// <summary>
+        /// Unloads the project.
+        /// </summary>
+        public override void Unload()
+        {
+            ToLoadInstances.Values.ForEach(instance => instance.Dispose());
+            ToLoadInstances.Clear();
+            base.Unload();
         }
 
         /// <summary>
@@ -142,9 +160,10 @@ namespace pva.SuperV.Engine
         public IFieldDefinition AddField(string className, IFieldDefinition field)
         {
             Class clazz = GetClass(className);
-            return clazz.AddField(field);
+            IFieldDefinition fieldDefinition = clazz.AddField(field);
+            SetFieldValueChangeChannel(fieldDefinition);
+            return fieldDefinition;
         }
-
         /// <summary>
         /// Adds a field to a class with a specific field formatter.
         /// </summary>
@@ -157,7 +176,9 @@ namespace pva.SuperV.Engine
             Class clazz = GetClass(className);
             FieldFormatter? formatter = GetFormatter(formatterName);
             formatter?.ValidateAllowedType(field.Type);
-            return clazz.AddField(field, formatter);
+            IFieldDefinition fieldDefinition = clazz.AddField(field, formatter);
+            SetFieldValueChangeChannel(fieldDefinition);
+            return fieldDefinition;
         }
 
         public IFieldDefinition UpdateField(string className, string fieldName, IFieldDefinition field, string? formatterName)
@@ -165,7 +186,9 @@ namespace pva.SuperV.Engine
             Class clazz = GetClass(className);
             FieldFormatter? formatter = GetFormatter(formatterName);
             formatter?.ValidateAllowedType(field.Type);
-            return clazz.UpdateField(fieldName, field, formatter);
+            IFieldDefinition fieldDefinition = clazz.UpdateField(fieldName, field, formatter);
+            SetFieldValueChangeChannel(fieldDefinition);
+            return fieldDefinition;
         }
 
         /// <summary>
@@ -315,22 +338,45 @@ namespace pva.SuperV.Engine
             });
         }
 
-
         /// <summary>
-        /// Clones as <see cref="RunnableProject"/>.
+        /// Adds a script definition.
         /// </summary>
-        /// <returns><see cref="RunnableProject"/></returns>
-        public RunnableProject CloneAsRunnable()
-            => new(this);
-
-        /// <summary>
-        /// Unloads the project.
-        /// </summary>
-        public override void Unload()
+        /// <param name="script">The script.</param>
+        /// <exception cref="EntityAlreadyExistException">Script</exception>
+        public void AddScript(ScriptDefinition script)
         {
-            ToLoadInstances.Values.ForEach(instance => instance.Dispose());
-            ToLoadInstances.Clear();
-            base.Unload();
+            if (ScriptDefinitions.ContainsKey(script.Name))
+            {
+                throw new EntityAlreadyExistException("Script", script.Name);
+            }
+            ScriptDefinitions.Add(script.Name, script);
+        }
+
+        /// <summary>
+        /// Updates a script definition.
+        /// </summary>
+        /// <param name="script">The script.</param>
+        /// <exception cref="UnknownEntityException">Script</exception>
+        public void Updatecript(ScriptDefinition script)
+        {
+            if (!ScriptDefinitions.ContainsKey(script.Name))
+            {
+                throw new UnknownEntityException("Script", script.Name);
+            }
+            ScriptDefinitions[script.Name] = script;
+        }
+        /// <summary>
+        /// Removes a script definition.
+        /// </summary>
+        /// <param name="scriptName">The script name.</param>
+        /// <exception cref="UnknownEntityException">Script</exception>
+        public void RemoveScript(string scriptName)
+        {
+            if (!ScriptDefinitions.ContainsKey(scriptName))
+            {
+                throw new UnknownEntityException("Script", scriptName);
+            }
+            ScriptDefinitions.Remove(scriptName);
         }
     }
 }

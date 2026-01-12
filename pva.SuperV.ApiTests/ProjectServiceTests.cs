@@ -28,6 +28,7 @@ namespace pva.SuperV.ApiTests
                                     "Type": "System.DateTime",
                                     "Name": "Value",
                                     "DefaultValue": "0001-01-01T00:00:00",
+                                    "TopicName": "TestClass.Value",
                                     "ValuePostChangeProcessings": []
                                 }
                             }
@@ -169,7 +170,7 @@ namespace pva.SuperV.ApiTests
 
             // Assert
             List<ProjectModel> expectedProjects = [.. Project.Projects.Values
-                .Where(project=> project.Name!.Contains("DummyProject1"))
+                .Where(project => project.Name!.Contains("DummyProject1"))
                 .Select(project => ProjectMapper.ToDto(project))];
 
             pagedResult.ShouldNotBeNull();

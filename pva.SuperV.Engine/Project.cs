@@ -2,8 +2,10 @@
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Engine.HistoryStorage;
+using pva.SuperV.Engine.Processing;
 using System.Collections.Concurrent;
 using System.Text.Json.Serialization;
+using System.Threading.Channels;
 
 namespace pva.SuperV.Engine
 {
@@ -114,6 +116,23 @@ namespace pva.SuperV.Engine
         public Dictionary<string, HistoryRepository> HistoryRepositories { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
+        /// Gets the channels associated to topics.
+        /// </summary>
+        /// <value>
+        /// The channels.
+        /// </value>
+        [JsonIgnore]
+        public Dictionary<string, Channel<FieldValueChangedEvent>> TopicsChannels { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Gets the script definitions.
+        /// </summary>
+        /// <value>
+        /// The script definitions.
+        /// </value>
+        public Dictionary<string, ScriptDefinition> ScriptDefinitions { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
         /// List of projects in use.
         /// </summary>
         public static ConcurrentDictionary<string, Project> Projects { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -186,7 +205,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="className">Name of the class.</param>
         /// <returns>Found class</returns>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownClassException"></exception>
+        /// <exception cref="UnknownEntityException">Class wasn't found.</exception>
         public Class GetClass(string className)
         {
             if (Classes.TryGetValue(className, out Class? value))
@@ -216,7 +235,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="formatterName">Name of the formatter.</param>
         /// <returns><see cref="FieldFormatter"/></returns>
-        /// <exception cref="pva.SuperV.Engine.Exceptions.UnknownFormatterException"></exception>
+        /// <exception cref="UnknownEntityException">The field formatter doesn't exist</exception>
         public FieldFormatter? GetFormatter(string? formatterName)
         {
             if (String.IsNullOrEmpty(formatterName))
@@ -288,8 +307,9 @@ namespace pva.SuperV.Engine
         }
 
         /// <summary>
-        /// Unloads the project.
+        /// Unloads a project.
         /// </summary>
+        /// <param name="project">The project to be unloaded.</param>
         public static void Unload(Project project)
         {
             WeakReference? projectAssemblyLoaderWeakRef = null;
@@ -344,6 +364,41 @@ namespace pva.SuperV.Engine
             Unload();
         }
 
+        /// <summary>
+        /// Gets the identifier of project.
+        /// </summary>
+        /// <returns>Project ID</returns>
         public abstract string GetId();
+
+        /// <summary>
+        /// Sets the field value change channel.
+        /// </summary>
+        /// <param name="fieldDefinition">The field definition.</param>
+        public void SetFieldValueChangeChannel(IFieldDefinition fieldDefinition)
+        {
+            if (!String.IsNullOrEmpty(fieldDefinition.TopicName))
+            {
+                Channel<FieldValueChangedEvent>? topicChannel = null;
+                if (!TopicsChannels.TryGetValue(fieldDefinition.TopicName, out topicChannel))
+                {
+                    topicChannel = Channel.CreateUnbounded<FieldValueChangedEvent>(
+                        new UnboundedChannelOptions
+                        {
+                            SingleWriter = true,
+                            SingleReader = false,
+                            AllowSynchronousContinuations = false
+                        });
+                    TopicsChannels.Add(fieldDefinition.TopicName, topicChannel);
+                }
+                fieldDefinition.FieldValueChangedEventChannel = topicChannel;
+            }
+        }
+
+        /// <summary>
+        /// Gets the topic names.
+        /// </summary>
+        /// <returns>List of topic names.</returns>
+        public HashSet<string> GetTopicNames() =>
+            TopicsChannels.Keys.ToHashSet();
     }
 }

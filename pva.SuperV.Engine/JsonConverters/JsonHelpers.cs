@@ -12,6 +12,7 @@ namespace pva.SuperV.Engine.JsonConverters
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <param name="propertyName">Name of the property.</param>
+        /// <param name="readFromReader">Indicates if the property should be read form reader</param>
         /// <returns>Value of property from Json</returns>
         /// <exception cref="JsonException"></exception>
         public static string? GetStringPropertyFromUtfReader(ref Utf8JsonReader reader, string propertyName, bool readFromReader = true)

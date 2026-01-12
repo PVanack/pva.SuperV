@@ -16,8 +16,7 @@ namespace pva.SuperV.Engine.FieldFormatters
             get => _name;
             init
             {
-                IdentifierValidation.ValidateIdentifier("field value formatter", value);
-                _name = value;
+                _name = IdentifierValidation.ValidateIdentifier("field value formatter", value);
             }
         }
 

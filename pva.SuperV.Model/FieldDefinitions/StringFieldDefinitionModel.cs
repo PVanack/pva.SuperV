@@ -8,6 +8,7 @@ namespace pva.SuperV.Model.FieldDefinitions
     public record StringFieldDefinitionModel(
             string Name,
             [property: Description("Default value")] string? DefaultValue,
-            string? ValueFormatter)
-            : FieldDefinitionModel(Name, typeof(string).ToString(), ValueFormatter);
+            string? ValueFormatter,
+            string? TopicName = "")
+            : FieldDefinitionModel(Name, typeof(string).ToString(), ValueFormatter, TopicName);
 }
