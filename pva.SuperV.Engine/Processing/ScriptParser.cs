@@ -9,7 +9,7 @@ namespace pva.SuperV.Engine.Processing
     public static class ScriptParser
     {
         /// <summary>
-        /// Parses the line, generating an array of lines and removing the blank lines.
+        /// Parses the line, generating an array of lines and removing the blank and commented lines.
         /// </summary>
         /// <param name="script">The script.</param>
         /// <returns>List of lines.</returns>
@@ -22,13 +22,8 @@ namespace pva.SuperV.Engine.Processing
                 while ((line = reader.ReadLine()) != null)
                 {
                     line = line.Trim();
-                    if (line.Length == 0)
-                    {
-                        continue; // Skip empty lines
-                    }
-
                     lines.AddRange([.. line.Split('\n')
-                        .Where(l => l.Length > 0)]);
+                        .Where(l => l.Length > 0|| l.StartsWith("//"))]);
                 }
             }
             return lines;
