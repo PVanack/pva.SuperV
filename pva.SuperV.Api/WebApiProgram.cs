@@ -10,6 +10,7 @@ using pva.SuperV.Api.Routes.HistoryRepositories;
 using pva.SuperV.Api.Routes.HistoryValues;
 using pva.SuperV.Api.Routes.Instances;
 using pva.SuperV.Api.Routes.Projects;
+using pva.SuperV.Api.Routes.Scripts;
 using pva.SuperV.Api.Services.Classes;
 using pva.SuperV.Api.Services.FieldDefinitions;
 using pva.SuperV.Api.Services.FieldFormatters;
@@ -18,6 +19,7 @@ using pva.SuperV.Api.Services.History;
 using pva.SuperV.Api.Services.HistoryRepositories;
 using pva.SuperV.Api.Services.Instances;
 using pva.SuperV.Api.Services.Projects;
+using pva.SuperV.Api.Services.Scripts;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Classes;
 using pva.SuperV.Model.FieldDefinitions;
@@ -66,7 +68,8 @@ namespace pva.SuperV.Api
                 .AddSingleton<IFieldProcessingService, FieldProcessingService>()
                 .AddSingleton<IInstanceService, InstanceService>()
                 .AddSingleton<IFieldValueService, FieldValueService>()
-                .AddSingleton<IHistoryValuesService, HistoryValuesService>();
+                .AddSingleton<IHistoryValuesService, HistoryValuesService>()
+                .AddSingleton<IScriptService, ScriptService>();
             builder.Services.AddOpenApi(options =>
             {
                 options.AddDocumentTransformer((document, _, __) =>
@@ -125,7 +128,8 @@ namespace pva.SuperV.Api
                .MapFieldDefinitionEndpoints()
                .MapFieldProcessingEndpoints()
                .MapInstancesEndpoints()
-               .MapHistoryValuesEndpoints();
+               .MapHistoryValuesEndpoints()
+               .MapScriptEndpoints();
             app.UseCors(MyAllowSpecificOrigins);
 
             logger.Info("Starting SuperV web API");
@@ -207,5 +211,8 @@ namespace pva.SuperV.Api
     [JsonSerializable(typeof(List<HistoryStatisticsRawRowModel>))]
     [JsonSerializable(typeof(HistoryStatisticsResultModel))]
     [JsonSerializable(typeof(List<HistoryStatisticsRowModel>))]
+
+    [JsonSerializable(typeof(ScriptDefinitionModel))]
+    [JsonSerializable(typeof(List<ScriptDefinitionModel>))]
     internal partial class AppJsonSerializerContext : JsonSerializerContext;
 }

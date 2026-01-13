@@ -174,7 +174,7 @@ namespace pva.SuperV.ApiTests
         {
             DateTime timestamp = DateTime.UtcNow.Date;
             runnableProject!.SetInstanceValue<TValue>(AllFieldsInstanceName, fieldName, value, timestamp);
-            TModel? model = (TModel?)Activator.CreateInstance(typeof(TModel), new object[] { value!, null, QualityLevel.Good, timestamp });
+            TModel? model = (TModel?)Activator.CreateInstance(typeof(TModel), [value!, null, QualityLevel.Good, timestamp]);
             HistoryStatisticsResultModel expectedHistoryResult = new(
                 [new HistoryStatisticResultFieldModel(fieldName, typeof(TValue).ToString(), 0, statisticalFunction)],
                 [new HistoryStatisticsRowModel(timestamp, timestamp, timestamp.AddHours(1), TimeSpan.FromHours(1), QualityLevel.Good,

@@ -357,7 +357,7 @@ namespace pva.SuperV.Engine
         /// </summary>
         /// <param name="script">The script.</param>
         /// <exception cref="UnknownEntityException">Script</exception>
-        public void Updatecript(ScriptDefinition script)
+        public void UpdateScript(ScriptDefinition script)
         {
             if (!ScriptDefinitions.ContainsKey(script.Name))
             {

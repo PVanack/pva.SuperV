@@ -18,6 +18,7 @@ namespace pva.SuperV.ApiTests
         public IInstanceService? MockedInstanceService { get; private set; }
         public IFieldValueService? MockedFieldValueService { get; private set; }
         public IHistoryValuesService? MockedHistoryValueService { get; private set; }
+        public IScriptService? MockedScriptService { get; private set; }
 
         protected override IHost CreateHost(IHostBuilder builder)
         {
@@ -32,6 +33,7 @@ namespace pva.SuperV.ApiTests
                 MockedInstanceService = CreateMockedService<IInstanceService>(services, MockedInstanceService);
                 MockedFieldValueService = CreateMockedService<IFieldValueService>(services, MockedFieldValueService);
                 MockedHistoryValueService = CreateMockedService<IHistoryValuesService>(services, MockedHistoryValueService);
+                MockedScriptService = CreateMockedService<IScriptService>(services, MockedScriptService);
             });
             return base.CreateHost(builder);
         }

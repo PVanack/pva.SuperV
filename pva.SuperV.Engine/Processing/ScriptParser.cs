@@ -23,7 +23,7 @@ namespace pva.SuperV.Engine.Processing
                 {
                     line = line.Trim();
                     lines.AddRange([.. line.Split('\n')
-                        .Where(l => l.Length > 0|| l.StartsWith("//"))]);
+                        .Where(l => l.Length > 0 && !l.Trim().StartsWith("//"))]);
                 }
             }
             return lines;
