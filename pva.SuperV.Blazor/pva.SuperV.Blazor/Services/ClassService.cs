@@ -114,7 +114,7 @@ namespace pva.SuperV.Blazor.Services
                 if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     ClassModel? clazz = await result.Content.ReadFromJsonAsync<ClassModel>();
-                    return clazz ?? throw new ApiException("No field formatter in response");
+                    return clazz ?? throw new ApiException("No class in response");
                 }
 
                 throw new ApiException(result.StatusCode, result.Content);

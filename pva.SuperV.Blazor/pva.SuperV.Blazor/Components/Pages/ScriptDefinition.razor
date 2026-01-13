@@ -1,26 +1,28 @@
-﻿@page "/class/{ProjectId}"
-@page "/class/{ProjectId}/{ClassName}"
+﻿@page "/script/{ProjectId}"
+@page "/script/{ProjectId}/{ScriptName}"
 
 <PageTitle>@pageTitle</PageTitle>
 
 <h1>@pageTitle</h1>
 
-<EditForm Model="@EditedClass" OnValidSubmit="OnValidSubmit">
+<EditForm Model="@EditedScript" OnValidSubmit="OnValidSubmit">
 	<DataAnnotationsValidator />
 	<MudGrid>
 		<MudItem xs="12" sm="7">
 			<MudCard>
 				<MudCardContent>
 					<MudFocusTrap DefaultFocus=DefaultFocus.FirstChild>
-						<MudTextField Disabled="@isModification" @bind-Value="EditedClass.Name"
-									  Label="Class name" For="@(() => EditedClass.Name)" Variant="Variant.Outlined"/>
-						<MudSelect T="string" ValueChanged="@OnBaseClassChanged" Value="EditedClass?.BaseClassName"
-								   Label="Select base class" Placeholder="Base class" Variant="Variant.Outlined">
-							@foreach (var baseClassName in BaseClasses)
+						<MudTextField Disabled="@isModification" @bind-Value="EditedScript.Name"
+									  Label="Script name" For="@(() => EditedScript.Name)" Variant="Variant.Outlined"/>
+						<MudSelect T="string" ValueChanged="@OnTopicNameChanged" Value="EditedScript?.TopicName"
+								   Label="Select topic name" Placeholder="Topic name" Variant="Variant.Outlined">
+							@foreach (var topicName in TopicNames)
 							{
-								<MudSelectItem Value="baseClassName">@baseClassName</MudSelectItem>
+								<MudSelectItem Value="topicName">@topicName</MudSelectItem>
 							}
 						</MudSelect>
+						<MudTextField Disabled="@isModification" @bind-Value="EditedScript.Source" Lines="10"
+									  Label="Script source code" For="@(() => EditedScript.Source)" Variant="Variant.Outlined" />
 					</MudFocusTrap>
 				</MudCardContent>
 				<MudCardActions>

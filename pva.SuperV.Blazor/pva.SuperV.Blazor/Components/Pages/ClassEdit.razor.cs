@@ -53,7 +53,7 @@ namespace pva.SuperV.Blazor.Components.Pages
                  .Select(clazz => clazz.Name)];
         }
 
-        private void OnFormatterTypeChanged(string selectedType)
+        private void OnBaseClassChanged(string selectedType)
         {
             EditedClass.BaseClassName = selectedType;
             StateHasChanged();
@@ -71,15 +71,15 @@ namespace pva.SuperV.Blazor.Components.Pages
             {
                 await ClassService.CreateClassAsync(ProjectId, clazz);
             }
-            GoBackToHistoryRepositories();
+            GoBackToClasses();
         }
 
         private void CancelSubmit()
         {
-            GoBackToHistoryRepositories();
+            GoBackToClasses();
         }
 
-        private void GoBackToHistoryRepositories()
+        private void GoBackToClasses()
         {
             NavigationManager.NavigateTo($"/classes/{ProjectId}");
         }

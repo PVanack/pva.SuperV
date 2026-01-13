@@ -22,16 +22,18 @@ namespace pva.SuperV.Blazor
 
             builder.Services
                 .AddScoped<State>()
-                .AddScoped<IClassService, ClassService>(_ => new(BuildHttpClient(builder)))
                 .AddScoped<IProjectService, ProjectService>(_ => new(BuildHttpClient(builder)))
-                .AddScoped<IFieldDefinitionService, FieldDefinitionService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IClassService, ClassService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IHistoryRepositoryService, HistoryRepositoryService>(_ => new(BuildHttpClient(builder)))
                 .AddScoped<IFieldFormatterService, FieldFormatterService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IFieldDefinitionService, FieldDefinitionService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IFieldProcessingService, FieldProcessingService>(_ => new(BuildHttpClient(builder)))
                 .AddScoped<IInstanceService, InstanceService>(_ => new(BuildHttpClient(builder)))
                 .AddScoped<IFieldValueService, FieldValueService>(_ => new(BuildHttpClient(builder)))
-                .AddScoped<IFieldProcessingService, FieldProcessingService>(_ => new(BuildHttpClient(builder)))
-                .AddScoped<IHistoryRepositoryService, HistoryRepositoryService>(_ => new(BuildHttpClient(builder)));
+                .AddScoped<IScriptService, ScriptService>(_ => new(BuildHttpClient(builder)));
 
             var app = builder.Build();
+            app.MapStaticAssets();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -49,11 +51,11 @@ namespace pva.SuperV.Blazor
 
             app.UseAntiforgery();
 
-            app.MapStaticAssets();
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode()
                 .AddInteractiveWebAssemblyRenderMode()
                 .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
+            app.MapStaticAssets();
 
             app.Run();
         }
