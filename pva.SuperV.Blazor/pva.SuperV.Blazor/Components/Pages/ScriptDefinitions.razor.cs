@@ -30,7 +30,7 @@ public partial class ScriptDefinitions
 
     protected override void OnInitialized()
     {
-        State.SetClassesBreadcrumb(ProjectId);
+        State.SetScriptsBreadcrumb(ProjectId);
         base.OnInitialized();
     }
 

@@ -40,7 +40,7 @@ namespace pva.SuperV.Blazor.Components.Pages
             {
                 ScriptDefinitionModel script = await ScriptService.GetScriptAsync(ProjectId, ScriptName);
                 EditedScript = new(script);
-                State.SetClassBreadcrumb(ProjectId, EditedScript!.Name);
+                State.SetScriptBreadcrumb(ProjectId, EditedScript!.Name);
             }
             pageTitle = isModification ? $"Script {EditedScript!.Name}" : "New script";
             TopicNames = await ProjectService.GetProjectTopicNames(ProjectId);

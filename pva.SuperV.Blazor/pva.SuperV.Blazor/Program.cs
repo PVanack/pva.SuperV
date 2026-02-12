@@ -18,9 +18,8 @@ namespace pva.SuperV.Blazor
                     => options.DetailedErrors = builder.Environment.IsDevelopment())
                 .AddInteractiveServerComponents(options => options.DetailedErrors = true)
                 .AddInteractiveWebAssemblyComponents();
-            builder.Services.AddMudServices();
-
             builder.Services
+                .AddMudServices()
                 .AddScoped<State>()
                 .AddScoped<IProjectService, ProjectService>(_ => new(BuildHttpClient(builder)))
                 .AddScoped<IClassService, ClassService>(_ => new(BuildHttpClient(builder)))
@@ -47,15 +46,12 @@ namespace pva.SuperV.Blazor
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-
-            app.UseAntiforgery();
-
+            app.UseHttpsRedirection()
+                .UseAntiforgery();
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode()
                 .AddInteractiveWebAssemblyRenderMode()
                 .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
-            app.MapStaticAssets();
 
             app.Run();
         }

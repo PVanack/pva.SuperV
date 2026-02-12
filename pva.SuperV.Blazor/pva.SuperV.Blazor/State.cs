@@ -137,6 +137,23 @@ namespace pva.SuperV.Blazor
             }
         }
 
+        internal void SetScriptsBreadcrumb(string projectId, bool refreshBreadCrumbs = true)
+        {
+            SetProjectBreadcrumb(CurrentProject, refreshBreadCrumbs);
+            Breadcrumbs.Add(new("Scripts", $"/scripts/{projectId}"));
+            RefreshBreadcrumbsIfNeeded(refreshBreadCrumbs);
+        }
+
+        internal void SetScriptBreadcrumb(string projectId, string scriptName, bool refreshBreadCrumbs = true)
+        {
+            if (scriptName != null)
+            {
+                SetScriptsBreadcrumb(projectId, false);
+                Breadcrumbs.Add(new(scriptName, $"/scripts/{projectId}/{scriptName}"));
+                RefreshBreadcrumbsIfNeeded(refreshBreadCrumbs);
+            }
+        }
+
         private void RefreshBreadcrumbsIfNeeded(bool refreshBreadcrumbs = true)
         {
             if (refreshBreadcrumbs)

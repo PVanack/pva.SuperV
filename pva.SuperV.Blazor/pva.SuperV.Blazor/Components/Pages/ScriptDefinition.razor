@@ -21,8 +21,8 @@
 								<MudSelectItem Value="topicName">@topicName</MudSelectItem>
 							}
 						</MudSelect>
-						<MudTextField Disabled="@isModification" @bind-Value="EditedScript.Source" Lines="10"
-									  Label="Script source code" For="@(() => EditedScript.Source)" Variant="Variant.Outlined" />
+						<MudTextField Disabled="@isModification" @bind-Value="EditedScript!.Source" Lines="10"
+									  Label="Script source code" For="@(() => EditedScript!.Source)" Variant="Variant.Outlined" />
 					</MudFocusTrap>
 				</MudCardContent>
 				<MudCardActions>
