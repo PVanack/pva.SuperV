@@ -9,7 +9,7 @@ namespace pva.SuperV.Model.Projects
     public record CreateProjectRequest(
         [property: Description("Name of project")]
         [Required(AllowEmptyStrings = false)]
-        [RegularExpression(Engine.Constants.IdentifierNamePattern, ErrorMessage = "Must be a valid identifier")]
+        [RegularExpression(Common.Constants.IdentifierNamePattern, ErrorMessage = "Must be a valid identifier")]
         string Name,
         [property: Description("Description of project")]
         [Required]

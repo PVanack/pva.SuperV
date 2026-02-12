@@ -92,6 +92,10 @@
 					   hidden="@(SelectedItem == null || SelectedItem.Runnable || !SelectedItem.HistoryEnabled)" Href=@($"/history-repositories/{SelectedItem?.Id}")>
 				History repositories
 			</MudButton>
+			<MudButton StartIcon="@Icons.Material.Filled.Subscriptions"
+					   hidden="@(SelectedItem == null || SelectedItem.Runnable)" Href=@($"/scripts/{SelectedItem?.Id}")>
+				Scripts
+			</MudButton>
 		</MudButtonGroup>
 		<MudSpacer />
 		<MudTextField @bind-Value="itemNameSearchString" Placeholder="Search" Clearable=true Immediate=true TextChanged="Search"

@@ -1,6 +1,7 @@
 ﻿using pva.SuperV.Engine;
+using pva.SuperV.Model.Projects;
 
-namespace pva.SuperV.Model.Projects
+namespace pva.SuperV.Api.Mappers
 {
     public static class ProjectMapper
     {

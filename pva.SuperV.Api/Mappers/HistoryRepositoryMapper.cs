@@ -1,6 +1,7 @@
 ﻿using pva.SuperV.Engine.HistoryStorage;
+using pva.SuperV.Model.HistoryRepositories;
 
-namespace pva.SuperV.Model.HistoryRepositories
+namespace pva.SuperV.Api.Mappers
 {
     public static class HistoryRepositoryMapper
     {

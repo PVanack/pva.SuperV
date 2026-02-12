@@ -1,4 +1,4 @@
-﻿namespace pva.SuperV.Engine
+﻿namespace pva.SuperV.Common
 {
     /// <summary>
     /// Quaity levels of a <see cref="Field{T}"/> value.

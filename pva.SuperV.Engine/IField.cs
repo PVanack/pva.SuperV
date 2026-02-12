@@ -1,4 +1,6 @@
-﻿namespace pva.SuperV.Engine
+﻿using pva.SuperV.Common;
+
+namespace pva.SuperV.Engine
 {
     /// <summary>
     /// Used to store <see cref="Field{T}"/> in fields dictonnary of <see cref="Instance"/>

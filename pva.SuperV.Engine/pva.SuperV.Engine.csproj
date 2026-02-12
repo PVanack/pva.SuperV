@@ -12,7 +12,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="TDengine.Connector" Version="3.1.9" />
+    <PackageReference Include="TDengine.Connector" Version="3.1.10" />
   </ItemGroup>
 
   <Target Name="copyDLLDependency" BeforeTargets="BeforeBuild">
@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\pva.Helpers\pva.Helpers.csproj" />
+    <ProjectReference Include="..\pva.SuperV.Common\pva.SuperV.Common.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 ﻿using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using pva.SuperV.Api.Exceptions;
+using pva.SuperV.Common;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Instances;
@@ -60,7 +61,7 @@ namespace pva.SuperV.ApiTests
                 new InstanceModel("Instance1", "Class1",
                     [
                         new FieldModel("Field1", typeof(int).ToString(),
-                            new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now))
+                            new ShortFieldValueModel(1, null, QualityLevel.Good, DateTime.Now))
                     ])
                 ];
             MockedInstanceService.GetInstancesAsync("Project1")
@@ -97,7 +98,7 @@ namespace pva.SuperV.ApiTests
                 new("Instance1", "Class1",
                     [
                         new FieldModel("Field1", typeof(int).ToString(),
-                        new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now))
+                        new ShortFieldValueModel(1, null, QualityLevel.Good, DateTime.Now))
                     ]);
             MockedInstanceService.GetInstanceAsync("Project1", expectedInstance.Name)
                 .Returns(expectedInstance);
@@ -133,7 +134,7 @@ namespace pva.SuperV.ApiTests
                 new("Instance1", "Class1",
                     [
                         new FieldModel("Field1", typeof(int).ToString(),
-                        new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now))
+                        new ShortFieldValueModel(1, null, QualityLevel.Good, DateTime.Now))
                     ]);
             MockedInstanceService.CreateInstanceAsync("Project1", Arg.Any<InstanceModel>())
                 .Returns(expectedInstance);
@@ -155,7 +156,7 @@ namespace pva.SuperV.ApiTests
                 new("Instance1", "Class1",
                     [
                         new FieldModel("Field1", typeof(int).ToString(),
-                        new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now))
+                        new ShortFieldValueModel(1, null, QualityLevel.Good, DateTime.Now))
                     ]);
             MockedInstanceService.CreateInstanceAsync("UnknownProject", Arg.Any<InstanceModel>())
                 .ThrowsAsync<UnknownEntityException>();
@@ -175,7 +176,7 @@ namespace pva.SuperV.ApiTests
                 new("Instance1", "Class1",
                     [
                         new FieldModel("Field1", typeof(int).ToString(),
-                        new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now))
+                        new ShortFieldValueModel(1, null, QualityLevel.Good, DateTime.Now))
                     ]);
             MockedInstanceService.CreateInstanceAsync("RunnableProject", Arg.Any<InstanceModel>())
                 .ThrowsAsync<NonWipProjectException>();
@@ -195,7 +196,7 @@ namespace pva.SuperV.ApiTests
                 new("Instance1", "Class1",
                     [
                         new FieldModel("Field1", typeof(int).ToString(),
-                        new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now))
+                        new ShortFieldValueModel(1, null, QualityLevel.Good, DateTime.Now))
                     ]);
 
             // WHEN
@@ -238,7 +239,7 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             FieldModel expectedField = new("Field1", typeof(int).ToString(),
-                new ShortFieldValueModel(1, null, Engine.QualityLevel.Good, DateTime.Now));
+                new ShortFieldValueModel(1, null, QualityLevel.Good, DateTime.Now));
             MockedFieldValueService.GetFieldAsync("Project1", "Instance1", "Field1")
                 .Returns(expectedField);
 
@@ -269,7 +270,7 @@ namespace pva.SuperV.ApiTests
         public async Task GivenProject_WhenUpdatingInstanceFieldValue_ThenFieldValueIsUpdated()
         {
             // GIVEN
-            FieldValueModel expectedFieldValue = new ShortFieldValueModel(5321, null, Engine.QualityLevel.Good, DateTime.Now);
+            FieldValueModel expectedFieldValue = new ShortFieldValueModel(5321, null, QualityLevel.Good, DateTime.Now);
             MockedFieldValueService.UpdateFieldValueAsync("Project1", "Instance1", "Field1", Arg.Any<FieldValueModel>())
                 .Returns(expectedFieldValue);
 
@@ -286,7 +287,7 @@ namespace pva.SuperV.ApiTests
         public async Task WhenUpdatingInstanceUnknownFieldValue_ThenNotFoundIsReturned()
         {
             // GIVEN
-            FieldValueModel expectedFieldValue = new ShortFieldValueModel(5321, null, Engine.QualityLevel.Good, DateTime.Now);
+            FieldValueModel expectedFieldValue = new ShortFieldValueModel(5321, null, QualityLevel.Good, DateTime.Now);
             MockedFieldValueService.UpdateFieldValueAsync("Project1", "Instance1", "UnknownField", Arg.Any<FieldValueModel>())
                 .ThrowsAsync<UnknownEntityException>();
 

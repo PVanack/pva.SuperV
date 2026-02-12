@@ -9,7 +9,7 @@ namespace pva.SuperV.Engine
     internal static partial class IdentifierValidation
     {
         /// <summary>Regex for validating identifier name.</summary>
-        [GeneratedRegex(Constants.IdentifierNamePattern)]
+        [GeneratedRegex(Common.Constants.IdentifierNamePattern)]
         private static partial Regex IdentifierNameRegex();
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace pva.SuperV.Engine
         {
             if (string.IsNullOrEmpty(identifier) || !IdentifierNameRegex().IsMatch(identifier))
             {
-                throw new InvalidIdentifierNameException(entityType, identifier, Constants.IdentifierNamePattern);
+                throw new InvalidIdentifierNameException(entityType, identifier, Common.Constants.IdentifierNamePattern);
             }
             return identifier;
         }

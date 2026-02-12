@@ -1,9 +1,10 @@
 ﻿using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.Processing;
+using pva.SuperV.Model.FieldProcessings;
 using System.Numerics;
 
-namespace pva.SuperV.Model.FieldProcessings
+namespace pva.SuperV.Api.Mappers
 {
     public static class FieldProcessingMapper
     {

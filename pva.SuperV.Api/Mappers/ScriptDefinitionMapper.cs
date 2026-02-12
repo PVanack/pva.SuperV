@@ -1,6 +1,7 @@
 ﻿using pva.SuperV.Engine.Processing;
+using pva.SuperV.Model.FieldProcessings;
 
-namespace pva.SuperV.Model.FieldProcessings
+namespace pva.SuperV.Api.Mappers
 {
     public static class ScriptDefinitionMapper
     {

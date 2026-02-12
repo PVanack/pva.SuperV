@@ -1,6 +1,7 @@
 ﻿using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using pva.Helpers.Extensions;
+using pva.SuperV.Common;
 using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Model.HistoryRetrieval;
@@ -165,10 +166,10 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             DateTime rowTimestamp = DateTime.Now;
-            HistoryStatisticsRawResultModel expectedHistoryResult = new([new HistoryStatisticResultFieldModel("Field1", "System.Int32", 0, Engine.HistoryRetrieval.HistoryStatFunction.AVG)],
+            HistoryStatisticsRawResultModel expectedHistoryResult = new([new HistoryStatisticResultFieldModel("Field1", "System.Int32", 0, HistoryStatFunction.AVG)],
                 [new HistoryStatisticsRawRowModel(rowTimestamp, rowTimestamp, rowTimestamp.AddHours(1), TimeSpan.FromHours(1), QualityLevel.Good, [JsonSerializer.SerializeToElement(1)])]);
-            HistoryStatisticsRequestModel request = new(DateTime.Now.AddHours(-1), DateTime.Now, TimeSpan.FromHours(1), Engine.HistoryRetrieval.FillMode.PREV,
-                [new HistoryStatisticFieldModel("Field1", Engine.HistoryRetrieval.HistoryStatFunction.AVG)]);
+            HistoryStatisticsRequestModel request = new(DateTime.Now.AddHours(-1), DateTime.Now, TimeSpan.FromHours(1), FillMode.PREV,
+                [new HistoryStatisticFieldModel("Field1", HistoryStatFunction.AVG)]);
             MockedHistoryValuesService.GetInstanceRawHistoryStatisticsAsync("Project", "Instance", Arg.Any<HistoryStatisticsRequestModel>())
                 .Returns(expectedHistoryResult with
                 {
@@ -213,8 +214,8 @@ namespace pva.SuperV.ApiTests
         public async Task WhenGettingHistoryRawStatisticsOnUnknownInstance_ThenNotFoundIsReturned()
         {
             // GIVEN
-            HistoryStatisticsRequestModel request = new(DateTime.Now.AddHours(-1), DateTime.Now, TimeSpan.FromHours(1), Engine.HistoryRetrieval.FillMode.PREV,
-                [new HistoryStatisticFieldModel("Field1", Engine.HistoryRetrieval.HistoryStatFunction.AVG)]);
+            HistoryStatisticsRequestModel request = new(DateTime.Now.AddHours(-1), DateTime.Now, TimeSpan.FromHours(1), FillMode.PREV,
+                [new HistoryStatisticFieldModel("Field1", HistoryStatFunction.AVG)]);
             MockedHistoryValuesService.GetInstanceRawHistoryStatisticsAsync("Project", "UnknownInstance", Arg.Any<HistoryStatisticsRequestModel>())
                 .ThrowsAsync<UnknownEntityException>();
 
@@ -230,8 +231,8 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             DateTime endTime = DateTime.UtcNow;
-            HistoryStatisticsRequestModel request = new(endTime, endTime, TimeSpan.FromHours(1), Engine.HistoryRetrieval.FillMode.PREV,
-                [new HistoryStatisticFieldModel("Field1", Engine.HistoryRetrieval.HistoryStatFunction.AVG)]);
+            HistoryStatisticsRequestModel request = new(endTime, endTime, TimeSpan.FromHours(1), FillMode.PREV,
+                [new HistoryStatisticFieldModel("Field1", HistoryStatFunction.AVG)]);
             MockedHistoryValuesService.GetInstanceRawHistoryStatisticsAsync("Project", "Instance", Arg.Any<HistoryStatisticsRequestModel>())
                 .ThrowsAsync<BadHistoryStartTimeException>();
 
@@ -248,8 +249,8 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             DateTime endTime = DateTime.UtcNow;
             DateTime startTime = endTime.AddHours(-1);
-            HistoryStatisticsRequestModel request = new(startTime, endTime, TimeSpan.FromDays(1), Engine.HistoryRetrieval.FillMode.PREV,
-                [new HistoryStatisticFieldModel("Field1", Engine.HistoryRetrieval.HistoryStatFunction.AVG)]);
+            HistoryStatisticsRequestModel request = new(startTime, endTime, TimeSpan.FromDays(1), FillMode.PREV,
+                [new HistoryStatisticFieldModel("Field1", HistoryStatFunction.AVG)]);
             MockedHistoryValuesService.GetInstanceRawHistoryStatisticsAsync("Project", "Instance", Arg.Any<HistoryStatisticsRequestModel>())
                 .ThrowsAsync<BadHistoryIntervalException>();
 
@@ -265,10 +266,10 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             DateTime rowTimestamp = DateTime.Now;
-            HistoryStatisticsResultModel expectedHistoryResult = new([new HistoryStatisticResultFieldModel("Field1", "System.Int32", 0, Engine.HistoryRetrieval.HistoryStatFunction.AVG)],
+            HistoryStatisticsResultModel expectedHistoryResult = new([new HistoryStatisticResultFieldModel("Field1", "System.Int32", 0, HistoryStatFunction.AVG)],
                 [new HistoryStatisticsRowModel(rowTimestamp, rowTimestamp, rowTimestamp.AddHours(1), TimeSpan.FromHours(1), QualityLevel.Good, [new IntFieldValueModel(1, null, QualityLevel.Good, rowTimestamp)])]);
-            HistoryStatisticsRequestModel request = new(DateTime.Now.AddHours(-1), DateTime.Now, TimeSpan.FromHours(1), Engine.HistoryRetrieval.FillMode.PREV,
-                [new HistoryStatisticFieldModel("Field1", Engine.HistoryRetrieval.HistoryStatFunction.AVG)]);
+            HistoryStatisticsRequestModel request = new(DateTime.Now.AddHours(-1), DateTime.Now, TimeSpan.FromHours(1), FillMode.PREV,
+                [new HistoryStatisticFieldModel("Field1", HistoryStatFunction.AVG)]);
             MockedHistoryValuesService.GetInstanceHistoryStatisticsAsync("Project", "Instance", Arg.Any<HistoryStatisticsRequestModel>())
                 .Returns(expectedHistoryResult);
 
@@ -285,8 +286,8 @@ namespace pva.SuperV.ApiTests
         public async Task WhenGettingHistoryStatisticsOnUnknownInstance_ThenNotFoundIsReturned()
         {
             // GIVEN
-            HistoryStatisticsRequestModel request = new(DateTime.Now.AddHours(-1), DateTime.Now, TimeSpan.FromHours(1), Engine.HistoryRetrieval.FillMode.PREV,
-                [new HistoryStatisticFieldModel("Field1", Engine.HistoryRetrieval.HistoryStatFunction.AVG)]);
+            HistoryStatisticsRequestModel request = new(DateTime.Now.AddHours(-1), DateTime.Now, TimeSpan.FromHours(1), FillMode.PREV,
+                [new HistoryStatisticFieldModel("Field1", HistoryStatFunction.AVG)]);
             MockedHistoryValuesService.GetInstanceHistoryStatisticsAsync("Project", "UnknownInstance", Arg.Any<HistoryStatisticsRequestModel>())
                 .ThrowsAsync<UnknownEntityException>();
 
@@ -302,8 +303,8 @@ namespace pva.SuperV.ApiTests
         {
             // GIVEN
             DateTime endTime = DateTime.UtcNow;
-            HistoryStatisticsRequestModel request = new(endTime, endTime, TimeSpan.FromHours(1), Engine.HistoryRetrieval.FillMode.PREV,
-                [new HistoryStatisticFieldModel("Field1", Engine.HistoryRetrieval.HistoryStatFunction.AVG)]);
+            HistoryStatisticsRequestModel request = new(endTime, endTime, TimeSpan.FromHours(1), FillMode.PREV,
+                [new HistoryStatisticFieldModel("Field1", HistoryStatFunction.AVG)]);
             MockedHistoryValuesService.GetInstanceHistoryStatisticsAsync("Project", "Instance", Arg.Any<HistoryStatisticsRequestModel>())
                 .ThrowsAsync<BadHistoryStartTimeException>();
 
@@ -320,8 +321,8 @@ namespace pva.SuperV.ApiTests
             // GIVEN
             DateTime endTime = DateTime.UtcNow;
             DateTime startTime = endTime.AddHours(-1);
-            HistoryStatisticsRequestModel request = new(startTime, endTime, TimeSpan.FromDays(1), Engine.HistoryRetrieval.FillMode.PREV,
-                [new HistoryStatisticFieldModel("Field1", Engine.HistoryRetrieval.HistoryStatFunction.AVG)]);
+            HistoryStatisticsRequestModel request = new(startTime, endTime, TimeSpan.FromDays(1), FillMode.PREV,
+                [new HistoryStatisticFieldModel("Field1", HistoryStatFunction.AVG)]);
             MockedHistoryValuesService.GetInstanceHistoryStatisticsAsync("Project", "Instance", Arg.Any<HistoryStatisticsRequestModel>())
                 .ThrowsAsync<BadHistoryIntervalException>();
 

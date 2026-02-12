@@ -70,7 +70,7 @@ namespace pva.SuperV.Blazor.Components.Pages
         public EditedProject() : this("", "", null) { }
 
         [Required(AllowEmptyStrings = false)]
-        [RegularExpression(Engine.Constants.IdentifierNamePattern, ErrorMessage = "Must be a valid identifier")]
+        [RegularExpression(Common.Constants.IdentifierNamePattern, ErrorMessage = "Must be a valid identifier")]
         public string Name { get => name; set => name = value; }
 
         [Required]

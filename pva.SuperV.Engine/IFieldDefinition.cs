@@ -50,7 +50,7 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The name of the topic.
         /// </value>
-        string? TopicName { get; init; }
+        string? TopicName { get; set; }
 
         /// <summary>
         /// Gets or sets the field value changed event.

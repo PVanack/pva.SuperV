@@ -65,7 +65,7 @@ namespace pva.SuperV.Engine
         /// <value>
         /// The name of the topic.
         /// </value>
-        public string? TopicName { get; init; }
+        public string? TopicName { get; set; }
 
         /// <summary>
         /// Gets or sets the field value changed event channel.
@@ -163,6 +163,7 @@ namespace pva.SuperV.Engine
             {
                 DefaultValue = typedFieldDefinitionUpdate.DefaultValue;
                 Formatter = fieldFormatter;
+                TopicName = fieldDefinitionUpdate.TopicName;
                 return;
             }
             throw new WrongFieldTypeException(Name, Type, fieldDefinitionUpdate.Type);

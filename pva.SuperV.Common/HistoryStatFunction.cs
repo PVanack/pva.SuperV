@@ -1,4 +1,4 @@
-﻿namespace pva.SuperV.Engine.HistoryRetrieval
+﻿namespace pva.SuperV.Common
 {
     public enum HistoryStatFunction
     {

@@ -9,7 +9,7 @@ namespace pva.SuperV.Model.Classes
     public record ClassModel(
         [property: Description("Name of the class.")]
         [Required(AllowEmptyStrings = false)]
-        [RegularExpression(Engine.Constants.IdentifierNamePattern, ErrorMessage = "Must be a valid identifier")]
+        [RegularExpression(Common.Constants.IdentifierNamePattern, ErrorMessage = "Must be a valid identifier")]
         string Name,
         [property: Description("Base class (if any).")]
         string? BaseClassName);

@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Engine.Exceptions;
+﻿using pva.SuperV.Common;
+using pva.SuperV.Engine.Exceptions;
 using TDengine.Driver;
 
 namespace pva.SuperV.Engine.HistoryRetrieval
@@ -214,9 +215,9 @@ namespace pva.SuperV.Engine.HistoryRetrieval
         /// <summary>
         /// Gets field value at a specific index as the specified type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Type of field</typeparam>
         /// <param name="colIndex">Index of value.</param>
-        /// <returns></returns>
+        /// <returns>Value of field</returns>
         public T? GetValue<T>(int colIndex)
         {
             return (T?)Values[colIndex];
