@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\pva.SuperV.Engine\pva.SuperV.Engine.csproj" />
+    <ProjectReference Include="..\pva.SuperV.Common\pva.SuperV.Common.csproj" />
   </ItemGroup>
 
 </Project>

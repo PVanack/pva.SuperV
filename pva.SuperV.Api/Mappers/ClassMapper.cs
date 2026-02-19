@@ -1,6 +1,7 @@
 ﻿using pva.SuperV.Engine;
+using pva.SuperV.Model.Classes;
 
-namespace pva.SuperV.Model.Classes
+namespace pva.SuperV.Api.Mappers
 {
     public static class ClassMapper
     {

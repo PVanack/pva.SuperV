@@ -14,7 +14,7 @@
 					<MudFocusTrap DefaultFocus=DefaultFocus.FirstChild>
 						<MudTextField Disabled="@isModification" @bind-Value="EditedClass.Name"
 									  Label="Class name" For="@(() => EditedClass.Name)" Variant="Variant.Outlined"/>
-						<MudSelect T="string" ValueChanged="@OnFormatterTypeChanged" Value="EditedClass?.BaseClassName"
+						<MudSelect T="string" ValueChanged="@OnBaseClassChanged" Value="EditedClass?.BaseClassName"
 								   Label="Select base class" Placeholder="Base class" Variant="Variant.Outlined">
 							@foreach (var baseClassName in BaseClasses)
 							{

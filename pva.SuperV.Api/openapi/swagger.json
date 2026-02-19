@@ -3351,6 +3351,314 @@
           }
         }
       }
+    },
+    "/scripts/{projectId}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets the list of available scripts from a project",
+        "description": "Gets the list of scripts from a project",
+        "operationId": "GetScripts",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ScriptDefinitionModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scripts/{projectId}/{scriptName}": {
+      "get": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Gets a field processing from a class of a project by its name",
+        "description": "Gets a field processing from a class of a project by its name",
+        "operationId": "GetScript",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "ID of project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scriptName",
+            "in": "path",
+            "description": "Name of processing",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScriptDefinitionModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scripts/{wipProjectId}/{scriptName}": {
+      "put": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Updates a field processing in a class of a WIP project",
+        "description": "Updates a field processing in a class of a WIP project",
+        "operationId": "UpdateScript",
+        "parameters": [
+          {
+            "name": "wipProjectId",
+            "in": "path",
+            "description": "ID of WIP project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scriptName",
+            "in": "path",
+            "description": "Name of field processing",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Field processing update request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScriptDefinitionModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScriptDefinitionModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Deletes a script from a WIP project by its name",
+        "description": "Deletes a script from a WIP project by its name",
+        "operationId": "DeleteScript",
+        "parameters": [
+          {
+            "name": "wipProjectId",
+            "in": "path",
+            "description": "ID of WIP project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scriptName",
+            "in": "path",
+            "description": "Name of script",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scripts/{wipProjectId}": {
+      "post": {
+        "tags": [
+          "pva.SuperV.Api"
+        ],
+        "summary": "Creates a script in a WIP project",
+        "description": "Creates a script in a WIP project",
+        "operationId": "CreateScript",
+        "parameters": [
+          {
+            "name": "wipProjectId",
+            "in": "path",
+            "description": "ID of WIP project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Script creation request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScriptDefinitionModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScriptDefinitionModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -5823,6 +6131,29 @@
       },
       "QualityLevel": {
         "type": "integer"
+      },
+      "ScriptDefinitionModel": {
+        "required": [
+          "name",
+          "topicName",
+          "source"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Script name."
+          },
+          "topicName": {
+            "type": "string",
+            "description": "Name of the topic on which the script registers."
+          },
+          "source": {
+            "type": "string",
+            "description": "Source code of the script."
+          }
+        },
+        "description": "Script reacting to a field value change."
       },
       "Stream": {
         "type": "string",

@@ -22,7 +22,7 @@ namespace pva.SuperV.Model.FieldDefinitions
     public abstract record FieldDefinitionModel(
         [property: Description("Name of field")]
         [Required(AllowEmptyStrings = false)]
-        [RegularExpression(Engine.Constants.IdentifierNamePattern, ErrorMessage = "Must be a valid identifier")]
+        [RegularExpression(Common.Constants.IdentifierNamePattern, ErrorMessage = "Must be a valid identifier")]
         string Name,
         [property: Description("Type of field")]
         string FieldType,

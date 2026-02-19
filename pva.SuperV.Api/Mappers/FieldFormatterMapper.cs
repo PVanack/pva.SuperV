@@ -1,8 +1,9 @@
 ﻿using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.FieldFormatters;
 using pva.SuperV.Model.FieldDefinitions;
+using pva.SuperV.Model.FieldFormatters;
 
-namespace pva.SuperV.Model.FieldFormatters
+namespace pva.SuperV.Api.Mappers
 {
     public static class FieldFormatterMapper
     {

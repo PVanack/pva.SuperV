@@ -50,17 +50,17 @@ namespace pva.SuperV.Engine.Processing
             {
                 try
                 {
-                    HashSet<string> instanceReferences = [.. ScriptDefinition.fieldReferences.Select(f => f.InstanceName ?? ChangedInstance)];
-
-                    instanceReferences.Where(instanceName => instanceName != ChangedInstance).ForEach(instanceName =>
-                    {
-                        IInstance instance = Project.GetInstance(instanceName);
-                        Instances.Add(instanceName, instance);
-                    });
                     while (await notificationChannel.Reader.WaitToReadAsync())
                     {
                         while (notificationChannel.Reader.TryRead(out FieldValueChangedEvent? fieldValueChangedEvent))
                         {
+                            Instances.Clear();
+                            HashSet<string> instanceReferences = [.. ScriptDefinition.fieldReferences.Select(f => f.InstanceName ?? ChangedInstance)];
+                            instanceReferences.Where(instanceName => instanceName != ChangedInstance).ForEach(instanceName =>
+                            {
+                                IInstance instance = Project.GetInstance(instanceName);
+                                Instances.Add(instanceName, instance);
+                            });
                             Instances[ChangedInstance] = fieldValueChangedEvent.Field.Instance!;
                             HandleFieldValueChangeInternal(Project, Instances, fieldValueChangedEvent);
                         }

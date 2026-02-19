@@ -1,0 +1,45 @@
+﻿@page "/script/{ProjectId}"
+@page "/script/{ProjectId}/{ScriptName}"
+
+<PageTitle>@pageTitle</PageTitle>
+
+<h1>@pageTitle</h1>
+
+<EditForm Model="@EditedScript" OnValidSubmit="OnValidSubmit">
+	<DataAnnotationsValidator />
+	<MudGrid>
+		<MudItem xs="12" sm="7">
+			<MudCard>
+				<MudCardContent>
+					<MudFocusTrap DefaultFocus=DefaultFocus.FirstChild>
+						<MudTextField Disabled="@isModification" @bind-Value="EditedScript.Name"
+									  Label="Script name" For="@(() => EditedScript.Name)" Variant="Variant.Outlined"/>
+						<MudSelect T="string" ValueChanged="@OnTopicNameChanged" Value="EditedScript?.TopicName"
+								   Label="Select topic name" Placeholder="Topic name" Variant="Variant.Outlined">
+							@foreach (var topicName in TopicNames)
+							{
+								<MudSelectItem Value="topicName">@topicName</MudSelectItem>
+							}
+						</MudSelect>
+						<MudTextField Disabled="@isModification" @bind-Value="EditedScript!.Source" Lines="10"
+									  Label="Script source code" For="@(() => EditedScript!.Source)" Variant="Variant.Outlined" />
+					</MudFocusTrap>
+				</MudCardContent>
+				<MudCardActions>
+					<MudSpacer />
+					<MudButton @onclick="CancelSubmit" Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto">Cancel</MudButton>
+					&nbsp;
+					<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">OK</MudButton>
+				</MudCardActions>
+			</MudCard>
+		</MudItem>
+		<MudItem hidden="@success" xs="12" sm="5">
+			<MudPaper Class="pa-4 mud-height-full">
+				<MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+				<MudText Color="@Color.Error">
+					<ValidationSummary />
+				</MudText>
+			</MudPaper>
+		</MudItem>
+	</MudGrid>
+</EditForm>

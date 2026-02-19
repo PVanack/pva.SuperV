@@ -40,9 +40,9 @@ namespace pva.SuperV.EngineTests
         protected const string UlongFieldName = "UlongField";
         protected const string UshortFieldName = "UshortField";
         protected const string IntFieldWithFormatName = "IntFieldWithFormat";
-        protected const string TopicName = "TestTopic";
+        protected const string TestTopicName = "TestTopic";
         protected const string ClassWithTopicName = "ClassWithTopic";
-        protected const string FieldWithTopicName = "IntFieldWithTopic";
+        protected const string IntFieldWithTopicName = "IntFieldWithTopic";
         protected const string InstanceWithTopicName = "InstanceWithTopic";
         protected const string ScriptName = "Script";
 
@@ -139,12 +139,12 @@ namespace pva.SuperV.EngineTests
             AddFieldHistorization<int>(wipProject, historyRepository, allFieldsClass, IntFieldWithFormatName, AlarmStatesFormatterName);
 
             _ = wipProject.AddClass(ClassWithTopicName);
-            wipProject.AddField(ClassWithTopicName, new FieldDefinition<int>(FieldWithTopicName, 10, TopicName));
+            wipProject.AddField(ClassWithTopicName, new FieldDefinition<int>(IntFieldWithTopicName, 10, TestTopicName));
             wipProject.AddField(ClassWithTopicName, new FieldDefinition<int>(ValueFieldName, 10));
             const string scriptSource = @"
                 {{Value}} = {{IntFieldWithTopic}};
 ";
-            ScriptDefinition script = new(ScriptName, TopicName, scriptSource);
+            ScriptDefinition script = new(ScriptName, TestTopicName, scriptSource);
             wipProject.AddScript(script);
             return wipProject;
         }
@@ -188,6 +188,26 @@ namespace pva.SuperV.EngineTests
                 Console.WriteLine($"Project {projectName} not deleted");
             }
 #endif
+        }
+
+        /// <summary>
+        /// Waits asynchrnously for condition with a timeout.
+        /// </summary>
+        /// <param name="timeout">The timeout in millisecs.</param>
+        /// <param name="condition">The condition.</param>
+        /// <returns>ValueTask</returns>
+        protected static async ValueTask WaitForCondition(int timeout, Func<bool> condition)
+        {
+            const int waitInterval = 100;
+            while (timeout > 0)
+            {
+                if (condition())
+                {
+                    return;
+                }
+                await Task.Delay(waitInterval);
+                timeout -= waitInterval;
+            }
         }
     }
 }

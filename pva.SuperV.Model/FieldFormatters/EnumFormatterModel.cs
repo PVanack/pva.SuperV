@@ -1,5 +1,4 @@
-﻿using pva.SuperV.Engine.FieldFormatters;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
 namespace pva.SuperV.Model.FieldFormatters
@@ -10,5 +9,5 @@ namespace pva.SuperV.Model.FieldFormatters
         string Name,
         [property: Description("String values associated with integers.")]
         Dictionary<int, string> Values)
-        : FieldFormatterModel(Name, typeof(EnumFormatter).ToString());
+        : FieldFormatterModel(Name, "EnumFormatter");
 }

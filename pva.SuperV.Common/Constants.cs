@@ -1,4 +1,4 @@
-﻿namespace pva.SuperV.Engine
+﻿namespace pva.SuperV.Common
 {
     /// <summary>
     /// Project constants.

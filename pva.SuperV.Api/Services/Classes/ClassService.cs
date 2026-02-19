@@ -1,4 +1,5 @@
 ﻿using pva.SuperV.Api.Exceptions;
+using pva.SuperV.Api.Mappers;
 using pva.SuperV.Engine;
 using pva.SuperV.Model;
 using pva.SuperV.Model.Classes;

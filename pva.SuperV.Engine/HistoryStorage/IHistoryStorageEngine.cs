@@ -1,4 +1,5 @@
-﻿using pva.SuperV.Engine.HistoryRetrieval;
+﻿using pva.SuperV.Common;
+using pva.SuperV.Engine.HistoryRetrieval;
 using pva.SuperV.Engine.Processing;
 
 namespace pva.SuperV.Engine.HistoryStorage

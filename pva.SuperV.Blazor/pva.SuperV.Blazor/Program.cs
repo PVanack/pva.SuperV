@@ -18,20 +18,21 @@ namespace pva.SuperV.Blazor
                     => options.DetailedErrors = builder.Environment.IsDevelopment())
                 .AddInteractiveServerComponents(options => options.DetailedErrors = true)
                 .AddInteractiveWebAssemblyComponents();
-            builder.Services.AddMudServices();
-
             builder.Services
+                .AddMudServices()
                 .AddScoped<State>()
-                .AddScoped<IClassService, ClassService>(_ => new(BuildHttpClient(builder)))
                 .AddScoped<IProjectService, ProjectService>(_ => new(BuildHttpClient(builder)))
-                .AddScoped<IFieldDefinitionService, FieldDefinitionService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IClassService, ClassService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IHistoryRepositoryService, HistoryRepositoryService>(_ => new(BuildHttpClient(builder)))
                 .AddScoped<IFieldFormatterService, FieldFormatterService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IFieldDefinitionService, FieldDefinitionService>(_ => new(BuildHttpClient(builder)))
+                .AddScoped<IFieldProcessingService, FieldProcessingService>(_ => new(BuildHttpClient(builder)))
                 .AddScoped<IInstanceService, InstanceService>(_ => new(BuildHttpClient(builder)))
                 .AddScoped<IFieldValueService, FieldValueService>(_ => new(BuildHttpClient(builder)))
-                .AddScoped<IFieldProcessingService, FieldProcessingService>(_ => new(BuildHttpClient(builder)))
-                .AddScoped<IHistoryRepositoryService, HistoryRepositoryService>(_ => new(BuildHttpClient(builder)));
+                .AddScoped<IScriptService, ScriptService>(_ => new(BuildHttpClient(builder)));
 
             var app = builder.Build();
+            app.MapStaticAssets();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -45,11 +46,8 @@ namespace pva.SuperV.Blazor
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-
-            app.UseAntiforgery();
-
-            app.MapStaticAssets();
+            app.UseHttpsRedirection()
+                .UseAntiforgery();
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode()
                 .AddInteractiveWebAssemblyRenderMode()

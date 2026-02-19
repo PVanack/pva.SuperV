@@ -61,7 +61,7 @@ namespace pva.SuperV.EngineTests
         public void GivenScriptWithWhitespaceLines_WhenParsingLine_ThenWhitespaceOnlyLinesAreSkipped()
         {
             // GIVEN
-            const string script = "Line1\n   \nLine2\n\t\t\nLine3";
+            const string script = "Line1\n   \n  // Comment   \nLine2\n\t\t\nLine3";
 
             // WHEN
             List<string> result = ScriptParser.ParseLine(script);

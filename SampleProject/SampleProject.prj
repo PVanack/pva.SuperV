@@ -11,6 +11,7 @@
                     "Type": "System.Int64",
                     "Name": "IntBaseField",
                     "DefaultValue": 1,
+                    "TopicName": "",
                     "ValuePostChangeProcessings": [],
                     "Formatter": {
                         "$type": "Enum",
@@ -31,30 +32,35 @@
                     "Type": "System.Boolean",
                     "Name": "FinalField",
                     "DefaultValue": true,
+                    "TopicName": "",
                     "ValuePostChangeProcessings": []
                 },
                 "Low": {
                     "Type": "System.Single",
                     "Name": "Low",
                     "DefaultValue": 0,
+                    "TopicName": "",
                     "ValuePostChangeProcessings": []
                 },
                 "High": {
                     "Type": "System.Single",
                     "Name": "High",
                     "DefaultValue": 0,
+                    "TopicName": "",
                     "ValuePostChangeProcessings": []
                 },
                 "HighHigh": {
                     "Type": "System.Single",
                     "Name": "HighHigh",
                     "DefaultValue": 0,
+                    "TopicName": "",
                     "ValuePostChangeProcessings": []
                 },
                 "Value": {
                     "Type": "System.Single",
                     "Name": "Value",
                     "DefaultValue": 0,
+                    "TopicName": "",
                     "ValuePostChangeProcessings": [
                         {
                             "Type": "pva.SuperV.Engine.Processing.AlarmStateProcessing\u00601[System.Single]",
@@ -126,12 +132,14 @@
                     "Type": "System.Single",
                     "Name": "LowLow",
                     "DefaultValue": 0,
+                    "TopicName": "",
                     "ValuePostChangeProcessings": []
                 },
                 "AckState": {
                     "Type": "System.Int32",
                     "Name": "AckState",
                     "DefaultValue": 0,
+                    "TopicName": "",
                     "ValuePostChangeProcessings": [],
                     "Formatter": {
                         "$type": "Enum",
@@ -146,6 +154,7 @@
                     "Type": "System.Int32",
                     "Name": "AlarmState",
                     "DefaultValue": 0,
+                    "TopicName": "",
                     "ValuePostChangeProcessings": [],
                     "Formatter": {
                         "$type": "Enum",
@@ -163,6 +172,7 @@
                     "Type": "System.Single",
                     "Name": "Deadband",
                     "DefaultValue": 0,
+                    "TopicName": "",
                     "ValuePostChangeProcessings": []
                 }
             }
@@ -203,5 +213,7 @@
             "Name": "HistoRepo",
             "HistoryStorageId": "sampleprojecthistorepo"
         }
+    },
+    "ScriptDefinitions" : {
     }
 }

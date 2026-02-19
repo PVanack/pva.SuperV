@@ -1,9 +1,10 @@
 ﻿using pva.SuperV.Engine;
 using pva.SuperV.Engine.Exceptions;
 using pva.SuperV.Engine.HistoryRetrieval;
+using pva.SuperV.Model.HistoryRetrieval;
 using pva.SuperV.Model.Instances;
 
-namespace pva.SuperV.Model.HistoryRetrieval
+namespace pva.SuperV.Api.Mappers
 {
     public static class HistoryRowMapper
     {

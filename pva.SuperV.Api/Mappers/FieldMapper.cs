@@ -1,6 +1,8 @@
-﻿using pva.SuperV.Engine;
+﻿using pva.SuperV.Common;
+using pva.SuperV.Engine;
+using pva.SuperV.Model.Instances;
 
-namespace pva.SuperV.Model.Instances
+namespace pva.SuperV.Api.Mappers
 {
     public static class FieldMapper
     {

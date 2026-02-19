@@ -36,6 +36,7 @@
   </Project>
   <Project Path="pva.SuperV.Blazor/pva.SuperV.Blazor.Client/pva.SuperV.Blazor.Client.csproj" />
   <Project Path="pva.SuperV.Blazor/pva.SuperV.Blazor/pva.SuperV.Blazor.csproj" />
+  <Project Path="pva.SuperV.Common/pva.SuperV.Common.csproj" Id="18fcf43c-83da-403b-901c-040dbf27128e" />
   <Project Path="pva.SuperV.Engine/pva.SuperV.Engine.csproj" />
   <Project Path="pva.SuperV.EngineTests/pva.SuperV.EngineTests.csproj" />
   <Project Path="pva.SuperV.Model/pva.SuperV.Model.csproj" />

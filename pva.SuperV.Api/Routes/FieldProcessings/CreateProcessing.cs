@@ -13,7 +13,7 @@ namespace pva.SuperV.Api.Routes.FieldProcessings
             try
             {
                 FieldValueProcessingModel createdFieldProcessing = await fieldProcessingService.CreateFieldProcessingAsync(projectId, className, fieldName, createRequest);
-                return TypedResults.Created<FieldValueProcessingModel>($"//field-processings/{projectId}/{className}/{fieldName}{createdFieldProcessing.Name}", createdFieldProcessing);
+                return TypedResults.Created<FieldValueProcessingModel>($"/field-processings/{projectId}/{className}/{fieldName}/{createdFieldProcessing.Name}", createdFieldProcessing);
             }
             catch (UnknownEntityException e)
             {

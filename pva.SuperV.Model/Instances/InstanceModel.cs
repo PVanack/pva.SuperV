@@ -9,7 +9,7 @@ namespace pva.SuperV.Model.Instances
     public record InstanceModel(
         [property: Description("Instance name.")]
         [Required(AllowEmptyStrings = false)]
-        [RegularExpression(Engine.Constants.IdentifierNamePattern, ErrorMessage = "Must be a valid identifier")]
+        [RegularExpression(Common.Constants.IdentifierNamePattern, ErrorMessage = "Must be a valid identifier")]
         string Name,
         [property: Description("Class name of instance.")]
         string ClassName,

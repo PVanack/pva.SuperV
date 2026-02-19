@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using pva.Helpers.Extensions;
 using pva.SuperV.Model.FieldFormatters;
 using pva.SuperV.Model.Services;
 using System.ComponentModel.DataAnnotations;
@@ -165,14 +164,18 @@ namespace pva.SuperV.Blazor.Components.Pages
     {
         public EditedEnumFieldFormatter(string name, string formatterType, Dictionary<int, string> enumValues) : base(name, formatterType)
         {
-            enumValues.ForEach(entry
-                => EnumValues.Add(new EnumValue(entry.Key, entry.Value)));
+            foreach (var entry in enumValues)
+            {
+                EnumValues.Add(new EnumValue(entry.Key, entry.Value));
+            }
         }
 
         public EditedEnumFieldFormatter(EnumFormatterModel enumFormatter) : base(enumFormatter)
         {
-            enumFormatter.Values.ForEach(entry
-                => EnumValues.Add(new EnumValue(entry.Key, entry.Value)));
+            foreach (var entry in enumFormatter.Values)
+            {
+                EnumValues.Add(new EnumValue(entry.Key, entry.Value));
+            }
         }
 
         public List<EnumValue> EnumValues { get; set; } = [];
