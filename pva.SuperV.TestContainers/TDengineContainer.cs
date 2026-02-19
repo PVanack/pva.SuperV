@@ -32,7 +32,7 @@ namespace pva.SuperV.TestContainers
             {
                 Console.WriteLine("Starting TD engine container");
                 WaitForPort(6030);
-                tdEngineContainer = new ContainerBuilder("tdengine/tsdb:3.3.8.8")
+                tdEngineContainer = new ContainerBuilder("tdengine/tsdb:3.4.0.2")
                     .WithPortBinding(6030)
                     .WithPortBinding(6031)
                     .WithPortBinding(6032)
